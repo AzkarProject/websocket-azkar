@@ -15,6 +15,8 @@ app.get('/', function (req, res) {
 
 // Titi - Contrôle de la version de socket.io
 console.log("**Socket.IO Version: " + require('socket.io/package').version);
+console.log("**Express Version: " + require('express/package').version);
+
 
 io.sockets.on('connection', function (socket, pseudo) {
     // Dès qu'on nous donne un pseudo, on le stocke en variable de session et on informe les autres personnes
