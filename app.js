@@ -1,3 +1,7 @@
+var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
+var port      = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+
+
 var app = require('express')(),
     server = require('http').createServer(app),
     io = require('socket.io').listen(server),
@@ -6,7 +10,7 @@ var app = require('express')(),
 
 // Variables d'environnement
 // app.set('port', (process.env.PORT || 8080)); // Pour Heroku
-app.set('port', process.env.OPENSHIFT_NODEJS_PORT || 8080); // Pour Openshift
+app.set('port', port); // Pour Openshift
 
 // Chargement de la page index.html
 app.get('/', function (req, res) {
@@ -36,4 +40,4 @@ io.sockets.on('connection', function (socket, pseudo) {
 
 //server.listen(8080);
 //server.listen(8080);
-server.listen(app.get('port'));
+server.listen(app.get('port'),ipaddress );
