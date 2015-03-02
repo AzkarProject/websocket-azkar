@@ -4,8 +4,9 @@ var app = require('express')(),
     ent = require('ent'), // Permet de bloquer les caractères HTML (sécurité équivalente à htmlentities en PHP)
     fs = require('fs');
 
-// Add pour Heroku
-app.set('port', (process.env.PORT || 8080));
+// Variables d'environnement
+// app.set('port', (process.env.PORT || 8080)); // Pour Heroku
+app.set('port', process.env.OPENSHIFT_NODEJS_PORT || 8080); // Pour Openshift
 
 // Chargement de la page index.html
 app.get('/', function (req, res) {
