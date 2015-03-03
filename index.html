@@ -13,7 +13,7 @@
     </head>
  
     <body>
-        <h1>Super Chat! ( socket.io / websockets ) - V2</h1>
+        <h1>Super Chat! ( socket.io / websockets ) - V.1.1.4</h1>
 
         <form action="/" method="post" id="formulaire_chat">
             <input type="text" name="message" id="message" placeholder="Votre message..." size="50" autofocus />
@@ -29,8 +29,15 @@
         <script src="/socket.io/socket.io.js"></script>
         <script>
 
+            //var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
+            //var port      = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+
+            // alert ('http://'+ipaddress+':'+port);
             // Connexion à socket.io
-            var socket = io.connect('http://localhost:8080');
+            // var socket = io.connect('http://localhost:8080');
+            //var socket = io.connect('http://'+ipaddress+':'+port);
+            var socket = io.connect();
+
 
             // On demande le pseudo, on l'envoie au serveur et on l'affiche dans le titre
             var pseudo = prompt('Quel est votre pseudo ?');
