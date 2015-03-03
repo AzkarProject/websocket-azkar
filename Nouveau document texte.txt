@@ -1,18 +1,18 @@
-ssh 54f479f7e0b8cd1e1600000d@websocket-azkar.rhcloud.com
-
-ssh://54f479f7e0b8cd1e1600000d@websocket-azkar.rhcloud.com/
-
+Exemple
 ssh://284bdd9fd9764803939ac5c309634ee6@myapp-mcgrath.rhcloud.com/~/git/myapp.git/
 
 ---------------------------------------------
+
+Voir https://help.openshift.com/hc/en-us/articles/202398470-Sync-new-git-repo-with-your-own-existing-git-repo
+
+
 1) -- Merger 
-git pull ssh://54f479f7e0b8cd1e1600000d@websocket-azkar.rhcloud.com/~/git/websocket.git/
-
-2) -- 
-git push ssh://54f479f7e0b8cd1e1600000d@websocket-azkar.rhcloud.com/~/git/websocket.git/
+git pull ssh://54f48c24e0b8cd2f4d00001c@websocket-azkar.rhcloud.com/~/git/websocket.git/
 
 
 
-// Ne fonctionne pas....
-ssh://54f479f7e0b8cd1e1600000d@websocket-azkar.rhcloud.com/~/git/websocket.git/master
+2) -- Pusher
+git push ssh://54f48c24e0b8cd2f4d00001c@websocket-azkar.rhcloud.com/~/git/websocket.git/
+
+
 

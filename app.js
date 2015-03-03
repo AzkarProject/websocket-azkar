@@ -1,5 +1,9 @@
-var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
-var port      = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+//var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
+//var port      = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+
+
+ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
+port      = process.env.OPENSHIFT_NODEJS_PORT || 8080;
 
 
 var app = require('express')(),
@@ -12,6 +16,8 @@ var app = require('express')(),
 // app.set('port', (process.env.PORT || 8080)); // Pour Heroku
 app.set('port', port); // Pour Openshift
 
+
+
 // Chargement de la page index.html
 app.get('/', function (req, res) {
   res.sendFile(__dirname + '/index.html');
@@ -21,7 +27,8 @@ app.get('/', function (req, res) {
 // Titi - Contrôle de la version de socket.io
 console.log("**Socket.IO Version: " + require('socket.io/package').version);
 console.log("**Express Version: " + require('express/package').version);
-
+console.log("**ipAdress = " + ipaddress );
+console.log("**port = " + port );
 
 io.sockets.on('connection', function (socket, pseudo) {
     // Dès qu'on nous donne un pseudo, on le stocke en variable de session et on informe les autres personnes
@@ -35,6 +42,7 @@ io.sockets.on('connection', function (socket, pseudo) {
     socket.on('message', function (message) {
         message = ent.encode(message);
         socket.broadcast.emit('message', {pseudo: socket.pseudo, message: message});
+        socket.broadcast.emit('message', "message");
     }); 
 });
 
