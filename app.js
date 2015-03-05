@@ -49,7 +49,7 @@ io.sockets.on('connection', function (socket, pseudo) {
     socket.on('message', function (message) {
         message = ent.encode(message);
         socket.broadcast.emit('message', {pseudo: socket.pseudo, message: message});
-        socket.broadcast.emit('message', "message");
+        // socket.broadcast.emit('message', "message");
     }); 
 });
 
