@@ -1,13 +1,5 @@
-//var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
-//var port      = process.env.OPENSHIFT_NODEJS_PORT || 8080;
-
-
-// ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
-// port      = process.env.OPENSHIFT_NODEJS_PORT || 8080;
-
-
 // Add pour 1-openshift 2-heroku 3-local
-ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IPWEBSOCKETAZKAR ||"127.0.0.1";
+ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP ||"127.0.0.1";
 port      = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 8080;
 
 
@@ -53,6 +45,4 @@ io.sockets.on('connection', function (socket, pseudo) {
     }); 
 });
 
-//server.listen(8080);
-//server.listen(8080);
 server.listen(app.get('port'),ipaddress);
