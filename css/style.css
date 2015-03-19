@@ -1,0 +1,89 @@
+header {}
+
+
+section {
+  width:322px;
+}
+
+.flex-container {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  /*border: 1px solid silver;*/
+  -ms-box-orient: horizontal;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -moz-flex;
+  display: -webkit-flex;
+  display: flex;
+}
+
+.nowrap  { 
+  -webkit-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+}
+
+.wrap    { 
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+}  
+.wrap li {
+  background: #cccccc;
+}
+
+.wrap-reverse         { 
+  -webkit-flex-wrap: wrap-reverse;
+  flex-wrap: wrap-reverse;
+}  
+.wrap-reverse li {
+  background: deepskyblue;
+}
+
+.flex-item {
+  padding:5px;
+  margin:5px;
+  border:1px solid #cccccc;
+  /*width: 300px;
+  height: 250px;*/
+  -webkit-filter: drop-shadow(10px 10px 10px black); /* OK crhome 40 */
+  filter: drop-shadow(10px 10px 10px black);/* OK sous firefox 35.0.1*/
+
+
+
+}
+
+#log {
+	font-size:10px;
+	background: #000000;
+	color: #ffffff;
+	/*width:300px;
+	height:150px;
+	word-wrap:normal;
+	overflow:auto;/**/
+}
+
+
+#zone_chat strong {
+    color: white;
+    background-color: black;
+    padding: 2px;
+}
+
+
+#websocket_chat {
+  width:322px;
+}
+/**/
+
+#dataChannelSend {
+  margin: 0px; 
+  width: 98%;
+}
+
+
+#dataChannelReceive {
+  margin: 0px; 
+  width: 98%;
+}
+/**/
