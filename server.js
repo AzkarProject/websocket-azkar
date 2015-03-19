@@ -1,3 +1,9 @@
+// Méthodes communes client/serveur
+var common = require('./js/common');
+// contrôle chargement 
+var commonTest = common.test();
+console.log(commonTest + " correctement chargé coté serveur !!!");
+
 var app = require('express')(),
     server = require('http').createServer(app),
     io = require('socket.io').listen(server),
