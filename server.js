@@ -6,7 +6,7 @@ var app = require('express')(),
 
 // variables d'environnement en variables globale pour les passer à la méthode websocket
 ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP ||"127.0.0.1";
-port      = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 8080;
+port      = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 2000;
 
 app.set('port', port); // Pour Openshift
 
