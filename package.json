@@ -1,6 +1,6 @@
 {
-    "name": "AZKAR WebRTC script Base",
-    "version": "0.1.0",
+    "name": "AZKAR-WebRTC-script-Base",
+    "version": "0.0.1",
     "dependencies": {
         "node-static":"~0.7.6",
         "express": "~4.12.1",
@@ -8,7 +8,7 @@
         "ent": "~0.1.0"
     },
 	"scripts": {
-	  "start": "node app.js"
+	  "start": "node server.js"
 	},
 	"main": "server.js",
     "author": "titileterrible <thierry.bergeron@inria.fr>",
