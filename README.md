@@ -14,9 +14,11 @@ Architectures prévues:
 - 1 appli NtoN scénario culture
 - 1 appli 1toN scénario santé
 - 1 appli NtoN scénario santé
+
 Versions prévues:
 - 1 en Bas niveau
 - 1 avec lib haut-niveau (ds un second temps)
+
 fonctionnalités à intégrer:
 - 1 tchatt par room avec historique
 - Transfert de fichier 
@@ -31,28 +33,31 @@ Préparer Moockups pour scénarii de développement:
 
 A faire:
 
-DO: Hebergement nodejs sur Openshift
-DO: HTML5 & css client
-DO: Implémentation classes javascript communes client/serveur
-DO: Implémentation Tchat websocket indépendant de WebRTC
-DO: Implémentation du localStram
-Encours: Implémentation Signaling WebSocket (Bug sur l'objet ICE Candidate...)
-TODO: Implémentation du remoteStream
-TODO: implémentation du RtcDataChannel 
-TODO: Tchatt websocket: Gestion des rooms
-TODO: Tchatt websocket: Implémentation liste des connectés
-TODO: Tchatt websocket: Gestion des connectés
-TODO: WebRTC: gestion des décco/recco
-TODO: Interception de l'ICE candidate actif
-----------> STEP 1 >>> livrable base 1to1
+STEP 1 >>> livrable base 1to1:
+- DO: Hebergement nodejs sur Openshift
+- DO: HTML5 & css client
+- DO: Implémentation classes javascript communes client/serveur
+- DO: Implémentation Tchat websocket indépendant de WebRTC
+- DO: Implémentation du localStram
+- Encours: Implémentation Signaling WebSocket (Bug sur l'objet ICE Candidate...)
+- TODO: Implémentation du remoteStream
+- TODO: implémentation du RtcDataChannel 
+- TODO: Tchatt websocket: Gestion des rooms
+- TODO: Tchatt websocket: Implémentation liste des connectés
+- TODO: Tchatt websocket: Gestion des connectés
+- TODO: WebRTC: gestion des décco/recco
+- TODO: Interception de l'ICE candidate actif
+- TODO: Forcer le choix Host/Stun/Turn
 
-TODO: Intégration +Sieurs instances de RTCPeerConnection
-TODO: Intégration du full-mesh (bas niveau ou librairie ??)
-----------> STEP 2 >>> Livrable base NtoN
+STEP 2 >>> Livrable base NtoN:
+- TODO: Intégration +Sieurs instances de RTCPeerConnection
+- TODO: Intégration du full-mesh (bas niveau ou librairie ??)
 
-TODO: Intégration multiStream plan B (Chrome) 
-TODO: Intégration multiStream plan unifié (Mozzila) 
-----------> STEP 3 >>> Livrable base 1toN
+STEP 3 >>> Livrable base 1toN
+- TODO: Intégration multiStream plan B (Chrome) 
+- TODO: Intégration multiStream plan unifié (Mozzila) 
+
+
 
 
 
