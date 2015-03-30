@@ -59,16 +59,30 @@ io.sockets.on('connection', function (socket, pseudo) {
     socket.on('message', function (message) {
         message = ent.encode(message);
         socket.broadcast.emit('message', {pseudo: socket.pseudo, message: message});
+        //socket.emit('message', {pseudo: socket.pseudo, message: message});
     }); 
 
-    // Et ici les messages de 'signaling' ( ou 'candidate', a voir comment les apeller)
-    // Ces messages n'ont pas vocation a s'afficher coté client...
-    socket.on('signaling', function (message) {
-        //message = ent.encode(message); // inutile de virer les caractères html
+    // ----------------------------------------------------------------------------------
+    // Et ici les messages de 'signaling'
+    // Ils transitent par websocket mais n'ont pas vocation à s'afficher dans le tchat...
+
+    
+    // Quand est balancé un message 'candidate'
+    // il est relayé a tous les autres connectés
+    socket.on('candidate', function (message) {
+        // message = ent.encode(message); // inutile de virer les caractères html
         // TODO: Verifier si 1toALL (io.sockets.emit) ou 1toOthers (socket.broadcast.emit)
-        socket.broadcast.emit('message', message);
+        socket.broadcast.emit('candidate', message);
     }); 
 
+    // Quand est balancé un message 'offer'
+    // il est relayé a tous les autres connectés
+    socket.on('offer', function (message) {
+        // message = ent.encode(message); // inutile de virer les caractères html
+        // TODO: Verifier si 1toALL (io.sockets.emit) ou 1toOthers (socket.broadcast.emit)
+        socket.broadcast.emit('offer', message);
+    }); 
+	/**/
 
 
 
