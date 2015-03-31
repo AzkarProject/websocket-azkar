@@ -39,20 +39,74 @@ console.log("**ipAdress = " + ipaddress );
 console.log("**port = " + port );
 
 
+// liste des clients
+var clients = {};
+
 io.sockets.on('connection', function (socket, pseudo) {
     
+    
+	/*//Save User
+	clients[socket.id] = {
+		id:socket.id,
+		ip: socket.manager.handshaken[socket.id].address.address,
+		socket:socket	
+	}
+	
+	
+	//Add dispatchEvent to listeners
+	socket.on( "dispatchEvent", function(data) {
+		
+		for( var i in clients ) {
+			if( socket.id != i ) {
+				clients[i].socket.emit( "onEvent", data );
+			}
+		}
+	});
+	
+	
+	socket.on( 'disconnect', function() {
+		clients[socket.id] = undefined;
+		delete clients[socket.id];
+	});
+	/**/
+
+
+
+
+
     // Dès qu'on nous donne un pseudo, 
     // on le stocke en variable de session et on informe les autres personnes
     socket.on('nouveau_client', function(pseudo) {
         pseudo = ent.encode(pseudo);
         socket.pseudo = pseudo;
+
+        // add the client's username to the global list  
+        clients[pseudo] = pseudo;
+
+
         socket.broadcast.emit('nouveau_client', pseudo);
         // On en profite pour envoyer des variables d'environnement serveur 
         // aux parties clientes pour affichage et débug.
         // TODO: Ne les afficher que qd ils sont reçuts pour la première foi...
         infosServer = "Socket.IO: " + ioVersion + " / Express: " + expressVersion + " / IP: " + ipaddress + " / port: " + port;
         io.sockets.emit('infoServer', infosServer);
+        console.log ();
+
     });
+
+    
+    // when the user disconnects.. perform this  
+    socket.on('disconnect', function(){  
+        // remove the username from global usernames list  
+        delete clients[socket.pseudo];  
+        // update list of users in chat, client-side  
+        io.sockets.emit('clients', clients);  
+        // echo globally that this client has left  
+        socket.broadcast.emit('message', 'SERVER', socket.pseudo + ' est déconnecté');  
+        // socket.leave(socket.room);  /: On quitte la Room
+    });  
+
+
 
     // Dès qu'on reçoit un message, on récupère le pseudo de son auteur
     // et on le transmet aux autres personnes
@@ -80,7 +134,9 @@ io.sockets.on('connection', function (socket, pseudo) {
     socket.on('offer', function (message) {
         // message = ent.encode(message); // inutile de virer les caractères html
         // TODO: Verifier si 1toALL (io.sockets.emit) ou 1toOthers (socket.broadcast.emit)
-        socket.broadcast.emit('offer', message);
+       
+        // socket.broadcast.emit('offer', message);
+        socket.broadcast.emit('offer', {pseudo: socket.pseudo, message: message});
     }); 
 	/**/
 

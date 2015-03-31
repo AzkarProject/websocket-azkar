@@ -39,11 +39,11 @@ STEP 1 >>> livrable base 1to1:
 - DO: Implémentation classes javascript communes client/serveur
 - DO: Implémentation Tchat websocket indépendant de WebRTC
 - DO: Implémentation du localStram
-- Encours: Implémentation Signaling WebSocket (Bug sur l'objet ICE Candidate...)
+- Encours: Implémentation Signaling WebSocket (Bug sur l'objet sdp...)
 - TODO: Implémentation du remoteStream
 - TODO: implémentation du RtcDataChannel 
+- Encours: Tchatt websocket: Implémentation liste des connectés
 - TODO: Tchatt websocket: Gestion des rooms
-- TODO: Tchatt websocket: Implémentation liste des connectés
 - TODO: Tchatt websocket: Gestion des connectés
 - TODO: WebRTC: gestion des décco/recco
 - TODO: Interception de l'ICE candidate actif
