@@ -25,13 +25,13 @@ fonctionnalités à intégrer:
 - Partage de fichier ( genre 1 room = 1 dossier ) ou avec dropbox ou googledrive
 
 Préparer Moockups pour scénarii de développement:
-- Transport: 1 ihm (pilote)
-- Culture: 2 ihm (pilote/conferencier + classe)
-- Santé: 3 ihm (aidant + robot/patient + consultant)
+- Transport: 1 IHM (pilote)
+- Culture: 2 IHM (pilote/conferencier + groupe de visiteurs)
+- Santé: 3 IHM (aidant + robot/patient + consultant)
 
 -------------------------------------------------
 
-A faire:
+Etapes:
 
 STEP 1 >>> livrable base 1to1:
 - DO: Hebergement nodejs sur Openshift
@@ -39,12 +39,17 @@ STEP 1 >>> livrable base 1to1:
 - DO: Implémentation classes javascript communes client/serveur
 - DO: Implémentation Tchat websocket indépendant de WebRTC
 - DO: Implémentation du localStram
-- Encours: Implémentation Signaling WebSocket (Bug sur l'objet sdp...)
+- Encours: Implémentation Signaling WebSocket 
+---------> DO: Bug sur l'objet SDP...)
+---------> TODO : Bug sur l'objet Candidate
 - TODO: Implémentation du remoteStream
 - TODO: implémentation du RtcDataChannel 
-- Encours: Tchatt websocket: Implémentation liste des connectés
-- TODO: Tchatt websocket: Gestion des rooms
-- TODO: Tchatt websocket: Gestion des connectés
+- Encours: Websocket gestion des connectés
+---------> DO: Liste connectés
+---------> DO: Historique des connexions
+---------> DO: Gestion des numéros d'ordre
+---------> DO: gestion déconnexions
+- TODO: Websocket gestion des rooms
 - TODO: WebRTC: gestion des décco/recco
 - TODO: Interception de l'ICE candidate actif
 - TODO: Forcer le choix Host/Stun/Turn
@@ -56,10 +61,3 @@ STEP 2 >>> Livrable base NtoN:
 STEP 3 >>> Livrable base 1toN
 - TODO: Intégration multiStream plan B (Chrome) 
 - TODO: Intégration multiStream plan unifié (Mozzila) 
-
-
-
-
-
-
-

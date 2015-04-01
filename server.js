@@ -41,85 +41,102 @@ console.log("**port = " + port );
 
 // liste des clients
 var clients = {};
+var nbClients = 0;
+// Historique des connexions
+var histoClients = {};
+var placeHisto = 0;
+
+// contrôle des connectés coté serveur
+function onSocketConnected(socket){
+   console.log ("-------------------------------");
+   console.log("connexion nouveau client :"+ socket.pseudo + "( ID : " + socket.id + ")");  
+}
 
 io.sockets.on('connection', function (socket, pseudo) {
     
-    
-	/*//Save User
-	clients[socket.id] = {
-		id:socket.id,
-		ip: socket.manager.handshaken[socket.id].address.address,
-		socket:socket	
-	}
-	
-	
-	//Add dispatchEvent to listeners
-	socket.on( "dispatchEvent", function(data) {
-		
-		for( var i in clients ) {
-			if( socket.id != i ) {
-				clients[i].socket.emit( "onEvent", data );
-			}
-		}
-	});
-	
-	
-	socket.on( 'disconnect', function() {
-		clients[socket.id] = undefined;
-		delete clients[socket.id];
-	});
-	/**/
-
-
-
-
-
     // Dès qu'on nous donne un pseudo, 
     // on le stocke en variable de session et on informe les autres personnes
     socket.on('nouveau_client', function(pseudo) {
+        
+
+
+        // On affecte au nouveau client le pseudo qu'il à renseigné
         pseudo = ent.encode(pseudo);
         socket.pseudo = pseudo;
 
-        // add the client's username to the global list  
+
+        // On ajoute le client a la liste des connectés
         clients[pseudo] = pseudo;
 
+        // On lui attribue un numéro correspondant a sa position d'arrivée dans la session 
+        // var placeListe = lastPosition +1; // WTF LastPosition ne s'incrémente pas... C'st quoi ce bordel ????
+        // var placeListe = nbClients +1; // Par contre là ca marche !!!! PKOI ?????????????N??????
+        // var placeListe = getLastPosition(); // Et en passant pas une fonction ??? >>>> QUEUE DALLE !!!!!!!!!!!!!
+        // Plan B: On passe par un objet contenant tous les clients connectés avec l'historique...
+        // Et on comptera le nombre de propriétés
+        histoClients[socket.id] = pseudo + " at " + Date.now();
+        console.log ("-------------------------------");
+        socket.placeListe = common.lenghtObject(histoClients);
+        console.log ("Nbre de client ds l'historique: "+ socket.placeListe);
+        console.log (histoClients);
+        // On lui renvoie a lui et a lui seul son ordre d'arrivée ds la session
+        // Pour qu'il l'ajoute a son pseudo affiché par exemple
+        io.to(socket.id).emit('position_liste', socket.placeListe);
 
-        socket.broadcast.emit('nouveau_client', pseudo);
+
+
+        //socket.broadcast.emit('nouveau_client', pseudo);
+        socket.broadcast.emit('nouveau_client', {pseudo: socket.pseudo, placeListe: socket.placeListe});
+
+
         // On en profite pour envoyer des variables d'environnement serveur 
         // aux parties clientes pour affichage et débug.
-        // TODO: Ne les afficher que qd ils sont reçuts pour la première foi...
         infosServer = "Socket.IO: " + ioVersion + " / Express: " + expressVersion + " / IP: " + ipaddress + " / port: " + port;
         io.sockets.emit('infoServer', infosServer);
-        console.log ();
-
+        // on affiche l'ID du nouveau client pour contrôle coté serveur
+        onSocketConnected(socket)
+        console.log (clients);
+        nbClients = common.lenghtObject(clients);
+        console.log ("Il y a maintenant" + nbClients + " connectés");
     });
 
     
     // when the user disconnects.. perform this  
     socket.on('disconnect', function(){  
-        // remove the username from global usernames list  
-        delete clients[socket.pseudo];  
-        // update list of users in chat, client-side  
-        io.sockets.emit('clients', clients);  
-        // echo globally that this client has left  
-        socket.broadcast.emit('message', 'SERVER', socket.pseudo + ' est déconnecté');  
+        
+		console.log ("-------------------------------");
+		var message = "Déconnexion client : ("+socket.placeListe+") "+ socket.pseudo;
+		console.log(message + "( ID : " + socket.id + ")");
+        socket.broadcast.emit('message', { pseudo:"SERVER", message: message, placeListe: "-"});
+        // On prévient tout le monde,
+        // on retire le connecté de la liste des utilsateurs
+        // et on actualise le nombre de connectés  
+        delete clients[socket.pseudo]; 
+        nbClients = common.lenghtObject(clients)
+
+        // contrôle conté serveur de la liste
+		console.log (clients);
+		
+        console.log ("Il reste " + nbClients + " connectés");
+        // Mise a jour de la liste conté client...  
+        // io.sockets.emit('clients', clients);           
         // socket.leave(socket.room);  /: On quitte la Room
     });  
-
 
 
     // Dès qu'on reçoit un message, on récupère le pseudo de son auteur
     // et on le transmet aux autres personnes
     socket.on('message', function (message) {
-        message = ent.encode(message);
-        socket.broadcast.emit('message', {pseudo: socket.pseudo, message: message});
+        if (message){
+	        message = ent.encode(message);
+	        socket.broadcast.emit('message', {pseudo: socket.pseudo, message: message, placeListe: socket.placeListe});
+    	}
         //socket.emit('message', {pseudo: socket.pseudo, message: message});
     }); 
 
     // ----------------------------------------------------------------------------------
     // Et ici les messages de 'signaling'
     // Ils transitent par websocket mais n'ont pas vocation à s'afficher dans le tchat...
-
     
     // Quand est balancé un message 'candidate'
     // il est relayé a tous les autres connectés

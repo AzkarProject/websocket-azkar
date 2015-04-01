@@ -192,7 +192,20 @@
     }
 
 
+    // Visualise les objets sous format json
+    exports.testObject = function (obj){
+      var toto = JSON.stringify(obj, null, 4);
+      console.log(toto);
+    }
 
-
+   
+    // retourne le nombre de propriétés d'un objet
+    exports.lenghtObject = function (obj){
+          var j = 0;
+          for (var i in obj) {
+              j += 1;
+            }
+          return j;
+    }
 
 })(typeof exports === 'undefined'? this['common']={}: exports);
