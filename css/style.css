@@ -1,13 +1,44 @@
 header {}
+/*
+#video,#otherPeer { width: 300px;}</style>
+*/
 
 info {
  font-size:12px; 
+ 
 }
+
+
+/* ---- Chat Websocket */
+#zone_chat {
+  font-size:12px; 
+  border:1px solid #ffffff;
+  background-color:#ffffff;
+  padding: 2px;
+  height: 150px;
+  overflow: auto;
+}
+
+
+#zone_chat strong {
+    text-decoration: underline;
+}
+
+
+#websocket_chat {
+  width:322px;
+}
+
+/* ------------------- */
+
 
 
 
 section {
+  /*
   width:322px;
+  */
+  min-width: 322px;
 }
 
 .flex-container {
@@ -69,16 +100,7 @@ section {
 }
 
 
-#zone_chat strong {
-    color: white;
-    background-color: black;
-    padding: 2px;
-}
 
-
-#websocket_chat {
-  width:322px;
-}
 /**/
 
 #dataChannelSend {

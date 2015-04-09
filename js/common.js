@@ -134,7 +134,6 @@
 
 
     // variante AlertObjectDump mais en console.log avec un timestamp 
-    //function traceObjectDump(obj, name) {
    exports.traceObjectDump = function  (obj, name) {
       this.result = "[ " + name + " ]\n";
       this.indent = 0;
@@ -162,8 +161,7 @@
       // return this.result;
     }
 
-    // 2eme variante AlertObjectDump mais 
-    // mais retourne un string
+    // 2eme variante AlertObjectDump mais retourne un string
     exports.stringObjectDump = function  (obj, name) {
       this.result = "[ " + name + " ]\n";
       this.indent = 0;
@@ -186,13 +184,11 @@
         this.indent -= 2;
       }
       this.dumpLayer(obj);
-      //console.log((performance.now() / 1000).toFixed(3) + ": " + this.result);
-      // this.showResult();
       return this.result;
     }
 
 
-    // Visualise les objets sous format json
+    // Affiche les objets sous format json
     exports.testObject = function (obj){
       var toto = JSON.stringify(obj, null, 4);
       console.log(toto);
