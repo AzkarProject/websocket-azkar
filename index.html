@@ -1,5 +1,9 @@
-<!DOCTYPE html>
 <html>
+<head>
+
+	
+</head>
+
     <head>
         <meta charset="utf-8" />
         <meta name='keywords' content='WebRTC, HTML5, JavaScript' />
@@ -9,25 +13,39 @@
 		<link rel="stylesheet" href="/css/style.css" />
         <title>WebRTC AZKAR</title>
     </head>
- 
-    <body>
 
-    
-        
-        <strong>AZKAR WebRTC script de base</strong> version 0.0.1
-        <br/><info id="zone_info_server"></info>
-        <hr/>
-	
 
+<body>
+
+    <strong>AZKAR WebRTC script base 1TO1 </strong> version 0.3.0
+    <br/><info id="zone_info_server"></info>
+    <hr/>
+
+		
 	<ul class="flex-container wrap">
-              
 
+		<section id="websocket_chat">
+			 <li class="flex-item myvideo">
+		        
+				<strong> Websocket Chat Test </strong>
+				<hr/>
+		        <form action="/" method="post" id="formulaire_chat">
+		            <input type="text" name="message" id="message" placeholder="Votre message..." size="28" autofocus />
+		            <input type="submit" id="envoi_message" value="Envoyer" />
+		        </form>
+	       	 	<hr/>
+			 	<div id="zone_chat"></div>
+
+	       	 </li>
+        </section>
+
+        
 	    <section id="myvideos" class="sectionOneVideo">
 		    <li class="flex-item myvideo">
 			    <strong> WebRTC localVideo Test </strong>
 				<hr/>
-			    <div id="infoIceCandidateSended">???</div>
-			    <video id='localVideo' autoplay muted controls="controls"></video>
+			    <!--<div id="infoIceCandidateSended">???</div>-->
+			    <video id='video' autoplay muted controls="controls"></video>
 			</li>
 	    </section>
 	    
@@ -35,8 +53,8 @@
 		    <li class="flex-item yourvideo">
 			    <strong> WebRTC remoteVideo Test </strong>
 				<hr/>
-			    <div id="infoIceCandidateReceived">???</div>
-			    <video id='remoteVideo' autoplay muted controls="controls" ></video>
+			    <!--<div id="infoIceCandidateReceived">???</div>-->
+			    <video id='otherPeer' autoplay muted controls="controls" ></video>
 	  	 	</li>
 	  	 </section>
 
@@ -60,20 +78,6 @@
 	  	</section>
 
 
-		<section id="websocket_chat">
-			 <li class="flex-item myvideo">
-		        
-				<strong> Websocket Chat Test </strong>
-				<hr/>
-		        <form action="/" method="post" id="formulaire_chat">
-		            <input type="text" name="message" id="message" placeholder="Votre message..." size="28" autofocus />
-		            <input type="submit" id="envoi_message" value="Envoyer" />
-		        </form>
-	       	 	<hr/>
-			 	<div id="zone_chat"></div>
-
-	       	 </li>
-        </section>
 
 
 
@@ -82,14 +86,9 @@
         <script src="/socket.io/socket.io.js"></script>
         <script src="/js/common.js"></script>
         <script src='/js/adapter.js'></script>
-        <script src="/js/main.js"></script>
-        
-        <script>
- 
-        </script>
-    
-	</ul>
+        <script src='/js/ws_manager.js'></script>
+		<script src='/js/main.js'></script>
 
 
-    </body>
+</body>
 </html>

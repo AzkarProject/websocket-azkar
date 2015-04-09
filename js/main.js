@@ -1,95 +1,99 @@
+// --------- WebRTC ---------------------------------------------
+// Script inspiré de l'article suivant:
+// https://developer.mozilla.org/fr/docs/Web/Guide/API/WebRTC/WebRTC_basics
+// Source github : https://github.com/louisstow/WebRTC/blob/master/media.html
 
-// Contrôle des méthodes communes client/serveur
-var commonTest = common.test();
-console.log(commonTest + " correctement chargé coté client !!!");
-
-// Flags divers
-var isServerInfoReceived = false; 
-
-// variables diverses
-var otherPeerPseudo = "???";
-var myPlaceListe = 0;
-
-
-// Fonctions websocket générales -----------------------------
-
-// Initialisation du canal de signalisation
-var socket = io.connect();
+// shims!
+var PeerConnection = window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
+var SessionDescription = window.mozRTCSessionDescription || window.RTCSessionDescription;
+var IceCandidate = window.mozRTCIceCandidate || window.RTCIceCandidate;
+navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || navigator.webkitGetUserMedia;
 
 
-// Pour contrôle hosting
-// Affichage des variables d'environnement serveur ds la partie cliente
-socket.on('infoServer', function(data) {
-  if (!isServerInfoReceived) {
-      isServerInfoReceived = true; 
-      console.log(">> socket.on('infoServer', function(data)");
-      console.log(" Infos serveur: " + data);
-      $('#zone_info_server').prepend(data);
-  }
+// Gestion des messages d'erreur
+function errorHandler (err) {
+	console.error(err);
+}
+
+// Variables de rôles
+var type = "appelant";
+var otherType = "appelé";
+
+// Quand on reçoit une mise à jour de la liste 
+// des connectés de cette session websocket
+socket.on('updateUsers', function(data) {
+    console.log(">> socket.on('updateUsers',...");
+    // Si on est seul et qu'on as pas déjà instancié la connexion p2p
+    // Autrement dit, si on est le premier dans la session,
+    // On prend de facto le rôle "d'apelé"
+    if (data.nbUsers == 1) {
+		type = "appelé";
+		otherType = "appelant";
+    };
 })
 
-
-// Fonctions websocket dédiées au tchat ---------------------------
-
-
-// On demande le pseudo, on l'envoie au serveur et on l'affiche dans le titre
-var pseudo = prompt('Quel est votre pseudo ?');
-if (!pseudo) { pseudo = "?????";}
-socket.emit('nouveau_client', pseudo);
-document.title = pseudo + ' - ' + document.title;
-
-// Updater le pseudo local (pour le fun...)
-socket.on('position_liste', function(placeListe) {
-     myPlaceListe = placeListe;
-     console.log ("je suis n° "+placeListe);
-     document.title = "("+myPlaceListe+") " + document.title;
-})
+// options pour l'objet PeerConnection
+var server = {
+	iceServers: [
+		{url: "stun:23.21.150.121"},
+		{url: "stun:stun.l.google.com:19302"}
+	]
+};
+var options = {
+	optional: [
+		{DtlsSrtpKeyAgreement: true}
+	]
+}
 
 
-// Quand un nouveau client se connecte, on affiche l'information
-socket.on('nouveau_client', function(data) {
-    console.log(">> socket.on('nouveau_client', function(pseudo)");
-    // otherPeerPseudo = pseudo; 
-    $('#zone_chat').prepend('<p><em>(' +data.placeListe+')'+ data.pseudo + ' à rejoint le Chat !</em></p>');
-})
+// Création de l'objet PeerConnection (CAD la session de connexion WebRTC)
+var pc = new PeerConnection(server, options);
 
+// Ecouteur déclenché à la génération d'un candidate 
+pc.onicecandidate = function (e) {
+	console.log("@ pc.onicecandidate()");
+	// vérifie que le candidat ne soit pas nul
+	if (!e.candidate) { return; }
+	// Réinitialise l'écouteur "candidate" de la connexion courante
+	pc.onicecandidate = null;
+	// envoi le candidate généré à l'autre pair
+	socket.emit("candidate", e.candidate);
+};
 
+// grab the video elements from the document
+var video = document.getElementById("video");
+var video2 = document.getElementById("otherPeer");
 
-// Quand on reçoit un message, on l'insère dans la page
-socket.on('message', function(data) {
-    console.log(">> socket.on('message', function(data)");
-    insereMessage(data.pseudo, data.message, data.placeListe)
-})
+// get the user's media, in this case just video
+navigator.getUserMedia({video: true}, function (stream) {
+	// set one of the video src to the stream
+	video.src = URL.createObjectURL(stream);
+	// add the stream to the PeerConnection
+	pc.addStream(stream);
+	// now we can connect to the other peer
+	connect();
+}, errorHandler);
 
+// when we get the other peer's stream, add it to the second video element.
+pc.onaddstream = function (e) {
+	console.log("@ onaddstream()");
+	console.log(e);
+	video2.src = URL.createObjectURL(e.stream);
+};
 
-// Quand on reçoit un message de service
-socket.on('service', function(data) {
-    console.log(">> socket.on('message', function(data)");
-    insereMessage(data.pseudo, data.message);
-})
+// constraints on the offer SDP. Easier to set these
+// to true unless you don't want to receive either audio
+// or video.
+var constraints = {
+	mandatory: {
+        OfferToReceiveAudio: true,
+        OfferToReceiveVideo: true
+    }
+};
+/**/
 
-
-// -------------------------------------------------------
-// WebRTC ------------------------------------------------
-
-
-// On renseigne les serveurs STUN et TURN
-// Note Sécurité: Se démerder pour que les serveurs TURN et STUN
-// N'apparaissent plus dans le code source visible de l'appli
-var ice = {"iceServers": [
-    {"url": "stun:stunserver.com:12345"}
-  ]};
-
-// On initialise une connexion ( un objet "connexion")
-// Initialize peer connection object
-var pc = new RTCPeerConnection(ice);
-
-// Déclaration avec plusieurs préfixes de l'api de flux getUserMedia
-navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-
-
-// Déclaration des constraints pour la vidéo
-// TODO: Les constraintzs ne semblent pas prises en compte par Mozzilla
+// Déclaration des constraints pour l'audio et la vidéo
+/*// Note: Les constraints de taille ne semblent actuellement pas prises en compte dans Mozzilla
 var constraints = {
   audio:true,
   video: {
@@ -99,142 +103,63 @@ var constraints = {
     }
   }
 };
-
-
-// On récupère le flux audio et vidéo local grace a getUserMedia
-navigator.getUserMedia(constraints, gotStream, logError);
-
-// Callback en cas d'echec de getUserMedia()
-function logError(error) {
-      console.log("@ logError(error)");
-      console.log("getUserMedia error: " + error);
-};
-
-
-// Callback en cas de succès de getUserMedia()
-function gotStream(evt) {
-    console.log("@ pc.gotStream(evt)");
-    // Contrôle de l'objet envoyé dans addStream
-    // common.traceObjectDump(evt,'evt'); // Débugg > OK
-
-    // Register local MediaStream with peer connection
-    // On ajoute le stream local à la connexion
-    // pc.addStream(evt.stream);
-    pc.addStream(evt);
-    // Output local video stream to video element (self view)
-    // On envoie la vidéo locale au document html
-    var local_video = document.getElementById('localVideo');
-    local_video.src = window.URL.createObjectURL(evt);
-
-    
-    // A n'executer que par l'apellant ??? Pas si sur...
-    // ------------------------------------------------------
-    // On génère une offre SDP décrivant la connexion du pair 
-    // et on l'envoie a l'autre pair.
-    pc.createOffer(setLocalAndSendMessage, null, constraints);
-}
-
-// Function from codelab7...
-// Création d'un SDP puis envoi aux autres connectés
-function setLocalAndSendMessage(sessionDescription) {
-  pc.setLocalDescription(sessionDescription);
-  // Envoi par WebSocket
-  console.log( ">> "+pseudo+" envoie une offre!!!");
-  socket.emit('offer',sessionDescription); // Bug ???
-  //socket.broadcast.emit('offer',sessionDescription);
-  // contôle de l'objet sdp en emission
-  // common.traceObjectDump(sessionDescription,"socket.emit('offer',sessionDescription)");
-}
-
-
-
-
-// Output remote video stream to video element (remote view)
-// On envoie la vidéo distante au document html
-pc.onaddstream = function (evt) {
-    console.log("@ pc.onaddstream(evt)");
-    var remote_video = document.getElementById('remoteVideo');
-    remote_video.src = window.URL.createObjectURL(evt);
-}
 /**/
 
-
-
-// -- Signaling par websocket ---------------------------------------------------
-
-// Trickle ICE candidates to the peer via the signaling channel
-// Insérer les Ices Candidates dans le 
-pc.onicecandidate = function(evt) {
-    console.log("@ pc.onicecandidate(evt)");
-    //common.traceObjectDump(evt,'onicecandidate(evt)'); // Débugg
-    // common.testObject(evt); Affiche l'objet en intégralité
-    console.log(evt); // Affiche l'objet directement
-    if (evt) {
-      // signalingChannel.send(evt.candidate);
-      // socket.send(evt.candidate);
-      socket.emit('candidate',evt.candidate); // bug ???
-      //socket.emit('candidate',evt);
-    }
+// initialisation de la connexion
+function connect () {
+	console.log("@ connect() > rôle: " + type);
+	
+	// Si on est l'apellant
+	if (type === "appelant") { 
+		// création de l'offre SDP
+		pc.createOffer(function (offer) {
+			pc.setLocalDescription(offer);
+			socket.emit("offer", offer);
+		}, errorHandler, constraints);	
+	
+	// Sinon si on est l'apellé
+	} else { 
+		// L'apellé doit attendre de recevoir une offre SDP
+		// avant de générer une réponse SDP
+		socket.on("offer", function(data) { 
+			console.log( ">>> offer from ("+data.placeListe+")"+data.pseudo);
+			pc.setRemoteDescription(new SessionDescription(data.message));
+			// Une foi l'offre reçue et celle-ci enregistrée
+			// dans un setRemoteDescription, on peu enfin générer
+			// une réponse SDP
+			pc.createAnswer(function (answer) {
+				pc.setLocalDescription(answer);
+				socket.emit("answer", answer);
+			}, errorHandler, constraints);	
+		
+		});	
+	}
 }
-/**/
 
+// BUG: écouteur onaddStream non déclenché:
+// La différenciation des workflows entre l'apellant et l'appellé n'était pas claire!
+// Pour faire simple, si l'apellé répondait bien à une offre par une answer
+// l'apellant lui répondait par une autre offre au lieu d'une answer... 
+// Cette architecture péchée sur le MDN mozzila était plus claire et m'a permis 
+// de mettre enfin en évidence la confusion dans l'enchainement des méthodes...
 
-// Quand on reçoit un message 'candidate'
-// On enregistre l'ICE candidate pour commencer tests de connexion
-/*// Register remote ICE candidate to begin connectivity checks
-socket.on('candidate', function(msg) { 
-   console.log(">> socket.on('candidate', function(msg)");
-   if (msg.candidate) {
-      // common.traceObjectDump(msg,'socket.on(candidate)'); // Débugg
-      pc.addIceCandidate(msg.candidate); // Bug !
-      // Message d'erreur >>>>
-      // Uncaught TypeMismatchError: Failed to execute 'saddIceCandidate' on 'RTCPeerConnection': 
-      // The 1st argument provided is either null, or an invalid RTCSessionDescription object.
-      // -----------------------
-   }
-})
-/**/
+// BUG: Ecran noir au déclenchement de l'écouteur onaddstream
+// Il fallait déplacer les écouteurs de signaling candidate et answer
+// en dehors de la méthode connect() pour les initialiser indifférenment
+// que l'on soit apellant ou apellé...
 
-
-/*// Quand on reçoit un message "offer"
-socket.on('offer', function(data) { 
-    console.log( ">> "+pseudo+" recoie une offre de " + data.pseudo);
-    // contôle de l'objet sdp en réception
-    // common.traceObjectDump(data.message,'socket.on(offer) > data.message'); // OK. conforme a l'objet émis
-    // pc.setRemoteDescription(data.message); // BUG
-    // pc.setRemoteDescription(data.message.sdp); // BUG
-    // Message d'erreur >>>>
-    // Uncaught TypeMismatchError: Failed to execute 'setRemoteDescription' on 'RTCPeerConnection': 
-    // The 1st argument provided is either null, or an invalid RTCSessionDescription object.
-    // -----------------------
-    pc.setRemoteDescription(new RTCSessionDescription(data.message)); // OK - Fallait instancier !!!
-})
-/**/
-
-// Fin Signaling par websocket --------------------------------------------
-
-
-
-// ----------------------------------------------------------------------------------
-// ----------- Méthodes jquery d'affichage du tchat
-
-// Lorsqu'on envoie le formulaire, on transmet le message et on l'affiche sur la page
-$('#formulaire_chat').submit(function () {
-    var message = $('#message').val();
-    socket.emit('message', message); // Transmet le message aux autres
-    insereMessage(pseudo, message, myPlaceListe); // Affiche le message aussi sur notre page
-    $('#message').val('').focus(); // Vide la zone de Chat et remet le focus dessus
-    return false; // Permet de bloquer l'envoi "classique" du formulaire
+// Réception d'un ICE Candidate
+socket.on("candidate", function(data) { 
+	console.log(">> socket.on('candidate',...");
+	// console.log(data);
+	console.log( ">>> candidate from ("+data.placeListe+")"+data.pseudo);    
+	pc.addIceCandidate(new IceCandidate(data.message)); // OK
 });
 
-// Ajoute un message dans la page
-function insereMessage(pseudo, message, placeListe) {
-    $('#zone_chat').prepend('<p><strong>('+placeListe+') '+ pseudo + '</strong> ' + message + '</p>');
-    console.log ((pseudo + " >> " + message));
-}
-
-// --------- / Méthodes Jquery ---------------------------------------------
-
-
-
- 
+// Réception d'une réponse à une offre
+socket.on("answer", function(data) { 
+	console.log(">> socket.on('answer',...");
+	console.log( ">>> answer from ("+data.placeListe+")"+data.pseudo); 
+	pc.setRemoteDescription(new SessionDescription(data.message));
+});
+/**/
