@@ -9,17 +9,17 @@ STEP 1 >>> livrable base 1to1:
 - DO: Implémentation Tchat websocket indépendant de WebRTC
 - DO: Implémentation localStram
 - DO: Implémentation Signaling WebSocket 
-- --------> DO: Bug objet SDP...
-- --------> DO: Bug objet Candidate
+	- DO: Bug objet SDP...
+	- DO: Bug objet Candidate
 - DO: Implémentation RemoteStream
-- TODO: implémentation RtcDataChannel 
+- DO: implémentation RtcDataChannel 
 - DO: Websocket gestion des connectés
-- --------> DO: Liste connectés
-- --------> DO: Historique des connexions
-- --------> DO: Gestion des numéros d'ordre
-- --------> DO: gestion déconnexions
+	- DO: Liste connectés
+	- DO: Historique des connexions
+	- DO: Gestion des numéros d'ordre
+	- DO: gestion déconnexions
 - TODO: Passer liste connectés coté client
-- --------> TODO: objet "user" similaires serveur/client
+	- TODO: objet "user" similaires serveur/client
 - TODO: Websocket gestion des rooms
 - TODO: WebRTC: gestion décco/recco (appelant<>appelé)
 - TODO: 2 remotes Stream (Caméra tête et caméra sol)

@@ -20,9 +20,6 @@ var chatlog = document.getElementById("chatlog");
 var message = document.getElementById("dataChannelSend");
 
 
-
-
-
 // Gestion des messages d'erreur
 function errorHandler (err) {
 	console.error(err);
@@ -58,11 +55,6 @@ pc_config.iceServers.push({url: "turn:numb.viagenie.ca", credential: "webrtcdemo
 pc_config.iceServers.push({url: "turn:turn.anyfirewall.com:443?transport=tcp", credential: "webrtc", username: "webrtc"});
 pc_config.iceServers.push({url: "turn:turn1.xirsys.com:443?transport=tcp", credential: "b8631283-b642-4bfc-9222-352d79e2d793", username: "e0f4e2b6-005f-440b-87e7-76df63421d6f"});
 /**/
-
-
-
-
-
 
 
 var options = {
@@ -200,15 +192,15 @@ socket.on("answer", function(data) {
 // bind the channel events
 function bindEvents () {
 	channel.onopen = function () { 
-		console.log("Channel Open");
+		console.log("RTCDataChannel is Open");
 		dataChannelSend.disabled = false;
     	dataChannelSend.focus();
-    	dataChannelSend.placeholder = "Channel is Open !";
+    	dataChannelSend.placeholder = "RTCDataChannel is Open !";
     	sendButton.disabled = false; 
 	};
 	channel.onmessage = function (e) {
 		// add the message to the chat log
-		chatlog.innerHTML += "<div>l'" +type+" dit:"+ e.data + "</div>";
+		chatlog.innerHTML += "<div>l'" +type+" écrit:"+ e.data + "</div>";
 	};
 }
 // send a message the textbox throught
