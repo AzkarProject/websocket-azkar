@@ -89,7 +89,7 @@ pc.onicecandidate = function (e) {
 	// vérifie que le candidat ne soit pas nul
 	if (!e.candidate) { return; }
 	// Réinitialise l'écouteur "candidate" de la connexion courante
-	pc.onicecandidate = null;
+	// pc.onicecandidate = null; // (Si on vire ca ??? en local > ? / en ligne > ? )
 	// envoi le candidate généré à l'autre pair
 	socket.emit("candidate", e.candidate);
 };
