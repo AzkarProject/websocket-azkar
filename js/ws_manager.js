@@ -64,7 +64,7 @@ socket.on('service', function(data) {
 // ----------- Méthodes jquery d'affichage du tchat ------------------------------
 
 // Lorsqu'on envoie le formulaire, on transmet le message et on l'affiche sur la page
-$('#formulaire_chat').submit(function () {
+$('#formulaire_chat_websoket').submit(function () {
     var message = $('#message').val();
     socket.emit('message', message); // Transmet le message aux autres
     insereMessage(pseudo, message, myPlaceListe); // Affiche le message aussi sur notre page
@@ -74,6 +74,6 @@ $('#formulaire_chat').submit(function () {
 
 // Ajoute un message dans la page
 function insereMessage(pseudo, message, placeListe) {
-    $('#zone_chat').prepend('<p><strong>('+placeListe+') '+ pseudo + '</strong> ' + message + '</p>');
+    $('#zone_chat_websocket').prepend('<p><strong>('+placeListe+') '+ pseudo + '</strong> ' + message + '</p>');
     console.log ((pseudo + " >> " + message));
 }

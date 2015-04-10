@@ -10,6 +10,19 @@ var IceCandidate = window.mozRTCIceCandidate || window.RTCIceCandidate;
 navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || navigator.webkitGetUserMedia;
 
 
+// grab the video elements from the document
+var video = document.getElementById("video");
+var video2 = document.getElementById("otherPeer");
+
+
+// dataChannel elements
+var chatlog = document.getElementById("chatlog");
+var message = document.getElementById("dataChannelSend");
+
+
+
+
+
 // Gestion des messages d'erreur
 function errorHandler (err) {
 	console.error(err);
@@ -33,15 +46,29 @@ socket.on('updateUsers', function(data) {
 })
 
 // options pour l'objet PeerConnection
-var server = {
-	iceServers: [
-		{url: "stun:23.21.150.121"},
-		{url: "stun:stun.l.google.com:19302"}
-	]
-};
+var server = {iceServers: [{url: "stun:23.21.150.121"}]};
+server.iceServers.push({url: "stun:stun.l.google.com:19302"});
+server.iceServers.push({url: "turn:turn1.xirsys.com:443?transport=tcp", credential: "b8631283-b642-4bfc-9222-352d79e2d793", username: "e0f4e2b6-005f-440b-87e7-76df63421d6f"});
+
+
+/*
+pc_config.iceServers.push({url: "turn:turn.bistri.com:80", credential: "homeo", username: "homeo"});
+pc_config.iceServers.push({url: 'turn:turn.anyfirewall.com:443?transport=tcp', credential: 'webrtc', username: 'azkarproject'});
+pc_config.iceServers.push({url: "turn:numb.viagenie.ca", credential: "webrtcdemo", username: "temp20fev2015@gmail.com"});
+pc_config.iceServers.push({url: "turn:turn.anyfirewall.com:443?transport=tcp", credential: "webrtc", username: "webrtc"});
+pc_config.iceServers.push({url: "turn:turn1.xirsys.com:443?transport=tcp", credential: "b8631283-b642-4bfc-9222-352d79e2d793", username: "e0f4e2b6-005f-440b-87e7-76df63421d6f"});
+/**/
+
+
+
+
+
+
+
 var options = {
 	optional: [
-		{DtlsSrtpKeyAgreement: true}
+		{DtlsSrtpKeyAgreement: true},
+		{RtpDataChannels: true} //required for Firefox
 	]
 }
 
@@ -60,9 +87,9 @@ pc.onicecandidate = function (e) {
 	socket.emit("candidate", e.candidate);
 };
 
-// grab the video elements from the document
-var video = document.getElementById("video");
-var video2 = document.getElementById("otherPeer");
+
+
+
 
 // get the user's media, in this case just video
 navigator.getUserMedia({video: true}, function (stream) {
@@ -90,20 +117,9 @@ var constraints = {
         OfferToReceiveVideo: true
     }
 };
-/**/
 
-// Déclaration des constraints pour l'audio et la vidéo
-/*// Note: Les constraints de taille ne semblent actuellement pas prises en compte dans Mozzilla
-var constraints = {
-  audio:true,
-  video: {
-    mandatory: {
-      maxWidth: 302,
-      maxHeight: 168
-    }
-  }
-};
-/**/
+// define the channel var
+var channel;
 
 // initialisation de la connexion
 function connect () {
@@ -111,6 +127,12 @@ function connect () {
 	
 	// Si on est l'apellant
 	if (type === "appelant") { 
+
+		// offerer creates the data channel
+		channel = pc.createDataChannel("mychannel", {});
+		// can bind events right away
+		bindEvents();
+
 		// création de l'offre SDP
 		pc.createOffer(function (offer) {
 			pc.setLocalDescription(offer);
@@ -119,6 +141,15 @@ function connect () {
 	
 	// Sinon si on est l'apellé
 	} else { 
+		
+		// dataChannel
+		// answerer must wait for the data channel
+		pc.ondatachannel = function (e) {
+			channel = e.channel;
+			bindEvents(); //now bind the events
+		};
+
+
 		// L'apellé doit attendre de recevoir une offre SDP
 		// avant de générer une réponse SDP
 		socket.on("offer", function(data) { 
@@ -162,4 +193,28 @@ socket.on("answer", function(data) {
 	console.log( ">>> answer from ("+data.placeListe+")"+data.pseudo); 
 	pc.setRemoteDescription(new SessionDescription(data.message));
 });
-/**/
+
+
+// Méthodes RTCDataChannel
+
+// bind the channel events
+function bindEvents () {
+	channel.onopen = function () { 
+		console.log("Channel Open");
+		dataChannelSend.disabled = false;
+    	dataChannelSend.focus();
+    	dataChannelSend.placeholder = "Channel is Open !";
+    	sendButton.disabled = false; 
+	};
+	channel.onmessage = function (e) {
+		// add the message to the chat log
+		chatlog.innerHTML += "<div>l'" +type+" dit:"+ e.data + "</div>";
+	};
+}
+// send a message the textbox throught
+// the data channel for a chat program
+function sendMessage () {
+	var msg = message.value;
+	channel.send(msg);
+	message.value = "";
+}

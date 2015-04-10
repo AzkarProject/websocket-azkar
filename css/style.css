@@ -1,7 +1,4 @@
 header {}
-/*
-#video,#otherPeer { width: 300px;}</style>
-*/
 
 info {
  font-size:12px; 
@@ -10,7 +7,7 @@ info {
 
 
 /* ---- Chat Websocket */
-#zone_chat {
+#zone_chat_websocket, #zone_chat_WebRTC {
   font-size:12px; 
   border:1px solid #ffffff;
   background-color:#ffffff;
@@ -20,24 +17,25 @@ info {
 }
 
 
-#zone_chat strong {
+#zone_chat_websocket, #zone_chat_WebRTC strong {
     text-decoration: underline;
 }
 
 
-#websocket_chat {
+#websocket_chat, #WebRTC_chat {
   width:322px;
 }
 
 /* ------------------- */
 
-
+video {
+  width:300px;
+  height:180px;
+}
 
 
 section {
-  /*
   width:322px;
-  */
   min-width: 322px;
 }
 

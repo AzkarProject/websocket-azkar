@@ -27,6 +27,24 @@ app.use(express.static(__dirname));
 app.get('/', function (req, res) {
   res.sendFile(__dirname + '/index.html');
 });
+/**/
+
+
+// Routes IHM
+app.get('/pilote/', function (req, res) {
+    res.sendFile(__dirname + '/pilote.html');
+});
+
+app.get('/robot/', function (req, res) {
+    res.sendFile(__dirname + '/robot.html');
+});
+
+
+
+
+
+
+
 
 // Lancement du serveur
 server.listen(app.get('port'),ipaddress);
