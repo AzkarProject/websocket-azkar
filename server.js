@@ -30,7 +30,7 @@ app.get('/', function (req, res) {
 /**/
 
 
-// Routes IHM
+// Routing IHM >>>> TODO coté clients
 app.get('/pilote/', function (req, res) {
     res.sendFile(__dirname + '/pilote.html');
 });
@@ -68,21 +68,13 @@ var histoUsers = {};
 var placeHisto = 0;
 histoPosition = 0;
 
+
 // contrôle des connectés coté serveur
 // Ecouteur de connexion d'un nouveau client
 function onSocketConnected(socket){
    console.log ("-------------------------------");
    console.log("connexion nouveau client :"+ socket.pseudo + "(ID : " + socket.id + ")");  
 }
-
-/*// Ecouteur de reception d'un message
-io.sockets.onmessage = function (evt) { 
-        var received_msg = evt.data;
-        console.log("Message is received...");
-        console.log(evt.data);
-};
-/**/
-
 
 
 io.sockets.on('connection', function (socket, pseudo) {
