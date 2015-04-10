@@ -7,6 +7,44 @@
     };
 
 
+    // Constructeur objet joueur
+  exports.joueur = function joueur(name,color,number,keyLeft,keyUp,keyRight,keyDown) {
+      this.type = "player";
+      this.name = name;
+      this.color = "#8ED6FF";
+      //this.level = false;
+      this.level = 0;
+      this.number = number;
+      this.score = 0;
+      this.startX = 10;
+      this.startY = 10;
+      this.playerX = this.startX;
+      this.playerY = this.startY;   
+      this.KeyLeft = keyLeft;
+      this.KeyUp = keyUp;
+      this.KeyRight = keyRight;
+      this.KeyDown = keyDown;
+      this.vitesseX = 0;
+      this.vitesseY = 0;
+      this.lastTimeCollision = 99999;
+      this.width = 30;
+      this.heigth = 30;
+      this.numLevel = 1;
+      this.active = true;
+      this.idUnique = 0;
+      this.isRegistered = false;
+      this.isSpectateur = true;
+      this.isFreeze = false;
+  }   
+
+
+
+
+
+
+
+
+
   // Divers
   // ----------------------------
 

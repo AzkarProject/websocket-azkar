@@ -42,22 +42,8 @@ socket.on('updateUsers', function(data) {
     };
 })
 
-/*// options pour l'objet PeerConnection
-var server = {iceServers: [{url: "stun:23.21.150.121"}]};
-server.iceServers.push({url: "stun:stun.l.google.com:19302"});
-server.iceServers.push({url: "turn:turn1.xirsys.com:443?transport=tcp", credential: "b8631283-b642-4bfc-9222-352d79e2d793", username: "e0f4e2b6-005f-440b-87e7-76df63421d6f"});
-/**/
+// options pour l'objet PeerConnection
 
-/*
-server.iceServers.push({url: "turn:turn.bistri.com:80", credential: "homeo", username: "homeo"});
-server.iceServers.push({url: 'turn:turn.anyfirewall.com:443?transport=tcp', credential: 'webrtc', username: 'azkarproject'});
-server.iceServers.push({url: "turn:numb.viagenie.ca", credential: "webrtcdemo", username: "temp20fev2015@gmail.com"});
-server.iceServers.push({url: "turn:turn.anyfirewall.com:443?transport=tcp", credential: "webrtc", username: "webrtc"});
-server.iceServers.push({url: "turn:turn1.xirsys.com:443?transport=tcp", credential: "b8631283-b642-4bfc-9222-352d79e2d793", username: "e0f4e2b6-005f-440b-87e7-76df63421d6f"});
-/**/
-
-
-// Hack titi :
 var server = {'iceServers':[{'url':'stun:23.21.150.121'}]};
 server.iceServers.push({url: 'stun:stun.l.google.com:19302'});
 server.iceServers.push({url: 'stun:stun.anyfirewall.com:3478'});
@@ -68,7 +54,7 @@ server.iceServers.push({url: 'turn:turn.anyfirewall.com:443?transport=tcp', cred
 server.iceServers.push({url: "turn:numb.viagenie.ca", credential: "webrtcdemo", username: "temp20fev2015@gmail.com"});
 server.iceServers.push({url: "turn:turn.anyfirewall.com:443?transport=tcp", credential: "webrtc", username: "webrtc"});
 server.iceServers.push({url: "turn:turn1.xirsys.com:443?transport=tcp", credential: "b8631283-b642-4bfc-9222-352d79e2d793", username: "e0f4e2b6-005f-440b-87e7-76df63421d6f"});
-// -- / end Hack
+// TODO: Tester les TURNS un par un pour déterminer celui qui fonctionne le mieux
 
 
 
@@ -87,16 +73,17 @@ var pc = new PeerConnection(server, options);
 pc.onicecandidate = function (e) {
 	console.log("@ pc.onicecandidate()");
 	// vérifie que le candidat ne soit pas nul
-	if (!e.candidate) { return; }
+	if (!e.candidate) { 
+		console.log("  > !e.candidate): return ");
+		return; 
+	}
 	// Réinitialise l'écouteur "candidate" de la connexion courante
-	// pc.onicecandidate = null; // (Si on vire ca ??? en local > ? / en ligne > ? )
+	// pc.onicecandidate = null; // BUG candidates sur Openshift ! Et si on vire ca ???
+	// >>>>>> en local > OK, c'est juste plus long... 
+	// >>>>>> en ligne > OK en filaire... 
 	// envoi le candidate généré à l'autre pair
 	socket.emit("candidate", e.candidate);
 };
-
-
-
-
 
 // get the user's media, in this case just video
 navigator.getUserMedia({video: true}, function (stream) {
@@ -111,7 +98,7 @@ navigator.getUserMedia({video: true}, function (stream) {
 // when we get the other peer's stream, add it to the second video element.
 pc.onaddstream = function (e) {
 	console.log("@ onaddstream()");
-	console.log(e);
+	// console.log(e);
 	video2.src = URL.createObjectURL(e.stream);
 };
 
@@ -190,14 +177,14 @@ function connect () {
 socket.on("candidate", function(data) { 
 	console.log(">> socket.on('candidate',...");
 	// console.log(data);
-	console.log( ">>> candidate from ("+data.placeListe+")"+data.pseudo);    
+	// console.log( ">>> candidate from ("+data.placeListe+")"+data.pseudo);    
 	pc.addIceCandidate(new IceCandidate(data.message)); // OK
 });
 
 // Réception d'une réponse à une offre
 socket.on("answer", function(data) { 
 	console.log(">> socket.on('answer',...");
-	console.log( ">>> answer from ("+data.placeListe+")"+data.pseudo); 
+	// console.log( ">>> answer from ("+data.placeListe+")"+data.pseudo); 
 	pc.setRemoteDescription(new SessionDescription(data.message));
 });
 
@@ -225,3 +212,20 @@ function sendMessage () {
 	channel.send(msg);
 	message.value = "";
 }
+
+
+
+// Ecouteurs de changement de statut de connexion
+pc.oniceconnectionstatechange = function (e) {
+	console.log("@ stateConnection Event > " + pc.iceConnectionState);
+	// Statut 1 : Connected
+	// Statut 2 : completed
+	// Statut 3 : disconnected
+	// en cas de déco coté apellé. Affiche 2 status consécutifs 
+	// Statut connected: env 1 seconde de latence
+	// Statut completed: env 13 secondes de latence
+	// Statut deconnected: env 7 secondes de latence
+	// Par contre, coté websocket, on est informé immédiatement...
+	// TODO > Etudier piste écouteurs Websocket +tôt que webRTC
+	// Because ils semblent nettement plus rapides et réactifs...
+};

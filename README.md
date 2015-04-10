@@ -1,6 +1,8 @@
-# websocket-azkar
+# AZKAR WebRTC script base 1TO1 version 0.3.3 
 
 -------------------------------------------------
+
+### Todo's
 
 STEP 1 >>> livrable base 1to1:
 - DO: Hebergement nodejs sur Openshift
@@ -9,26 +11,33 @@ STEP 1 >>> livrable base 1to1:
 - DO: Implémentation Tchat websocket indépendant de WebRTC
 - DO: Implémentation localStram
 - DO: Implémentation Signaling WebSocket 
-	- DO: Bug objet SDP...
+	- DO: Bug objet SDP
 	- DO: Bug objet Candidate
+	- TODO: gestion déconnexions (apellant/apellé)
 - DO: Implémentation RemoteStream
 - DO: implémentation RtcDataChannel 
 - DO: Websocket gestion des connectés
 	- DO: Liste connectés
 	- DO: Historique des connexions
 	- DO: Gestion des numéros d'ordre
-	- DO: gestion déconnexions
-- TODO: Passer liste connectés coté client
-	- TODO: objet "user" similaires serveur/client
-- TODO: Websocket gestion des rooms
+- DO: Routes différenciées (pilote/robot)	
 - TODO: WebRTC: gestion décco/recco (appelant<>appelé)
+- TODO: IHM différenciées (Pilote/Robot)
+- TODO: main.js différenciés (Pilote/Robot)
 - TODO: 2 remotes Stream (Caméra tête et caméra sol)
-- TODO: Routes différenciées (pilote/robot)
+- TODO: Implémentations outils de test
+- TODO: Constraints paramétrables
 - TODO: Interception ICE candidate actif
 - TODO: Forcer le choix Host/Stun/Turn
-- TODO: Gestion des constraints
 
 STEP 2 >>> Livrable base NtoN:
+- TODO: Gestion des connectés
+	- TODO: transformer les Users en "objet"
+	- TODO: Passer liste Users coté client
+- TODO: Websocket gestion des rooms
+- TODO: Routes différenciées (pilote/robot + clients)
+- TODO: IHM différenciées (Pilote/robot + clients)
+- TODO: main.js différenciés (Pilote/Robot + clients)	
 - TODO: Intégration +Sieurs instances de RTCPeerConnection
 - TODO: Intégration full-mesh (bas niveau ou librairie ??)
 
@@ -38,13 +47,13 @@ STEP 3 >>> Livrable base 1toN
 
 ------------------------------------------------------------
 
+Test en ligne du script base 1to1:
+http://websocket-azkar.rhcloud.com/
+
+------------------------------------------------------------
 AZKAR WebRTC script Base.
 
-Script le plus simple possible et basé sur des clients chrome en 1to1 fonctionnant en bas-niveau pour servir de base au développement des scripts de benchmarks du projet AZKAR dans différentes versions.
-
-Méthodologie: Les échéances de livrables définies dans le projet AZKAR laissent suffisement de temps pour partir "from sctratch" et procéder par de petites itérations afin d'assurer une compatibilité maximum avec l'évolution de la norme et des navigateurs. Bien que plus lente, cette méthodologie assure une bien meilleure lisibilité/compréhension du code source et des fonctionnements internes de WebRTC.
-
-A construire sur cette base: Applis pour les benchmarks (1to1, 1toN, NtoN bas niveau + versions avec libs et sdk)
+Script le plus simple possible et basé sur clients chrome en 1to1 fonctionnant en bas-niveau. Objectif: Base de développement des différents scripts benchmarks du projet AZKAR.
 
 Architectures prévues:
 - 1 appli 1to1 pour le scénario transport 
