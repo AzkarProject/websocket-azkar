@@ -17,7 +17,7 @@
 
 <body>
 
-    <strong>AZKAR WebRTC script base 1TO1 </strong> version 0.3.0
+    <strong>PILOTE script base 1TO1 </strong> version 0.3.0
     <br/><info id="zone_info_server"></info>
     <hr/>
 
@@ -29,12 +29,12 @@
 		        
 				<strong> Websocket Chat Test </strong>
 				<hr/>
-		        <form action="/" method="post" id="formulaire_chat_websoket">
+		        <form action="/" method="post" id="formulaire_chat">
 		            <input type="text" name="message" id="message" placeholder="Votre message..." size="28" autofocus />
 		            <input type="submit" id="envoi_message" value="Envoyer" />
 		        </form>
 	       	 	<hr/>
-			 	<div id="zone_chat_websocket"></div>
+			 	<div id="zone_chat"></div>
 
 	       	 </li>
         </section>
@@ -66,19 +66,21 @@
 				<div id='textareas'>
 					<strong> WebRTC dataChannel Test </strong>
 					<hr/>
-					<button id="sendButton" disabled onclick="sendMessage()">WebRTC dataChannel Send</button>
+					<button id="sendButton" disabled>WebRTC dataChannel Send</button>
 					<br/>
-					<textarea id="dataChannelSend" disabled placeholder="Waiting open channel..."></textarea>
+					<textarea id="dataChannelSend" disabled placeholder="Write datas to send..."></textarea>
 					<hr/> 
-					<!--
 					<textarea id="dataChannelReceive" disabled placeholder="Waiting WebRTC datas..."></textarea>
-					-->
-					<div id="chatlog">Waiting open channel...</div>
 				</div>
 		
 	  		</li>
 	  	
 	  	</section>
+
+
+
+
+
 
         <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
         <script src="/socket.io/socket.io.js"></script>
