@@ -1,61 +1,65 @@
-# AZKAR WebRTC script base 1TO1 version 0.3.3 
+# AZKAR WebRTC script base 1TO1 version 0.4.0 
 
 -------------------------------------------------
 
 ### Todo's
 
-STEP 1 >>> livrable base 1to1:
-- DO: Hebergement nodejs sur Openshift
-- DO: HTML5 & css client
-- DO: Implémentation classes javascript communes client/serveur
-- DO: Implémentation Tchat websocket indépendant de WebRTC
-- DO: Implémentation localStram
-- DO: Implémentation Signaling WebSocket 
-	- DO: Bug objet SDP
-	- DO: Bug objet Candidate
-	- DO: gestion déconnexions (apellant/apellé)
-- DO: Implémentation RemoteStream
-- DO: implémentation RtcDataChannel 
-- DO: Websocket gestion des connectés
-	- DO: Liste connectés
-	- DO: Historique des connexions
-	- DO: Gestion des numéros d'ordre
-- DO: Routes différenciées (pilote/robot)	
-- ENCOURS: WebRTC: gestion décco/recco (appelant<>appelé)
-	- DO: Bug renégociation RTCDataChannel
-	- DO: Bug renégotiation RemoteStream 
+:large_orange_diamond: STEP 1 >>> livrable base 1to1:
+- :white_check_mark:: Hebergement nodejs sur Openshift
+- :white_check_mark: HTML5 & css client
+- :white_check_mark: Implémentation classes javascript communes client/serveur
+- :white_check_mark: Implémentation Tchat websocket indépendant de WebRTC
+- :white_check_mark: Implémentation localStram
+- :white_check_mark: Implémentation Signaling WebSocket 
+	- :white_check_mark: Bug objet SDP
+	- :white_check_mark: Bug objet Candidate
+	- :white_check_mark: gestion déconnexions (apellant/apellé)
+- :white_check_mark: Implémentation RemoteStream
+- :white_check_mark: implémentation RtcDataChannel 
+- :white_check_mark: Websocket gestion des connectés
+	- :white_check_mark: Liste connectés
+	- :white_check_mark: Historique des connexions
+	- :white_check_mark: Gestion des numéros d'ordre
+- :white_check_mark: Routes différenciées (pilote/robot)	
+- :large_orange_diamond: WebRTC: gestion déco/reco (appelant<>appelé)
+	- :white_check_mark: Bug renégociation RTCDataChannel
+	- :white_check_mark: Bug renégotiation RemoteStream 
         - >>> Refaire demande ouverture caméra sur Appelé (Robot)
         - >>> Chromium + --use-fake-ui sur Appelé (Robot)
-        - OK: Test local Crhome/Chrome
-        - BUG: Test local Chromium/Chromium
+        - :white_check_mark: Test local Crhome/Chrome
+        - :interrobang: Test local Chromium/Chromium
             - >>> OK au lancement Chromium + serveur
             - >>> Surcharge BP si multiples renégo
             - >>> Signaling HS si relance serveur + refresh Crhomium
-        - BUG: Test local Chromium/Chrome
-        - TODO: tests en ligne Chromium/Chrome
-- TODO: IHM différenciées (Pilote/Robot)
-- TODO: main.js différenciés (Pilote/Robot)
-- TODO: 2 remotes Stream (Caméra tête et caméra sol)
-- TODO: Implémentations outils de test
-- TODO: Constraints paramétrables
-- TODO: intégration webComponents caméra
-- TODO: Interception ICE candidate actif
-- TODO: Forcer le choix Host/Stun/Turn
+        - :interrobang: Test local Chromium/Chrome
+        - :interrobang:: tests en ligne
+            - >>> BUG buffer signaling onDisconnect...
+            - >>> :ballot_box_with_check: vider buffer coté serveur (si déco Robot) 
+            - >>>>>>>> ou RevenirAPI WebRTC > détection déco
+            - >>> :ballot_box_with_check: Définition Rôle Robot/Pilote par routing
+- :ballot_box_with_check: main.js différenciés (Pilote/Robot)
+- :ballot_box_with_check: IHM différenciées (Pilote/Robot)
+- :ballot_box_with_check: 2 remotes Stream (Caméra tête et caméra sol)
+- :ballot_box_with_check: Implémentations outils de test
+- :ballot_box_with_check: Constraints paramétrables
+- :ballot_box_with_check: intégration webComponents caméra
+- :ballot_box_with_check: Interception ICE candidate actif
+- :ballot_box_with_check: Forcer le choix Host/Stun/Turn
 
-STEP 2 >>> Livrable base NtoN:
-- TODO: Gestion des connectés
-	- TODO: transformer les Users en "objet"
-	- TODO: Passer liste Users coté client
-- TODO: Websocket gestion des rooms
-- TODO: Routes différenciées (pilote/robot + clients)
-- TODO: IHM différenciées (Pilote/robot + clients)
-- TODO: main.js différenciés (Pilote/Robot + clients)	
-- TODO: Intégration +Sieurs instances de RTCPeerConnection
-- TODO: Intégration full-mesh (bas niveau ou librairie ??)
+:ballot_box_with_check: STEP 2 >>> Livrable base NtoN:
+- :ballot_box_with_check: Gestion des connectés
+	- :ballot_box_with_check: transformer les Users en "objet"
+	- :ballot_box_with_check: Passer liste Users coté client
+- :ballot_box_with_check: Websocket gestion des rooms
+- :ballot_box_with_check: Routes différenciées (pilote/robot + clients)
+- :ballot_box_with_check: IHM différenciées (Pilote/robot + clients)
+- :ballot_box_with_check: main.js différenciés (Pilote/Robot + clients)	
+- :ballot_box_with_check: Intégration +Sieurs instances de RTCPeerConnection
+- :ballot_box_with_check: Intégration full-mesh (bas niveau ou librairie ??)
 
-STEP 3 >>> Livrable base 1toN
-- TODO: Intégration multiStream plan B (Chrome) 
-- TODO: Intégration multiStream plan unifié (Mozzila) 
+:ballot_box_with_check: STEP 3 >>> Livrable base 1toN
+- :ballot_box_with_check: Intégration multiStream plan B (Chrome) 
+- :ballot_box_with_check: Intégration multiStream plan unifié (Mozzila) 
 
 ------------------------------------------------------------
 
