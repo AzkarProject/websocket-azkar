@@ -13,7 +13,7 @@ STEP 1 >>> livrable base 1to1:
 - DO: Implémentation Signaling WebSocket 
 	- DO: Bug objet SDP
 	- DO: Bug objet Candidate
-	- TODO: gestion déconnexions (apellant/apellé)
+	- DO: gestion déconnexions (apellant/apellé)
 - DO: Implémentation RemoteStream
 - DO: implémentation RtcDataChannel 
 - DO: Websocket gestion des connectés
@@ -21,12 +21,24 @@ STEP 1 >>> livrable base 1to1:
 	- DO: Historique des connexions
 	- DO: Gestion des numéros d'ordre
 - DO: Routes différenciées (pilote/robot)	
-- TODO: WebRTC: gestion décco/recco (appelant<>appelé)
+- ENCOURS: WebRTC: gestion décco/recco (appelant<>appelé)
+	- DO: Bug renégociation RTCDataChannel
+	- DO: Bug renégotiation RemoteStream 
+        - >>> Refaire demande ouverture caméra sur Appelé (Robot)
+        - >>> Chromium + --use-fake-ui sur Appelé (Robot)
+        - OK: Test local Crhome/Chrome
+        - BUG: Test local Chromium/Chromium
+            - >>> OK au lancement Chromium + serveur
+            - >>> Surcharge BP si multiples renégo
+            - >>> Signaling HS si relance serveur + refresh Crhomium
+        - BUG: Test local Chromium/Chrome
+        - TODO: tests en ligne Chromium/Chrome
 - TODO: IHM différenciées (Pilote/Robot)
 - TODO: main.js différenciés (Pilote/Robot)
 - TODO: 2 remotes Stream (Caméra tête et caméra sol)
 - TODO: Implémentations outils de test
 - TODO: Constraints paramétrables
+- TODO: intégration webComponents caméra
 - TODO: Interception ICE candidate actif
 - TODO: Forcer le choix Host/Stun/Turn
 

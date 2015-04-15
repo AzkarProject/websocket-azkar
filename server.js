@@ -7,6 +7,7 @@ console.log(commonTest + " correctement chargé coté serveur !!!");
 
 var app = require('express')(),
     server = require('http').createServer(app),
+    //server = require('https').createServer(app),
     io = require('socket.io').listen(server),
     ent = require('ent'), // Permet de bloquer les caractères HTML (sécurité équivalente à htmlentities en PHP)
     fs = require('fs');
@@ -40,12 +41,6 @@ app.get('/robot/', function (req, res) {
 });
 
 
-
-
-
-
-
-
 // Lancement du serveur
 server.listen(app.get('port'),ipaddress);
 
@@ -75,6 +70,8 @@ function onSocketConnected(socket){
    console.log ("-------------------------------");
    console.log("connexion nouveau client :"+ socket.pseudo + "(ID : " + socket.id + ")");  
 }
+
+var debugNbOffer =0;
 
 
 io.sockets.on('connection', function (socket, pseudo) {
@@ -155,6 +152,9 @@ io.sockets.on('connection', function (socket, pseudo) {
 
         // io.sockets.emit('users', users);           
         // socket.leave(socket.room);  /: On quitte la Room
+
+        // envoi d'un second message destiné au signaling WebRTC
+        socket.broadcast.emit('disconnected', { pseudo:"SERVER", message: message, placeListe: "-"});
     });  
 
 
@@ -181,24 +181,29 @@ io.sockets.on('connection', function (socket, pseudo) {
     // Quand est balancé un message 'candidate'
     // il est relayé à tous les autres connectés sauf à celui qui l'a envoyé
     socket.on('candidate', function (message) {
-        // console.log ("@ candidate from "+socket.placeListe+socket.pseudo)
+        console.log ("@ candidate from "+socket.placeListe+socket.pseudo+" timestamp:" + Date.now());
         socket.broadcast.emit('candidate', {pseudo: socket.pseudo, message: message, placeListe: socket.placeListe});
     }); 
 
     // Quand est balancé un message 'offer'
     // il est relayé à tous les autres connectés sauf à celui qui l'a envoyé
     socket.on('offer', function (message) {
-        console.log ("@ offer from "+socket.placeListe+socket.pseudo);
+        console.log ("@ offer from "+socket.placeListe+socket.pseudo+" timestamp:" + Date.now());
         socket.broadcast.emit('offer', {pseudo: socket.pseudo, message: message, placeListe: socket.placeListe});
     }); 
 
     // Quand est balancé un message 'answer'
     // il est relayé à tous les autres connectés sauf à celui qui l'a envoyé
     socket.on('answer', function (message) {
-    	console.log ("@ answer from "+socket.placeListe+socket.pseudo);
+    	console.log ("@ answer from "+socket.placeListe+socket.pseudo+" timestamp:" + Date.now());
         socket.broadcast.emit('answer', {pseudo: socket.pseudo, message: message, placeListe: socket.placeListe});
     }); 
 
-
+    // Quand est balancé un message 'stream'
+    // il est relayé à tous les autres connectés sauf à celui qui l'a envoyé
+    socket.on('stream', function (message) {
+    	console.log ("@ stream from "+socket.placeListe+socket.pseudo+" timestamp:" + Date.now());
+        socket.broadcast.emit('stream', {pseudo: socket.pseudo, message: message, placeListe: socket.placeListe});
+    }); 
 
 });

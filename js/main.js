@@ -3,6 +3,11 @@
 // https://developer.mozilla.org/fr/docs/Web/Guide/API/WebRTC/WebRTC_basics
 // Source github : https://github.com/louisstow/WebRTC/blob/master/media.html
 
+
+// flag de connexion
+var isStarted = false;
+// console.log("isStarted = "+ isStarted);
+
 // shims!
 var PeerConnection = window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
 var SessionDescription = window.mozRTCSessionDescription || window.RTCSessionDescription;
@@ -32,7 +37,7 @@ var otherType = "appelé";
 // Quand on reçoit une mise à jour de la liste 
 // des connectés de cette session websocket
 socket.on('updateUsers', function(data) {
-    console.log(">> socket.on('updateUsers',...");
+    // console.log(">> socket.on('updateUsers',...");
     // Si on est seul et qu'on as pas déjà instancié la connexion p2p
     // Autrement dit, si on est le premier dans la session,
     // On prend de facto le rôle "d'apelé"
@@ -68,39 +73,11 @@ var options = {
 
 // Création de l'objet PeerConnection (CAD la session de connexion WebRTC)
 var pc = new PeerConnection(server, options);
-
-// Ecouteur déclenché à la génération d'un candidate 
-pc.onicecandidate = function (e) {
-	console.log("@ pc.onicecandidate()");
-	// vérifie que le candidat ne soit pas nul
-	if (!e.candidate) { 
-		console.log("  > !e.candidate): return ");
-		return; 
-	}
-	// Réinitialise l'écouteur "candidate" de la connexion courante
-	// pc.onicecandidate = null; // BUG candidates sur Openshift ! Et si on vire ca ???
-	// >>>>>> en local > OK, c'est juste plus long... 
-	// >>>>>> en ligne > OK en filaire... 
-	// envoi le candidate généré à l'autre pair
-	socket.emit("candidate", e.candidate);
-};
-
-// get the user's media, in this case just video
-navigator.getUserMedia({video: true}, function (stream) {
-	// set one of the video src to the stream
-	video.src = URL.createObjectURL(stream);
-	// add the stream to the PeerConnection
-	pc.addStream(stream);
-	// now we can connect to the other peer
-	connect();
-}, errorHandler);
-
-// when we get the other peer's stream, add it to the second video element.
-pc.onaddstream = function (e) {
-	console.log("@ onaddstream()");
-	// console.log(e);
-	video2.src = URL.createObjectURL(e.stream);
-};
+// console.log("------pc = new PeerConnection(server, options);-----");
+// console.log(pc);
+var localStream = null;
+var remoteStream = null;
+var ws_remoteStream = null; // Stream transmit par websocket...
 
 // constraints on the offer SDP. Easier to set these
 // to true unless you don't want to receive either audio
@@ -114,97 +91,301 @@ var constraints = {
 
 // define the channel var
 var channel;
+var debugNbConnect = 0;
+var debugNbOffer = 0;
+var debugNbOnOffer = 0;
+// Si une renégociation à déjas eu lieu
+// >> pour éviter de réinitialiser +sueurs fois le même écouteur
+var isRenegociate = false;
+
+
+// initialisation du localStream et lancement connexion
+function initLocalMedia() {
+	// get the user's media, in this case just video
+	navigator.getUserMedia({video: true}, function (stream) {
+		localStream = stream;
+		video.src = URL.createObjectURL(localStream);
+		pc.addStream(localStream);
+		console.log("localStream >> "+localStream);
+		console.log(localStream);
+		// set one of the video src to the stream
+		//video.src = URL.createObjectURL(stream);
+		//pc.addStream(stream);
+		// now we can connect to the other peer
+		connect();
+	}, errorHandler);
+};
+
+initLocalMedia();
 
 // initialisation de la connexion
 function connect () {
-	console.log("@ connect() > rôle: " + type);
+	debugNbConnect += 1;
+	console.log("@ connect("+debugNbConnect+") > rôle: " + type);
+	isStarted = true;
+
+	// Ecouteurs communs apellant/apellé
+	// ---------------------------------
 	
+	// Ecouteurs de l'API WebRTC -----------------
+	
+	// Ecouteur déclenché à la génération d'un candidate 
+	pc.onicecandidate = function (e) {
+		// console.log("@ pc.onicecandidate()");
+		// vérifie que le candidat ne soit pas nul
+		if (!e.candidate) { 
+			// console.log("  > !e.candidate): return ");
+			return; 
+		}
+		// Réinitialise l'écouteur "candidate" de la connexion courante
+		// pc.onicecandidate = null; // Provoque un BUG sur Openshift ! 
+		// >>>>>> Et si on teste sans ???
+		// >>>>>> en local > OK, c'est juste plus long... 
+		// >>>>>> en ligne > OK en filaire... 
+		// conclusion: Lé rinitialisation n'a d'intéret 
+		// que pour réduire les délais de signaling des tests locaux
+		// -----------------------------------------
+		// Envoi du candidate généré à l'autre pair
+		socket.emit("candidate", e.candidate);
+	};
+
+
+	// Ecouteur déclenché a la reception d'un remoteStream
+	pc.onaddstream = function (e) {
+		console.log("@ pc.onaddstream > timestamp:" + Date.now());
+		remoteStream = e.stream;
+		
+		/*// BUG objet mediaStream Vide si answer après renégo
+		console.log(e);
+		console.log("-TEST--------------------------------------------");
+		// FIX >> Utilisation du stream transmit en parallèle par websocket
+		if (e.stream.id == "default") {
+			console.log("remoteStream >> default");
+			e.stream = ws_remoteStream;
+		} else {
+			console.log("remoteStream >> normal");
+			remoteStream = e.stream;
+		}
+		console.log(e);
+		console.log("-ws_remoteStream--------------------------------------------");
+		console.log(ws_remoteStream);
+		console.log("-remoteStream--------------------------------------------");
+		console.log(remoteStream);
+		//console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+		/**/
+		video2.src = URL.createObjectURL(remoteStream);
+		
+
+	};
+
+
+	// Ecouteurs de changement de statut de connexion
+	// Permet de déterminer si le pair distant s'est décionnecté.
+	pc.oniceconnectionstatechange = function (e) {
+		console.log("@ pc.oniceconnectionstatechange > timestamp:" + Date.now());
+		console.log(">>> stateConnection Event > " + pc.iceConnectionState);
+		console.log(">>> isStarted = "+ isStarted);
+		// Statut connected: env 1 seconde de latence
+		// Statut completed: env 13 secondes de latence
+		// Statut deconnected: env 7 secondes de latence
+		// Par contre, coté websocket, on est informé immédiatement d'une décco...
+		// En utilisant l'ecouteur coté serveur. DONC : 
+		// PLAN B > Utiliser Websocket +tôt que l'écouteur webRTC
+		// Because c'est nettement plus rapide et réactif...
+	};
+
+	// Ecouteur ... // OK instancié...
+	pc.onremovestream = function (e) {
+		console.log ("@ pc.onremovestream(e) > timestamp:" + Date.now());
+		console.log (e);
+	}
+
+	// Ecouteurs de l'API websocket -----------------
+
+	// Réception d'un ICE Candidate
+	socket.on("candidate", function(data) { 
+		console.log(">> socket.on('candidate',...");
+		// TODO : ici intercepter et filter le candidate
+		// >> ex >>> if (candidate == stun) {addIceCandidate} else {return;}
+		//console.log( ">>> candidate from ("+data.placeListe+")"+data.pseudo);    
+		// console.log(data);
+		pc.addIceCandidate(new IceCandidate(data.message)); // OK
+	});
+
+	// Réception d'une réponse à une offre
+	socket.on("answer", function(data) { 
+		console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+		console.log(">> socket.on('answer',...");
+		//console.log( ">>> answer from ("+data.placeListe+")"+data.pseudo); 
+		console.log(data.message);
+		pc.setRemoteDescription(new SessionDescription(data.message));
+	});
+
+	// Réception d'une info de deconnexion 
+	// >>> plus réactif que l'écouteur de l'API WebRTC
+	socket.on("disconnected", function(data) { 
+		console.log(">> socket.on('disconnected',...");
+	    // On lance la méthode de préparatoire a la renégo
+	    onDisconnect();
+	});
+
+	// Réception d'un stream 
+	/*// >>> Hack correction bug mediaStream sdp null en cas de renégo
+	socket.on("stream", function(data) { 
+		console.log(">> socket.on('stream',...");
+	   	ws_remoteStream = data.message;
+	   	console.log(ws_remoteStream);
+	});
+	/**/
+	
+
+	// Fonctions communes apellant/apellé
+	
+	function doAnswer(sessionDescription) {
+		// Hack > correction Bub de renégo
+		// objet MediaStream du sdp est vide si renégo
+		// Plan B >> passer par websocket +tôt que par l'API WebRTC
+		// Pour faire passer le localStram de l'apellé à l'apellant
+		// socket.emit("stream", localStream);
+		// ------------
+		// 
+		pc.setLocalDescription(sessionDescription);
+		socket.emit("answer", sessionDescription);
+	}
+
+
+	function doOffer(sessionDescription) {
+		  pc.setLocalDescription(sessionDescription);
+		  socket.emit("offer", sessionDescription);
+	}
+
+
 	// Si on est l'apellant
 	if (type === "appelant") { 
-
-		// offerer creates the data channel
+		console.log("+++++++++ apellant ++++++++++++++ ");
+		
+		// l'apellant crée un dataChannel
 		channel = pc.createDataChannel("mychannel", {});
 		// can bind events right away
 		bindEvents();
 
 		// création de l'offre SDP
-		pc.createOffer(function (offer) {
-			pc.setLocalDescription(offer);
-			socket.emit("offer", offer);
-		}, errorHandler, constraints);	
+		pc.createOffer(doOffer, errorHandler, constraints);
+
 	
 	// Sinon si on est l'apellé
 	} else { 
-		
+		console.log("+++++++++ apellé ++++++++++++++ ");
 		// dataChannel
 		// answerer must wait for the data channel
+		
+		//console.log("channel: "+channel);
+		// Ecouteur d'ouverture d'un data channel
 		pc.ondatachannel = function (e) {
 			channel = e.channel;
+			console.log("pc.ondatachannel(e)... ");
+			//console.log("channel: "+channel);
 			bindEvents(); //now bind the events
 		};
-
+		/**/
 
 		// L'apellé doit attendre de recevoir une offre SDP
 		// avant de générer une réponse SDP
-		socket.on("offer", function(data) { 
-			console.log( ">>> offer from ("+data.placeListe+")"+data.pseudo);
-			pc.setRemoteDescription(new SessionDescription(data.message));
-			// Une foi l'offre reçue et celle-ci enregistrée
-			// dans un setRemoteDescription, on peu enfin générer
-			// une réponse SDP
-			pc.createAnswer(function (answer) {
-				pc.setLocalDescription(answer);
-				socket.emit("answer", answer);
-			}, errorHandler, constraints);	
+		// ---------------------------------
+		// Ok au premier passage
+		// BUG a la renégo > ne déclenches plus le onAddStream... 
+		// FIX: réinstancier onAddStream après reinstanciation PeerConnection
+		// BUG a la renégo > Envoie 2 answers...
+		// Cause: L'écouteur de reception "offer"est instancié 2 fois...
+		// FIX: ajout d'un flag "isRenegociate = false;" 
+		if (isRenegociate == false) {
+			
+			socket.on("offer", function(data) { 	
+				//console.log("(apellé)>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+				console.log( ">>> offer from ("+data.placeListe+")"+data.pseudo);
+				//console.log (data.message);
+				pc.setRemoteDescription(new SessionDescription(data.message));
+				// Une foi l'offre reçue et celle-ci enregistrée
+				// dans un setRemoteDescription, on peu enfin générer
+				// une réponse SDP
+				pc.createAnswer(doAnswer, errorHandler, constraints);
+
+  					
+			});	
+		} 
 		
-		});	
 	}
 }
 
-// BUG: écouteur onaddStream non déclenché:
-// La différenciation des workflows entre l'apellant et l'appellé n'était pas claire!
-// Pour faire simple, si l'apellé répondait bien à une offre par une answer
-// l'apellant lui répondait par une autre offre au lieu d'une answer... 
-// Cette architecture péchée sur le MDN mozzila était plus claire et m'a permis 
-// de mettre enfin en évidence la confusion dans l'enchainement des méthodes...
+// A la déconnection du pair distant:
+function onDisconnect () {
 
-// BUG: Ecran noir au déclenchement de l'écouteur onaddstream
-// Il fallait déplacer les écouteurs de signaling candidate et answer
-// en dehors de la méthode connect() pour les initialiser indifférenment
-// que l'on soit apellant ou apellé...
+	console.log("@ onDisconnect()");
+	
+	// On vérifie le flag de connexion
+	if ( isStarted == false) return;
 
-// Réception d'un ICE Candidate
-socket.on("candidate", function(data) { 
-	console.log(">> socket.on('candidate',...");
-	// console.log(data);
-	// console.log( ">>> candidate from ("+data.placeListe+")"+data.pseudo);    
-	pc.addIceCandidate(new IceCandidate(data.message)); // OK
-});
+	// on retire le flux remoteStream
+	// video1.src="";
+	video2.src="";
+	
+	// on modifie les variables de rôle (On prend le statut d'apellé)
+	type = "appelé";
+	otherType = "appelant";
+	console.log("Vous êtes maintenant l'"+type);
+	
+	// on coupe le RTC Data channel
+	if (channel) channel.close();
+	channel = null;
+	
+	// On vide et on ferme la connexion courante
+	// pc.onicecandidate = null;
+	pc.close();
+	pc = null;
+	stopAndStart();
+}
 
-// Réception d'une réponse à une offre
-socket.on("answer", function(data) { 
-	console.log(">> socket.on('answer',...");
-	// console.log( ">>> answer from ("+data.placeListe+")"+data.pseudo); 
-	pc.setRemoteDescription(new SessionDescription(data.message));
-});
+// Fermeture et relance de la connexion p2p par l'apellé (Robot)
+function stopAndStart() {
+  
+  	console.log("@stopAndStart()");
+ 	dataChannelSend.disabled = true;
+  	dataChannelSend.placeholder = "RTCDataChannel close";
+  	sendButton.disabled = true; 
 
+  	pc = new PeerConnection(server, options);
+  	console.log("------pc = new PeerConnection(server, options);-----");
 
-// Méthodes RTCDataChannel
+  	// On informe la machine à état que c'est une renégociation
+  	isRenegociate = true;	
+  	// On relance le processus
+  	initLocalMedia();
+  	connect();
+};
+
+// -------------------- Méthodes RTCDataChannel
 
 // bind the channel events
 function bindEvents () {
+	
+	// écouteur d'ouverture
 	channel.onopen = function () { 
-		console.log("RTCDataChannel is Open");
+		//console.log("RTCDataChannel is Open");
 		dataChannelSend.disabled = false;
     	dataChannelSend.focus();
     	dataChannelSend.placeholder = "RTCDataChannel is Open !";
     	sendButton.disabled = false; 
+    	//isStarted = true;
+    	//console.log("isStarted = "+ isStarted);
 	};
+	
+	// écouteur de reception message
 	channel.onmessage = function (e) {
 		// add the message to the chat log
 		chatlog.innerHTML += "<div>l'" +type+" écrit:"+ e.data + "</div>";
 	};
 }
+
 // send a message the textbox throught
 // the data channel for a chat program
 function sendMessage () {
@@ -212,20 +393,3 @@ function sendMessage () {
 	channel.send(msg);
 	message.value = "";
 }
-
-
-
-// Ecouteurs de changement de statut de connexion
-pc.oniceconnectionstatechange = function (e) {
-	console.log("@ stateConnection Event > " + pc.iceConnectionState);
-	// Statut 1 : Connected
-	// Statut 2 : completed
-	// Statut 3 : disconnected
-	// en cas de déco coté apellé. Affiche 2 status consécutifs 
-	// Statut connected: env 1 seconde de latence
-	// Statut completed: env 13 secondes de latence
-	// Statut deconnected: env 7 secondes de latence
-	// Par contre, coté websocket, on est informé immédiatement...
-	// TODO > Etudier piste écouteurs Websocket +tôt que webRTC
-	// Because ils semblent nettement plus rapides et réactifs...
-};
