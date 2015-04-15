@@ -23,7 +23,7 @@
 - :white_check_mark: Routes différenciées (pilote/robot)	
 - :large_orange_diamond: WebRTC: gestion déco/reco (appelant<>appelé)
 	- :white_check_mark: Bug renégociation RTCDataChannel
-	- :white_check_mark: Bug renégotiation RemoteStream 
+	- :interrobang: Bug renégotiation RemoteStream 
         - >>> Refaire demande ouverture caméra sur Appelé (Robot)
         - >>> Chromium + --use-fake-ui sur Appelé (Robot)
         - :white_check_mark: Test local Crhome/Chrome
@@ -32,11 +32,11 @@
             - >>> Surcharge BP si multiples renégo
             - >>> Signaling HS si relance serveur + refresh Crhomium
         - :interrobang: Test local Chromium/Chrome
+            - >>> BUG renégo RemoteStream
         - :interrobang:: tests en ligne
             - >>> BUG buffer signaling onDisconnect...
-            - >>> :ballot_box_with_check: vider buffer coté serveur (si déco Robot) 
-            - >>>>>>>> ou RevenirAPI WebRTC > détection déco
-            - >>> :ballot_box_with_check: Définition Rôle Robot/Pilote par routing
+            - :large_orange_diamond: Vider buffer coté serveur (si déco Robot) ou revenir API WebRTC
+            - :large_orange_diamond: Définir Rôle Robot/Pilote par routing
 - :ballot_box_with_check: main.js différenciés (Pilote/Robot)
 - :ballot_box_with_check: IHM différenciées (Pilote/Robot)
 - :ballot_box_with_check: 2 remotes Stream (Caméra tête et caméra sol)
