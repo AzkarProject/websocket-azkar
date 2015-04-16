@@ -1,8 +1,9 @@
+console.log("main.js");
+
 // --------- WebRTC ---------------------------------------------
 // Script inspiré de l'article suivant:
 // https://developer.mozilla.org/fr/docs/Web/Guide/API/WebRTC/WebRTC_basics
 // Source github : https://github.com/louisstow/WebRTC/blob/master/media.html
-
 
 // flag de connexion
 var isStarted = false;
@@ -31,22 +32,120 @@ function errorHandler (err) {
 }
 
 // Variables de rôles
-var type = "appelant";
-var otherType = "appelé";
+// var type = "appelant";
+// var otherType = "appelé";
 
 // Quand on reçoit une mise à jour de la liste 
 // des connectés de cette session websocket
 socket.on('updateUsers', function(data) {
-    // console.log(">> socket.on('updateUsers',...");
+    console.log(">> socket.on('updateUsers',...");
     // Si on est seul et qu'on as pas déjà instancié la connexion p2p
     // Autrement dit, si on est le premier dans la session,
     // On prend de facto le rôle "d'apelé"
+    /*
     if (data.nbUsers == 1) {
 		type = "appelé";
 		otherType = "appelant";
     };
+    /**/
 })
 
+
+
+var sources = [];
+
+/*// Détection des devices...
+if (type == "appelé") {
+	
+	MediaStreamTrack.getSources(function (media_sources) {
+	    for (var i = 0; i < media_sources.length; i++) {
+	        var media_source = media_sources[i];
+	        var listOfDevices = common.stringObjectDump(media_sources);
+	        console.log(listOfDevices,"media_sources");
+	    }
+	});
+}
+/**/
+
+// Configuration des caméras du robot:
+var cameraTopLabel = "HP HD Webcam (04f2:b3ed)";
+var cameraSolLabel = "Logitech HD Pro Webcam C910 (046d:0821)";
+
+var cameraTop = {};
+var cameraSol = {};
+var micro = {};
+
+var listSources = null;
+
+if (type == "appelé") {
+
+	if (typeof MediaStreamTrack === 'undefined'){
+	  alert('This browser does not support MediaStreamTrack.\n\nTry Chrome Canary.');
+	} else {
+	  // MediaStreamTrack.getSources( onSourcesAcquired);
+	  listSources = MediaStreamTrack.getSources(getDevices);
+	}
+
+	/*
+	function onSourcesAcquired(sources) {
+	  for (var i = 0; i != sources.length; ++i) {
+	    var source = sources[i];
+	    // source.id -> DEVICE ID
+	    // source.label -> DEVICE NAME
+	    // source.kind = "audio" OR "video"
+	    // TODO: add this to some datastructure of yours or a selection dialog
+	    if (source.label == cameraTopLabel) {cameraTop.label = source.label};
+	    if (source.label == cameraSolLabel) {cameraSol.label = source.label};
+	    console.log("---------------");
+	    console.log("source.kind -> " + source.kind );
+	    console.log("source.label -> " + source.label);
+	    console.log("source.id -> "+ source.id);
+	  }
+	  console.log("---------------");
+	}
+	/**/
+
+	
+	function getDevices(sources) {
+	  for (var i = 0; i != sources.length; ++i) {
+	    var source = sources[i];
+	    // source.id -> DEVICE ID
+	    // source.label -> DEVICE NAME
+	    // source.kind = "audio" OR "video"
+	    // TODO: add this to some datastructure of yours or a selection dialog
+	    //if (source.label == cameraTopLabel) {cameraTop.label = source.label};
+	    //if (source.label == cameraSolLabel) {cameraSol.label = source.label};
+	    console.log("---------------");
+	    console.log("source.kind -> " + source.kind );
+	    console.log("source.label -> " + source.label);
+	    console.log("source.id -> "+ source.id);
+	  }
+	  console.log("---------------");
+	  return sources;
+	}
+
+
+
+
+	//console.log(sources);
+
+	// And then when calling getUserMedia, specify the id in the constraints:
+	/*
+	var constraints = {
+	  audio: {
+	    optional: [{sourceId: selected_audio_source_id}]
+	  },
+	  video: {
+	    optional: [{sourceId: selected_video_source_id}]
+	  }
+	};
+	
+	/**/// navigator.getUserMedia(constraints, onSuccessCallback, onErrorCallback);
+
+}
+
+console.log(listSources);
+// console.log(cameraSol.label);
 // options pour l'objet PeerConnection
 
 var server = {'iceServers':[{'url':'stun:23.21.150.121'}]};
@@ -104,10 +203,14 @@ function initLocalMedia() {
 	// get the user's media, in this case just video
 	navigator.getUserMedia({video: true}, function (stream) {
 		localStream = stream;
+		console.log ("@ initLocalMedia()");
+		//console.log (common.testObject(stream));
 		video.src = URL.createObjectURL(localStream);
 		pc.addStream(localStream);
-		console.log("localStream >> "+localStream);
-		console.log(localStream);
+		//console.log("localStream >> "+localStream);
+		//console.log(localStream);
+		//console.log (common.testObject(localStream));
+		
 		// set one of the video src to the stream
 		//video.src = URL.createObjectURL(stream);
 		//pc.addStream(stream);
@@ -117,6 +220,12 @@ function initLocalMedia() {
 };
 
 initLocalMedia();
+
+
+
+
+
+
 
 // initialisation de la connexion
 function connect () {
@@ -154,28 +263,7 @@ function connect () {
 	pc.onaddstream = function (e) {
 		console.log("@ pc.onaddstream > timestamp:" + Date.now());
 		remoteStream = e.stream;
-		
-		/*// BUG objet mediaStream Vide si answer après renégo
-		console.log(e);
-		console.log("-TEST--------------------------------------------");
-		// FIX >> Utilisation du stream transmit en parallèle par websocket
-		if (e.stream.id == "default") {
-			console.log("remoteStream >> default");
-			e.stream = ws_remoteStream;
-		} else {
-			console.log("remoteStream >> normal");
-			remoteStream = e.stream;
-		}
-		console.log(e);
-		console.log("-ws_remoteStream--------------------------------------------");
-		console.log(ws_remoteStream);
-		console.log("-remoteStream--------------------------------------------");
-		console.log(remoteStream);
-		//console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-		/**/
 		video2.src = URL.createObjectURL(remoteStream);
-		
-
 	};
 
 
@@ -228,16 +316,6 @@ function connect () {
 	    // On lance la méthode de préparatoire a la renégo
 	    onDisconnect();
 	});
-
-	// Réception d'un stream 
-	/*// >>> Hack correction bug mediaStream sdp null en cas de renégo
-	socket.on("stream", function(data) { 
-		console.log(">> socket.on('stream',...");
-	   	ws_remoteStream = data.message;
-	   	console.log(ws_remoteStream);
-	});
-	/**/
-	
 
 	// Fonctions communes apellant/apellé
 	
@@ -299,7 +377,6 @@ function connect () {
 		// Cause: L'écouteur de reception "offer"est instancié 2 fois...
 		// FIX: ajout d'un flag "isRenegociate = false;" 
 		if (isRenegociate == false) {
-			
 			socket.on("offer", function(data) { 	
 				//console.log("(apellé)>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 				console.log( ">>> offer from ("+data.placeListe+")"+data.pseudo);
@@ -308,9 +385,7 @@ function connect () {
 				// Une foi l'offre reçue et celle-ci enregistrée
 				// dans un setRemoteDescription, on peu enfin générer
 				// une réponse SDP
-				pc.createAnswer(doAnswer, errorHandler, constraints);
-
-  					
+				pc.createAnswer(doAnswer, errorHandler, constraints);	
 			});	
 		} 
 		
@@ -329,10 +404,11 @@ function onDisconnect () {
 	// video1.src="";
 	video2.src="";
 	
-	// on modifie les variables de rôle (On prend le statut d'apellé)
+	/*// on modifie les variables de rôle (On prend le statut d'apellé)
 	type = "appelé";
 	otherType = "appelant";
 	console.log("Vous êtes maintenant l'"+type);
+	/**/
 	
 	// on coupe le RTC Data channel
 	if (channel) channel.close();

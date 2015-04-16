@@ -17,7 +17,7 @@
 
 <body>
 
-    <strong>PILOTE script base 1TO1 </strong> version 0.3.0
+    <strong>Base 1TO1 Pilote side</strong> v 0.4.0
     <br/><info id="zone_info_server"></info>
     <hr/>
 
@@ -25,24 +25,24 @@
 	<ul class="flex-container wrap">
 
 		<section id="websocket_chat">
-			 <li class="flex-item myvideo">
+			 <li class="flex-item myvideo pilote">
 		        
 				<strong> Websocket Chat Test </strong>
 				<hr/>
-		        <form action="/" method="post" id="formulaire_chat">
+		        <form action="/" method="post" id="formulaire_chat_websoket">
 		            <input type="text" name="message" id="message" placeholder="Votre message..." size="28" autofocus />
 		            <input type="submit" id="envoi_message" value="Envoyer" />
 		        </form>
 	       	 	<hr/>
-			 	<div id="zone_chat"></div>
+			 	<div id="zone_chat_websocket"></div>
 
 	       	 </li>
         </section>
 
         
 	    <section id="myvideos" class="sectionOneVideo">
-		    <li class="flex-item myvideo">
-			    <strong> WebRTC localVideo Test </strong>
+		    <li class="flex-item myvideo pilote">
+			    <strong> WebRTC localVideo (Pilote)</strong>
 				<hr/>
 			    <!--<div id="infoIceCandidateSended">???</div>-->
 			    <video id='video' autoplay muted controls="controls"></video>
@@ -50,8 +50,8 @@
 	    </section>
 	    
 	     <section class="yourvideos" class="sectionMultipleVideos">
-		    <li class="flex-item yourvideo">
-			    <strong> WebRTC remoteVideo Test </strong>
+		    <li class="flex-item yourvideo pilote">
+			    <strong> WebRTC remoteVideo (Robot)</strong>
 				<hr/>
 			    <!--<div id="infoIceCandidateReceived">???</div>-->
 			    <video id='otherPeer' autoplay muted controls="controls" ></video>
@@ -61,16 +61,19 @@
 		
 		<section id="chat">
 		  
-			<li class="flex-item">
+			<li class="flex-item pilote">
 				
 				<div id='textareas'>
 					<strong> WebRTC dataChannel Test </strong>
 					<hr/>
-					<button id="sendButton" disabled>WebRTC dataChannel Send</button>
+					<button id="sendButton" disabled onclick="sendMessage()">WebRTC dataChannel Send</button>
 					<br/>
-					<textarea id="dataChannelSend" disabled placeholder="Write datas to send..."></textarea>
+					<textarea id="dataChannelSend" disabled placeholder="Waiting open channel..."></textarea>
 					<hr/> 
+					<!--
 					<textarea id="dataChannelReceive" disabled placeholder="Waiting WebRTC datas..."></textarea>
+					-->
+					<div id="chatlog">Waiting open channel...</div>
 				</div>
 		
 	  		</li>
@@ -78,10 +81,11 @@
 	  	</section>
 
 
-
-
-
-
+		<script>	  	 
+		var type = "appelant";
+		var otherType = "appelé";
+		</script>
+        
         <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
         <script src="/socket.io/socket.io.js"></script>
         <script src="/js/common.js"></script>

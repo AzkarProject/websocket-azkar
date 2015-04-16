@@ -62,8 +62,18 @@ section {
   -webkit-flex-wrap: wrap;
   flex-wrap: wrap;
 }  
+/*
 .wrap li {
   background: #cccccc;
+}
+/**/
+
+.robot {
+ background: #A9D0F5;
+}
+
+.pilote {
+ background: #FACC2E;
 }
 
 .wrap-reverse         { 

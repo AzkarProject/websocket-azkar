@@ -28,7 +28,7 @@ app.use(express.static(__dirname));
 app.get('/', function (req, res) {
   res.sendFile(__dirname + '/index.html');
 });
-/**/
+
 
 
 // Routing IHM >>>> TODO coté clients
@@ -200,7 +200,7 @@ io.sockets.on('connection', function (socket, pseudo) {
     }); 
 
     // Quand est balancé un message 'stream'
-    // il est relayé à tous les autres connectés sauf à celui qui l'a envoyé
+    // Note: Pour débugg probleme de réinstanciation du remoteStream coté apellant...
     socket.on('stream', function (message) {
     	console.log ("@ stream from "+socket.placeListe+socket.pseudo+" timestamp:" + Date.now());
         socket.broadcast.emit('stream', {pseudo: socket.pseudo, message: message, placeListe: socket.placeListe});

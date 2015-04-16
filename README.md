@@ -4,62 +4,70 @@
 
 ### Todo's
 
-:large_orange_diamond: STEP 1 >>> livrable base 1to1:
-- :white_check_mark:: Hebergement nodejs sur Openshift
-- :white_check_mark: HTML5 & css client
-- :white_check_mark: Implémentation classes javascript communes client/serveur
-- :white_check_mark: Implémentation Tchat websocket indépendant de WebRTC
-- :white_check_mark: Implémentation localStram
-- :white_check_mark: Implémentation Signaling WebSocket 
-	- :white_check_mark: Bug objet SDP
-	- :white_check_mark: Bug objet Candidate
-	- :white_check_mark: gestion déconnexions (apellant/apellé)
-- :white_check_mark: Implémentation RemoteStream
-- :white_check_mark: implémentation RtcDataChannel 
-- :white_check_mark: Websocket gestion des connectés
-	- :white_check_mark: Liste connectés
-	- :white_check_mark: Historique des connexions
-	- :white_check_mark: Gestion des numéros d'ordre
-- :white_check_mark: Routes différenciées (pilote/robot)	
-- :large_orange_diamond: WebRTC: gestion déco/reco (appelant<>appelé)
-	- :white_check_mark: Bug renégociation RTCDataChannel
-	- :interrobang: Bug renégotiation RemoteStream 
-        - >>> Refaire demande ouverture caméra sur Appelé (Robot)
-        - >>> Chromium + --use-fake-ui sur Appelé (Robot)
-        - :white_check_mark: Test local Crhome/Chrome
-        - :interrobang: Test local Chromium/Chromium
-            - >>> OK au lancement Chromium + serveur
-            - >>> Surcharge BP si multiples renégo
-            - >>> Signaling HS si relance serveur + refresh Crhomium
-        - :interrobang: Test local Chromium/Chrome
-            - >>> BUG renégo RemoteStream
-        - :interrobang:: tests en ligne
-            - >>> BUG buffer signaling onDisconnect...
-            - :large_orange_diamond: Vider buffer coté serveur (si déco Robot) ou revenir API WebRTC
-            - :large_orange_diamond: Définir Rôle Robot/Pilote par routing
-- :ballot_box_with_check: main.js différenciés (Pilote/Robot)
-- :ballot_box_with_check: IHM différenciées (Pilote/Robot)
-- :ballot_box_with_check: 2 remotes Stream (Caméra tête et caméra sol)
-- :ballot_box_with_check: Implémentations outils de test
-- :ballot_box_with_check: Constraints paramétrables
-- :ballot_box_with_check: intégration webComponents caméra
-- :ballot_box_with_check: Interception ICE candidate actif
-- :ballot_box_with_check: Forcer le choix Host/Stun/Turn
+Encours:  STEP 1 >>> livrable base 1to1:
+- DO: Hebergement nodejs sur Openshift
+- DO: HTML5 & css client
+- DO: Implémentation classes javascript communes client/serveur
+- DO: Implémentation Tchat websocket indépendant de WebRTC
+- DO: Implémentation localStram
+- DO: Implémentation Signaling WebSocket 
+	- FIX: bug objet SDP
+	- FIX: bug objet Candidate
+	- DO: gestion déconnexions (apellant/apellé)
+- DO: Implémentation RemoteStream
+- DO: implémentation RtcDataChannel 
+- DO: Websocket - gestion des connectés
+	- DO: Liste connectés
+	- DO: Historique des connexions
+	- DO: Gestion des numéros d'ordre
+- DO Routes différenciées (pilote/robot)	
+- Encours :  WebRTC - gestion déco/reco (appelant<>appelé)
+	- DO: Renégociation RTCDataChannel
+	- Encours: renégotiation RemoteStream 
+        - FIX: Relancer ouverture caméra sur Appelé (Robot)
+        - FIX: Use Chromium + --use-fake-ui sur Appelé (Robot)
+        - DO: Test local Crhome/Chrome > R.A.S
+        - Encours: Test local Chromium/Chromium > BUGS
+            - BUG: Surcharge BP (multiples renégo)
+                - TODO: ??? petite temporisation au vidage ???
+            - Encours: Signaling HS (reset serveur) 
+                - DO: Définir Rôle Robot/Pilote par routing > 
+                - TODO: Detect déco serveur coté client
+                - TODO: Reinitialiser session websocket coté client
+        - DO: Test local Chromium/Chrome > BUGS
+            - FIX: renégo RemoteStream (add 2ème caméra, 1 par browser)
+            - BUG: Renégo si déco Robot
+        - Encours: Tests en ligne > BUGS
+            - BUG: buffer signaling onDisconnect...
+                - TODO: Vider buffer coté serveur (si déco Robot) ou revenir API WebRTC                
+- Encours: 2 remotes Stream (Caméra tête et caméra sol)
+    - DO: get devices sur apellé (Robot)
+    - Encours: Select Device ID (Robot)
+    - TODO: Add capture 2eme Stream Sol > Robot
+    - TODO: Add affichage 2ème Stream Sol > Pilote
+    - TODO: pré-signaling >> Select Devices Robot coté pilote   
+- Encours: main.js différenciés (Pilote/Robot)
+- Encours: IHM différenciées (Pilote/Robot)
+- TODO: Implémentations outils de test
+- TODO: Constraints paramétrables
+- TODO: intégration webComponents caméra
+- TODO: Interception ICE candidate actif
+- TODO: Forcer le choix Host/Stun/Turn
 
-:ballot_box_with_check: STEP 2 >>> Livrable base NtoN:
-- :ballot_box_with_check: Gestion des connectés
-	- :ballot_box_with_check: transformer les Users en "objet"
-	- :ballot_box_with_check: Passer liste Users coté client
-- :ballot_box_with_check: Websocket gestion des rooms
-- :ballot_box_with_check: Routes différenciées (pilote/robot + clients)
-- :ballot_box_with_check: IHM différenciées (Pilote/robot + clients)
-- :ballot_box_with_check: main.js différenciés (Pilote/Robot + clients)	
-- :ballot_box_with_check: Intégration +Sieurs instances de RTCPeerConnection
-- :ballot_box_with_check: Intégration full-mesh (bas niveau ou librairie ??)
+TODO: STEP 2 >>> Livrable base NtoN:
+- TODO: Gestion des connectés
+	- TODO: transformer les Users en "objet"
+	- TODO: Passer liste Users coté client
+- TODO: Websocket gestion des rooms
+- TODO: Routes différenciées (pilote/robot + clients)
+- TODO: IHM différenciées (Pilote/robot + clients)
+- TODO: main.js différenciés (Pilote/Robot + clients)	
+- TODO: Intégration +Sieurs instances de RTCPeerConnection
+- TODO: Intégration full-mesh (bas niveau ou librairie ??)
 
-:ballot_box_with_check: STEP 3 >>> Livrable base 1toN
-- :ballot_box_with_check: Intégration multiStream plan B (Chrome) 
-- :ballot_box_with_check: Intégration multiStream plan unifié (Mozzila) 
+TODO: STEP 3 >>> Livrable base 1toN
+- TODO: Intégration multiStream plan B (Chrome) 
+- TODO: Intégration multiStream plan unifié (Mozzila) 
 
 ------------------------------------------------------------
 

@@ -14,6 +14,27 @@ var nbUsers = 0;
 
 // Initialisation du canal de signalisation
 var socket = io.connect();
+/*
+var socket = io.connect(socketServer, 
+                {rememberTransport: false, 
+                'reconnect': true,
+                'reconnection delay': 500,
+                'max reconnection attempts': 10,
+                'secure': true});
+
+socket.on('disconnect', function() {
+    alert('client socketio disconnect!')
+});
+/**/
+
+// Fonctions websocket dédiées au tchat ---------------------------
+
+// On demande le pseudo, on l'envoie au serveur et on l'affiche dans le titre
+var pseudo = prompt('Quel est votre pseudo ?');
+if (!pseudo) { pseudo = "";}
+document.title = pseudo + ' - ' + document.title;
+
+socket.emit('nouveau_client', pseudo);
 
 
 // Pour contrôle hosting
@@ -27,14 +48,6 @@ socket.on('infoServer', function(data) {
   }
 })
 
-
-// Fonctions websocket dédiées au tchat ---------------------------
-
-// On demande le pseudo, on l'envoie au serveur et on l'affiche dans le titre
-var pseudo = prompt('Quel est votre pseudo ?');
-if (!pseudo) { pseudo = "";}
-socket.emit('nouveau_client', pseudo);
-document.title = pseudo + ' - ' + document.title;
 
 // Updater le pseudo local (pour le fun...)
 socket.on('position_liste', function(placeListe) {
