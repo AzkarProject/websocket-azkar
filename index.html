@@ -17,76 +17,13 @@
 
 <body>
 
-    <strong>AZKAR WebRTC script base 1TO1 </strong> version 0.3.3
+    <strong>AZKAR WebRTC script base 1TO1 </strong> version 0.4.0
     <br/><info id="zone_info_server"></info>
     <hr/>
 
+
+   <p><a href="/pilote/">Vous êtes un pilote</a></p>
+   <p><a href="/robot/">Vous êtes un robot</a></p>
 		
-	<ul class="flex-container wrap">
-
-		<section id="websocket_chat">
-			 <li class="flex-item myvideo">
-		        
-				<strong> Websocket Chat Test </strong>
-				<hr/>
-		        <form action="/" method="post" id="formulaire_chat_websoket">
-		            <input type="text" name="message" id="message" placeholder="Votre message..." size="28" autofocus />
-		            <input type="submit" id="envoi_message" value="Envoyer" />
-		        </form>
-	       	 	<hr/>
-			 	<div id="zone_chat_websocket"></div>
-
-	       	 </li>
-        </section>
-
-        
-	    <section id="myvideos" class="sectionOneVideo">
-		    <li class="flex-item myvideo">
-			    <strong> WebRTC localVideo Test </strong>
-				<hr/>
-			    <!--<div id="infoIceCandidateSended">???</div>-->
-			    <video id='video' autoplay muted controls="controls"></video>
-			</li>
-	    </section>
-	    
-	     <section class="yourvideos" class="sectionMultipleVideos">
-		    <li class="flex-item yourvideo">
-			    <strong> WebRTC remoteVideo Test </strong>
-				<hr/>
-			    <!--<div id="infoIceCandidateReceived">???</div>-->
-			    <video id='otherPeer' autoplay muted controls="controls" ></video>
-	  	 	</li>
-	  	 </section>
-
-		
-		<section id="chat">
-		  
-			<li class="flex-item">
-				
-				<div id='textareas'>
-					<strong> WebRTC dataChannel Test </strong>
-					<hr/>
-					<button id="sendButton" disabled onclick="sendMessage()">WebRTC dataChannel Send</button>
-					<br/>
-					<textarea id="dataChannelSend" disabled placeholder="Waiting open channel..."></textarea>
-					<hr/> 
-					<!--
-					<textarea id="dataChannelReceive" disabled placeholder="Waiting WebRTC datas..."></textarea>
-					-->
-					<div id="chatlog">Waiting open channel...</div>
-				</div>
-		
-	  		</li>
-	  	
-	  	</section>
-
-        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-        <script src="/socket.io/socket.io.js"></script>
-        <script src="/js/common.js"></script>
-        <script src='/js/adapter.js'></script>
-        <script src='/js/ws_manager.js'></script>
-		<script src='/js/main.js'></script>
-
-
 </body>
 </html>
