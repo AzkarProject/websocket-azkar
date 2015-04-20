@@ -5,6 +5,13 @@ info {
  
 }
 
+#audiosource {
+  width:100%;
+}
+
+#videosource {
+  width:100%;
+}
 
 /* ---- Chat Websocket */
 #zone_chat_websocket, #zone_chat_WebRTC {
