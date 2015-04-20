@@ -17,7 +17,7 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || 
 
 
 // grab the video elements from the document
-var video = document.getElementById("video");
+var video1 = document.getElementById("video");
 var video2 = document.getElementById("otherPeer");
 
 
@@ -52,101 +52,47 @@ socket.on('updateUsers', function(data) {
 
 
 
-var sources = [];
-
-/*// Détection des devices...
-if (type == "appelé") {
-	
-	MediaStreamTrack.getSources(function (media_sources) {
-	    for (var i = 0; i < media_sources.length; i++) {
-	        var media_source = media_sources[i];
-	        var listOfDevices = common.stringObjectDump(media_sources);
-	        console.log(listOfDevices,"media_sources");
-	    }
-	});
-}
-/**/
-
-// Configuration des caméras du robot:
-var cameraTopLabel = "HP HD Webcam (04f2:b3ed)";
-var cameraSolLabel = "Logitech HD Pro Webcam C910 (046d:0821)";
-
-var cameraTop = {};
-var cameraSol = {};
-var micro = {};
-
-var listSources = null;
-
-if (type == "appelé") {
-
-	if (typeof MediaStreamTrack === 'undefined'){
-	  alert('This browser does not support MediaStreamTrack.\n\nTry Chrome Canary.');
-	} else {
-	  // MediaStreamTrack.getSources( onSourcesAcquired);
-	  listSources = MediaStreamTrack.getSources(getDevices);
-	}
-
-	/*
-	function onSourcesAcquired(sources) {
-	  for (var i = 0; i != sources.length; ++i) {
-	    var source = sources[i];
-	    // source.id -> DEVICE ID
-	    // source.label -> DEVICE NAME
-	    // source.kind = "audio" OR "video"
-	    // TODO: add this to some datastructure of yours or a selection dialog
-	    if (source.label == cameraTopLabel) {cameraTop.label = source.label};
-	    if (source.label == cameraSolLabel) {cameraSol.label = source.label};
-	    console.log("---------------");
-	    console.log("source.kind -> " + source.kind );
-	    console.log("source.label -> " + source.label);
-	    console.log("source.id -> "+ source.id);
-	  }
-	  console.log("---------------");
-	}
-	/**/
-
-	
-	function getDevices(sources) {
-	  for (var i = 0; i != sources.length; ++i) {
-	    var source = sources[i];
-	    // source.id -> DEVICE ID
-	    // source.label -> DEVICE NAME
-	    // source.kind = "audio" OR "video"
-	    // TODO: add this to some datastructure of yours or a selection dialog
-	    //if (source.label == cameraTopLabel) {cameraTop.label = source.label};
-	    //if (source.label == cameraSolLabel) {cameraSol.label = source.label};
-	    console.log("---------------");
-	    console.log("source.kind -> " + source.kind );
-	    console.log("source.label -> " + source.label);
-	    console.log("source.id -> "+ source.id);
-	  }
-	  console.log("---------------");
-	  return sources;
-	}
+// --------------------
+// console.log("TYPE >>>>>>>" + type);
 
 
+// Fonction de récupération des devices disponibles sur la machine
+function gotSources(sourceInfos) {
+  
+  for (var i = 0; i !== sourceInfos.length; ++i) {
+    var sourceInfo = sourceInfos[i];
+    var option = document.createElement('option');
+    option.value = sourceInfo.id;
 
+    if (sourceInfo.kind === 'audio') {
+      option.text = sourceInfo.label ||
+        'microphone ' + (audioSelect.length + 1);
+      audioSelect.appendChild(option);
+    
+    } else if (sourceInfo.kind === 'video') {
+      option.text = sourceInfo.label || 'camera ' + (videoSelect.length + 1);
+      videoSelect.appendChild(option);
+   
+    } else {
+      console.log('Some other kind of source: ', sourceInfo);
+    }
 
-	//console.log(sources);
-
-	// And then when calling getUserMedia, specify the id in the constraints:
-	/*
-	var constraints = {
-	  audio: {
-	    optional: [{sourceId: selected_audio_source_id}]
-	  },
-	  video: {
-	    optional: [{sourceId: selected_video_source_id}]
-	  }
-	};
-	
-	/**/// navigator.getUserMedia(constraints, onSuccessCallback, onErrorCallback);
-
+    console.log("---------------");
+	console.log("source.kind -> " + sourceInfo.kind );
+	console.log("source.label -> " + sourceInfo.label);
+	console.log("source.id -> "+ sourceInfo.id);
+	console.log(sourceInfo);
+	common.traceObjectDump(sourceInfo,"sourceInfo");
+  }
+ 
+  console.log("---------------");
 }
 
-console.log(listSources);
-// console.log(cameraSol.label);
+
+/**/// --------------------
+
 // options pour l'objet PeerConnection
+
 
 var server = {'iceServers':[{'url':'stun:23.21.150.121'}]};
 server.iceServers.push({url: 'stun:stun.l.google.com:19302'});
@@ -198,18 +144,58 @@ var debugNbOnOffer = 0;
 var isRenegociate = false;
 
 
+// sélecteurs de micros et caméras
+var audioSelect = document.querySelector('select#audioSource');
+var videoSelect = document.querySelector('select#videoSource');
+
+// Ecouteurs des changements de sélection
+//audioSelect.onchange = initLocalMedia;
+//videoSelect.onchange = initLocalMedia;
+
+// Lancement de la récupération des Devices disponibles
+if (typeof MediaStreamTrack === 'undefined') {
+  	alert('This browser does not support MediaStreamTrack.\n\nTry Chrome.');
+} else {
+  	MediaStreamTrack.getSources(gotSources);
+}
+
 // initialisation du localStream et lancement connexion
 function initLocalMedia() {
-	// get the user's media, in this case just video
-	navigator.getUserMedia({video: true}, function (stream) {
+
+ 	// Récupération des caméras et micros selectionnés	
+	var audioSource = audioSelect.value;
+	var videoSource = videoSelect.value;
+	
+	var constraint = 	{	audio: { 
+					      optional: [{
+					        sourceId: audioSource
+					      }]
+					    },
+					    
+					    video: {
+					      optional: [{
+					        sourceId: videoSource
+					      }]
+					    }
+					 }
+		
+	
+	console.log("audioSource sourceId: "+ audioSource);
+	console.log("videoSource sourceId: "+ videoSource);
+
+	// Initialisdation du localStream et lancement connexion
+	navigator.getUserMedia(constraint, function (stream) {
+		// alert ("Open Camera"); // Pour simuler la demande de caméra...
+		// common.AlertObjectDump(constraints, "constraint")
 		localStream = stream;
 		console.log ("@ initLocalMedia()");
+		
 		//console.log (common.testObject(stream));
-		video.src = URL.createObjectURL(localStream);
+		video1.src = URL.createObjectURL(localStream);
 		pc.addStream(localStream);
 		//console.log("localStream >> "+localStream);
 		//console.log(localStream);
-		//console.log (common.testObject(localStream));
+		console.log (common.testObject(localStream));
 		
 		// set one of the video src to the stream
 		//video.src = URL.createObjectURL(stream);
@@ -219,12 +205,21 @@ function initLocalMedia() {
 	}, errorHandler);
 };
 
-initLocalMedia();
 
 
+// Envoi commande Ouverture Caméra et micro 
+function manageDevices () {
+	//var msg = message.value;
+	//channel.send(msg);
+	//message.value = "";
+	buttonDevices.disabled = true; 
+	audioSelect.disabled = true; 
+	videoSelect.disabled = true; 
+
+	initLocalMedia();
 
 
-
+}
 
 
 // initialisation de la connexion
@@ -280,6 +275,11 @@ function connect () {
 		// En utilisant l'ecouteur coté serveur. DONC : 
 		// PLAN B > Utiliser Websocket +tôt que l'écouteur webRTC
 		// Because c'est nettement plus rapide et réactif...
+
+		// TEST: A la reception d'un statut "completed"
+		// On vide les IceCandidates...
+
+
 	};
 
 	// Ecouteur ... // OK instancié...
@@ -404,6 +404,11 @@ function onDisconnect () {
 	// video1.src="";
 	video2.src="";
 	
+	//videoElement.src = null;
+    //window.stream.stop();
+
+
+
 	/*// on modifie les variables de rôle (On prend le statut d'apellé)
 	type = "appelé";
 	otherType = "appelant";
