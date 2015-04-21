@@ -54,12 +54,12 @@
         - [x] Tests en ligne (HP > wifi > Surface)
     - [ ] Pré-signaling 
         - [x] IHM Select Devices Robot (sur IHM pilote)
-        - [ ] (pilote) js select-Devices
-            - [ ] (Robot) IHM désactiver select Devices
-            - [ ] (Robot) js > objet "listDevices" + Envoi > Pilote
-            - [ ] (Pilote) js > Traitement "listDevices" + sélect
-            - [ ] (Pilote) js > objet "selectedDevices" > Renvoi Robot
-            - [ ] (Robot) js > Traitement "selectedDevices" 
+        - [ ] "pilote" js select-Devices
+            - [ ] "Robot" IHM désactiver select Devices
+            - [ ] "Robot" js > objet "listDevices" + Envoi > Pilote
+            - [ ] "Pilote" js > Traitement "listDevices" + sélect
+            - [ ] "Pilote" js > objet "selectedDevices" > Renvoi Robot
+            - [ ] "Robot" js > Traitement "selectedDevices" 
     - [ ] Add capture 2eme Stream Sol > Robot
     - [ ] Add affichage 2ème Stream Sol > Pilote
 - [ ] IHM différenciées (Pilote/Robot)
