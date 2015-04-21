@@ -148,6 +148,14 @@ var isRenegociate = false;
 var audioSelect = document.querySelector('select#audioSource');
 var videoSelect = document.querySelector('select#videoSource');
 
+
+// sélecteurs de micros et caméras (robot) affiché coté pilote 
+var robot_audioSelect = document.querySelector('select#robot_audioSource');
+var robot_videoSelect = document.querySelector('select#robot_videoSource');
+
+
+
+
 // Ecouteurs des changements de sélection
 //audioSelect.onchange = initLocalMedia;
 //videoSelect.onchange = initLocalMedia;
@@ -220,6 +228,19 @@ function manageDevices () {
 
 
 }
+
+function robotManageDevices () {
+	//var msg = message.value;
+	//channel.send(msg);
+	//message.value = "";
+	buttonDevices.disabled = false; 
+	audioSelect.disabled = false; 
+	videoSelect.disabled = false;
+
+	initLocalMedia();
+}
+
+
 
 
 // initialisation de la connexion
