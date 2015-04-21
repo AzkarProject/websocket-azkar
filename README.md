@@ -2,72 +2,89 @@
 
 -------------------------------------------------
 
-### Todo's
+### TODO's
 
 Encours:  STEP 1 >>> livrable base 1to1:
-- DO: Hebergement nodejs sur Openshift
-- DO: HTML5 & css client
-- DO: Implémentation classes javascript communes client/serveur
-- DO: Implémentation Tchat websocket indépendant de WebRTC
-- DO: Implémentation localStram
-- DO: Implémentation Signaling WebSocket 
-	- FIX: bug objet SDP
-	- FIX: bug objet Candidate
-	- DO: gestion déconnexions (apellant/apellé)
-- DO: Implémentation RemoteStream
-- DO: implémentation RtcDataChannel 
-- DO: Websocket - gestion des connectés
-	- DO: Liste connectés
-	- DO: Historique des connexions
-	- DO: Gestion des numéros d'ordre
-- DO Routes différenciées (pilote/robot)	
-- Encours :  WebRTC - gestion déco/reco (appelant<>appelé)
-	- DO: Renégociation RTCDataChannel
-	- Encours: renégotiation RemoteStream 
-        - FIX: Relancer ouverture caméra sur Appelé (Robot)
-        - FIX: Use Chromium + --use-fake-ui sur Appelé (Robot)
-        - DO: Test local Crhome/Chrome > R.A.S
-        - Encours: Test local Chromium/Chromium > BUGS
-            - BUG: Surcharge BP (multiples renégo)
-                - TODO: ??? petite temporisation au vidage ???
-            - Encours: Signaling HS (reset serveur) 
+- [x]: Hebergement nodejs sur Openshift
+- [x]: HTML5 & css client
+- [x]: Implémentation classes javascript communes client/serveur
+- [x]: Implémentation Tchat websocket indépendant de WebRTC
+- [x]: Implémentation localStram
+- [x]: Implémentation Signaling WebSocket 
+	- [x] FIX: bug objet SDP
+	- [x] FIX: bug objet Candidate
+	- [x]: gestion déconnexions (apellant/apellé)
+- [x]: Implémentation RemoteStream
+- [x]: implémentation RtcDataChannel 
+- [x]: Websocket - gestion des connectés
+	- [x]: Liste connectés
+	- [x]: Historique des connexions
+	- [x]: Gestion des numéros d'ordre
+- [x] Routes différenciées (pilote/robot)	
+- [ ]:  WebRTC - gestion déco/reco (appelant<>appelé)
+	- [x]: Renégociation RTCDataChannel
+	- [ ]: renégotiation RemoteStream 
+        - [x]FIX: Relancer ouverture caméra sur Appelé (Robot)
+        - [x]FIX: Use Chromium + --use-fake-ui sur Appelé (Robot)
+        - [x]: Test local Crhome/Chrome > R.A.S
+        - [ ]: Test local Chromium/Chromium > BUGS
+            - [ ] BUG: Surcharge BP (multiples renégo)
+                - [ ]: ??? petite temporisation au vidage ???
+            - [ ]: Signaling HS (reset serveur) 
                 - DO: Définir Rôle Robot/Pilote par routing > 
-                - TODO: Detect déco serveur coté client
-                - TODO: Reinitialiser session websocket coté client
-        - DO: Test local Chromium/Chrome > BUGS
-            - FIX: renégo RemoteStream (add 2ème caméra, 1 par browser)
-            - BUG: Renégo si déco Robot
-        - Encours: Tests en ligne > BUGS
-            - BUG: buffer signaling onDisconnect...
-                - TODO: Vider buffer coté serveur (si déco Robot) ou revenir API WebRTC                
-- Encours: 2 remotes Stream (Caméra tête et caméra sol)
-    - DO: get devices sur apellé (Robot)
-    - Encours: Select Device ID (Robot)
-    - TODO: Add capture 2eme Stream Sol > Robot
-    - TODO: Add affichage 2ème Stream Sol > Pilote
-    - TODO: pré-signaling >> Select Devices Robot coté pilote   
-- Encours: main.js différenciés (Pilote/Robot)
+                - [ ]: Detect déco serveur coté client
+                - [ ]: Reinitialiser session websocket coté client
+        - [ ]: Test local Chromium/Chrome > BUGS
+            - [x] FIX: renégo RemoteStream (add 2ème caméra, 1 par browser)
+            - [ ] BUG: Renégo si déco Robot
+        - [ ]: Tests en ligne > BUGS 
+            - [ ] BUG: buffer signaling onDisconnect...
+                - [ ]: Vider buffer coté serveur (si déco Robot) ou revenir API WebRTC
+            - [ ] BUG: a la 1ère renégo
+- [ ]: 2 remotes Stream (Caméra tête et caméra sol)
+    - [x]: get devices (Robot & Pilote)
+    - [x]: Select Device ID (Robot & Pilote)
+    - Encours: TESTS
+        - [x]: Tests local (Chrome/Chrome)
+        - [x]: Tests local (Chromium/Chrome)
+        - [ ] BUGS: Tests en ligne (HP/HP)
+            - [x] OK: a la 1ere connexion 
+            - [ ] BUG: à la renégo
+        - [x]: Tests en ligne (HP > fil > Surface)
+        - [x]: Tests en ligne (HP > wifi > Surface)
+    - [ ]: pré-signaling 
+        - [x]: IHM Select Devices Robot (sur IHM pilote)
+        - [ ]: (pilote) js select-Devices
+            - [ ]: (Robot) IHM désactiver select Devices
+            - [ ]: (Robot) js > objet "listDevices" + Envoi > Pilote
+            - [ ]: (Pilote) js > Traitement "listDevices" + sélect
+            - [ ]: (Pilote) js > objet "selectedDevices" > Renvoi Robot
+            - [ ]: (Robot) js > Traitement "selectedDevices" 
+    - [ ]: Add capture 2eme Stream Sol > Robot
+    - [ ]: Add affichage 2ème Stream Sol > Pilote
 - Encours: IHM différenciées (Pilote/Robot)
-- TODO: Implémentations outils de test
-- TODO: Constraints paramétrables
-- TODO: intégration webComponents caméra
-- TODO: Interception ICE candidate actif
-- TODO: Forcer le choix Host/Stun/Turn
+    -[x]: IHM Pilote > sélécteur caméra robot
+- [ ]: main.js différenciés (Pilote/Robot)
+- [ ]: Implémentations outils de test
+- [ ]: Constraints paramétrables
+- [ ]: intégration webComponents caméra
+- [ ]: Interception ICE candidate actif
+- [ ]: Forcer le choix Host/Stun/Turn
 
-TODO: STEP 2 >>> Livrable base NtoN:
-- TODO: Gestion des connectés
-	- TODO: transformer les Users en "objet"
-	- TODO: Passer liste Users coté client
-- TODO: Websocket gestion des rooms
-- TODO: Routes différenciées (pilote/robot + clients)
-- TODO: IHM différenciées (Pilote/robot + clients)
-- TODO: main.js différenciés (Pilote/Robot + clients)	
-- TODO: Intégration +Sieurs instances de RTCPeerConnection
-- TODO: Intégration full-mesh (bas niveau ou librairie ??)
+[ ]: STEP 2 >>> Livrable base NtoN:
+- [ ]: Gestion des connectés
+	- [ ]: transformer les Users en "objet"
+	- [ ]: Passer liste Users coté client
+- [ ]: Websocket gestion des rooms
+- [ ]: Routes différenciées (pilote/robot + clients)
+- [ ]: IHM différenciées (Pilote/robot + clients)
+- [ ]: main.js différenciés (Pilote/Robot + clients)	
+- [ ]: Intégration +Sieurs instances de RTCPeerConnection
+- [ ]: Intégration full-mesh (bas niveau ou librairie ??)
 
-TODO: STEP 3 >>> Livrable base 1toN
-- TODO: Intégration multiStream plan B (Chrome) 
-- TODO: Intégration multiStream plan unifié (Mozzila) 
+[ ]: STEP 3 >>> Livrable base 1toN
+- [ ]: Intégration multiStream plan B (Chrome) 
+- [ ]: Intégration multiStream plan unifié (Mozzila) 
 
 ------------------------------------------------------------
 
