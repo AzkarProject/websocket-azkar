@@ -28,8 +28,7 @@
         - [x] FIX: Use Chromium + --use-fake-ui sur Appelé (Robot)
         - [x] Test local Crhome/Chrome > R.A.S
         - [ ] Test local Chromium/Chromium > BUGS
-            - [ ] BUG: Surcharge BP (multiples renégo)
-                - [ ] ??? petite temporisation au vidage ???
+            - [x] FIX: Surcharge BP (multiples renégo)
             - [ ] Signaling HS (reset serveur) 
                 - [x] Définir Rôle Robot/Pilote par routing > 
                 - [ ] Detect déco serveur coté client
@@ -47,19 +46,21 @@
     - [ ] TESTS
         - [x] Tests local (Chrome/Chrome)
         - [x] Tests local (Chromium/Chrome)
-        - [ ] BUGS: Tests en ligne (HP/HP)
+        - [x] Tests en ligne (HP/HP)
             - [x] OK: a la 1ere connexion 
-            - [ ] BUG: à la renégo
+            - [x] OK: à la renégo
         - [x] Tests en ligne (HP > fil > Surface)
         - [x] Tests en ligne (HP > wifi > Surface)
-    - [ ] Pré-signaling 
+    - [x] Pré-signaling 
         - [x] IHM Select Devices Robot (sur IHM pilote)
-        - [ ] "pilote" js select-Devices
-            - [ ] "Robot" IHM désactiver select Devices
-            - [ ] "Robot" js > objet "listDevices" + Envoi > Pilote
-            - [ ] "Pilote" js > Traitement "listDevices" + sélect
-            - [ ] "Pilote" js > objet "selectedDevices" > Renvoi Robot
-            - [ ] "Robot" js > Traitement "selectedDevices" 
+        - [x] "pilote" js select-Devices
+            - [x] "Robot" IHM désactiver select Devices
+            - [x] "Robot" js > objet "listDevices" + Envoi > Pilote
+            - [x] "Pilote" js > Traitement "listDevices" + sélect
+            - [x] "Pilote" js > objet "selectedDevices" > Renvoi Robot
+            - [x] "Robot" js > Traitement "selectedDevices"
+        - [ ] Tests Chromium/Chrome
+            - [ ] BUG: objet sourceInfo chromium vide...
     - [ ] Add capture 2eme Stream Sol > Robot
     - [ ] Add affichage 2ème Stream Sol > Pilote
 - [ ] IHM différenciées (Pilote/Robot)

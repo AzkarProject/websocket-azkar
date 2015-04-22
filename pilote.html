@@ -43,17 +43,20 @@
      <section id="select-devices">    
 		  
 		<li class="flex-item robot">  
+			<strong>Select Remote Sources</strong>
+			<hr/>
+
 			<div class="select">
-				<label for="robot_audioSource">Robot Audio source: </label>
-				<select id="robot_audioSource"></select>
+				<label for="remote_audioSource">Audio: </label>
+				<select id="remote_audioSource"></select>
 		    </div>
 
 		    <div class="select">
-		      	<label for="robot_videoSource">Robot Video source: </label>
-		      	<select id="robot_videoSource"></select>
+		      	<label for="remote_videoSource">Video: </label>
+		      	<select id="remote_videoSource"></select>
 		    </div>
 			<hr/>
-		    <button id="robot_buttonDevices" onclick="robotManageDevices()">Ouvrir Micro/Caméra</button>
+		    <button id="remote_ButtonDevices" onclick="remoteManageDevices()">Sélectionner</button>
 		</li>
  	
  	</section>
@@ -66,19 +69,20 @@
     <section id="select-devices">    
 		  
 		<li class="flex-item pilote">  
-			
+			<strong> Select local sources</strong>
+			<hr/>
 			<div class="select">
-				<label for="audioSource">Your Audio source: </label>
-				<select id="audioSource"></select>
+				<label for="local_audioSource">Audio: </label>
+				<select id="local_audioSource"></select>
 		    </div>
 
 		    <div class="select">
-		      	<label for="videoSource">Your Video source: </label>
-		      	<select id="videoSource"></select>
+		      	<label for="local_videoSource">Video: </label>
+		      	<select id="local_videoSource"></select>
 		    </div>
 
 		    <hr/>
-		    <button id="buttonDevices" onclick="manageDevices()">Ouvrir Micro/Caméra</button>
+		    <button id="local_ButtonDevices" onclick="localManageDevices()">Ouvrir la connexion</button>
 		</li>
  	
  	</section>

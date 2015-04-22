@@ -42,17 +42,23 @@
     <section id="select-devices">    
 		  
 		<li class="flex-item robot">  
+			<span id="messageDevicesState"> Micro/Camera -- inactifs</span>
+			<hr/>
 			<div class="select">
-				<label for="audioSource">Audio source: </label>
-				<select id="audioSource"></select>
+				<!--<label for="local_audioSource">Audio: </label>-->
+				<select id="local_audioSource"></select>
 		    </div>
 
 		    <div class="select">
-		      	<label for="videoSource">Video source: </label>
-		      	<select id="videoSource"></select>
+		      	<!--<label for="local_videoSource">Video: </label>-->
+		      	<select id="local_videoSource"></select>
 		    </div>
+			
+			<!--
 			<hr/>
-		    <button id="buttonDevices" onclick="manageDevices()">Ouvrir Micro/Caméra</button>
+		    <button id="local_ButtonDevices" onclick="localManageDevices()">Ouvrir Micro/Caméra</button>
+		    -->
+		   
 		</li>
  	
  	</section>
