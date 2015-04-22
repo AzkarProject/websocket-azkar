@@ -206,4 +206,30 @@ io.sockets.on('connection', function (socket, pseudo) {
         socket.broadcast.emit('stream', {pseudo: socket.pseudo, message: message, placeListe: socket.placeListe});
     }); 
 
+
+    // ----------------------------------------------------------------------------------
+    // Phase pré-signaling ( selections caméras et micros du robot par l'IHM pilote)
+
+    // Robot >> Pilote: Offre des cams/micros disponibles coté robot
+    socket.on('remoteListDevices', function (message) {
+    	console.log ("@ remoteListDevices from "+socket.placeListe+socket.pseudo+" timestamp:" + Date.now());
+        socket.broadcast.emit('remoteListDevices', {pseudo: socket.pseudo, message: message, placeListe: socket.placeListe});
+    }); 
+
+    // Pilote >> Robot: cams/micros demandés par le Pilote
+    socket.on('selectedRemoteDevices', function (message) {
+    	console.log ("@ selectedRemoteDevices from "+socket.placeListe+socket.pseudo+" timestamp:" + Date.now());
+        socket.broadcast.emit('selectedRemoteDevices', {pseudo: socket.pseudo, message: message, placeListe: socket.placeListe});
+    }); 
+
+    // Robot >> Pilote: Signal de fin pré-signaling...
+    socket.on('readyForSignaling', function (message) {
+    	console.log ("@ readyForSignaling from "+socket.placeListe+socket.pseudo+" timestamp:" + Date.now());
+        socket.broadcast.emit('readyForSignaling', {pseudo: socket.pseudo, message: message, placeListe: socket.placeListe});
+    }); 
+
+
+
+
+
 });
