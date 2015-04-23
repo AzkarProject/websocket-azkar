@@ -1,6 +1,36 @@
-# AZKAR WebRTC Base 0.4.1 
+# AZKAR WebRTC script Base. V 0.4.1
+------------------------------------------------------------
 
--------------------------------------------------
+Script basé sur clients chrome en 1to1 fonctionnant en bas-niveau. 
+Objectif: Base de développement des différents scripts benchmarks du projet AZKAR.
+
+Architectures prévues:
+- 1 appli 1to1 pour le scénario transport 
+- 1 appli 1toN scénario culture
+- 1 appli NtoN scénario culture
+- 1 appli 1toN scénario santé
+- 1 appli NtoN scénario santé
+
+Versions envisagées pour chaque architectures:
+- 1 en Bas niveau
+- 1 avec lib haut-niveau (ds un second temps)
+
+fonctionnalités supplémentaires à intégrer:
+- 1 tchatt par room avec historique
+- Transfert de fichier 
+- Partage de fichier ( genre 1 room = 1 dossier ) ou avec dropbox ou googledrive
+
+Moockups à établir pour scénarii de développement:
+- Transport: 1 IHM (pilote)
+- Culture: 2 IHM (pilote/conferencier + groupe de visiteurs)
+- Santé: 3 IHM (aidant + robot/patient + consultant)
+
+------------------------------------------------------------
+
+Test en ligne du script base 1to1:
+http://websocket-azkar.rhcloud.com/
+
+------------------------------------------------------------
 
 ### TODO's
 
@@ -107,33 +137,3 @@
 - [ ] Intégration multiStream plan B (Chrome) 
 - [ ] Intégration multiStream plan unifié (Mozzila) 
 
-------------------------------------------------------------
-
-Test en ligne du script base 1to1:
-http://websocket-azkar.rhcloud.com/
-
-------------------------------------------------------------
-AZKAR WebRTC script Base.
-
-Script le plus simple possible et basé sur clients chrome en 1to1 fonctionnant en bas-niveau. Objectif: Base de développement des différents scripts benchmarks du projet AZKAR.
-
-Architectures prévues:
-- 1 appli 1to1 pour le scénario transport 
-- 1 appli 1toN scénario culture
-- 1 appli NtoN scénario culture
-- 1 appli 1toN scénario santé
-- 1 appli NtoN scénario santé
-
-Versions prévues:
-- 1 en Bas niveau
-- 1 avec lib haut-niveau (ds un second temps)
-
-fonctionnalités supplémentaires à intégrer:
-- 1 tchatt par room avec historique
-- Transfert de fichier 
-- Partage de fichier ( genre 1 room = 1 dossier ) ou avec dropbox ou googledrive
-
-Moockups pour scénarii de développement:
-- Transport: 1 IHM (pilote)
-- Culture: 2 IHM (pilote/conferencier + groupe de visiteurs)
-- Santé: 3 IHM (aidant + robot/patient + consultant)
