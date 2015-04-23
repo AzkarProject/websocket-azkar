@@ -98,15 +98,6 @@ function convertChromiumArrayToObject(arr) {
 // disponibles localement et a distance
 function gotSources(sourceInfos) {
   
-  // alert (origin);
-
-  // sourceInfos = toObject(sourceInfos);
-
-
-
-
-
-
   // Si sources locales (pilote)
   if (origin == "local") {
   		listeLocalSources = sourceInfos; 
@@ -117,22 +108,25 @@ function gotSources(sourceInfos) {
   
   }
 
-
-  console.log("taille sourceInfos >>> " + sourceInfos.length);
-  console.log("contenu sourceInfos >>> " + sourceInfos);
-  console.log("contenu listeLocalSources >>> " + listeLocalSources);
-  console.log("sourceInfos testObject >>> " + common.testObject(sourceInfos));
-  console.log(common.stringObjectDump(sourceInfos, "sourceInfos") );
-
-
   for (var i = 0; i !== sourceInfos.length; ++i) {
     
-
     var sourceInfo = sourceInfos[i];
     var option = document.createElement('option');
     option.id = sourceInfo.id;
     option.value = sourceInfo.id;
+  	
+    // Reconstruction de l'objet sourceInfo
+    // qui, pour une raison inconnue, n'est pas transmissible
+    // tel quel par websocket quand il est construit sous Crhomium (V.44.0.2371.0).
+    // Par contre, R.A.S quans il est construit sous Crhome ( V.42.0.2311.90) 
+  	var sourceDevice = new common.sourceDevice();
+  	sourceDevice.id = sourceInfo.id;
+    sourceDevice.label= sourceInfo.label;
+    sourceDevice.kind = sourceInfo.kind;
+    sourceDevice.facing = sourceInfo.facing;
+    sourceInfos[i] = sourceDevice;
 
+    
     if (sourceInfo.kind === 'audio') {
       	
       	if (origin == "local") {	
@@ -161,18 +155,7 @@ function gotSources(sourceInfos) {
       console.log('Some other kind of source: ', sourceInfo);
     
     }
-
-    console.log("---------------> "+origin );
-	console.log("source.kind -> " + sourceInfo.kind );
-	console.log("source.label -> " + sourceInfo.label);
-	console.log("source.id -> "+ sourceInfo.id);
-	console.log(sourceInfo);
-	common.traceObjectDump(sourceInfo,"sourceInfo");
-
   }
- 
-  console.log("---------------"); 
-  
   // On fait un RAZ du flag d'origine
   origin = null;
 }
