@@ -1,4 +1,4 @@
-# AZKAR WebRTC script base 1TO1 version 0.4.0 
+# AZKAR WebRTC Base 0.4.1 
 
 -------------------------------------------------
 
@@ -14,6 +14,9 @@
 	- [x] FIX: bug objet SDP
 	- [x] FIX: bug objet Candidate
 	- [x] Gestion déconnexions (apellant/apellé)
+    - [ ] Gestion Rôles actifs (pilotes/robot)
+    - [ ] TEST en ligne:
+        - [ ] BUG: Persistance messages fantômes après décco
 - [x] Implémentation RemoteStream
 - [x] implémentation RtcDataChannel 
 - [x] Websocket - gestion des connectés
@@ -33,17 +36,15 @@
                 - [x] Définir Rôle Robot/Pilote par routing > 
                 - [ ] Detect déco serveur coté client
                 - [ ] Reinitialiser session websocket coté client
-        - [ ] Test local Chromium/Chrome > BUGS
+        - [X] Test local Chromium/Chrome > BUGS
             - [x] FIX: renégo RemoteStream (add 2ème caméra, 1 par browser)
-            - [ ] BUG: Renégo si déco Robot
+            - [x] FIX: Renégo si déco Robot
         - [ ] Tests en ligne > BUGS 
             - [ ] BUG: buffer signaling onDisconnect...
-                - [ ] Vider buffer coté serveur (si déco Robot) ou revenir API WebRTC
-            - [ ] BUG: a la 1ère renégo
 - [ ] 2 remotes Stream (Caméra tête et caméra sol)
     - [x] get devices (Robot & Pilote)
     - [x] Select Device ID (Robot & Pilote)
-    - [ ] TESTS
+    - [x] TESTS
         - [x] Tests local (Chrome/Chrome)
         - [x] Tests local (Chromium/Chrome)
         - [x] Tests en ligne (HP/HP)
@@ -59,14 +60,32 @@
             - [x] "Pilote" js > Traitement "listDevices" + sélect
             - [x] "Pilote" js > objet "selectedDevices" > Renvoi Robot
             - [x] "Robot" js > Traitement "selectedDevices"
-        - [ ] Tests Chromium/Chrome
-            - [ ] BUG: objet sourceInfo chromium vide...
+        - [x] Tests Chromium/Chrome
+            - [x] FIX: objet sourceInfo Chromium vide...
+            - [ ] BUG aléatoire: labels sourceInfo Chromium
     - [ ] Add capture 2eme Stream Sol > Robot
     - [ ] Add affichage 2ème Stream Sol > Pilote
-- [ ] IHM différenciées (Pilote/Robot)
-    - [x] IHM Pilote > sélécteur caméra robot
-    - [ ] IHM Robot > Suppression affichages cam pilote
+- [ ] IHM différenciées (Accueil/Pilote/Robot)
+    - [ ] IHM Accueil
+        - [ ] Avertissement Users en ligne...
+        - [ ] Activation links IHM...
+    - [ ] IHM Pilote 
+        - [x] sélécteur caméra robot
+        - [ ] css selecteurs caméra 
+        - [ ] Contrôle d'accès si 2 pilotes
+        - [ ] Cam pilote 
+            - [ ] sélection Micro uniquement
+            - [ ] Suppression Affichage Stream
+            - [ ] Suppression Flux a la source...
+    - [ ] IHM Robot
+        - [ ] Contrôle d'accès si 2 robots
+        - [ ] Cam pilote 
+            - [ ] Suppression Affichage Stream
+            - [ ] Suppression Flux a la source...
+        - [ ] Cams Robot
+            - [ ] Suppression affichage Stream
 - [ ] Main.js différenciés (Pilote/Robot)
+    - [ ] Séparer classes et algos propres pilote/robot
 - [ ] Implémentations outils de test
 - [ ] Constraints paramétrables
 - [ ] Intégration webComponents caméra

@@ -7,42 +7,12 @@
     };
 
 
-    // Constructeur objet joueur
-  exports.joueur = function joueur(name,color,number,keyLeft,keyUp,keyRight,keyDown) {
-      this.type = "player";
-      this.name = name;
-      this.color = "#8ED6FF";
-      //this.level = false;
-      this.level = 0;
-      this.number = number;
-      this.score = 0;
-      this.startX = 10;
-      this.startY = 10;
-      this.playerX = this.startX;
-      this.playerY = this.startY;   
-      this.KeyLeft = keyLeft;
-      this.KeyUp = keyUp;
-      this.KeyRight = keyRight;
-      this.KeyDown = keyDown;
-      this.vitesseX = 0;
-      this.vitesseY = 0;
-      this.lastTimeCollision = 99999;
-      this.width = 30;
-      this.heigth = 30;
-      this.numLevel = 1;
-      this.active = true;
-      this.idUnique = 0;
-      this.isRegistered = false;
-      this.isSpectateur = true;
-      this.isFreeze = false;
-  }   
-
-
-
-
-
-
-
+exports.sourceDevice = function sourcedevice (id,kind,label,facing){
+  this.id = id;
+  this.kind = kind;
+  this.label = label;
+  this.facing = facing;
+}
 
 
   // Divers
@@ -130,6 +100,41 @@
   }
 
 
+ 
+// convertit un tableau en objet
+// source: http://stackoverflow.com/questions/20807804/convert-array-to-object-javascript
+exports.convertToArrayOfObjects = function  (data) {
+    var keys = data.shift(),
+        i = 0, k = 0,
+        obj = null,
+        output = [];
+
+    for (i = 0; i < data.length; i++) {
+        obj = {};
+
+        for (k = 0; k < keys.length; k++) {
+            obj[keys[k]] = data[i][k];
+        }
+
+        output.push(obj);
+    }
+
+    return output;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  // Fonctions de débuggage
  // ---------------------------
 
@@ -203,8 +208,10 @@
     exports.stringObjectDump = function  (obj, name) {
       this.result = "[ " + name + " ]\n";
       this.indent = 0;
+      
       this.dumpLayer = function(obj) {
         this.indent += 2;
+        
         for (var i in obj) {
           if(typeof(obj[i]) == "object") {
             // alert ('typeof(obj[i]) == "object"'));
@@ -221,14 +228,17 @@
         }
         this.indent -= 2;
       }
+      
       this.dumpLayer(obj);
       return this.result;
+    
     }
 
 
     // Affiche les objets sous format json
     exports.testObject = function (obj){
-      var toto = JSON.stringify(obj, null, 4);
+      // var toto = JSON.stringify(obj, null, 4);
+      var toto = JSON.stringify(obj);
       console.log(toto);
     }
 
