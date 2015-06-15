@@ -17,32 +17,19 @@
 
 <body>
 
-    <strong>Base 1TO1 Pilote side</strong> v 0.4.1
+    <strong>Base 1TO1 Pilote side</strong> v 0.4.2
     <br/><info id="zone_info_server"></info>
     <hr/>
 
 		
-	<ul class="flex-container wrap">
-
-		<section id="websocket_chat">
-			 <li class="flex-item myvideo pilote">
-		        
-				<strong> Websocket Chat Test </strong>
-				<hr/>
-		        <form action="/" method="post" id="formulaire_chat_websoket">
-		            <input type="text" name="message" id="message" placeholder="Votre message..." size="28" autofocus />
-		            <input type="submit" id="envoi_message" value="Envoyer" />
-		        </form>
-	       	 	<hr/>
-			 	<div id="zone_chat_websocket"></div>
-
-	       	 </li>
-        </section>
 
 
-     <section id="select-devices">    
+
+
+
+     <section id="select-devices-robot">    
 		  
-		<li class="flex-item robot">  
+		<li id="li-devices-robot" class="flex-item robot devices shadow-black">  
 			<strong>Select Remote Sources</strong>
 			<hr/>
 
@@ -62,13 +49,9 @@
  	</section>
 
 
-
-
-
-
-    <section id="select-devices">    
+    <section id="select-devices-pilote">    
 		  
-		<li class="flex-item pilote">  
+		<li id="li-devices-pilote" class="flex-item pilote devices shadow-black">  
 			<strong> Select local sources</strong>
 			<hr/>
 			<div class="select">
@@ -82,16 +65,39 @@
 		    </div>
 
 		    <hr/>
-		    <button id="local_ButtonDevices" onclick="localManageDevices()">Ouvrir la connexion</button>
+		    <button class="shadow-black" id="local_ButtonDevices" onclick="localManageDevices()">Ouvrir la connexion</button>
 		</li>
  	
  	</section>
 
 
+		
 
+
+
+	<ul class="flex-container wrap">
+
+
+
+
+
+		<section id="websocket_chat">
+			 <li class="flex-item myvideo pilote shadow-black">
+		        
+				<strong> Websocket Chat Test </strong>
+				<hr/>
+		        <form action="/" method="post" id="formulaire_chat_websoket">
+		            <input type="text" name="message" id="message" placeholder="Votre message..." size="28" autofocus />
+		            <input type="submit" id="envoi_message" value="Envoyer" />
+		        </form>
+	       	 	<hr/>
+			 	<div id="zone_chat_websocket"></div>
+
+	       	 </li>
+        </section>
         
 	    <section id="myvideos" class="sectionOneVideo">
-		    <li class="flex-item myvideo pilote">
+		    <li class="flex-item myvideo pilote shadow-black">
 			    <strong> WebRTC localVideo (Pilote)</strong>
 				<hr/>
 			    <!--<div id="infoIceCandidateSended">???</div>-->
@@ -100,7 +106,7 @@
 	    </section>
 	    
 	     <section class="yourvideos" class="sectionMultipleVideos">
-		    <li class="flex-item yourvideo robot">
+		    <li class="flex-item yourvideo robot shadow-black">
 			    <strong> WebRTC remoteVideo (Robot)</strong>
 				<hr/>
 			    <!--<div id="infoIceCandidateReceived">???</div>-->
@@ -111,7 +117,7 @@
 		
 		<section id="chat">
 		  
-			<li class="flex-item pilote">
+			<li class="flex-item pilote shadow-black">
 				
 				<div id='textareas'>
 					<strong> WebRTC dataChannel Test </strong>

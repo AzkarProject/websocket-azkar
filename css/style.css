@@ -91,17 +91,47 @@ section {
   background: deepskyblue;
 }
 
+.devices {
+  width:622px;
+  /*min-width: 622px;*/
+  -webkit-transition: width 2s; /* Safari */
+  transition: width 2s;
+
+}
+/*
+.devices:hover {
+  width:722px;
+}
+/**/
+
+.devicesInvite {
+  width:722px;
+}
+
 .flex-item {
   padding:5px;
   margin:5px;
   border:1px solid #cccccc;
   /*width: 300px;
   height: 250px;*/
-  -webkit-filter: drop-shadow(10px 10px 10px black); /* OK crhome 40 */
+  /*-webkit-filter: drop-shadow(10px 10px 10px green); /* OK crhome 40 */
+  /*filter: drop-shadow(10px 10px 10px green);/* OK sous firefox 35.0.1*/
+}
+
+
+.shadow-black {
+   -webkit-filter: drop-shadow(10px 10px 10px black); /* OK crhome 40 */
   filter: drop-shadow(10px 10px 10px black);/* OK sous firefox 35.0.1*/
+}
 
+.shadow-green {
+   -webkit-filter: drop-shadow(10px 10px 10px green); /* OK crhome 40 */
+  filter: drop-shadow(10px 10px 10px green);/* OK sous firefox 35.0.1*/
+}
 
-
+.shadow-red {
+   -webkit-filter: drop-shadow(10px 10px 10px red); /* OK crhome 40 */
+  filter: drop-shadow(10px 10px 10px red);/* OK sous firefox 35.0.1*/
 }
 
 #log {

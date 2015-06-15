@@ -1,4 +1,4 @@
-# AZKAR WebRTC script Base. V 0.4.1
+# AZKAR WebRTC script Base. V 0.4.2
 ------------------------------------------------------------
 
 Script basé sur clients chrome en 1to1 fonctionnant en bas-niveau. 
@@ -44,9 +44,11 @@ http://websocket-azkar.rhcloud.com/
 	- [x] FIX: bug objet SDP
 	- [x] FIX: bug objet Candidate
 	- [x] Gestion déconnexions (apellant/apellé)
-    - [ ] Gestion Rôles actifs (pilotes/robot)
+    - [x] Gestion Rôles actifs (pilotes/robot)
     - [ ] TEST en ligne:
-        - [ ] BUG: Persistance messages fantômes après décco
+        - [ ] BUG: Persistance messages fantômes après décco...
+        - [ ] BUG: Déconnexions intempestives (buffer ou messages fantômes???...
+            - [ ] >>>> Tracer TOUS les messages transitant sur le server....
 - [x] Implémentation RemoteStream
 - [x] implémentation RtcDataChannel 
 - [x] Websocket - gestion des connectés
@@ -63,15 +65,13 @@ http://websocket-azkar.rhcloud.com/
         - [ ] Test local Chromium/Chromium > BUGS
             - [x] FIX: Surcharge BP (multiples renégo)
             - [ ] Signaling HS (reset serveur) 
-                - [x] Définir Rôle Robot/Pilote par routing > 
-                - [ ] Detect déco serveur coté client
-                - [ ] Reinitialiser session websocket coté client
+                - [x] Définir Rôle Robot/Pilote par routing
+                - [ ] >>> Detect déco serveur coté client ?
+                - [ ] >>> Reinitialiser session websocket coté client ?
         - [X] Test local Chromium/Chrome > BUGS
             - [x] FIX: renégo RemoteStream (add 2ème caméra, 1 par browser)
             - [x] FIX: Renégo si déco Robot
-        - [ ] Tests en ligne > BUGS 
-            - [ ] BUG: buffer signaling onDisconnect...
-- [ ] 2 remotes Stream (Caméra tête et caméra sol)
+- [x] 2 remotes Stream (Caméra tête et caméra sol)
     - [x] get devices (Robot & Pilote)
     - [x] Select Device ID (Robot & Pilote)
     - [x] TESTS
@@ -92,16 +92,14 @@ http://websocket-azkar.rhcloud.com/
             - [x] "Robot" js > Traitement "selectedDevices"
         - [x] Tests Chromium/Chrome
             - [x] FIX: objet sourceInfo Chromium vide...
-            - [ ] BUG aléatoire: labels sourceInfo Chromium
-    - [ ] Add capture 2eme Stream Sol > Robot
-    - [ ] Add affichage 2ème Stream Sol > Pilote
+            - [x] FIX: labels sourceInfo Chromium
 - [ ] IHM différenciées (Accueil/Pilote/Robot)
     - [ ] IHM Accueil
         - [ ] Avertissement Users en ligne...
         - [ ] Activation links IHM...
     - [ ] IHM Pilote 
         - [x] sélécteur caméra robot
-        - [ ] css selecteurs caméra 
+        - [x] css selecteurs caméra 
         - [ ] Contrôle d'accès si 2 pilotes
         - [ ] Cam pilote 
             - [ ] sélection Micro uniquement
