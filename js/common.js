@@ -122,8 +122,13 @@ exports.convertToArrayOfObjects = function  (data) {
     return output;
 }
 
-
-
+// convertit un array en objet V2
+exports.toObject = function  (arr) {
+  var rv = {};
+  for (var i = 0; i < arr.length; ++i)
+  rv[i] = arr[i];
+  return rv;
+}
 
 
 
