@@ -17,43 +17,53 @@
 
 <body>
 
-    <strong>Base 1TO1 Robot side</strong> v 0.4.2
+    <strong>Base 1TO1 Robot side</strong> v 0.5.0
     <br/><info id="zone_info_server"></info>
     <hr/>
 
-		
-	
+	    <section id="select-devices">    
+			  
+			<li class="flex-item robot devices">  
+				<span id="messageDevicesState"> Micro/Camera disponibles -- (inactifs)</span>
+				<hr/>
+				<div class="select">
+					<!--<label for="local_audioSource">Audio: </label>-->
+					<select id="local_audioSource"></select>
+			    </div>
 
-    <section id="select-devices">    
-		  
-		<li class="flex-item robot devices">  
-			<span id="messageDevicesState"> Micro/Camera -- inactifs</span>
-			<hr/>
-			<div class="select">
-				<!--<label for="local_audioSource">Audio: </label>-->
-				<select id="local_audioSource"></select>
-		    </div>
-
-		    <div class="select">
-		      	<!--<label for="local_videoSource">Video: </label>-->
-		      	<select id="local_videoSource"></select>
-		    </div>
-			
-			<!--
-			<hr/>
-		    <button id="local_ButtonDevices" onclick="localManageDevices()">Ouvrir Micro/Caméra</button>
-		    -->
-		   
-		</li>
- 	
- 	</section>
-
+			    <div class="select">
+			      	<!--<label for="local_videoSource">Video: </label>-->
+			      	<select id="local_videoSource"></select>
+			    </div>
+			   
+			</li>
+	 	
+	 	</section>
 
 
 
 	<ul class="flex-container wrap">
+	
 
-		<section id="websocket_chat">
+	    <section id="myvideos" class="sectionOneVideo">
+		    <li class="flex-item myvideo robot">
+			    <strong> WebRTC localVideo (Robot)</strong>
+				<hr/>
+			    <!--<div id="infoIceCandidateSended">???</div>-->
+			    <video id='video' autoplay muted controls="controls"></video>
+			</li>
+	    </section>
+	    
+	     <section id="yourvideos" class="sectionMultipleVideos">
+		    <li class="flex-item yourvideo pilote">
+			    <strong> WebRTC remoteVideo (Pilote)</strong>
+				<hr/>
+			    <!--<div id="infoIceCandidateReceived">???</div>-->
+			    <video id='otherPeer' autoplay muted controls="controls" ></video>
+	  	 	</li>
+	  	 </section>
+
+	  	 <section id="websocket_chat">
 			 <li class="flex-item myvideo robot">
 		        
 				<strong> Websocket Chat Test </strong>
@@ -67,28 +77,6 @@
 
 	       	 </li>
         </section>
-
-
-
-
-
-	    <section id="myvideos" class="sectionOneVideo">
-		    <li class="flex-item myvideo robot">
-			    <strong> WebRTC localVideo (Robot)</strong>
-				<hr/>
-			    <!--<div id="infoIceCandidateSended">???</div>-->
-			    <video id='video' autoplay muted controls="controls"></video>
-			</li>
-	    </section>
-	    
-	     <section class="yourvideos" class="sectionMultipleVideos">
-		    <li class="flex-item yourvideo pilote">
-			    <strong> WebRTC remoteVideo (Pilote)</strong>
-				<hr/>
-			    <!--<div id="infoIceCandidateReceived">???</div>-->
-			    <video id='otherPeer' autoplay muted controls="controls" ></video>
-	  	 	</li>
-	  	 </section>
 
 		
 		<section id="chat">
