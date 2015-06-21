@@ -44,24 +44,14 @@ var remote_AudioSelect = document.querySelector('select#remote_audioSource');
 var remote_VideoSelect = document.querySelector('select#remote_videoSource');
 
 
-/*
-if (type == "appelant") {
-
-
-
-	local_ButtonDevices.disabled = true; 
-
-
-}
-/**/
-
 // Pour visualiser toutes les cams dispo coté Robot,
 // on laisse par défaut l'affichage des devices.
 local_AudioSelect.disabled = false; 
 local_VideoSelect.disabled = false;	
  
 
-// Activation/Désativation préalable des boutons de sélecteurs
+// (Appelant(Pilote) > Activation/Désativation préalable 
+// Du formulaire de sélection des devices locaux et de demande de connexion
 if (type == "appelant") {
 	remote_ButtonDevices.disabled = true; 
 	local_ButtonDevices.disabled = true; 
@@ -77,41 +67,28 @@ var listeRemoteSources = {};
 // flag d'origine des listes (local/remote)
 var origin = null; 
 
-/*// Bug qd --media-fake-ui activé sur Chromium...
-// ----> le listeLocalSources n'est pas rempli...
-function toObject(arr) {
-  var rv = {};
-  for (var i = 0; i < arr.length; ++i)
-  rv[i] = arr[i];
-  return rv;
-}
-
-function convertChromiumArrayToObject(arr) {
-  var rv = {};
-  for (var i = 0; i < arr.length; ++i)
-  rv[i] = arr[i];
-  return rv;
-}
-/**/
-
-// Génération liste de sélection sources (cam/micro) 
+// Fct de génération des listes de sélection sources (cam/micro) 
 // disponibles localement et a distance
 function gotSources(sourceInfos) {
   
-  // Si sources locales (pilote)
-  if (origin == "local") {
-  		listeLocalSources = sourceInfos; 
-  	
-  // Si sources distantes (Robot)
-  } else if (origin == "remote") {
-  		listeRemoteSources = sourceInfos;
-  
-  }
+  	console.log("@gotSources(sourceInfos)");
+	// var debugGotSources = common.stringObjectDump(sourceInfos, "sourceInfos");
+	// console.log(debugGotSources); // ok
+	// console.log("origin: "+origin); // ok
 
-   
-    // BUG: Double affichage des options remoteDevices en cas de déco/reco du Robot.
-    // FIX ==> On vide la liste du formulaire de ses options.
-    // Comment ==> En supprimant tous les enfants du nœud
+	  // Si sources locales (pilote)
+	  if (origin == "local") {
+	  		listeLocalSources = sourceInfos; 
+	  	
+	  // Si sources distantes (Robot)
+	  } else if (origin == "remote") {
+	  		listeRemoteSources = sourceInfos;
+	  
+	  }
+
+	// BUG: Double affichage des options remoteDevices en cas de déco/reco du Robot.
+	// FIX ==> On vide la liste du formulaire de ses options.
+	// Comment ==> En supprimant tous les enfants du nœud
 	if (origin == "remote") {
 		// On supprime tous les enfants du noeud précédent...
 		while( remote_AudioSelect.firstChild) {
@@ -123,96 +100,121 @@ function gotSources(sourceInfos) {
 		    remote_VideoSelect.removeChild( remote_VideoSelect.firstChild);
 		}
 	}
-	/**/
 
+	for (var i = 0; i !== sourceInfos.length; ++i) {
+	    
+	    // débuggage objet sourceInfo...
+	    // console.log("sourceInfos[i] >> " + common.testObject(sourceInfos[i])); 
+	    // >>>>  OK si Robot en 1er et Pilote en 2eme
+	    // >>>> sourceInfos[i] = undefined si Pilote en 1er et Robot en second
+	    // var debugsourceInfo = common.stringObjectDump(sourceInfos[i],"sourceInfos["+i+"]");
+	    // console.log(debugsourceInfo); 
+	    // >>> debugsourceInfo[0] vide P à la reception liste Robot...
 
+	    var sourceInfo = sourceInfos[i];
+	    var option = document.createElement('option');
+	    option.id = sourceInfo.id;
+	    option.value = sourceInfo.id;
+	  	
+	    // Reconstruction de l'objet sourceInfo:
+	    // Pour une raison inconnue, il n'est pas transmissible tel quel par websocket 
+	    // quand il est construit sous Chromium (V.44.0.2371.0).
+	    // Par contre, R.A.S quans il est construit sous Chrome ( V.42.0.2311.90) 
+	  	var sourceDevice = new common.sourceDevice();
+	  	sourceDevice.id = sourceInfo.id;
+	    sourceDevice.label= sourceInfo.label;
+	    //sourceDevice.label= sourceDevice.label+'('+sourceInfo.id+')';
+	    sourceDevice.kind = sourceInfo.kind;
+	    sourceDevice.facing = sourceInfo.facing;
+	    sourceInfos[i] = sourceDevice;
 
+	    // On n'affiche que les 12 premiers caractères de l'ID...
+	    var newID = sourceInfo.id;
+	    var microID = newID.substring(0, 11);
+	    microID += "...";
+	    
+	    if (sourceInfo.kind === 'audio') {
+	      	
+	      	if (origin == "local") {	
+		      	option.text = sourceInfo.label || 'localMicro ' + (local_AudioSelect.length + 1) + ' (ID:'+microID+')';
+		      	local_AudioSelect.appendChild(option);
+		   	
+		   	} else if (origin == "remote") {
+		   		option.text = sourceInfo.label || 'RemoteMicro ' + (remote_AudioSelect.length + 1) + ' (ID:'+microID+')';
+		      	remote_AudioSelect.appendChild(option);
+		  	}
+		
+	    
+	    } else if (sourceInfo.kind === 'video') {
+	      
+	      	if (origin == "local") {
+			    option.text = sourceInfo.label || 'localCam ' + (local_VideoSelect.length + 1) + ' (ID:'+microID+')';
+			    local_VideoSelect.appendChild(option);
+	  		
+	  		} else if (origin == "remote") {
+	   			option.text = sourceInfo.label || 'RemoteCam ' + (remote_VideoSelect.length + 1) + ' (ID:'+microID+')';
+			    remote_VideoSelect.appendChild(option);
+	   		}
+	    
+	    } else {
+	      
+	      console.log('Some other kind of source: ', sourceInfo);
+	    
+	    }
+	}
+	  
+	// On fait un RAZ du flag d'origine
+	origin = null;
+}
 
-  for (var i = 0; i !== sourceInfos.length; ++i) {
-    
-    var sourceInfo = sourceInfos[i];
-    var option = document.createElement('option');
-    option.id = sourceInfo.id;
-    option.value = sourceInfo.id;
-  	
-    // Reconstruction de l'objet sourceInfo
-    // qui, pour une raison inconnue, n'est pas transmissible tel quel par websocket 
-    // quand il est construit sous Chromium (V.44.0.2371.0).
-    // Par contre, R.A.S quans il est construit sous Chrome ( V.42.0.2311.90) 
-  	var sourceDevice = new common.sourceDevice();
-  	sourceDevice.id = sourceInfo.id;
-    sourceDevice.label= sourceInfo.label;
-    //sourceDevice.label= sourceDevice.label+'('+sourceInfo.id+')';
-    sourceDevice.kind = sourceInfo.kind;
-    sourceDevice.facing = sourceInfo.facing;
-    sourceInfos[i] = sourceDevice;
-
-
-    if (sourceInfo.kind === 'audio') {
-      	
-      	if (origin == "local") {	
-	      	option.text = sourceInfo.label || 'localMicro ' + (local_AudioSelect.length + 1) + ' ('+sourceInfo.id+')';
-	      	local_AudioSelect.appendChild(option);
-	   	
-	   	} else if (origin == "remote") {
-	   		option.text = sourceInfo.label || 'RemoteMicro ' + (remote_AudioSelect.length + 1) + ' ('+sourceInfo.id+')';
-	      	remote_AudioSelect.appendChild(option);
-	  	}
-	
-    
-    } else if (sourceInfo.kind === 'video') {
-      
-      	if (origin == "local") {
-		    option.text = sourceInfo.label || 'localCam ' + (local_VideoSelect.length + 1) + ' ('+sourceInfo.id+')';
-		    local_VideoSelect.appendChild(option);
-  		
-  		} else if (origin == "remote") {
-   			option.text = sourceInfo.label || 'RemoteCam ' + (remote_VideoSelect.length + 1) + ' ('+sourceInfo.id+')';
-		    remote_VideoSelect.appendChild(option);
-   		}
-    
-    } else {
-      
-      console.log('Some other kind of source: ', sourceInfo);
-    
-    }
-  }
-  // On fait un RAZ du flag d'origine
-  origin = null;
+// Lancement de la récupération des Devices disponibles
+if (typeof MediaStreamTrack === 'undefined') {
+  	alert('This browser does not support MediaStreamTrack.\n\nTry Chrome.');
+} else {
+  	origin = "local"; // On prévient la fct apellée que la source sera locale
+  	MediaStreamTrack.getSources(gotSources);
 }
 
 
 // Quand on reçoit une mise à jour de la liste 
 // des connectés de cette session websocket
 // C.A.D un nouvel arrivant...
+// V2 version Objet
 socket.on('updateUsers', function(data) {
+    
     console.log(">> socket.on('updateUsers',...");
     
+    // si on est l'apellé  (Robot)
     // On renvoie à l'autre pair la liste de ses devices
     if (type == "appelé") {
-    	console.log("contenu listeLocalSources >>> " + listeLocalSources);
-
-    	socket.emit("remoteListDevices", listeLocalSources);
+    	socket.emit('remoteListDevices', {objUser:localObjUser,listeDevices:listeLocalSources});
     }
 
+    // si on est l'apellant (Pilote)
+    // ... En cas de besoin...
+    if (type == "appelant") {
+    	// ...TODO...
+    }
 })
+
 
 
 // Ecouteurs Websockets exclusifs au Pilote (appelant)
 if (type == "appelant") {
 	
-	// Reception de la liste des Devices du Robot
+	// Reception de la liste des Devices du Robot V2 (version objet)
+	//coté serveur >> socket.broadcast.emit('remoteListDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
 	socket.on('remoteListDevices', function(data) {
 	    console.log(">> socket.on('remoteListDevices',...");
-	    
-	    console.log(data);
+	   
+	    console.log(data.listeDevices);
 	    console.log("--------------------------------------");
 
 	    // On renseigne  le flag d'ogigine
 	    origin = "remote";
 
 	    // On alimente les listes de micro/caméra distantes
-	    gotSources(data.message);
+	    gotSources(data.listeDevices);
 
 	    // On active les sélecteurs de listes
 		remote_ButtonDevices.disabled = false; 
@@ -223,49 +225,49 @@ if (type == "appelant") {
 		document.getElementById("li-devices-robot").className = "flex-item robot devices shadow-green devicesInvite";
 	
 	})
-
+	
 	// Reception du signal de fin pré-signaling
 	socket.on("readyForSignaling", function(data) {
 		if (data.message == "ready") {
 			initLocalMedia();
 		}
 	})
-
 }
 
 
 // Ecouteurs Websockets exclusifs au Robot (appelé)
 if (type == "appelé") {
 	
-	// Reception cam et micro selectionnés par le pilote (apellant)
+	// Reception cam et micro selectionnés par le pilote (apellant) V2 Objet
+	// Coté serveur >> socket.broadcast.emit('selectedRemoteDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
 	socket.on('selectedRemoteDevices', function (data) {
 		
-		console.log(">> socket.on('selectedRemoteDevices',...");
+		// console.log(">> socket.on('selectedRemoteDevices',...");
 
-		console.log(data);
-	    console.log("--------------------------------------");   
+		// console.log(data);
+	    // console.log("--------------------------------------");   
 
 		// On rebalance au formulaire les caméras/micros choisies par le pilote
-		document.getElementById(data.message.selectAudio).selected = "selected";
-		document.getElementById(data.message.selectVideo).selected = "selected";
+		document.getElementById(data.listeDevices.selectAudio).selected = "selected";
+		document.getElementById(data.listeDevices.selectVideo).selected = "selected";
 
-		// TODO: On lance l'initlocalmedia
+		// On lance l'initlocalmedia
 		initLocalMedia();
 
 		var infoMessage = "<strong> Micro/Camera -- Activés</strong>"
 		document.getElementById("messageDevicesState").innerHTML = infoMessage;
 		// On rebalance à l'appelant le top-départ pour 
 		// qu'il lance un intilocalMedia de son coté....
-		socket.emit("readyForSignaling","ready");
+		// socket.emit("readyForSignaling","ready"); // ancienne version
+		socket.emit('readyForSignaling', {objUser:localObjUser,message:"ready"});// Version objet
 
 	})
+
 }
 
 /**/// --------------------
 
 // options pour l'objet PeerConnection
-
-
 var server = {'iceServers':[{'url':'stun:23.21.150.121'}]};
 server.iceServers.push({url: 'stun:stun.l.google.com:19302'});
 server.iceServers.push({url: 'stun:stun.anyfirewall.com:3478'});
@@ -276,7 +278,7 @@ server.iceServers.push({url: 'turn:turn.anyfirewall.com:443?transport=tcp', cred
 server.iceServers.push({url: "turn:numb.viagenie.ca", credential: "webrtcdemo", username: "temp20fev2015@gmail.com"});
 server.iceServers.push({url: "turn:turn.anyfirewall.com:443?transport=tcp", credential: "webrtc", username: "webrtc"});
 server.iceServers.push({url: "turn:turn1.xirsys.com:443?transport=tcp", credential: "b8631283-b642-4bfc-9222-352d79e2d793", username: "e0f4e2b6-005f-440b-87e7-76df63421d6f"});
-// TODO: Tester les TURNS un par un pour déterminer celui qui fonctionne le mieux
+// TODO: Tester les TURNS individuelements pour déterminer celui qui fonctionne le mieux
 
 
 
@@ -294,7 +296,7 @@ var pc = new PeerConnection(server, options);
 // console.log(pc);
 var localStream = null;
 var remoteStream = null;
-var ws_remoteStream = null; // Stream transmit par websocket...
+// var ws_remoteStream = null; // Stream transmit par websocket...
 
 // constraints on the offer SDP. Easier to set these
 // to true unless you don't want to receive either audio
@@ -309,34 +311,18 @@ var constraints = {
 // define the channel var
 var channel;
 var debugNbConnect = 0;
-var debugNbOffer = 0;
-var debugNbOnOffer = 0;
+// var debugNbOffer = 0;
+// var debugNbOnOffer = 0;
+
 // Si une renégociation à déjas eu lieu
-// >> pour éviter de réinitialiser +sueurs fois le même écouteur
+// >> pour éviter de réinitialiser +sieurs fois le même écouteur
 var isRenegociate = false;
 
-
-
-
-
-
-
-// Ecouteurs des changements de sélection
-//audioSelect.onchange = initLocalMedia;
-//videoSelect.onchange = initLocalMedia;
-
-// Lancement de la récupération des Devices disponibles
-if (typeof MediaStreamTrack === 'undefined') {
-  	alert('This browser does not support MediaStreamTrack.\n\nTry Chrome.');
-} else {
-  	origin = "local";
-  	MediaStreamTrack.getSources(gotSources);
-}
 
 // initialisation du localStream et lancement connexion
 function initLocalMedia() {
 
-
+	console.log ("@ initLocalMedia()");
  	// Récupération des caméras et micros selectionnés	
 	var audioSource = local_AudioSelect.value;
 	var videoSource = local_VideoSelect.value;
@@ -353,59 +339,38 @@ function initLocalMedia() {
 					      }]
 					    }
 					 }
-		
-	
-	//console.log("audioSource sourceId: "+ audioSource);
-	//console.log("videoSource sourceId: "+ videoSource);
-
-	
-	//console.log("--------- OBJET sourceInfos >-------------")
-	//console.log(listeLocalSources);
-	//console.log("--------- /OBJET sourceInfos -------------")
 
 	// Initialisation du localStream et lancement connexion
 	navigator.getUserMedia(constraint, function (stream) {
-		// alert ("Allow Open Camera"); // Utile si crhromium en mode media-fake-ui...
-		// common.AlertObjectDump(constraints, "constraint")
 		localStream = stream;
-		console.log ("@ initLocalMedia()");
-		
-		//console.log (common.testObject(stream));
-		//if (type == "appelant") {
-			video1.src = URL.createObjectURL(localStream);
-		//}
-			pc.addStream(localStream);
-		//}
-		//console.log("localStream >> "+localStream);
-		//console.log(localStream);
-		//console.log (common.testObject(localStream));
-		
-		// set one of the video src to the stream
-		//video.src = URL.createObjectURL(stream);
-		//pc.addStream(stream);
-		// now we can connect to the other peer
+		// Affectation d'une souce vidéo au Stream
+		video1.src = URL.createObjectURL(localStream);	
+		pc.addStream(localStream);
+		// Maintenant on peut se connecter à l'autre pair
 		connect();
 	}, errorHandler);
 };
 
-
+// IHM Pilote:
+// Activation du formulaire de selection des devices locaux
+// (Micro et WebCam) et de demande de connexion.
+// Avec animation CSS d'invite du formulaire
 function remoteManageDevices () {
-	// On active les sélecteurs locaux
+	// Activation
 	if (type == "appelant") {
 		local_ButtonDevices.disabled = false; 
 	}
-
-	
 	local_AudioSelect.disabled = false; 
 	local_VideoSelect.disabled = false;
-	
-	// Animation CSS pour visualiser l'invite de formulaire...
-	document.getElementById("li-devices-pilote").className = "flex-item robot devices shadow-green devicesInvite"; 
+	// Invite de formulaire...
+	document.getElementById("li-devices-pilote").className = "flex-item pilote devices shadow-green devicesInvite"; 
 }
 
-
-// Sélecteur locaux: 
-// Envoi commande Ouverture Caméra et micro 
+// IHM Pilote:
+// Au submit du bouton d'ouverture de connexion -> 
+// > Désactivation des formulaires remote et local de selection des devices
+// > Animation CSS de désactivation
+// > Envoi au Robot la liste des devices à activer.
 function localManageDevices () {
 	if (type == "appelant") {
 		local_ButtonDevices.disabled = true; 
@@ -426,10 +391,11 @@ function localManageDevices () {
     	var selectAudio = remote_AudioSelect.value;
 		var selectVideo = remote_VideoSelect.value;
 		var selectList = {selectAudio,selectVideo}
-    	socket.emit("selectedRemoteDevices", selectList);
-
+    	// socket.emit("selectedRemoteDevices", selectList); Ancienne version
+    	// Coté serveur >> socket.broadcast.emit('selectedRemoteDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
+    	socket.emit('selectedRemoteDevices', {objUser:localObjUser,listeDevices:selectList}); // Version Objet
     	// Animation CSS de désactivation du formulaire devices pilote...
-		document.getElementById("li-devices-pilote").className = "flex-item robot devices shadow-black"; 
+		document.getElementById("li-devices-pilote").className = "flex-item pilote devices shadow-black"; 
     }
 }
 
@@ -522,10 +488,10 @@ function connect () {
 
 	// Réception d'une réponse à une offre
 	socket.on("answer", function(data) { 
-		console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+		// console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 		console.log(">> socket.on('answer',...");
 		//console.log( ">>> answer from ("+data.placeListe+")"+data.pseudo); 
-		console.log(data.message);
+		//console.log(data.message);
 		pc.setRemoteDescription(new SessionDescription(data.message));
 	});
 
@@ -540,6 +506,7 @@ function connect () {
 	// Fonctions communes apellant/apellé
 	
 	function doAnswer(sessionDescription) {
+		
 		// Hack > correction Bub de renégo
 		// objet MediaStream du sdp est vide si renégo
 		// Plan B >> passer par websocket +tôt que par l'API WebRTC
@@ -627,22 +594,6 @@ function onDisconnect () {
 	//videoElement.src = null;
     //window.stream.stop();
 
-
-
-	/*// on modifie les variables de rôle (On prend le statut d'apellé)
-	type = "appelé";
-	otherType = "appelant";
-	console.log("Vous êtes maintenant l'"+type);
-	/**/
-
-
-	// Fix BUG 2XremoteDevices ===>
-	// On vide la listeRemotesource de son ancien contenu
-	listeRemoteSources = {};
-	// 
-
-
-	
 	// on coupe le RTC Data channel
 	if (channel) channel.close();
 	channel = null;

@@ -1,4 +1,4 @@
-# AZKAR WebRTC script Base. V 0.4.2
+# AZKAR WebRTC script Base. V 0.5.0
 ------------------------------------------------------------
 
 Script basé sur clients chrome en 1to1 fonctionnant en bas-niveau. 
@@ -122,7 +122,7 @@ http://websocket-azkar.rhcloud.com/
 
 [ ] STEP 2 >>> Livrable base NtoN:
 - [ ] Gestion des connectés
-	- [ ] Transformer les Users en "objet"
+	- [X] Transformer les Users en "objet"
 	- [ ] Passer liste Users coté client
 - [ ] Websocket gestion des rooms
 - [ ] Routes différenciées (pilote/robot + clients)
