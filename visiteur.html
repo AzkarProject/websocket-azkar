@@ -17,73 +17,32 @@
 
 <body>
 
-    <strong>Base 1TO1 Pilote side</strong> v 0.5.1
+    <strong>Base 1TON Visiteur side</strong> v 0.5.1
     <br/><info id="zone_info_server"></info>
     <hr/>
 
 		
-
-
-
-
-
-     <section id="select-devices-robot">    
-		  
-		<li id="li-devices-robot" class="flex-item robot devices shadow-black">  
-			<strong>Select Remote Sources</strong>
-			<hr/>
-
-			<div class="select">
-				<label for="remote_audioSource">Audio: </label>
-				<select id="remote_audioSource"></select>
-		    </div>
-
-		    <div class="select">
-		      	<label for="remote_videoSource">Video: </label>
-		      	<select id="remote_videoSource"></select>
-		    </div>
-			<hr/>
-		    <button id="remote_ButtonDevices" onclick="remoteManageDevices()">Sélectionner</button>
-		</li>
- 	
- 	</section>
-
-
-    <section id="select-devices-pilote">    
-		  
-		<li id="li-devices-pilote" class="flex-item pilote devices shadow-black">  
-			<strong> Select local sources</strong>
-			<hr/>
-			<div class="select">
-				<label for="local_audioSource">Audio: </label>
-				<select id="local_audioSource"></select>
-		    </div>
-
-		    <div class="select">
-		      	<label for="local_videoSource">Video: </label>
-		      	<select id="local_videoSource"></select>
-		    </div>
-
-		    <hr/>
-		    <button class="shadow-black" id="local_ButtonDevices" onclick="localManageDevices()">Ouvrir la connexion</button>
-		</li>
- 	
- 	</section>
-
-
-		
-
-
-
 	<ul class="flex-container wrap">
+  
+	    <section class="robotVideos" class="largeVideos">
+		    <li class="flex-item yourvideo robot shadow-black">
+			    <strong> WebRTC remoteVideo (Robot)</strong>
+				<hr/>
+			    <!--<div id="infoIceCandidateReceived">???</div>-->
+			    <video id='otherPeer' autoplay muted controls="controls" ></video>
+	  	 	</li>
+	  	 </section>
 
+	    <section id="piloteVideo" class="smallVideo">
+		    <li class="flex-item myvideo pilote shadow-black">
+			    <strong> WebRTC localVideo (Pilote)</strong>
+				<hr/>
+			    <!--<div id="infoIceCandidateSended">???</div>-->
+			    <video id='video' autoplay muted controls="controls"></video>
+			</li>
+	    </section>
 
-
-
-
-
-        
-	    <section id="myvideos" class="sectionOneVideo">
+	    <section id="visiteurVideo" class="smallVideo">
 		    <li class="flex-item myvideo pilote shadow-black">
 			    <strong> WebRTC localVideo (Pilote)</strong>
 				<hr/>
@@ -92,14 +51,7 @@
 			</li>
 	    </section>
 	    
-	     <section class="yourvideos" class="sectionMultipleVideos">
-		    <li class="flex-item yourvideo robot shadow-black">
-			    <strong> WebRTC remoteVideo (Robot)</strong>
-				<hr/>
-			    <!--<div id="infoIceCandidateReceived">???</div>-->
-			    <video id='otherPeer' autoplay muted controls="controls" ></video>
-	  	 	</li>
-	  	 </section>
+	     
 
 	  	<section id="websocket_chat">
 			 <li class="flex-item myvideo pilote shadow-black">
@@ -140,8 +92,10 @@
 
 
 		<script>	  	 
-		var type = "appelant";
-		var otherType = "appelé";
+		//var type = "appelant";
+		//var otherType = "appelé";
+		var type = "visiteur";
+
 		</script>
         
         <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
