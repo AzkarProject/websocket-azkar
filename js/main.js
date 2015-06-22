@@ -5,76 +5,128 @@ console.log("main.js");
 // https://developer.mozilla.org/fr/docs/Web/Guide/API/WebRTC/WebRTC_basics
 // Source github : https://github.com/louisstow/WebRTC/blob/master/media.html
 
-// flag de connexion
-var isStarted = false;
-// console.log("isStarted = "+ isStarted);
-
-// shims!
-var PeerConnection = window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
-var SessionDescription = window.mozRTCSessionDescription || window.RTCSessionDescription;
-var IceCandidate = window.mozRTCIceCandidate || window.RTCIceCandidate;
-navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || navigator.webkitGetUserMedia;
-
-
-// grab the video elements from the document
-var video1 = document.getElementById("video");
-var video2 = document.getElementById("otherPeer");
-
-
-// dataChannel elements
-var chatlog = document.getElementById("chatlog");
-var message = document.getElementById("dataChannelSend");
-
-
 // Gestion des messages d'erreur
 function errorHandler (err) {
 	console.error(err);
 }
 
-
-// pré-signaling -------------------------------------------------
-
-// sélecteurs de micros et caméras
-var local_AudioSelect = document.querySelector('select#local_audioSource');
-var local_VideoSelect = document.querySelector('select#local_videoSource');
+// Initialisation des variables, objets et paramètres du script
+function mainSettings() {
+	console.log("@mainSettings()");
 
 
-// sélecteurs de micros et caméras (robot) affiché coté pilote 
-var remote_AudioSelect = document.querySelector('select#remote_audioSource');
-var remote_VideoSelect = document.querySelector('select#remote_videoSource');
+
+	// pré-signaling -------------------------------------------------
+
+	// sélecteurs de micros et caméras
+	local_AudioSelect = document.querySelector('select#local_audioSource');
+	local_VideoSelect = document.querySelector('select#local_videoSource');
+
+	// sélecteurs de micros et caméras (robot) affiché coté pilote 
+	remote_AudioSelect = document.querySelector('select#remote_audioSource');
+	remote_VideoSelect = document.querySelector('select#remote_videoSource');
+
+	// Pour visualiser toutes les cams dispo coté Robot,
+	// on laisse par défaut l'affichage des devices.
+	local_AudioSelect.disabled = false; 
+	local_VideoSelect.disabled = false;	
+	 
+	// (Appelant(Pilote) > Activation/Désativation préalable 
+	// Du formulaire de sélection des devices locaux et de demande de connexion
+	if (type == "appelant") {
+		remote_ButtonDevices.disabled = true; 
+		local_ButtonDevices.disabled = true; 
+		//remote_AudioSelect.disabled = true; 
+		//remote_VideoSelect.disabled = true; 
+		local_AudioSelect.disabled = true; 
+		local_VideoSelect.disabled = true;	
+	}
+
+	// Liste des sources cam/micro
+	listeLocalSources = {};
+	listeRemoteSources = {};
+	// flag d'origine des listes (local/remote)
+	origin = null; 
+
+	// webRTC ----------------------
+
+	// flag de connexion
+	isStarted = false;
+	// console.log("isStarted = "+ isStarted);
+
+	// shims!
+	PeerConnection = window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
+	SessionDescription = window.mozRTCSessionDescription || window.RTCSessionDescription;
+	IceCandidate = window.mozRTCIceCandidate || window.RTCIceCandidate;
+	navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || navigator.webkitGetUserMedia;
 
 
-// Pour visualiser toutes les cams dispo coté Robot,
-// on laisse par défaut l'affichage des devices.
-local_AudioSelect.disabled = false; 
-local_VideoSelect.disabled = false;	
- 
+	// grab the video elements from the document
+	video1 = document.getElementById("video");
+	video2 = document.getElementById("otherPeer");
 
-// (Appelant(Pilote) > Activation/Désativation préalable 
-// Du formulaire de sélection des devices locaux et de demande de connexion
-if (type == "appelant") {
-	remote_ButtonDevices.disabled = true; 
-	local_ButtonDevices.disabled = true; 
-	//remote_AudioSelect.disabled = true; 
-	//remote_VideoSelect.disabled = true; 
-	local_AudioSelect.disabled = true; 
-	local_VideoSelect.disabled = true;	
+
+	// dataChannel elements
+	chatlog = document.getElementById("chatlog");
+	message = document.getElementById("dataChannelSend");
+
+	// options pour l'objet PeerConnection
+	server = {'iceServers':[{'url':'stun:23.21.150.121'}]};
+	server.iceServers.push({url: 'stun:stun.l.google.com:19302'});
+	server.iceServers.push({url: 'stun:stun.anyfirewall.com:3478'});
+	server.iceServers.push({url: 'stun:turn1.xirsys.com'});
+	// Ajout de serveurs TURN
+	server.iceServers.push({url: "turn:turn.bistri.com:80", credential: "homeo", username: "homeo"});
+	server.iceServers.push({url: 'turn:turn.anyfirewall.com:443?transport=tcp', credential: 'webrtc', username: 'azkarproject'});
+	server.iceServers.push({url: "turn:numb.viagenie.ca", credential: "webrtcdemo", username: "temp20fev2015@gmail.com"});
+	server.iceServers.push({url: "turn:turn.anyfirewall.com:443?transport=tcp", credential: "webrtc", username: "webrtc"});
+	server.iceServers.push({url: "turn:turn1.xirsys.com:443?transport=tcp", credential: "b8631283-b642-4bfc-9222-352d79e2d793", username: "e0f4e2b6-005f-440b-87e7-76df63421d6f"});
+	// TODO: Tester les TURNS individuelements pour déterminer celui qui fonctionne le mieux
+
+
+	// TODO:
+	options = {
+		optional: [
+			{DtlsSrtpKeyAgreement: true},
+			{RtpDataChannels: true} //required for Firefox
+		]
+	}
+
+
+	// Création de l'objet PeerConnection (CAD la session de connexion WebRTC)
+	pc = new PeerConnection(server, options);
+	localStream = null;
+	remoteStream = null;
+	// var ws_remoteStream = null; // Stream transmit par websocket...
+
+	// Constraints de l'offre SDP. 
+	// TODO: Tester d'autres résolutions pour voir 
+	// L'impact sur les délais de transmission
+	constraints = {
+		mandatory: {
+	        OfferToReceiveAudio: true,
+	        OfferToReceiveVideo: true
+	    }
+	};
+
+	// définition de la variable channel
+	channel = null;
+	debugNbConnect = 0;
+
+	// Si une renégociation à déjas eu lieu
+	// >> pour éviter de réinitialiser +sieurs fois le même écouteur
+	isRenegociate = false;
 }
 
-// Liste des sources cam/micro
-var listeLocalSources = {};
-var listeRemoteSources = {};
-// flag d'origine des listes (local/remote)
-var origin = null; 
+mainSettings();
+//----------------------------------------------------------------
 
-// Fct de génération des listes de sélection sources (cam/micro) 
+// Génération des listes de sélection sources (cam/micro) 
 // disponibles localement et a distance
 function gotSources(sourceInfos) {
-  
+
   	console.log("@gotSources(sourceInfos)");
-	// var debugGotSources = common.stringObjectDump(sourceInfos, "sourceInfos");
-	// console.log(debugGotSources); // ok
-	// console.log("origin: "+origin); // ok
+  	//console.log(sourceInfos);
 
 	  // Si sources locales (pilote)
 	  if (origin == "local") {
@@ -103,23 +155,16 @@ function gotSources(sourceInfos) {
 
 	for (var i = 0; i !== sourceInfos.length; ++i) {
 	    
-	    // débuggage objet sourceInfo...
-	    // console.log("sourceInfos[i] >> " + common.testObject(sourceInfos[i])); 
-	    // >>>>  OK si Robot en 1er et Pilote en 2eme
-	    // >>>> sourceInfos[i] = undefined si Pilote en 1er et Robot en second
-	    // var debugsourceInfo = common.stringObjectDump(sourceInfos[i],"sourceInfos["+i+"]");
-	    // console.log(debugsourceInfo); 
-	    // >>> debugsourceInfo[0] vide P à la reception liste Robot...
-
 	    var sourceInfo = sourceInfos[i];
 	    var option = document.createElement('option');
 	    option.id = sourceInfo.id;
 	    option.value = sourceInfo.id;
 	  	
-	    // Reconstruction de l'objet sourceInfo:
-	    // Pour une raison inconnue, il n'est pas transmissible tel quel par websocket 
-	    // quand il est construit sous Chromium (V.44.0.2371.0).
-	    // Par contre, R.A.S quans il est construit sous Chrome ( V.42.0.2311.90) 
+	    // Reconstruction de l'objet javascript natif sourceInfo:
+	    // Quand il est transmit par websocket entre Chromium et Chrome, 
+	    // impossible d'accéder à ses attributs une foi transmit... 
+	    // Ce qui est bizarre, c'est que l'objet natif semble tout à fait normal avant transmission.
+	    // Par contre, R.A.S quand on le transmet de Chrome à Chrome ou de Chromium à chromium.
 	  	var sourceDevice = new common.sourceDevice();
 	  	sourceDevice.id = sourceInfo.id;
 	    sourceDevice.label= sourceInfo.label;
@@ -128,10 +173,28 @@ function gotSources(sourceInfos) {
 	    sourceDevice.facing = sourceInfo.facing;
 	    sourceInfos[i] = sourceDevice;
 
-	    // On n'affiche que les 12 premiers caractères de l'ID...
+	    // On n'affiche que les XX premiers caractères de l'ID...
+	    // ... Juste pour éviter des débordements d'affichage...
 	    var newID = sourceInfo.id;
-	    var microID = newID.substring(0, 11);
+	    var microID = newID.substring(0, 50);
 	    microID += "...";
+
+	    // Conflit webcam Chromium/Chrome si même device choisi sur le PC local
+	    // >>> L'ID fournie par L'API MediaStreamTrack.getSources est différente
+	    // selon le navigateur et ne permet pas de différencier cams et micros correctement
+	    // TODO: Trouver une solution de contournement pour les tests sur une même machine
+	  	/*if (origin == "local") {
+		  	console.log("--------------------------------------");
+		  	console.log("option.id:"+option.id);
+		    console.log("option.value:"+option.value); 
+		    console.log("sourceInfo.id:"+sourceInfo.id);
+		    console.log("sourceDevice.id:"+sourceDevice.id);
+
+		    console.log("sourceInfo.label:"+sourceInfo.label);
+			console.log("sourceDevice.label:"+sourceDevice.label);
+			console.log("--------------------------------------");
+	    }
+	    /**/
 	    
 	    if (sourceInfo.kind === 'audio') {
 	      	
@@ -171,19 +234,22 @@ function gotSources(sourceInfos) {
 if (typeof MediaStreamTrack === 'undefined') {
   	alert('This browser does not support MediaStreamTrack.\n\nTry Chrome.');
 } else {
-  	origin = "local"; // On prévient la fct apellée que la source sera locale
+  	origin = "local"; // On prévient la fonction apellée que la source sera locale
   	MediaStreamTrack.getSources(gotSources);
 }
 
-
-// Quand on reçoit une mise à jour de la liste 
+// (V2 objet) Quand on reçoit une mise à jour de la liste 
 // des connectés de cette session websocket
 // C.A.D un nouvel arrivant...
-// V2 version Objet
 socket.on('updateUsers', function(data) {
     
     console.log(">> socket.on('updateUsers',...");
-    
+    // On met à jour la liste locale des connectés...
+    // console.log(data);
+    users = data;
+    var debug = common.stringObjectDump(users,"users");
+    console.log(debug);
+
     // si on est l'apellé  (Robot)
     // On renvoie à l'autre pair la liste de ses devices
     if (type == "appelé") {
@@ -197,18 +263,16 @@ socket.on('updateUsers', function(data) {
     }
 })
 
-
-
 // Ecouteurs Websockets exclusifs au Pilote (appelant)
 if (type == "appelant") {
 	
 	// Reception de la liste des Devices du Robot V2 (version objet)
-	//coté serveur >> socket.broadcast.emit('remoteListDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
+	// coté serveur >> socket.broadcast.emit('remoteListDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
 	socket.on('remoteListDevices', function(data) {
 	    console.log(">> socket.on('remoteListDevices',...");
 	   
-	    console.log(data.listeDevices);
-	    console.log("--------------------------------------");
+	    // console.log(data.listeDevices);
+	    // console.log("--------------------------------------");
 
 	    // On renseigne  le flag d'ogigine
 	    origin = "remote";
@@ -223,17 +287,16 @@ if (type == "appelant") {
 
 		// Une petite animation CSS pour visualiser l'invite de formulaire...
 		document.getElementById("li-devices-robot").className = "flex-item robot devices shadow-green devicesInvite";
-	
 	})
 	
 	// Reception du signal de fin pré-signaling
 	socket.on("readyForSignaling", function(data) {
+		console.log(">> socket.on('remoteListDevices',...");
 		if (data.message == "ready") {
 			initLocalMedia();
 		}
 	})
 }
-
 
 // Ecouteurs Websockets exclusifs au Robot (appelé)
 if (type == "appelé") {
@@ -241,12 +304,8 @@ if (type == "appelé") {
 	// Reception cam et micro selectionnés par le pilote (apellant) V2 Objet
 	// Coté serveur >> socket.broadcast.emit('selectedRemoteDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
 	socket.on('selectedRemoteDevices', function (data) {
+	 	console.log(">> socket.on('selectedRemoteDevices',...");	
 		
-		// console.log(">> socket.on('selectedRemoteDevices',...");
-
-		// console.log(data);
-	    // console.log("--------------------------------------");   
-
 		// On rebalance au formulaire les caméras/micros choisies par le pilote
 		document.getElementById(data.listeDevices.selectAudio).selected = "selected";
 		document.getElementById(data.listeDevices.selectVideo).selected = "selected";
@@ -260,66 +319,10 @@ if (type == "appelé") {
 		// qu'il lance un intilocalMedia de son coté....
 		// socket.emit("readyForSignaling","ready"); // ancienne version
 		socket.emit('readyForSignaling', {objUser:localObjUser,message:"ready"});// Version objet
-
 	})
-
 }
 
-/**/// --------------------
-
-// options pour l'objet PeerConnection
-var server = {'iceServers':[{'url':'stun:23.21.150.121'}]};
-server.iceServers.push({url: 'stun:stun.l.google.com:19302'});
-server.iceServers.push({url: 'stun:stun.anyfirewall.com:3478'});
-server.iceServers.push({url: 'stun:turn1.xirsys.com'});
-// Ajout de serveurs TURN
-server.iceServers.push({url: "turn:turn.bistri.com:80", credential: "homeo", username: "homeo"});
-server.iceServers.push({url: 'turn:turn.anyfirewall.com:443?transport=tcp', credential: 'webrtc', username: 'azkarproject'});
-server.iceServers.push({url: "turn:numb.viagenie.ca", credential: "webrtcdemo", username: "temp20fev2015@gmail.com"});
-server.iceServers.push({url: "turn:turn.anyfirewall.com:443?transport=tcp", credential: "webrtc", username: "webrtc"});
-server.iceServers.push({url: "turn:turn1.xirsys.com:443?transport=tcp", credential: "b8631283-b642-4bfc-9222-352d79e2d793", username: "e0f4e2b6-005f-440b-87e7-76df63421d6f"});
-// TODO: Tester les TURNS individuelements pour déterminer celui qui fonctionne le mieux
-
-
-
-var options = {
-	optional: [
-		{DtlsSrtpKeyAgreement: true},
-		{RtpDataChannels: true} //required for Firefox
-	]
-}
-
-
-// Création de l'objet PeerConnection (CAD la session de connexion WebRTC)
-var pc = new PeerConnection(server, options);
-// console.log("------pc = new PeerConnection(server, options);-----");
-// console.log(pc);
-var localStream = null;
-var remoteStream = null;
-// var ws_remoteStream = null; // Stream transmit par websocket...
-
-// constraints on the offer SDP. Easier to set these
-// to true unless you don't want to receive either audio
-// or video.
-var constraints = {
-	mandatory: {
-        OfferToReceiveAudio: true,
-        OfferToReceiveVideo: true
-    }
-};
-
-// define the channel var
-var channel;
-var debugNbConnect = 0;
-// var debugNbOffer = 0;
-// var debugNbOnOffer = 0;
-
-// Si une renégociation à déjas eu lieu
-// >> pour éviter de réinitialiser +sieurs fois le même écouteur
-var isRenegociate = false;
-
-
-// initialisation du localStream et lancement connexion
+// initialisation du localStream et appel connexion
 function initLocalMedia() {
 
 	console.log ("@ initLocalMedia()");
@@ -356,6 +359,8 @@ function initLocalMedia() {
 // (Micro et WebCam) et de demande de connexion.
 // Avec animation CSS d'invite du formulaire
 function remoteManageDevices () {
+	
+	console.log ("@ remoteManageDevices()");
 	// Activation
 	if (type == "appelant") {
 		local_ButtonDevices.disabled = false; 
@@ -372,6 +377,8 @@ function remoteManageDevices () {
 // > Animation CSS de désactivation
 // > Envoi au Robot la liste des devices à activer.
 function localManageDevices () {
+	
+	console.log ("@ localManageDevices()");
 	if (type == "appelant") {
 		local_ButtonDevices.disabled = true; 
 	}
@@ -399,9 +406,10 @@ function localManageDevices () {
     }
 }
 
-
 // initialisation de la connexion
 function connect () {
+	
+	console.log ("@ connect()");
 	debugNbConnect += 1;
 	console.log("@ connect("+debugNbConnect+") > rôle: " + type);
 	isStarted = true;
@@ -413,7 +421,7 @@ function connect () {
 	
 	// Ecouteur déclenché à la génération d'un candidate 
 	pc.onicecandidate = function (e) {
-		// console.log("@ pc.onicecandidate()");
+		console.log("@ pc.onicecandidate > timestamp:" + Date.now());
 		// vérifie que le candidat ne soit pas nul
 		if (!e.candidate) { 
 			// console.log("  > !e.candidate): return ");
@@ -424,7 +432,7 @@ function connect () {
 		// >>>>>> Et si on teste sans ???
 		// >>>>>> en local > OK, c'est juste plus long... 
 		// >>>>>> en ligne > OK en filaire... 
-		// conclusion: Lé rinitialisation n'a d'intéret 
+		// conclusion: La réinitialisation n'a d'intéret 
 		// que pour réduire les délais de signaling des tests locaux
 		// -----------------------------------------
 		// Envoi du candidate généré à l'autre pair
@@ -452,7 +460,7 @@ function connect () {
 		
 		console.log("@ pc.oniceconnectionstatechange > timestamp:" + Date.now());
 		console.log(">>> stateConnection Event > " + pc.iceConnectionState);
-		console.log(">>> isStarted = "+ isStarted);
+		// console.log(">>> isStarted = "+ isStarted);
 		/**/
 		// Statut connected: env 1 seconde de latence
 		// Statut completed: env 13 secondes de latence
@@ -495,13 +503,22 @@ function connect () {
 		pc.setRemoteDescription(new SessionDescription(data.message));
 	});
 
+	
+	/*// BUG Qd le client n'as pas encore connecté...
+	// On déplace vers ws_manager...
 	// Réception d'une info de deconnexion 
 	// >>> plus réactif que l'écouteur de l'API WebRTC
 	socket.on("disconnected", function(data) { 
 		console.log(">> socket.on('disconnected',...");
+		// On met à jour la liste des cliens connectés
+		var users = data;
+    	var debug = common.stringObjectDump(users,"users");
+   		console.log(debug);	
+
 	    // On lance la méthode de préparatoire a la renégo
 	    onDisconnect();
 	});
+	/**/
 
 	// Fonctions communes apellant/apellé
 	
@@ -527,7 +544,7 @@ function connect () {
 
 	// Si on est l'apellant
 	if (type === "appelant") { 
-		console.log("+++++++++ apellant ++++++++++++++ ");
+		//console.log("+++++++++ apellant ++++++++++++++ ");
 		
 		// l'apellant crée un dataChannel
 		channel = pc.createDataChannel("mychannel", {});
@@ -540,7 +557,7 @@ function connect () {
 	
 	// Sinon si on est l'apellé
 	} else { 
-		console.log("+++++++++ apellé ++++++++++++++ ");
+		//console.log("+++++++++ apellé ++++++++++++++ ");
 		// dataChannel
 		// answerer must wait for the data channel
 		
@@ -602,6 +619,7 @@ function onDisconnect () {
 	// pc.onicecandidate = null;
 	pc.close();
 	pc = null;
+
 	stopAndStart();
 }
 
@@ -614,7 +632,7 @@ function stopAndStart() {
   	sendButton.disabled = true; 
 
   	pc = new PeerConnection(server, options);
-  	console.log("------pc = new PeerConnection(server, options);-----");
+  	// console.log("------pc = new PeerConnection(server, options);-----");
 
   	// On informe la machine à état que c'est une renégociation
   	isRenegociate = true;	
@@ -622,9 +640,6 @@ function stopAndStart() {
   	// On relance le processus
   	// initLocalMedia();
   	// connect();
-
-
-
 };
 
 // -------------------- Méthodes RTCDataChannel

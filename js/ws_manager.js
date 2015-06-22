@@ -45,7 +45,12 @@ socket.on('disconnect', function() {
 });
 /**/
 
-// Objet User de l'utilisateur courant.
+
+
+// liste des users connectés
+var users = {};
+
+// Objet User courant.
 var localObjUser;
 
 
@@ -103,7 +108,20 @@ socket.on('nouveau_client2', function(objUser) {
     insereMessage2(objUser,message);
 })
 
-
+// Réception d'une info de deconnexion 
+// >>> plus réactif que l'écouteur de l'API WebRTC
+// >>> On déplace ici l'écouteur ici au cas où la fonction
+// Connect n'as pas encore été apellée.
+socket.on("disconnected", function(data) { 
+  console.log(">> socket.on('disconnected',...");
+  // On met à jour la liste des cliens connectés
+  var users = data;
+  var debug = common.stringObjectDump(users,"users");
+  console.log(debug); 
+  // On lance la méthode de préparatoire à la renégo WebRTC
+  onDisconnect();
+});
+  
 
 /*// Quand on reçoit un message, on l'insère dans la page
 socket.on('message', function(data) {

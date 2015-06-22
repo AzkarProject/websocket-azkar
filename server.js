@@ -41,6 +41,10 @@ app.get('/robot/', function (req, res) {
 });
 
 
+app.get('/visiteur/', function (req, res) {
+    res.sendFile(__dirname + '/visiteur.html');
+});
+
 // Lancement du serveur
 server.listen(app.get('port'),ipaddress);
 
@@ -87,66 +91,7 @@ var debugNbOffer =0;
 
 
 io.sockets.on('connection', function (socket, pseudo) {
-    
-    // quand un User rentre un pseudo, 
-    /*// on le stocke en variable de session et on informe les autres Users
-    socket.on('nouveau_client', function(pseudo) {
-
-        // On affecte à l'User le pseudo qu'il à renseigné
-        pseudo = ent.encode(pseudo);
-        socket.pseudo = pseudo;
-
-        // On ajoute l'User à la liste des connectés
-        users[socket.id] = pseudo; 
-
-        // On lui attribue un numéro correspondant a sa position d'arrivée dans la session 
-        // var placeListe = lastPosition +1; // WTF LastPosition ne s'incrémente pas... 
-        // Même en modifiant la portée de la variable (placeliste déclaré sans "var" devant...)
-        // var placeListe = nbUsers +1; // Par contre là ca marche ! PKOI ?
-        // Il semblerai que seuls les objets soient persistants, pas les valeurs de types primitifs...
-        // A creuser + tard (tester si c'est pareil avec un type "string" )....
-        
-        // Plan B: On passe par un objet contenant tous les users connectés
-        // depuis le début de la session (comme une sorte de log, d'historique..)
-        // et on comptera simplement le nombre de propriétés de l'objet.
-        histoUsers[socket.id] = pseudo + " timestamp:" + Date.now();
-        socket.placeListe = common.lenghtObject(histoUsers);
-
-        // On envoie au connecté apellant son ordre d'arrivée ds la session
-        // pour qu'il l'ajoute à son pseudo affiché coté client...
-        io.to(socket.id).emit('position_liste', socket.placeListe);
-        // On signale à tout le monde l'arrivée de l'user
-        socket.broadcast.emit('nouveau_client', {pseudo: socket.pseudo, placeListe: socket.placeListe});
-
-        // Enfin on met a jour le nombre de connectés coté client"
-        nbUsers = common.lenghtObject(users);
-        io.sockets.emit('updateUsers',{nbUsers: nbUsers});
-
-
-        // On en profite pour envoyer des variables d'environnement serveur 
-        // aux parties clientes pour affichage et débug.
-        infosServer = "Socket.IO: " + ioVersion + " / Express: " + expressVersion + " / IP: " + ipaddress + " / port: " + port;
-        io.sockets.emit('infoServer', infosServer);        
-
-        // Affichages de contrôle coté serveur:
-        // nbUsers = common.lenghtObject(users);
-        console.log ("-------------------------------");
-   		console.log("Nouvel users:"+ socket.pseudo + "(ID : " + socket.id + ")");  
-		console.log ("Nbre d'Users: " + nbUsers);
-		console.log ("liste des Users: ->");
-		console.log (users);
-        
-        console.log ("-------------------------------");
-        console.log ("Nbre d'Users' ds l'historique: "+ socket.placeListe);
-        console.log ("Historique des connexions: ->");
-        console.log (histoUsers);
-
-        
-    });
-	/**/
-	// ------------ Idem dessous mais pour la version Objet --------------------
-	
-
+ 
    	// Quand un User rentre un pseudo (version objet), 
     // on le stocke en variable de session et on informe les autres Users
     socket.on('nouveau_client2', function(data) {
@@ -176,20 +121,13 @@ io.sockets.on('connection', function (socket, pseudo) {
         // On ajoute l'User à la liste des connectés
         users2[socket.id] = objUser; 
 
+        /*
         console.log("--version Objet---");
         console.log(objUser); 
         console.log("--------------");
         console.log(users2);
         console.log("/--version Objet---/"); 
-        // On envoie au connecté apellant son ordre d'arrivée ds la session
-        // pour qu'il l'ajoute à son pseudo affiché coté client...
-        // --> io.to(socket.id).emit('position_liste', socket.placeListe);
-        // On signale à tout le monde l'arrivée de l'user
-        // --> socket.broadcast.emit('nouveau_client', {pseudo: socket.pseudo, placeListe: socket.placeListe});
-
-        // Enfin on met a jour le nombre de connectés coté client"
-        // --> nbUsers = common.lenghtObject(users);
-        // --> io.sockets.emit('updateUsers',{nbUsers: nbUsers});
+        /**/
 
         // On renvoie l'User crée au nouveau connecté
         // pour l'informer entre autre de son ordre d'arrivée ds la session
@@ -201,8 +139,7 @@ io.sockets.on('connection', function (socket, pseudo) {
         
  		// 3 - on met a jour le nombre de connectés coté client"
         nbUsers2 = common.lenghtObject(users2);
-        io.sockets.emit('updateUsers',{nbUsers: nbUsers2});
-
+        io.sockets.emit('updateUsers',{listUsers: users2});
 
         // 4 - on met à jour la liste des connectés cotés clients
         // ... TODO... EST-ce bien nécéssaire ????
@@ -211,50 +148,28 @@ io.sockets.on('connection', function (socket, pseudo) {
 	/**/
 
 
-  	/*// Quand un user se déconnecte 
-    socket.on('disconnect', function(){  
-        
-		console.log ("-------------------------------");
-		var message = "Déconnexion client : ("+socket.placeListe+") "+ socket.pseudo;
-		console.log(message + "( ID : " + socket.id + ")");
-        socket.broadcast.emit('message', { pseudo:"SERVER", message: message, placeListe: "-"});
-        // On prévient tout le monde,
-        // on retire le connecté de la liste des utilsateurs
-        // et on actualise le nombre de connectés  
-        delete users[socket.id]; 
-        nbUsers = common.lenghtObject(users)
-
-        // contrôle liste connectés coté serveur
-		console.log (users);
-		
-        console.log ("Il reste " + nbUsers + " connectés");
-        // TODO: Mise à jour de la liste coté client...
-
-        // io.sockets.emit('users', users);           
-        // socket.leave(socket.room);  /: On quitte la Room
-
-        // envoi d'un second message destiné au signaling WebRTC
-        socket.broadcast.emit('disconnected', { pseudo:"SERVER", message: message, placeListe: "-"});
-    });  
-	/**/
-
-  	// Quand un user se déconnecte (Version Objet)
+  	// Quand un user se déconnecte (V2)
     socket.on('disconnect', function(){  
         
 		var dUser = users2[socket.id]; 
 
 
-		console.log ("-------------------------------");
+		//console.log ("-------------------------------");
 		var message = "Vient de se déconnecter !";
 		// console.log(message + "( ID : " + socket.id + ")");
         
-		// On prévient tout le monde,
-        //socket.broadcast.emit('message2', { dUser, message: message});
+		
+		
+		// on retire le connecté de la liste des utilisateurs
+		delete users2[socket.id]; 
+		socket.broadcast.emit('disconnected', {listUsers: users2});
+		//socket.broadcast.emit('disconnected', "WTF");
+        // On prévient tout le monde
         socket.broadcast.emit('message2',{objUser: dUser, message: message});
         
         // on retire le connecté de la liste des utilsateurs
         // et on actualise le nombre de connectés  
-        delete users2[socket.id]; 
+        // delete users2[socket.id]; 
         nbUsers = common.lenghtObject(users2)
 
         // contrôle liste connectés coté serveur
@@ -267,23 +182,12 @@ io.sockets.on('connection', function (socket, pseudo) {
         // socket.leave(socket.room);  /: On quitte la Room
 
         // envoi d'un second message destiné au signaling WebRTC
-        socket.broadcast.emit('disconnected', { pseudo:"SERVER", message: message, placeListe: "-"});
+        // socket.broadcast.emit('disconnected', { pseudo:"SERVER", message: message, placeListe: "-"});
+        // socket.broadcast.emit('disconnected', {listUsers: users2});
     });  
 
 
 
-
-    /*// Transmission de messages générique
-    socket.on('message', function (message) {
-        if (message){
-	        message = ent.encode(message); // On vire les caractères html...
-	        socket.broadcast.emit('message', {pseudo: socket.pseudo, message: message, placeListe: socket.placeListe});
-    	}
-        console.log ("@ message from "+socket.placeListe+socket.pseudo+ ": "+ message);
-    }); 
-    /**/
-
-    
 
     // Transmission de messages générique V2 objet
     socket.on('message2', function (data) {

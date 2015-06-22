@@ -1,4 +1,4 @@
-# AZKAR WebRTC script Base. V 0.5.0
+# AZKAR WebRTC script Base. V 0.5.1
 ------------------------------------------------------------
 
 Script basé sur clients chrome en 1to1 fonctionnant en bas-niveau. 
@@ -120,18 +120,18 @@ http://websocket-azkar.rhcloud.com/
 - [ ] Interception ICE candidate actif
 - [ ] Forcer le choix Host/Stun/Turn
 
-[ ] STEP 2 >>> Livrable base NtoN:
-- [ ] Gestion des connectés
+[ ] STEP 2 >>> Livrable base 1toN:
+- [x] Gestion des connectés
 	- [X] Transformer les Users en "objet"
-	- [ ] Passer liste Users coté client
+	- [x] Passer liste Users coté client
 - [ ] Websocket gestion des rooms
-- [ ] Routes différenciées (pilote/robot + clients)
+- [x] Routes différenciées (pilote/robot + clients)
 - [ ] IHM différenciées (Pilote/robot + clients)
 - [ ] Main.js différenciés (Pilote/Robot + clients)	
 - [ ] Intégration +Sieurs instances de RTCPeerConnection
-- [ ] Intégration full-mesh (bas niveau ou librairie ??)
-
-[ ] STEP 3 >>> Livrable base 1toN
 - [ ] Intégration multiStream plan B (Chrome) 
-- [ ] Intégration multiStream plan unifié (Mozzila) 
+- [ ] Intégration multiStream plan unifié (Mozzila)
+
+[ ] STEP 3 >>> Livrable base NtoN
+- [ ] Intégration full-mesh (bas niveau ou librairie ??)
 
