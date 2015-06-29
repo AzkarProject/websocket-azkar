@@ -36,9 +36,9 @@ exports.client = function client (id,pseudo,placeliste,typeClient,connectionDate
 
 
  
-  // ---------------------------------
-  // Fonctions utiles (génériques)
-  // ---------------------------------
+// ---------------------------------
+// Fonctions utiles (génériques)
+// ---------------------------------
 
   // Création d'un UUID
   // Source : http://www.ietf.org/rfc/rfc4122.txt

@@ -148,6 +148,13 @@ socket.on('message2', function(data) {
     insereMessage2(data.objUser, data.message);
 })
 
+
+// Quand on reçoit une nouvelle commande de déplacement, on l'insère dans la page
+socket.on('moveOrder', function(data) {
+    console.log(">> socket.on('moveOrder',...");
+    insereCommande(data.objUser,data.moveOrder);
+})
+
 // Quand on reçoit un message de service
 socket.on('service2', function(data) {
     console.log(">> socket.on('service2',...");
@@ -174,6 +181,19 @@ $('#formulaire_chat_websoket').submit(function () {
     return false; // Permet de bloquer l'envoi "classique" du formulaire
 });
 
+
+// Lorsqu'on envoie le formulaire de commande, on transmet le message de la commande au serveur
+$('#formulaire_envoi_commande').submit(function () {
+    var moveOrder = $('#moveOrder').val();
+    socket.emit('moveOrder', {objUser:localObjUser,moveOrder:moveOrder}); // Transmet l'ordre de deplacement aux autres(robots ???)
+    insereCommande(localObjUser, myPlaceListe) //inserer le message de commande chez le robot
+    $('#moveOrder').val('').focus(); // Vide la zone de Chat et remet le focus dessus
+    return false; // Permet de bloquer l'envoi "classique" du formulaire
+});
+
+
+
+
 // Ajoute un message dans la page
 function insereMessage(pseudo, message, placeListe) {
     $('#zone_chat_websocket').prepend('<p><strong>('+placeListe+') '+ pseudo + '</strong> ' + message + '</p>');
@@ -191,4 +211,12 @@ function insereMessage2(objUser, message) {
     /**/
     $('#zone_chat_websocket').prepend('<p><strong>'+objUser.placeliste+'-'+objUser.pseudo+' (<i>'+objUser.typeClient+'</i>)</strong> ' + message + '</p>');
     // console.log ((objUser.pseudo + " >> " + message));
+}
+
+
+
+// Ajoute une nouvelle commande recue dans la page
+function insereCommande(objUser, moveOrder) {
+    $('#zone_reception_commande_websocket').prepend('<p><strong> '+ objUser.pseudo + '</strong> ' + moveOrder + '</p>');
+    console.log ((pseudo + " >> " + moveOrder));
 }

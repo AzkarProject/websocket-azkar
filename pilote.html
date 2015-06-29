@@ -17,15 +17,9 @@
 
 <body>
 
-    <strong>Base 1TO1 Pilote side</strong> v 0.5.1
+    <strong>Base 1TO1 Pilote side</strong> v 0.5.2
     <br/><info id="zone_info_server"></info>
     <hr/>
-
-		
-
-
-
-
 
      <section id="select-devices-robot">    
 		  
@@ -116,6 +110,20 @@
 	       	 </li>
         </section>
 
+
+        <section id="websocket_traitement_de_commande">
+			 <li class="flex-item myvideo pilote">
+		        
+				<strong> Websocket send command Test </strong>
+				<hr/>
+		        <form action="/" method="post" id="formulaire_envoi_commande">
+		            <input type="text" name="moveOrder" id="moveOrder" placeholder="Votre ordre de deplacement..." size="28" autofocus />
+		            <input type="submit" id="envoi_command" value="Envoyer" />
+		        </form>
+	       	 	<hr/>
+			 		       	 </li>
+        </section>
+
 		
 		<section id="chat">
 		  
@@ -147,7 +155,7 @@
         <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
         <script src="/socket.io/socket.io.js"></script>
         <script src="/js/common.js"></script>
-        <script src='/js/adapter.js'></script>
+        <script src='/js/lib/adapter.js'></script>
         <script src='/js/ws_manager.js'></script>
 		<script src='/js/main.js'></script>
 
