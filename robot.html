@@ -17,7 +17,7 @@
 
 <body>
 
-    <strong>Base 1TO1 Robot side</strong> v 0.5.1
+    <strong>Base 1TO1 Robot side</strong> v 0.5.2
     <br/><info id="zone_info_server"></info>
     <hr/>
 
@@ -74,10 +74,9 @@
 		        </form>
 	       	 	<hr/>
 			 	<div id="zone_chat_websocket"></div>
-
+			 	<div id="zone_reception_commande_websocket"></div>
 	       	 </li>
         </section>
-
 		
 		<section id="chat">
 		  
@@ -99,7 +98,12 @@
 	  		</li>
 	  	
 	  	</section>
-
+		<section id="simulateur">			
+				<strong> car drive simulator test </strong>
+				<div id='simulateur-area'></div>
+				<div id='simulateur-area2'></div>
+	  	</section>
+		
        	<script>	  	 
 		var otherType = "appelant";
 		var type = "appelé";
@@ -108,7 +112,9 @@
         <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
         <script src="/socket.io/socket.io.js"></script>
         <script src="/js/common.js"></script>
-        <script src='/js/adapter.js'></script>
+        <script src="/js/lib/phaser.min.js"></script>
+        <script src="/js/simulateur.js"></script>
+        <script src='/js/lib/adapter.js'></script>
         <script src='/js/ws_manager.js'></script>
 		<script src='/js/main.js'></script>
 

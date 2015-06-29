@@ -1,5 +1,6 @@
 // Méthodes communes client/serveur
 var common = require('./js/common');
+var bodyParser= require("body-parser"); // pour recuperer le contenu de requetes POST 
 
 // contrôle chargement coté serveur
 var commonTest = common.test();
@@ -24,6 +25,14 @@ app.set('port', port);
 var express = require('express');
 app.use(express.static(__dirname));
 
+//Utiliser body-parser pour la gestion de requete POST
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json()); // support json encoded bodies
+
+var HttpStatus = require('http-status-codes'); // le module qui recupère les status des requetes HTTP
+
+
+
 // Chargement de la page index.html
 app.get('/', function (req, res) {
   res.sendFile(__dirname + '/index.html');
@@ -44,6 +53,47 @@ app.get('/robot/', function (req, res) {
 app.get('/visiteur/', function (req, res) {
     res.sendFile(__dirname + '/visiteur.html');
 });
+
+
+/*******************envoi de requetes POST pour les mouvements du robot***********************************/
+
+
+
+// Routing Envoi de requetes POST pour la partie des commande STEP pg 40 - 45 RobuBox et voir page 70 --> Translate , relative , absolute , stop 
+app.post('/lokarria/step/translate', function (req, res) {
+    var x = req.body.X;
+    var y = req.body.Y;
+
+    console.log('héhé je veux me deplacer ');
+    res.send( 'héhé je veux me deplacer de : [ x ' +  x + ' , y : ' + y + ' ]');
+    res.end();
+ });
+
+app.post('/lokarria/step/relative', function (req, res) {
+    var distance = req.body.distance ;
+    var maxSpeed = req.body.maxSpeed ;
+
+    console.log('héhé je veux faire une rotation relative ');
+    res.send(' je me suis tourné dune rotation relative de  ' + distance + ' rad  avec une vitesse de : ' + maxSpeed + ' rad/s' );
+    res.end();
+ });
+
+app.post('/lokarria/step/absolute', function (req, res) {
+    var distance = req.body.distance ;
+    var maxSpeed = req.body.maxSpeed ;
+
+    console.log('héhé je veux faire une rotation absolue ');
+    res.send(' je me suis tourné dune rotation absolue de  ' + distance + ' rad  avec une vitesse de : ' + maxSpeed + 'rad/s');
+    res.end();
+ });
+
+app.post('/lokarria/step/stop', function (req, res) {
+    console.log('héhé je veux me stopper ');
+    res.send('requette post reçue pour me stopper et le http status : ' + HttpStatus.OK);
+    res.end();
+ });
+
+/******************************************************/
 
 // Lancement du serveur
 server.listen(app.get('port'),ipaddress);
@@ -197,6 +247,17 @@ io.sockets.on('connection', function (socket, pseudo) {
 	        socket.broadcast.emit('message2',{objUser: data.objUser, message: message});
     	}
         console.log ("@ message2 from "+data.objUser.placeliste+"-"+data.objUser.pseudo+ ": "+ message);
+    }); 
+
+
+  // Transmission de commande générique V2 objet
+    socket.on('moveOrder', function (data) {
+        console.log(data);
+        if (data.moveOrder){
+            moveOrder = ent.encode(data.moveOrder); // On vire les caractères html... ???????
+            socket.broadcast.emit('moveOrder',{objUser: data.objUser, moveOrder: moveOrder});
+        }
+        console.log ("@ moveOrder from "+data.objUser.placeliste+"-"+data.objUser.pseudo+ ": "+ moveOrder);
     }); 
 
 
