@@ -1,4 +1,4 @@
-var game = new Phaser.Game(800, 600, Phaser.AUTO, 'simulateur-area', { preload: preload, create: create, update: update, render: render });
+var game = new Phaser.Game(620,350, Phaser.AUTO, 'simulateur-area', { preload: preload, create: create, update: update, render: render });
 
 function preload() {
 
@@ -26,7 +26,7 @@ function create() {
     indicator1.animations.frame = 1;
 
 
-    car = game.add.sprite(400, 300, 'car');
+    car = game.add.sprite(310, 225, 'car');
     car.name = 'car';
     car.anchor.set(0.5,0.5);
 

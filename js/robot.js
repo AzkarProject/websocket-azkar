@@ -75,7 +75,7 @@ Robot.prototype.update = function() {
 };
 
 
-var game = new Phaser.Game(800, 600, Phaser.AUTO, 'simulateur-area2', { preload: preload, create: create, update: update, render: render });
+var game = new Phaser.Game(620, 350, Phaser.AUTO, 'simulateur-area2', { preload: preload, create: create, update: update, render: render });
 
 
 function preload () {
@@ -94,7 +94,7 @@ function create () {
 	game.stage.disableVisibilityChange  = true;
 	
     //  Our tiled scrolling background
-    land = game.add.tileSprite(0, 0, 800, 600, 'earth'); // la carte de jeu peut etre ....
+    land = game.add.tileSprite(0, 0, 620, 350, 'earth'); // la carte de jeu peut etre ....
     land.fixedToCamera = true;
     
     	

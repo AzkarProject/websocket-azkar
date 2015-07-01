@@ -17,93 +17,104 @@
 
 <body>
 
-    <strong>Base 1TO1 Robot side</strong> v 0.5.2
+    <strong>Base 1TO1 Robot side</strong> v 0.5.3
     <br/><info id="zone_info_server"></info>
     <hr/>
 
-	    <section id="select-devices">    
-			  
-			<li class="flex-item robot devices">  
-				<span id="messageDevicesState"> Micro/Camera disponibles -- (inactifs)</span>
+	    
+
+<ul class="flex-container wrap">
+
+
+
+	 	<section id="block_1">			
+			<li class="flex-item insideFlex robot">	
+
+				<strong> Car drive simulator test </strong>
 				<hr/>
-				<div class="select">
-					<label for="local_audioSource">Audio: </label>
-					<select id="local_audioSource"></select>
-			    </div>
-
-			    <div class="select">
-			      	<label for="local_videoSource">Video: </label>
-			      	<select id="local_videoSource"></select>
-			    </div>
-			   
+				<div id='simulateur-area'></div>
+				<div id='simulateur-area2'></div>
 			</li>
-	 	
-	 	</section>
+	  	</section>
 
 
 
-	<ul class="flex-container wrap">
+		<section id="block_2">
+		    
+		    <li class="flex-item">
+			    
+			    <div class="insideFlex myvideo robot halfBox">
+				    <strong> WebRTC localVideo (Robot)</strong>
+					
+				    <video id='video' autoplay muted controls="controls"></video>
+				</div>
+
+			    <div class="insideFlex yourvideo pilote halfBox">
+				    <strong> WebRTC remoteVideo (Pilote)</strong>
+					
+				    <video id='otherPeer' autoplay muted controls="controls" ></video>
+		  	 	</div>
+	  	 	
+	  	 	
+				<div class="insideFlex robot halfBox">
+					<strong> Websocket Chat Test </strong>
+					
+			        <form action="/" method="post" id="formulaire_chat_websoket">
+			            <input type="text" name="message" id="message" placeholder="Votre message..." size="28" autofocus />
+			            <input type="submit" id="envoi_message" value="Envoyer" />
+			        </form>
+		       	 	
+				 	<div id="zone_chat_websocket"></div>
+				 	<div id="zone_reception_commande_websocket"></div>
+	      		</div>
+       
+		  
+				<div class="insideFlex robot halfBox">
+					<strong> WebRTC dataChannel Test </strong>
+			        <div id="formulaire_chat_webRTC" class="pseudoForm">
+			            <input type="text" name="message" id="send_chat_WebRTC" placeholder="Waiting open channel..." size="28" autofocus />
+			            <button id="sendButton" disabled onclick="sendMessage()">Envoyer</button>
+			        </div>
+		       	 	<br/>
+				 	<div id="zone_chat_WebRTC"></div>
+	      		</div>
+
+
+
+
+		</li>
+	  	 
+	  	</section>
 	
 
-	    <section id="myvideos" class="sectionOneVideo">
-		    <li class="flex-item myvideo robot">
-			    <strong> WebRTC localVideo (Robot)</strong>
-				<hr/>
-			    <!--<div id="infoIceCandidateSended">???</div>-->
-			    <video id='video' autoplay muted controls="controls"></video>
-			</li>
-	    </section>
-	    
-	     <section id="yourvideos" class="sectionMultipleVideos">
-		    <li class="flex-item yourvideo pilote">
-			    <strong> WebRTC remoteVideo (Pilote)</strong>
-				<hr/>
-			    <!--<div id="infoIceCandidateReceived">???</div>-->
-			    <video id='otherPeer' autoplay muted controls="controls" ></video>
-	  	 	</li>
-	  	 </section>
 
-	  	 <section id="websocket_chat">
-			 <li class="flex-item myvideo robot">
+	   	<section id="block_3">
+			 
+			 <li class="flex-item">
 		        
-				<strong> Websocket Chat Test </strong>
-				<hr/>
-		        <form action="/" method="post" id="formulaire_chat_websoket">
-		            <input type="text" name="message" id="message" placeholder="Votre message..." size="28" autofocus />
-		            <input type="submit" id="envoi_message" value="Envoyer" />
-		        </form>
-	       	 	<hr/>
-			 	<div id="zone_chat_websocket"></div>
-			 	<div id="zone_reception_commande_websocket"></div>
-	       	 </li>
-        </section>
-		
-		<section id="chat">
-		  
-			<li class="flex-item robot">
 				
-				<div id='textareas'>
-					<strong> WebRTC dataChannel Test </strong>
+				<div class="insideFlex robot fullBox">
+
+			  	 	<span id="messageDevicesState"> Micro/Camera disponibles (inactifs)</span>
 					<hr/>
-					<button id="sendButton" disabled onclick="sendMessage()">WebRTC dataChannel Send</button>
-					<br/>
-					<textarea id="dataChannelSend" disabled placeholder="Waiting open channel..."></textarea>
-					<hr/> 
-					<!--
-					<textarea id="dataChannelReceive" disabled placeholder="Waiting WebRTC datas..."></textarea>
-					-->
-					<div id="chatlog">Waiting open channel...</div>
-				</div>
-		
+					<div class="select">
+						<label for="local_audioSource">Audio: </label>
+						<select id="local_audioSource"></select>
+				    </div>
+
+				    <div class="select">
+				      	<label for="local_videoSource">Video: </label>
+				      	<select id="local_videoSource"></select>
+				    </div>
+
+
+		  	 	</div>
+
+
 	  		</li>
 	  	
 	  	</section>
-		<section id="simulateur">			
-				<strong> car drive simulator test </strong>
-				<div id='simulateur-area'></div>
-				<div id='simulateur-area2'></div>
-	  	</section>
-		
+
        	<script>	  	 
 		var otherType = "appelant";
 		var type = "appelé";
