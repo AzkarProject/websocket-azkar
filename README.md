@@ -1,4 +1,4 @@
-# AZKAR WebRTC script Base. V 0.5.2
+# AZKAR WebRTC script Base. V 0.5.3
 ------------------------------------------------------------
 
 Script basé sur clients chrome en 1to1 fonctionnant en bas-niveau. 

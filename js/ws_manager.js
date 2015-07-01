@@ -29,7 +29,7 @@ var pseudo = prompt('Votre pseudo? (par défaut ce sera "'+typeUser+'")');
 if (!pseudo) { pseudo = typeUser;}
 // document.title = pseudo + ' - ' + document.title;
 
-socket.emit('nouveau_client', pseudo); // Version 1
+// socket.emit('nouveau_client', pseudo); // Version 1
 socket.emit('nouveau_client2', {pseudo: pseudo, typeUser: typeUser}); // Version objet
 
 /*
@@ -167,7 +167,7 @@ socket.on('service2', function(data) {
 
 // Lorsqu'on envoie le formulaire, on transmet le message et on l'affiche sur la page
 $('#formulaire_chat_websoket').submit(function () {
-    console.log ("WWWWWWWWWWWWW");
+    //console.log ("WWWWWWWWWWWWW");
     var message = $('#message').val();
     /*// Version classique
     socket.emit('message', message); // Transmet le message aux autres
@@ -194,11 +194,12 @@ $('#formulaire_envoi_commande').submit(function () {
 
 
 
-// Ajoute un message dans la page
+/*// Ajoute un message dans la page
 function insereMessage(pseudo, message, placeListe) {
     $('#zone_chat_websocket').prepend('<p><strong>('+placeListe+') '+ pseudo + '</strong> ' + message + '</p>');
     console.log ((pseudo + " >> " + message));
 }
+/**/
 
 // Ajoute un message dans la page V2
 function insereMessage2(objUser, message) {
@@ -209,7 +210,7 @@ function insereMessage2(objUser, message) {
     console.log(objUser.pseudo);
     console.log(objUser.placeliste);
     /**/
-    $('#zone_chat_websocket').prepend('<p><strong>'+objUser.placeliste+'-'+objUser.pseudo+' (<i>'+objUser.typeClient+'</i>)</strong> ' + message + '</p>');
+    $('#zone_chat_websocket').prepend('<strong>'+objUser.placeliste+'-'+objUser.pseudo+' (<i>'+objUser.typeClient+'</i>):</strong> ' + message + '<br/>');
     // console.log ((objUser.pseudo + " >> " + message));
 }
 

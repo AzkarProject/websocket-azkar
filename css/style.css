@@ -1,50 +1,66 @@
 header {}
 
-info {
- font-size:12px; 
- 
-}
-
-#audiosource {
-  width:100%;
-}
-
-#videosource {
-  width:100%;
-}
-
-/* ---- Chat Websocket */
-#zone_chat_websocket, #zone_chat_WebRTC {
-  font-size:12px; 
-  border:1px solid #ffffff;
-  background-color:#ffffff;
-  padding: 2px;
-  height: 150px;
-  overflow: auto;
-}
 
 
-#zone_chat_websocket, #zone_chat_WebRTC strong {
-    text-decoration: underline;
-}
-
-
-#websocket_chat, #WebRTC_chat {
-  width:322px;
-}
 
 /* ------------------- */
 
-video {
+info { font-size:12px; }
+
+
+section { width:645px; min-width: 632px;}
+
+
+.halfBox {
   width:300px;
-  height:180px;
+  min-width: 300px;
+  float:left;
+}
+
+.fullBox {
+  width:622px;
+  min-width: 622px;
+  float:left;
+}
+
+.robot { background: #A9D0F5;}
+.pilote { background: #FACC2E;}
+
+#audiosource { width:100%;}
+#videosource { width:100%;}
+
+.halfBox select {width:240px;}
+
+.halfBox video { width:300px; height:180px;}
+
+.ihmPilote .halfBox video { width:300px; height:150px;}
+
+.ihmPilote .fullBox video { width:622px;}
+
+/* Formulaires devices de base */
+.devices {
+    -webkit-transition: height 0.3s ease-in-out, background-color 0.3s;
+    -o-transition: height 0.3s ease-in-out, background-color 0.3s;
+    -moz-transition: height 0.3s ease-in-out, background-color 0.3s;
+    transition: height 0.3s ease-in-out, background-color 0.3s;
 }
 
 
-section {
-  width:322px;
-  min-width: 322px;
+/* Formulaires devices avec invite */
+.devicesInvite {
+    background-color: green;
+    -webkit-transition: height 0.6s ease-in-out, background-color 0.6s;
+    -o-transition: height 0.6s ease-in-out, background-color 0.6s;
+    -moz-transition: height 0.6s ease-in-out, background-color 0.6s;
+    transition: height 0.6s ease-in-out, background-color 0.6s;
 }
+
+
+/* Formulaires devices désactivés */
+.devicesDisabled {}
+
+
+
 
 .flex-container {
   padding: 0;
@@ -60,99 +76,61 @@ section {
   display: flex;
 }
 
-.nowrap  { 
-  -webkit-flex-wrap: nowrap;
-  flex-wrap: nowrap;
-}
+.nowrap  { -webkit-flex-wrap: nowrap;flex-wrap: nowrap;}
+.wrap    { -webkit-flex-wrap: wrap;flex-wrap: wrap;}  
+.wrap-reverse { -webkit-flex-wrap: wrap-reverse;flex-wrap: wrap-reverse;}  
+.wrap-reverse li {background: deepskyblue;}
 
-.wrap    { 
-  -webkit-flex-wrap: wrap;
-  flex-wrap: wrap;
-}  
-/*
-.wrap li {
-  background: #cccccc;
-}
-/**/
 
-.robot {
- background: #A9D0F5;
-}
 
-.pilote {
- background: #FACC2E;
-}
+.flex-item {}
 
-.wrap-reverse         { 
-  -webkit-flex-wrap: wrap-reverse;
-  flex-wrap: wrap-reverse;
-}  
-.wrap-reverse li {
-  background: deepskyblue;
-}
-
-.devices {
-  width:622px;
-  /*min-width: 622px;*/
-  -webkit-transition: width 2s; /* Safari */
-  transition: width 2s;
-
-}
-/*
-.devices:hover {
-  width:722px;
-}
-/**/
-
-.devicesInvite {
-  width:722px;
-}
-
-.flex-item {
+.insideFlex {
   padding:5px;
   margin:5px;
   border:1px solid #cccccc;
-  /*width: 300px;
-  height: 250px;*/
-  /*-webkit-filter: drop-shadow(10px 10px 10px green); /* OK crhome 40 */
-  /*filter: drop-shadow(10px 10px 10px green);/* OK sous firefox 35.0.1*/
 }
 
 
-.shadow-black {
+/**/
+
+
+/* Ombrages */
+
+.shadowBlack {
    -webkit-filter: drop-shadow(10px 10px 10px black); /* OK crhome 40 */
   filter: drop-shadow(10px 10px 10px black);/* OK sous firefox 35.0.1*/
 }
 
-.shadow-green {
+.shadowGreen {
    -webkit-filter: drop-shadow(10px 10px 10px green); /* OK crhome 40 */
   filter: drop-shadow(10px 10px 10px green);/* OK sous firefox 35.0.1*/
 }
 
-.shadow-red {
+.shadowRed {
    -webkit-filter: drop-shadow(10px 10px 10px red); /* OK crhome 40 */
   filter: drop-shadow(10px 10px 10px red);/* OK sous firefox 35.0.1*/
 }
+
+/* Zones de tchat */
+
+/* ---- Chat Websocket */
+#zone_chat_websocket, #zone_chat_WebRTC {
+  font-size:12px; 
+  border:1px solid #ffffff;
+  background-color:#ffffff;
+  padding: 2px;
+  height: 105px;
+  overflow: auto;
+}
+
+#websocket_chat, #WebRTC_chat { width:322px;}
 
 #log {
 	font-size:10px;
 	background: #000000;
 	color: #ffffff;
-	/*width:300px;
-	height:150px;
-	word-wrap:normal;
-	overflow:auto;/**/
 }
-
-
-
-/**/
-
-#dataChannelSend {
-  margin: 0px; 
-  width: 98%;
-}
-
 
 #dataChannelReceive {
   margin: 0px; 

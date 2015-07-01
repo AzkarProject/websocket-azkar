@@ -57,8 +57,6 @@ app.get('/visiteur/', function (req, res) {
 
 /*******************envoi de requetes POST pour les mouvements du robot***********************************/
 
-
-
 // Routing Envoi de requetes POST pour la partie des commande STEP pg 40 - 45 RobuBox et voir page 70 --> Translate , relative , absolute , stop 
 app.post('/lokarria/step/translate', function (req, res) {
     var x = req.body.X;
@@ -195,8 +193,6 @@ io.sockets.on('connection', function (socket, pseudo) {
         // ... TODO... EST-ce bien nécéssaire ????
 
     });
-	/**/
-
 
   	// Quand un user se déconnecte (V2)
     socket.on('disconnect', function(){  
@@ -236,21 +232,18 @@ io.sockets.on('connection', function (socket, pseudo) {
         // socket.broadcast.emit('disconnected', {listUsers: users2});
     });  
 
-
-
-
     // Transmission de messages générique V2 objet
     socket.on('message2', function (data) {
         console.log(data);
         if (data.message){
-	        message = ent.encode(data.message); // On vire les caractères html...
-	        socket.broadcast.emit('message2',{objUser: data.objUser, message: message});
+            message = ent.encode(data.message); // On vire les caractères html...
+            socket.broadcast.emit('message2',{objUser: data.objUser, message: message});
     	}
         console.log ("@ message2 from "+data.objUser.placeliste+"-"+data.objUser.pseudo+ ": "+ message);
     }); 
 
 
-  // Transmission de commande générique V2 objet
+    // Transmission de commande générique V2 objet
     socket.on('moveOrder', function (data) {
         console.log(data);
         if (data.moveOrder){
@@ -265,13 +258,12 @@ io.sockets.on('connection', function (socket, pseudo) {
     // Partie 'signaling'. Ces messages transitent par websocket 
     // mais n'ont pas vocation à s'afficher dans le tchat...
 
-
     socket.on('signaling', function (message) {
         //console.log ("@ signaling from "+socket.placeListe+socket.pseudo);
         console.log ("@ signaling...");
         socket.broadcast.emit('signaling', message);
     }); 
-    
+
     // Quand est balancé un message 'candidate'
     // il est relayé à tous les autres connectés sauf à celui qui l'a envoyé
     socket.on('candidate', function (message) {
@@ -292,14 +284,6 @@ io.sockets.on('connection', function (socket, pseudo) {
         socket.broadcast.emit('answer', {message: message});
     }); 
 
-    /*// Quand est balancé un message 'stream'
-    // Note: Pour débugg probleme de réinstanciation du remoteStream coté apellant...
-    socket.on('stream', function (message) {
-        socket.broadcast.emit('stream', {message: message});
-    }); 
-    /**/
-
-    
     // ----------------------------------------------------------------------------------
     // Phase pré-signaling ( selections caméras et micros du robot par l'IHM pilote)
 
@@ -313,8 +297,7 @@ io.sockets.on('connection', function (socket, pseudo) {
     	console.log ("@ remoteListDevices from: "+place+"-"+login+" ("+role+") timestamp:" + Date.now());
     	console.log(data.objUser);
     	console.log(data.listeDevices);
-    	/**/
-        
+    	/**/   
     }); 
 
 
@@ -334,9 +317,4 @@ io.sockets.on('connection', function (socket, pseudo) {
     socket.on('readyForSignaling', function (data) {
         socket.broadcast.emit('readyForSignaling', {objUser:data.objUser, message:data.message});
     }); 
-
-
-
-
-
 });

@@ -15,136 +15,158 @@
     </head>
 
 
-<body>
+<body class="ihmPilote">
 
-    <strong>Base 1TO1 Pilote side</strong> v 0.5.2
+    <strong>Base 1TO1 Pilote side</strong> v 0.5.3
     <br/><info id="zone_info_server"></info>
     <hr/>
-
-     <section id="select-devices-robot">    
-		  
-		<li id="li-devices-robot" class="flex-item robot devices shadow-black">  
-			<strong>Select Remote Sources</strong>
-			<hr/>
-
-			<div class="select">
-				<label for="remote_audioSource">Audio: </label>
-				<select id="remote_audioSource"></select>
-		    </div>
-
-		    <div class="select">
-		      	<label for="remote_videoSource">Video: </label>
-		      	<select id="remote_videoSource"></select>
-		    </div>
-			<hr/>
-		    <button id="remote_ButtonDevices" onclick="remoteManageDevices()">Sélectionner</button>
-		</li>
- 	
- 	</section>
-
-
-    <section id="select-devices-pilote">    
-		  
-		<li id="li-devices-pilote" class="flex-item pilote devices shadow-black">  
-			<strong> Select local sources</strong>
-			<hr/>
-			<div class="select">
-				<label for="local_audioSource">Audio: </label>
-				<select id="local_audioSource"></select>
-		    </div>
-
-		    <div class="select">
-		      	<label for="local_videoSource">Video: </label>
-		      	<select id="local_videoSource"></select>
-		    </div>
-
-		    <hr/>
-		    <button class="shadow-black" id="local_ButtonDevices" onclick="localManageDevices()">Ouvrir la connexion</button>
-		</li>
- 	
- 	</section>
-
-
-		
-
-
 
 	<ul class="flex-container wrap">
 
 
+		<section id="localArea">    
+			  
+			<li class="flex-item">
 
 
 
-
-        
-	    <section id="myvideos" class="sectionOneVideo">
-		    <li class="flex-item myvideo pilote shadow-black">
-			    <strong> WebRTC localVideo (Pilote)</strong>
-				<hr/>
-			    <!--<div id="infoIceCandidateSended">???</div>-->
-			    <video id='video' autoplay muted controls="controls"></video>
-			</li>
-	    </section>
-	    
-	     <section class="yourvideos" class="sectionMultipleVideos">
-		    <li class="flex-item yourvideo robot shadow-black">
-			    <strong> WebRTC remoteVideo (Robot)</strong>
-				<hr/>
-			    <!--<div id="infoIceCandidateReceived">???</div>-->
-			    <video id='otherPeer' autoplay muted controls="controls" ></video>
-	  	 	</li>
-	  	 </section>
-
-	  	<section id="websocket_chat">
-			 <li class="flex-item myvideo pilote shadow-black">
-		        
-				<strong> Websocket Chat Test </strong>
-				<hr/>
-		        <form action="/" method="post" id="formulaire_chat_websoket">
-		            <input type="text" name="message" id="message" placeholder="Votre message..." size="28" autofocus />
-		            <input type="submit" id="envoi_message" value="Envoyer" />
-		        </form>
-	       	 	<hr/>
-			 	<div id="zone_chat_websocket"></div>
-
-	       	 </li>
-        </section>
-
-
-        <section id="websocket_traitement_de_commande">
-			 <li class="flex-item myvideo pilote">
-		        
-				<strong> Websocket send command Test </strong>
-				<hr/>
-		        <form action="/" method="post" id="formulaire_envoi_commande">
-		            <input type="text" name="moveOrder" id="moveOrder" placeholder="Votre ordre de deplacement..." size="28" autofocus />
-		            <input type="submit" id="envoi_command" value="Envoyer" />
-		        </form>
-	       	 	<hr/>
-			 		       	 </li>
-        </section>
-
-		
-		<section id="chat">
-		  
-			<li class="flex-item pilote shadow-black">
-				
-				<div id='textareas'>
-					<strong> WebRTC dataChannel Test </strong>
+				<div id="li-devices-robot" class="insideFlex halfBox robot shadowBlack device">  
+					<strong>Select Remote Sources</strong>
 					<hr/>
-					<button id="sendButton" disabled onclick="sendMessage()">WebRTC dataChannel Send</button>
-					<br/>
-					<textarea id="dataChannelSend" disabled placeholder="Waiting open channel..."></textarea>
-					<hr/> 
-					<!--
-					<textarea id="dataChannelReceive" disabled placeholder="Waiting WebRTC datas..."></textarea>
-					-->
-					<div id="chatlog">Waiting open channel...</div>
+
+					<div class="select">
+						<label for="remote_audioSource">Audio: </label>
+						<select id="remote_audioSource"></select>
+				    </div>
+
+				    <div class="select">
+				      	<label for="remote_videoSource">Video: </label>
+				      	<select id="remote_videoSource"></select>
+				    </div>
+					<hr/>
+				    <button id="remote_ButtonDevices" onclick="remoteManageDevices()">Sélectionner</button>
 				</div>
-		
-	  		</li>
-	  	
-	  	</section>
+	 	
+   
+			  
+				<div id="li-devices-pilote" class="insideFlex halfBox pilote shadowBlack device">  
+					<strong> Select local sources</strong>
+					<hr/>
+					<div class="select">
+						<label for="local_audioSource">Audio: </label>
+						<select id="local_audioSource"></select>
+				    </div>
+
+				    <div class="select">
+				      	<label for="local_videoSource">Video: </label>
+				      	<select id="local_videoSource"></select>
+				    </div>
+
+				    <hr/>
+				    <button class="shadowBlack" id="local_ButtonDevices" onclick="localManageDevices()">Ouvrir la connexion</button>
+				</div>
+	 	
+	 	
+				<div class="insideFlex pilote halfBox shadowBlack">
+					<strong> Websocket Chat Test </strong>
+					
+			        <form action="/" method="post" id="formulaire_chat_websoket">
+			            <input type="text" name="message" id="message" placeholder="Votre message..." size="28" autofocus />
+			            <input type="submit" id="envoi_message" value="Envoyer" />
+			        </form>
+		       	 	
+				 	<div id="zone_chat_websocket"></div>
+				 	<div id="zone_reception_commande_websocket"></div>
+	      		</div>
+       
+		  
+				
+				<div class="insideFlex pilote halfBox shadowBlack">
+				    <strong> WebRTC remoteVideo (Pilote)</strong>
+				    <video id='otherPeer' autoplay muted controls="controls" ></video>
+		  	 	</div>
+
+
+
+
+
+
+
+
+				<div class="insideFlex pilote halfBox shadowBlack">
+					<strong> WebRTC dataChannel Test </strong>
+			        <div id="formulaire_chat_webRTC" class="pseudoForm">
+			            <input type="text" name="message" id="send_chat_WebRTC" placeholder="Waiting open channel..." size="28" autofocus />
+			            <button id="sendButton" disabled onclick="sendMessage()">Envoyer</button>
+			        </div>
+		       	 	<br/>
+				 	<div id="zone_chat_WebRTC"></div>
+	      		</div>
+
+			
+
+				<div id="li-command-pilote" class="insideFlex halfBox robot shadowBlack device">  
+					<strong>Select Command Device</strong>
+					<hr/>
+
+					<div class="select">
+						<label for="command_devices">Devices: </label>
+						<select id="command_devices"></select>
+				    </div>
+					<hr/>
+				    
+				    <button id="btnUp" onclick="cmdUp()">up</button>
+					<button id="btnLeft" onclick="cmdLeft()">down</button>
+					<button id="btnRight" onclick="cmdRight()">left</button>
+					<button id="btnDown" onclick="cmdDown()">right</button>
+					<button id="btnIncrease" onclick="cmdIncrease()">+</button>
+					<button id="btnDecrease" onclick="cmdDecrease()">-</button>
+
+				</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			</li>
+
+	 	</section>
+
+
+	
+	
+
+		<section id="remoteVideoArea">
+
+			<li class="flex-item">
+				<div class="insideFlex robot fullBox shadowBlack">
+				    <strong> WebRTC localVideo (Robot)</strong>
+				    <video id='video' autoplay muted controls="controls"></video>
+				</div>
+			</li>
+		</section>
+
+		<section id="remoteCanvasArea">
+			<li class="flex-item">	
+				<div class="insideFlex robot fullBox shadowBlack">
+        			<strong> Mapviewer</strong>
+	        		<canvas id="mapviewer_canvas" width="620" height="350">
+	            		Votre navigateur ne supporte pas les canvas.
+	        		</canvas>
+        		</div>
+			</li>
+		</section>
+
 
 
 		<script>	  	 
@@ -156,8 +178,10 @@
         <script src="/socket.io/socket.io.js"></script>
         <script src="/js/common.js"></script>
         <script src='/js/lib/adapter.js'></script>
+        <script src='/js/mapviewer.js'></script>
         <script src='/js/ws_manager.js'></script>
 		<script src='/js/main.js'></script>
+		
 
 
 </body>

@@ -1,4 +1,4 @@
-console.log("main.js");
+// console.log("main.js");
 
 // --------- WebRTC ---------------------------------------------
 // Script inspiré de l'article suivant:
@@ -67,8 +67,10 @@ function mainSettings() {
 
 
 	// dataChannel elements
-	chatlog = document.getElementById("chatlog");
-	message = document.getElementById("dataChannelSend");
+	//chatlog = document.getElementById("chatlog");
+	chatlog = document.getElementById("zone_chat_WebRTC");
+	//message = document.getElementById("dataChannelSend");
+	message = document.getElementById("send_chat_WebRTC");
 
 	// options pour l'objet PeerConnection
 	server = {'iceServers':[{'url':'stun:23.21.150.121'}]};
@@ -161,8 +163,8 @@ function gotSources(sourceInfos) {
 	    option.value = sourceInfo.id;
 	  	
 	    // Reconstruction de l'objet javascript natif sourceInfo:
-	    // Quand il est transmit par websocket entre Chromium et Chrome, 
-	    // impossible d'accéder à ses attributs une foi transmit... 
+	    // Quand il est construit sous chromium et transmit par websocket
+	    // vers Chromeimpossible d'accéder à ses attributs une foi transmit... 
 	    // Ce qui est bizarre, c'est que l'objet natif semble tout à fait normal avant transmission.
 	    // Par contre, R.A.S quand on le transmet de Chrome à Chrome ou de Chromium à chromium.
 	  	var sourceDevice = new common.sourceDevice();
@@ -173,11 +175,21 @@ function gotSources(sourceInfos) {
 	    sourceDevice.facing = sourceInfo.facing;
 	    sourceInfos[i] = sourceDevice;
 
-	    // On n'affiche que les XX premiers caractères de l'ID...
+	    /*// On n'affiche que les XX premiers caractères de l'ID...
 	    // ... Juste pour éviter des débordements d'affichage...
 	    var newID = sourceInfo.id;
-	    var microID = newID.substring(0, 50);
+	    var microID = newID.substring(0,13);
 	    microID += "...";
+
+	    // Si un sourceInfoLabel existe, même traitement (pour éviter les formulaires a rallonge...
+	    if (sourceInfo.label) {
+	    	var label = sourceInfo.label
+	    	var newLabel = label.substring(0,32)+"...";
+	    	sourceInfo.label = newLabel;
+	    }
+	    /**/
+
+
 
 	    // Conflit webcam Chromium/Chrome si même device choisi sur le PC local
 	    // >>> L'ID fournie par L'API MediaStreamTrack.getSources est différente
@@ -199,11 +211,11 @@ function gotSources(sourceInfos) {
 	    if (sourceInfo.kind === 'audio') {
 	      	
 	      	if (origin == "local") {	
-		      	option.text = sourceInfo.label || 'localMicro ' + (local_AudioSelect.length + 1) + ' (ID:'+microID+')';
+		      	option.text = sourceInfo.label || 'localMicro ' + (local_AudioSelect.length + 1) + ' (ID:'+sourceInfo.id+')';
 		      	local_AudioSelect.appendChild(option);
 		   	
 		   	} else if (origin == "remote") {
-		   		option.text = sourceInfo.label || 'RemoteMicro ' + (remote_AudioSelect.length + 1) + ' (ID:'+microID+')';
+		   		option.text = sourceInfo.label || 'RemoteMicro ' + (remote_AudioSelect.length + 1) + ' (ID:'+sourceInfo.id+')';
 		      	remote_AudioSelect.appendChild(option);
 		  	}
 		
@@ -211,11 +223,11 @@ function gotSources(sourceInfos) {
 	    } else if (sourceInfo.kind === 'video') {
 	      
 	      	if (origin == "local") {
-			    option.text = sourceInfo.label || 'localCam ' + (local_VideoSelect.length + 1) + ' (ID:'+microID+')';
+			    option.text = sourceInfo.label || 'localCam ' + (local_VideoSelect.length + 1) + ' (ID:'+sourceInfo.id+')';
 			    local_VideoSelect.appendChild(option);
 	  		
 	  		} else if (origin == "remote") {
-	   			option.text = sourceInfo.label || 'RemoteCam ' + (remote_VideoSelect.length + 1) + ' (ID:'+microID+')';
+	   			option.text = sourceInfo.label || 'RemoteCam ' + (remote_VideoSelect.length + 1) + ' (ID:'+sourceInfo.id+')';
 			    remote_VideoSelect.appendChild(option);
 	   		}
 	    
@@ -236,7 +248,11 @@ if (typeof MediaStreamTrack === 'undefined') {
 } else {
   	origin = "local"; // On prévient la fonction apellée que la source sera locale
   	MediaStreamTrack.getSources(gotSources);
+
+
+
 }
+
 
 // (V2 objet) Quand on reçoit une mise à jour de la liste 
 // des connectés de cette session websocket
@@ -286,7 +302,9 @@ if (type == "appelant") {
 		remote_VideoSelect.disabled = false; 
 
 		// Une petite animation CSS pour visualiser l'invite de formulaire...
-		document.getElementById("li-devices-robot").className = "flex-item robot devices shadow-green devicesInvite";
+		document.getElementById("li-devices-robot").className = "insideFlex halfBox robot shadowGreen devicesInvite";
+	
+
 	})
 	
 	// Reception du signal de fin pré-signaling
@@ -368,7 +386,7 @@ function remoteManageDevices () {
 	local_AudioSelect.disabled = false; 
 	local_VideoSelect.disabled = false;
 	// Invite de formulaire...
-	document.getElementById("li-devices-pilote").className = "flex-item pilote devices shadow-green devicesInvite"; 
+	document.getElementById("li-devices-pilote").className = "insideFlex halfBox pilote devices shadowGreen devicesInvite"; 
 }
 
 // IHM Pilote:
@@ -391,7 +409,7 @@ function localManageDevices () {
 	remote_VideoSelect.disabled = true; 
 
 	// Animation CSS de désactivation du formulaire devices robot...
-	document.getElementById("li-devices-robot").className = "flex-item robot devices shadow-black";
+	document.getElementById("li-devices-robot").className = "insideFlex halfBox  robot devices shadowBlack device";
 
 	// On balance coté robot les devices sélectionnés...
     if (type == "appelant") {
@@ -402,7 +420,7 @@ function localManageDevices () {
     	// Coté serveur >> socket.broadcast.emit('selectedRemoteDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
     	socket.emit('selectedRemoteDevices', {objUser:localObjUser,listeDevices:selectList}); // Version Objet
     	// Animation CSS de désactivation du formulaire devices pilote...
-		document.getElementById("li-devices-pilote").className = "flex-item pilote devices shadow-black"; 
+		document.getElementById("li-devices-pilote").className = "insideFlex halfBox pilote devices shadowBlack device"; 
     }
 }
 
@@ -460,6 +478,9 @@ function connect () {
 		
 		console.log("@ pc.oniceconnectionstatechange > timestamp:" + Date.now());
 		console.log(">>> stateConnection Event > " + pc.iceConnectionState);
+		$(chatlog).prepend('<strong><i>(stateConnection Event)</i>:</strong> ' + pc.iceConnectionState + '<br/>');
+
+
 		// console.log(">>> isStarted = "+ isStarted);
 		/**/
 		// Statut connected: env 1 seconde de latence
@@ -627,8 +648,9 @@ function onDisconnect () {
 function stopAndStart() {
   
   	console.log("@stopAndStart()");
- 	dataChannelSend.disabled = true;
-  	dataChannelSend.placeholder = "RTCDataChannel close";
+ 	send_chat_WebRTC.disabled = true;
+  	send_chat_WebRTC.placeholder = "RTCDataChannel close";
+
   	sendButton.disabled = true; 
 
   	pc = new PeerConnection(server, options);
@@ -650,9 +672,9 @@ function bindEvents () {
 	// écouteur d'ouverture
 	channel.onopen = function () { 
 		//console.log("RTCDataChannel is Open");
-		dataChannelSend.disabled = false;
-    	dataChannelSend.focus();
-    	dataChannelSend.placeholder = "RTCDataChannel is Open !";
+		send_chat_WebRTC.disabled = false;
+    	send_chat_WebRTC.focus();
+    	send_chat_WebRTC.placeholder = "RTCDataChannel is Open !";
     	sendButton.disabled = false; 
     	//isStarted = true;
     	//console.log("isStarted = "+ isStarted);
@@ -661,15 +683,27 @@ function bindEvents () {
 	// écouteur de reception message
 	channel.onmessage = function (e) {
 		// add the message to the chat log
-		chatlog.innerHTML += "<div>l'" +type+" écrit:"+ e.data + "</div>";
+		// chatlog.innerHTML += "<div>l'" +type+" écrit:"+ e.data + "</div>";
+		$(chatlog).prepend('<strong>(<i>'+type+'</i>):</strong> ' + e.data + '<br/>');
 	};
 }
 
 // send a message the textbox throught
 // the data channel for a chat program
 function sendMessage () {
+	alert ("toto");
 	var msg = message.value;
 	channel.send(msg);
 	message.value = "";
 }
 
+
+// Bouton d'envoi du formulaire de chat WebRTC
+$('#formulaire_chat_webRTC').submit(function () {
+    console.log ("WWWWWWWWWWWWW");
+    var message = $('#send_chat_WebRTC').val();
+    channel.send(msg);
+	message.value = "";
+    $('#send_chat_WebRTC').val('').focus(); // Vide la zone de Chat et remet le focus dessus
+    return false; // Permet de bloquer l'envoi "classique" du formulaire
+});
