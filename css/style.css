@@ -4,13 +4,18 @@ header {}
 
 
 /* ------------------- */
+.floatLeft {float:left;}
+.floatRight {float:right;}
+
+.robot { background: #A9D0F5;}
+.pilote { background: #FACC2E;}
 
 info { font-size:12px; }
+/*section { width:645px; min-width: 632px;}*/
 
 
-section { width:645px; min-width: 632px;}
 
-
+/* Size Box deprecated -- A virer IHM Robot */
 .halfBox {
   width:300px;
   min-width: 300px;
@@ -23,45 +28,176 @@ section { width:645px; min-width: 632px;}
   float:left;
 }
 
-.robot { background: #A9D0F5;}
-.pilote { background: #FACC2E;}
+
+/* Sizes Box IHM pilote */
+
+.fullSizeContainerBox {
+  width:1290px;
+  min-width: 1290px;
+  float:left;  
+}
+
+
+.oneQuarterContainerBox {
+    width: 325px;
+    min-width:325px;
+}
+
+.oneQuarterbox {
+  width:300px;
+  min-width: 300px;
+  float:left;
+}
+
+.doubleQuarterBox {
+  width:622px;
+  min-width: 622px;
+  float:left;
+}
+
+.tripleQuarterBox {
+  width:944px;
+  min-width: 944px;
+  float:left;
+}
+
+.fourQuarterBox {
+  width:1270px;
+  min-width: 1270px;
+  float:left;
+}
+
+.oneThirdContainerBox {
+    width: 425px;
+    min-width:425px;
+}
+
+.OneThirdBox {
+  width:400px;
+  min-width: 400px;
+  float:left;
+}
+
+.DoubleThirdBox {
+  width:844px;
+  min-width: 622px;
+  float:left;
+}
+
+
+
+
+
+
+
+
 
 #audiosource { width:100%;}
 #videosource { width:100%;}
 
+
+
 .halfBox select {width:240px;}
-
 .halfBox video { width:300px; height:180px;}
+.oneQuarterBox select {width:240px;}
+.oneQuarterBox video { width:300px; height:180px;}
 
-.ihmPilote .halfBox video { width:300px; height:150px;}
 
-.ihmPilote .fullBox video { width:622px;}
+.ihmPilote .oneQuarterBox video { width:300px; height:150px;}
+.ihmPilote .tripleQuarterBox video { width:940px; height:600px}
+
+
+/* hauteur des blocs */
+.ihmPilote #robotDevices {}
+.ihmPilote #piloteDevices {}
+.ihmPilote #robotCommands {height: 202px;}
+.ihmPilote #robotInfos {}
+.ihmPilote #websocketChat {height:290px}
+.ihmPilote #remoteVideoArea {height:640px;}
+.ihmPilote #remoteCanvasArea {}
+.ihmPilote #dataChannelArea {}
+
+/* Jauges */
+.ihmPilote #robotInfos .jauge #battery_level {width: 300px;}
+.ihmPilote #robotInfos .jauge #speed_robot {width: 300px;}
+
 
 /* Formulaires devices de base */
 .devices {
+    
     -webkit-transition: height 0.3s ease-in-out, background-color 0.3s;
     -o-transition: height 0.3s ease-in-out, background-color 0.3s;
     -moz-transition: height 0.3s ease-in-out, background-color 0.3s;
     transition: height 0.3s ease-in-out, background-color 0.3s;
+    /**/
 }
 
 
 /* Formulaires devices avec invite */
 .devicesInvite {
     background-color: green;
+    
     -webkit-transition: height 0.6s ease-in-out, background-color 0.6s;
     -o-transition: height 0.6s ease-in-out, background-color 0.6s;
     -moz-transition: height 0.6s ease-in-out, background-color 0.6s;
     transition: height 0.6s ease-in-out, background-color 0.6s;
+    /**/
 }
 
 
 /* Formulaires devices désactivés */
 .devicesDisabled {}
 
+/* Positionnement Boutons de formulaires */
+#remote_buttondevices {float:right;}
+#local_ButtonDevices {float:right;}
+
+/* Positionnement boutons de commande Robot */
+#divBtUp {float:left; width:100%; text-align:center}
+#divBtLeft {float:left; width:50%; text-align:center}
+#divBtRight {float:right; width:50%; text-align:center}
+#divBtDown {float:left; width:100%; text-align:center}
+#divBtSpeed {float:left; width:100%; text-align:center}
+.btnCommandsPad {min-height:35px}
+
+/* forme, taille et couleurs des boutons */
+button{
+     font-family: Arial,sans-serif;
+     font-size: 12px;
+     font-weight: bold;
+     color: #fff;
+     min-width: 50px;
+     /*width: 200px;*/
+     /*height: 30px;*/
+     /*padding-top: 7px; /*permet le centrage vertical*/
+     text-align: center;
+     color: #fff;
+     background: #444;
+    
+    border-radius: 4px;
+    /*text-shadow: 0px 1px 0px white;*/
+    /*text-shadow: 0px 1px 0px rgba( 255, 255, 255, 0.2);*/
+    
+    
+     box-shadow: 0 0 5px rgba( 0, 0, 0, 0.5), 0 -1px 0 rgba( 255, 255, 255, 0.4);
+}
+
+button:hover{
+     color: yellow;
+     background: #555;
+     background: linear-gradient( #777, #333);
+}
+
+button:active{
+     color: green;
+     background: #444;
+     background: linear-gradient( #555, #2C2C2C);
+     box-shadow: 1px 1px 10px black inset, 0 1px 0 rgba( 255, 255, 255, 0.4);
+}
 
 
 
+/* Containers Flex */
 .flex-container {
   padding: 0;
   margin: 0;
@@ -81,8 +217,6 @@ section { width:645px; min-width: 632px;}
 .wrap-reverse { -webkit-flex-wrap: wrap-reverse;flex-wrap: wrap-reverse;}  
 .wrap-reverse li {background: deepskyblue;}
 
-
-
 .flex-item {}
 
 .insideFlex {
@@ -90,9 +224,6 @@ section { width:645px; min-width: 632px;}
   margin:5px;
   border:1px solid #cccccc;
 }
-
-
-/**/
 
 
 /* Ombrages */
@@ -120,7 +251,7 @@ section { width:645px; min-width: 632px;}
   border:1px solid #ffffff;
   background-color:#ffffff;
   padding: 2px;
-  height: 105px;
+  height: 210px;
   overflow: auto;
 }
 

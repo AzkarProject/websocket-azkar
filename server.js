@@ -15,6 +15,7 @@ var app = require('express')(),
 
 // variables d'environnement en variables globale pour les passer à la méthode websocket
 ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP ||"127.0.0.1";
+// ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP ||"192.168.173.1";
 port      = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 2000;
 
 // affectation du port
@@ -104,6 +105,7 @@ console.log("**Socket.IO Version: " + ioVersion);
 console.log("**Express Version: " + expressVersion);
 console.log("**ipAdress = " + ipaddress );
 console.log("**port = " + port );
+var indexUrl = "http://"+ipaddress+":"+port;
 
 
 // liste des users
@@ -131,18 +133,116 @@ histoPosition2 = 0;
 // contrôle des connectés coté serveur
 // Ecouteur de connexion d'un nouveau client
 function onSocketConnected(socket){
-   console.log ("-------------------------------");
-   console.log("connexion nouveau client :"+ socket.pseudo + "(ID : " + socket.id + ")");
+  console.log ("-------------------------------");
+  console.log("connexion nouveau client :"+ socket.pseudo + "(ID : " + socket.id + ")");
 }
+
+
+
+
+
+
 
 var debugNbOffer =0;
 
+//
+/*
+io.use(function(socket, next) {
+  //var handshake = socket.request;
+  
+  
+		// Contrôle d'accès minimal (pour éviter les bugs...)
+		// Si Pilote >> Si 0 Robot ou 1 Pilote >> Accès refusé
+		// Si Robot >> Si 1 Robot accès refusé
+		// Si Visiteur >> Si 0 Robot ou 0 Pilote accès refusé
+		
+		// Si + d'1 Robot >> Accès 2 ème Robot refusé
+		// Si + d'1 Pilote >> Accès 2ème Pilote 2 refusé
+		// Si 0 Robot >> Accès Pilote & Visiteurs refusés
+		// Si 0 Pilote >> Accès Visiteurs refusés
+		// Si 0 Pilote & Robot >> Accès Visiteurs refusés
+		
+		
+		 var isAuthorised = true;
+		 var indexUrl = "http://"+ipaddress+':'+por
+
+
+
+
+
+
+ 
+  isAuthorised = false;
+
+  if (isAuthorised == false) {
+  	next(new Error('not authorized',message:message,url:indexUrl));
+  	return;
+  }
+  next();
+ 
+});
+//**/
+
+/*
+io.set('authorization', function (handshakeData, callback) {
+  // make sure the handshake data looks good
+  callback('not authorized', false); // error first, 'authorized' boolean second 
+});
+/**/
 
 io.sockets.on('connection', function (socket, pseudo) {
  
+   	
+	onSocketConnected(socket);
+
    	// Quand un User rentre un pseudo (version objet), 
     // on le stocke en variable de session et on informe les autres Users
     socket.on('nouveau_client2', function(data) {
+
+        
+    	
+    	// Contrôle d'accès minimal (pour éviter les bugs...)
+		// Si Pilote >> Si 0 Robot ou 1 Pilote >> Accès refusé
+		// Si Robot >> Si 1 Robot accès refusé
+		// Si Visiteur >> Si 0 Robot ou 0 Pilote accès refusé
+
+		//var commonTest2 = common.searchInObjects(users2,"typeClient","Robot","boolean");
+		var isAuthorized = true;
+		var	authMessage;
+		if (data.typeUser == "Robot") {
+			console.log ("++++++++++++REJECT++++++++++++ >> Is Robot");
+			var isOtherBot = common.searchInObjects(users2,"typeClient","Robot","boolean");
+			if (isOtherBot == true) {
+				isAuthorized = false;
+				authMessage = "Un Robot est déjà connecté...";
+			}
+
+		} else if (data.typeUser == "Pilote") {
+			console.log ("++++++++++++REJECT++++++++++++ >> Is Pilot");
+			var isOneBot = common.searchInObjects(users2,"typeClient","Robot","boolean");
+			var isOtherPilot = common.searchInObjects(users2,"typeClient","Pilote","boolean");
+			if (isOneBot == false) {
+				isAuthorized = false;
+				authMessage = "Pas de robot connecté...";
+			} else if (isOtherPilot == true) {
+				isAuthorized = false;
+				authMessage = "Un Pilote est déjà connecté...";
+			}
+			
+
+
+		}	else if (data.typeUser == "Visiteur") {
+			console.log ("++++++++++++REJECT++++++++++++ >> Is Visitor");
+
+		}
+
+    	if (isAuthorized == false) {
+    		console.log ("++++++++++++REJECT++++++++++++")
+    		io.to(socket.id).emit('rejectConnexion', {message:authMessage, url:indexUrl});
+    		return;
+    	}
+
+
 
         // On lui attribue un numéro correspondant a sa position d'arrivée dans la session:
         // var placeListe = lastPosition +1; // WTF LastPosition ne s'incrémente pas... 
@@ -191,6 +291,13 @@ io.sockets.on('connection', function (socket, pseudo) {
 
         // 4 - on met à jour la liste des connectés cotés clients
         // ... TODO... EST-ce bien nécéssaire ????
+        // exports.searchInObjects = function (hashTable,attribute,value,typeReturn){
+
+		// contrôle fontion tests de tableau d'objet coté serveur
+		//var commonTest2 = common.searchInObjects(users2,"typeClient","Robot","boolean");
+		//console.log("commonTest2 >>> " + commonTest2 + " >>> true = robot - false = pilote");
+
+
 
     });
 

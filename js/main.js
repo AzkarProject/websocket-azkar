@@ -7,14 +7,21 @@
 
 // Gestion des messages d'erreur
 function errorHandler (err) {
+	console.log("ON-ERROR");
 	console.error(err);
 }
+
+function alertAndRedirect(message,url) {
+	//alert (message);
+	window.alert(message)
+    window.location.href=url;
+}
+
+
 
 // Initialisation des variables, objets et paramètres du script
 function mainSettings() {
 	console.log("@mainSettings()");
-
-
 
 	// pré-signaling -------------------------------------------------
 
@@ -253,6 +260,16 @@ if (typeof MediaStreamTrack === 'undefined') {
 
 }
 
+// rejectConnexion', message:message, url:indexUrl);
+socket.on('error', errorHandler);
+
+socket.on('rejectConnexion', function(data) {
+	alertAndRedirect(data.message,data.url)
+})
+
+
+
+
 
 // (V2 objet) Quand on reçoit une mise à jour de la liste 
 // des connectés de cette session websocket
@@ -302,7 +319,7 @@ if (type == "appelant") {
 		remote_VideoSelect.disabled = false; 
 
 		// Une petite animation CSS pour visualiser l'invite de formulaire...
-		document.getElementById("li-devices-robot").className = "insideFlex halfBox robot shadowGreen devicesInvite";
+		document.getElementById("robotDevices").className = "insideFlex oneQuarterbox robot shadowGreen devicesInvite";
 	
 
 	})
@@ -386,7 +403,7 @@ function remoteManageDevices () {
 	local_AudioSelect.disabled = false; 
 	local_VideoSelect.disabled = false;
 	// Invite de formulaire...
-	document.getElementById("li-devices-pilote").className = "insideFlex halfBox pilote devices shadowGreen devicesInvite"; 
+	document.getElementById("piloteDevices").className = "insideFlex oneQuarterbox pilote devices shadowGreen devicesInvite"; 
 }
 
 // IHM Pilote:
@@ -409,7 +426,10 @@ function localManageDevices () {
 	remote_VideoSelect.disabled = true; 
 
 	// Animation CSS de désactivation du formulaire devices robot...
-	document.getElementById("li-devices-robot").className = "insideFlex halfBox  robot devices shadowBlack device";
+	document.getElementById("robotDevices").className = "insideFlex oneQuarterbox  robot devices shadowBlack device";
+
+	
+
 
 	// On balance coté robot les devices sélectionnés...
     if (type == "appelant") {
@@ -420,7 +440,7 @@ function localManageDevices () {
     	// Coté serveur >> socket.broadcast.emit('selectedRemoteDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
     	socket.emit('selectedRemoteDevices', {objUser:localObjUser,listeDevices:selectList}); // Version Objet
     	// Animation CSS de désactivation du formulaire devices pilote...
-		document.getElementById("li-devices-pilote").className = "insideFlex halfBox pilote devices shadowBlack device"; 
+		document.getElementById("piloteDevices").className = "insideFlex oneQuarterbox pilote devices shadowBlack device"; 
     }
 }
 
