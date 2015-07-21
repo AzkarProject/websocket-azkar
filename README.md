@@ -1,4 +1,4 @@
-# AZKAR WebRTC script Base. V 0.5.3
+# AZKAR WebRTC script Base. V 0.7.0
 ------------------------------------------------------------
 
 Script basé sur clients chrome en 1to1 fonctionnant en bas-niveau. 
@@ -57,8 +57,11 @@ http://websocket-azkar.rhcloud.com/
 	- [x] Gestion des numéros d'ordre
 - [x] Routes différenciées (pilote/robot)	
 - [ ]  WebRTC - gestion déco/reco (appelant<>appelé)
-	- [x] Renégociation RTCDataChannel
+    - [ ] BUG: Désacoupler decco WebSocket/WebRTC
+        - [ ] >>> 	Si decco WebSocket >> Recco transparante
+    - [x] Renégociation RTCDataChannel
 	- [ ] Renégotiation RemoteStream 
+
         - [x] FIX: Relancer ouverture caméra sur Appelé (Robot)
         - [x] FIX: Use Chromium + --use-fake-ui sur Appelé (Robot)
         - [x] Test local Crhome/Chrome > R.A.S
@@ -100,13 +103,18 @@ http://websocket-azkar.rhcloud.com/
     - [ ] IHM Pilote 
         - [x] sélécteur caméra robot
         - [x] css selecteurs caméra 
-        - [ ] Contrôle d'accès si 2 pilotes
+        - [ ] Contrôleur Joystick/clavier pr Robot
+        - [ ] Visualisation Cartographie
+        - [ ] Visualisation Télémétrie
+        - [ ] Visualisation vitesse
+        - [ ] Visualisation 
+        - [x] Contrôle d'accès si 2 pilotes
         - [ ] Cam pilote 
             - [ ] sélection Micro uniquement
             - [ ] Suppression Affichage Stream
             - [ ] Suppression Flux a la source...
     - [ ] IHM Robot
-        - [ ] Contrôle d'accès si 2 robots
+        - [x] Contrôle d'accès si 2 robots
         - [ ] Cam pilote 
             - [ ] Suppression Affichage Stream
             - [ ] Suppression Flux a la source...
@@ -127,6 +135,12 @@ http://websocket-azkar.rhcloud.com/
 - [ ] Websocket gestion des rooms
 - [x] Routes différenciées (pilote/robot + clients)
 - [ ] IHM différenciées (Pilote/robot + clients)
+    - [ ] IHM Robot 
+        - [ ] Affichage bandeau Information (Transport)
+        - [ ] Affichage liste visiteurs (Musée)
+        - [ ] Affichage Vidéos "Visiteurs (Santé)
+        - [ ] Affichage 
+        
 - [ ] Main.js différenciés (Pilote/Robot + clients)	
 - [ ] Intégration +Sieurs instances de RTCPeerConnection
 - [ ] Intégration multiStream plan B (Chrome) 

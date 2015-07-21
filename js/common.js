@@ -109,10 +109,10 @@ exports.client = function client (id,pseudo,placeliste,typeClient,connectionDate
   }
 
   // Récupérer la clef la plus haute d'un tableau
+  // Source: ???
   // - le tableau d’objets
   // - la clé numérique max que l'on veut récupérer
   // - Exemple  getMaxKey(listeJoueurs, number) ;
-  // function getMaxKey(hashTable, key) {
   exports.getMaxKey = function  (hashTable, key) {
        var keyReturn = 0;
        for (i in hashTable) {
@@ -122,6 +122,31 @@ exports.client = function client (id,pseudo,placeliste,typeClient,connectionDate
   }
 
 
+  // Fonction générique de recherche dans un tableau d'objet
+  // Source: Thierry Bergeron
+  // - hasTable > Nom du tableau d'objet
+  // - key > Propriété à tester
+  // - value > Valeur à rechercher
+  // - typeReturn > boolean ou count
+  exports.searchInObjects = function (hashTable,key,value,typeReturn){
+    var returnValue = false;
+    var nbr = 0;
+    //console.log(">>>>>>>>>> " + hashTable +" / " + key + " / " + value + " / " + typeReturn );
+    for (i in hashTable) {
+        //console.log(">>>>>>>>>> " + i );
+        //console.log(">>>>>>>>>> " + hashTable[i][key]);        
+        if (hashTable[i][key] == value) {
+            returnValue = true;
+            if (typeReturn == "boolean" ) {
+              break;
+            } else if(typeReturn == "count" ) {
+              nbr +=1;
+              returnValue = nbr;
+            }
+        }
+   }
+   return returnValue;
+ }
  
 // convertit un tableau en objet
 // source: http://stackoverflow.com/questions/20807804/convert-array-to-object-javascript

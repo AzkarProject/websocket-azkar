@@ -16,11 +16,13 @@ var nbUsers = 0;
 var socket = io.connect();
 
 var typeUser = null;
-if (type == "appelant") {
-  typeUser = "Pilote";
-} else if (type = "appelé") {
-  typeUser = "Robot";
-}
+if (type == "appelant") {typeUser = "Pilote";
+} else if (type = "appelé") { typeUser = "Robot";}
+
+
+
+
+
 
 // On demande le pseudo, on l'envoie au serveur et on l'affiche dans le titre
 var pseudo = prompt('Votre pseudo? (par défaut ce sera "'+typeUser+'")');
