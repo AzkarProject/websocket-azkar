@@ -17,45 +17,172 @@
 
 <body class="ihmRobot">
 
-    <strong>Base 1TO1 Robot side</strong> v 0.6.0
-    <br/><info id="zone_info_server"></info>
+    <strong><span id="zone_info_server">WebRTC AZKAR</span></strong>
     <hr/>
 
 	    
 
-<ul class="flex-container wrap">
+
+		
+		<section id="bloc_1to1_messages" class="fullSizeContainerBox">
+				
+				<div id="dataChannelArea" class="insideFlex robot shadowBlack floatLeft doubleQuarterBox">                                             
+			        <div id="formulaire_chat_webRTC" class="pseudoForm">
+			            <strong> WebRTC dataChannel Log  &nbsp;&nbsp;&nbsp;&nbsp;   </strong>
+			            <input type="text" name="message" id="send_chat_WebRTC" placeholder="Waiting open channel..." size="28" autofocus />
+			            <button id="sendButton" disabled onclick="sendMessage()">Envoyer</button>
+			        </div>
+			        <hr/>
+				 	<div id="zone_chat_WebRTC"></div>
+	      		</div>
+		
+
+				<div id="websocketChat" class="insideFlex robot shadowBlack floatLeft doubleQuarterBox">
+			        <form action="/" method="post" id="formulaire_chat_websoket">
+			        <strong> Websocket Messages & Chat &nbsp;&nbsp;&nbsp;&nbsp; </strong>
+			            <input type="text" name="message" id="message" placeholder="Votre message..." size="28" autofocus />
+			            <button id="envoi_message" type="submit" >Envoyer</button>
+			        </form>
+			        <hr class="hrForm">
+				 	<div id="zone_chat_websocket"></div>
+	      		</div>
+
+		</section>		
+				
+		<section id="bloc_1to1_settings" class="fullSizeContainerBox">
+
+				
+
+				<div id="robotSettings" class="insideFlex robot shadowBlack floatLeft oneThirdContainerBox alignCenter">
+						
+					<strong><span id="Settings Devices Settings">Volume HP </span></strong>
+					 &nbsp;&nbsp;&nbsp;&nbsp;
+					
+					<meter id="meter2" value="75" min="0" max="100" low="20" high="80" optimum="100"></meter> 
+  					<output id="meter2val" for="meter2range">75</output>%
+
+					<hr/>
+
+					<!--<pre>&lt;meter value=75 min=0 max=100 low=20 high=80&gt;&lt;/meter&gt;</pre>-->
+					<input min="0" max="100"   value="75" id="meter2range" oninput="effect('meter2', 'meter2range')" type="range"> 
+					
+  					
+  
+					 <script>
+					 function effect(meter, meterrange) {
+						var currVal = document.getElementById(meterrange).value;
+						document.getElementById(meter).value =  currVal;
+						document.getElementById(meter+ "val").innerHTML = currVal;
+					 }
+					 </script>
+	      		
+	      		</div>
+
+
+				<div id="selectionMicros" class="insideFlex robot shadowBlack floatLeft oneThirdContainerBox"> 
+				  	<span id="messageDevicesStateMicro"> Micros disponibles</span>
+					<hr/>
+					<div class="select">
+						<select id="local_audioSource"></select>
+					</div>
+				</div>	
+
+
+				<div id="selectionCams" class="insideFlex robot shadowBlack floatLeft oneThirdContainerBox"> 
+				  	<span id="messageDevicesStateCams"> Caméras disponibles</span>
+					<hr/>
+					<div class="select">
+					   	<select id="local_videoSource"></select>
+					</div>
+				</div>
+
+
+			
+
+		</section>
+
+
+		
+
+		
 
 
 
-	 	<section id="block_1">			
-			<li class="flex-item insideFlex robot">	
-
-				<strong> Car drive simulator test </strong>
-				<hr/>
-				<div id='simulateur-area'></div>
-				<div id='simulateur-area2'></div>
-			</li>
-	  	</section>
 
 
 
-		<section id="block_2">
+
+		<section id="bloc_1toN" class="fullSizeContainerBox">
+			
+			<div  class="floatLeft oneQuarterContainerBox">
+				<div id="piloteCam" class="insideFlex pilote shadowBlack">
+				    <strong> Pilot Camera</strong>
+				    <hr/>
+				    <video id='otherPeer' autoplay muted controls="controls" ></video>
+		  	 	</div>
+			</div>
+		
+
+			<div  class="floatLeft oneQuarterContainerBox">
+				<div id="robotCam" class="insideFlex robot shadowBlack">
+				    <strong> Robot Camera</strong>
+				    <hr/>
+				    <video id='video' autoplay muted controls="controls"></video>
+		  	 	</div>
+			</div>
+
+
+
+			<div  class="floatLeft doubleQuarterContainerBox">
+				<div id="visitorsList" class="insideFlex robot shadowBlack">
+						<strong>Visitor's List</strong>
+						<hr/>
+						BOOOOO
+		  	 	</div>
+			</div>
+
+
+
+
+
+
+
+		</section>
+
+		
+		
+
+
+
+
+
+
+
+
+
+
+		<section id="bloc_1toN_2" class="fullSizeContainerBox">
 		    
-		    <li class="flex-item">
-			    
+		   
+			    <!--
 			    <div class="insideFlex myvideo robot halfBox">
 				    <strong> WebRTC localVideo (Robot)</strong>
 					
 				    <video id='video' autoplay muted controls="controls"></video>
 				</div>
+				-->
+				
 
+			    <!--
 			    <div class="insideFlex yourvideo pilote halfBox">
 				    <strong> WebRTC remoteVideo (Pilote)</strong>
 					
 				    <video id='otherPeer' autoplay muted controls="controls" ></video>
 		  	 	</div>
+		  	 	-->
 	  	 	
 	  	 	
+				<!--
 				<div class="insideFlex robot halfBox">
 					<strong> Websocket Chat Test </strong>
 					
@@ -67,8 +194,11 @@
 				 	<div id="zone_chat_websocket"></div>
 				 	<div id="zone_reception_commande_websocket"></div>
 	      		</div>
+	      		-->
        
 		  
+				
+				<!--
 				<div class="insideFlex robot halfBox">
 					<strong> WebRTC dataChannel Test </strong>
 			        <div id="formulaire_chat_webRTC" class="pseudoForm">
@@ -78,42 +208,28 @@
 		       	 	<br/>
 				 	<div id="zone_chat_WebRTC"></div>
 	      		</div>
+	      		-->
 
 
 
-
-		</li>
 	  	 
 	  	</section>
 	
 
 
-	   	<section id="block_3">
-			 
-			 <li class="flex-item">
-		        
-				
-				<div class="insideFlex robot fullBox">
+		<!--
+		<section id="block_1">			
+			<li class="flex-item insideFlex robot">	
 
-			  	 	<span id="messageDevicesState"> Micro/Camera disponibles (inactifs)</span>
-					<hr/>
-					<div class="select">
-						<label for="local_audioSource">Audio: </label>
-						<select id="local_audioSource"></select>
-				    </div>
-
-				    <div class="select">
-				      	<label for="local_videoSource">Video: </label>
-				      	<select id="local_videoSource"></select>
-				    </div>
-
-
-		  	 	</div>
-
-
-	  		</li>
-	  	
+				<strong> Car drive simulator test </strong>
+				<hr/>
+				<div id='simulateur-area'></div>
+				<div id='simulateur-area2'></div>
+			</li>
 	  	</section>
+	  	-->
+
+
 
        	<script>	  	 
 		var otherType = "appelant";
@@ -123,13 +239,18 @@
         <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
         <script src="/socket.io/socket.io.js"></script>
         <script src="/js/common.js"></script>
+        <script src="/js/settings.js"></script>
+        <!--
         <script src="/js/lib/phaser.min.js"></script>
         <script src="/js/simulateur.js"></script>
+		-->
         <script src='/js/lib/adapter.js'></script>
         <script src='/js/ws_manager.js'></script>
 		<script src='/js/main.js'></script>
 
-		
+		<script>
+            $('#zone_info_server').replaceWith(settings.appName() + " V " + settings.appVersion()+" - IHM Robot");
+    	</script>
 
 
 </body>

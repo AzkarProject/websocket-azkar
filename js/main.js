@@ -23,6 +23,10 @@ function alertAndRedirect(message,url) {
 function mainSettings() {
 	console.log("@mainSettings()");
 
+	
+
+
+
 	// pré-signaling -------------------------------------------------
 
 	// sélecteurs de micros et caméras
@@ -109,8 +113,7 @@ function mainSettings() {
 	// var ws_remoteStream = null; // Stream transmit par websocket...
 
 	// Constraints de l'offre SDP. 
-	// TODO: Tester d'autres résolutions pour voir 
-	// L'impact sur les délais de transmission
+	// TODO: Tester d'autres résolutions pour voir l'impact sur les délais de transmission
 	constraints = {
 		mandatory: {
 	        OfferToReceiveAudio: true,
@@ -171,7 +174,7 @@ function gotSources(sourceInfos) {
 	  	
 	    // Reconstruction de l'objet javascript natif sourceInfo:
 	    // Quand il est construit sous chromium et transmit par websocket
-	    // vers Chromeimpossible d'accéder à ses attributs une foi transmit... 
+	    // vers Chrome impossible d'accéder à ses attributs une foi transmit... 
 	    // Ce qui est bizarre, c'est que l'objet natif semble tout à fait normal avant transmission.
 	    // Par contre, R.A.S quand on le transmet de Chrome à Chrome ou de Chromium à chromium.
 	  	var sourceDevice = new common.sourceDevice();
@@ -348,8 +351,14 @@ if (type == "appelé") {
 		// On lance l'initlocalmedia
 		initLocalMedia();
 
-		var infoMessage = "<strong> Micro/Camera -- Activés</strong>"
-		document.getElementById("messageDevicesState").innerHTML = infoMessage;
+		// var infoMessage = "<strong> Micro/Camera -- Activés</strong>"
+		// document.getElementById("messageDevicesState").innerHTML = infoMessage;
+		
+		var infoMicro = "<strong> Micro Activé </strong>"
+		var infoCam = "<strong> Caméra Activée </strong>"
+		document.getElementById("messageDevicesStateMicro").innerHTML = infoMicro;
+		document.getElementById("messageDevicesStateCams").innerHTML = infoCam;
+
 		// On rebalance à l'appelant le top-départ pour 
 		// qu'il lance un intilocalMedia de son coté....
 		// socket.emit("readyForSignaling","ready"); // ancienne version

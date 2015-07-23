@@ -1,5 +1,17 @@
 header {}
 
+info { font-size:12px; }
+/*section { width:645px; min-width: 632px;}*/
+
+form {margin-bottom: 9px;}
+
+/* ---- A reclasser par la suite */
+
+#robotSettings input {width:75%} /* barre de volume robot */
+.ihmRobot #selectionMicros select {width:100%}
+.ihmRobot #selectionCams select {width:100%}
+
+
 
 
 
@@ -7,12 +19,13 @@ header {}
 .floatLeft {float:left;}
 .floatRight {float:right;}
 
-.robot { background: #A9D0F5;}
-.pilote { background: #FACC2E;}
+.alignLeft{text-align:left}
+.alignCenter{text-align:center}
+.alignRight{text-align:right}
 
-info { font-size:12px; }
-/*section { width:645px; min-width: 632px;}*/
-
+.robot { background: #8CB094;}
+.pilote { background: #C9C68D;}
+.visiteur { background: #9C9BB0;}
 
 
 /* Size Box deprecated -- A virer IHM Robot */
@@ -43,6 +56,16 @@ info { font-size:12px; }
     min-width:325px;
 }
 
+
+.doubleQuarterContainerBox{
+  width:640px;
+  min-width: 640px;
+}
+
+.oneThirdContainerBox {
+    width: 408px;
+}
+
 .oneQuarterbox {
   width:300px;
   min-width: 300px;
@@ -67,10 +90,7 @@ info { font-size:12px; }
   float:left;
 }
 
-.oneThirdContainerBox {
-    width: 425px;
-    min-width:425px;
-}
+
 
 .OneThirdBox {
   width:400px;
@@ -83,13 +103,6 @@ info { font-size:12px; }
   min-width: 622px;
   float:left;
 }
-
-
-
-
-
-
-
 
 
 #audiosource { width:100%;}
@@ -106,6 +119,9 @@ info { font-size:12px; }
 .ihmPilote .oneQuarterBox video { width:300px; height:150px;}
 .ihmPilote .tripleQuarterBox video { width:940px; height:600px}
 
+.ihmRobot video { width:300px; height:150px;}
+
+
 
 /* hauteur des blocs */
 .ihmPilote #robotDevices {}
@@ -116,6 +132,16 @@ info { font-size:12px; }
 .ihmPilote #remoteVideoArea {height:640px;}
 .ihmPilote #remoteCanvasArea {}
 .ihmPilote #dataChannelArea {}
+
+
+.ihmRobot #robotSettings {height:61px}
+.ihmRobot #selectionMicros {height:61px}
+.ihmRobot #selectionCams {height:61px}
+.ihmRobot #piloteCam {height:190px}
+.ihmRobot #robotCam {height:190px}
+.ihmRobot #visitorsList {height:190px}
+
+
 
 /* Jauges */
 .ihmPilote #robotInfos .jauge #battery_level {width: 300px;}
@@ -251,11 +277,11 @@ button:active{
   border:1px solid #ffffff;
   background-color:#ffffff;
   padding: 2px;
-  height: 210px;
   overflow: auto;
 }
 
-#websocket_chat, #WebRTC_chat { width:322px;}
+.ihmPilote #zone_chat_websocket, .ihmPilote #zone_chat_WebRTC {height: 210px;}
+.ihmRobot #zone_chat_websocket, .ihmRobot #zone_chat_WebRTC {height: 50px;}
 
 #log {
 	font-size:10px;

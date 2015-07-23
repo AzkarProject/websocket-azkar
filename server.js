@@ -1,5 +1,9 @@
 // Méthodes communes client/serveur
 var common = require('./js/common');
+var settings = require('./js/settings');
+
+
+
 var bodyParser= require("body-parser"); // pour recuperer le contenu de requetes POST 
 
 // contrôle chargement coté serveur
@@ -25,6 +29,7 @@ app.set('port', port);
 // les dépendances css du document html
 var express = require('express');
 app.use(express.static(__dirname));
+
 
 //Utiliser body-parser pour la gestion de requete POST
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -105,10 +110,14 @@ console.log("**Socket.IO Version: " + ioVersion);
 console.log("**Express Version: " + expressVersion);
 console.log("**ipAdress = " + ipaddress );
 console.log("**port = " + port );
+console.log("***********************************" );
+console.log("     "+settings.appName() + " V " + settings.appVersion() );
+
+
 var indexUrl = "http://"+ipaddress+":"+port;
 
 
-// liste des users
+/*// liste des clients
 var users = {};
 var nbUsers = 0;
 
@@ -116,11 +125,13 @@ var nbUsers = 0;
 var histoUsers = {};
 var placeHisto = 0;
 histoPosition = 0;
+/**/
+
 
 
 // --- idem mais pour la version Objet
 
-// liste des users
+// liste des clients
 var users2 = {};
 var nbUsers2 = 0;
 
@@ -135,60 +146,35 @@ histoPosition2 = 0;
 function onSocketConnected(socket){
   console.log ("-------------------------------");
   console.log("connexion nouveau client :"+ socket.pseudo + "(ID : " + socket.id + ")");
+  //var infoServer = appName + " V " + appVersion;
+  //io.to(socket.id).emit('infoServer', infoServer);
 }
-
-
-
-
-
 
 
 var debugNbOffer =0;
 
-//
-/*
-io.use(function(socket, next) {
-  //var handshake = socket.request;
-  
-  
-		// Contrôle d'accès minimal (pour éviter les bugs...)
-		// Si Pilote >> Si 0 Robot ou 1 Pilote >> Accès refusé
-		// Si Robot >> Si 1 Robot accès refusé
-		// Si Visiteur >> Si 0 Robot ou 0 Pilote accès refusé
-		
-		// Si + d'1 Robot >> Accès 2 ème Robot refusé
-		// Si + d'1 Pilote >> Accès 2ème Pilote 2 refusé
-		// Si 0 Robot >> Accès Pilote & Visiteurs refusés
-		// Si 0 Pilote >> Accès Visiteurs refusés
-		// Si 0 Pilote & Robot >> Accès Visiteurs refusés
-		
-		
-		 var isAuthorised = true;
-		 var indexUrl = "http://"+ipaddress+':'+por
-
-
-
-
-
-
  
-  isAuthorised = false;
-
-  if (isAuthorised == false) {
-  	next(new Error('not authorized',message:message,url:indexUrl));
-  	return;
-  }
-  next();
- 
-});
-//**/
-
-/*
+/*// Pour le contrôle d'accès:
+// Selon Hugo: Deprecated
 io.set('authorization', function (handshakeData, callback) {
   // make sure the handshake data looks good
   callback('not authorized', false); // error first, 'authorized' boolean second 
 });
 /**/
+
+/*// Autre version, non dépréciée
+io.use(function(socket, next) {
+  // .. traitement a faire... 
+  var isAuthorised = false;
+  if (isAuthorised == false) {
+  	next(new Error('not authorized'));
+  	return;
+  }
+  next();
+});
+//**/
+
+
 
 io.sockets.on('connection', function (socket, pseudo) {
  
@@ -199,34 +185,51 @@ io.sockets.on('connection', function (socket, pseudo) {
     // on le stocke en variable de session et on informe les autres Users
     socket.on('nouveau_client2', function(data) {
 
-        
-    	
     	// Contrôle d'accès minimal (pour éviter les bugs...)
-		// Si Pilote >> Si 0 Robot ou 1 Pilote >> Accès refusé
-		// Si Robot >> Si 1 Robot accès refusé
-		// Si Visiteur >> Si 0 Robot ou 0 Pilote accès refusé
+		// Si Pilote >> Si 0 Robot ou 1 Pilote déjà présents: Accès refusé
+		// Si Robot >> Si 1 Robot déjà présent: Accès refusé
+		// Si Visiteur >> Si 0 Robot ou 0 Pilote présents: Accès refusé
+		// Comportement attendu du client après un refus d'accès:
+		// >>> Redirection vers la page d'accueil de l'application
+		// Contrainte: L'URL de la page d'accueil doit être dynamique 
+		// donc le serveur websocket doit transmettre cette URL au client
+		// pour forcer sa redirection.
 
-		//var commonTest2 = common.searchInObjects(users2,"typeClient","Robot","boolean");
+		// 2 possibilités:
+		// Soit contrôler la connexion en amont par un io.use(function...
+		// et après traitement générer une erreur avec un message.
+		// Mais dans ce cas de figure, ce serai trop compliqué 
+		// de transmettre au client l'url de redirection en plus du message d'erreur
+		// Autre solution, plus simple et plus bourrine:
+		// Accepter la connexion, faire le traitement et renvoyer
+		// au client un simple message websocket avec en paramètre l'ip de redirection. 
+		// A sa réception, le client se redirige vers la nouvelle url, se déconnectant d'office. 
+
 		var isAuthorized = true;
 		var	authMessage;
 		if (data.typeUser == "Robot") {
-			console.log ("++++++++++++REJECT++++++++++++ >> Is Robot");
+			
+			// Teste la présence d'un robot dans la liste des clients connectés
+			// Paramètres: (hashTable,attribute,value,typeReturn) typeReturn >> boolean ou count...
 			var isOtherBot = common.searchInObjects(users2,"typeClient","Robot","boolean");
 			if (isOtherBot == true) {
 				isAuthorized = false;
 				authMessage = "Un Robot est déjà connecté...";
+				console.log ("++++++++++++REJECT++++++++++++ >> Is Robot");
 			}
 
 		} else if (data.typeUser == "Pilote") {
-			console.log ("++++++++++++REJECT++++++++++++ >> Is Pilot");
 			var isOneBot = common.searchInObjects(users2,"typeClient","Robot","boolean");
-			var isOtherPilot = common.searchInObjects(users2,"typeClient","Pilote","boolean");
 			if (isOneBot == false) {
 				isAuthorized = false;
 				authMessage = "Pas de robot connecté...";
+				console.log ("++++++++++++REJECT++++++++++++ Pilot >> No Robot");
 			} else if (isOtherPilot == true) {
+				// Teste la présence d'un pilote dans la liste des clients connectés
+				var isOtherPilot = common.searchInObjects(users2,"typeClient","Pilote","boolean");
 				isAuthorized = false;
 				authMessage = "Un Pilote est déjà connecté...";
+				console.log ("++++++++++++REJECT++++++++++++ >> Is Pilot");
 			}
 			
 
@@ -237,7 +240,6 @@ io.sockets.on('connection', function (socket, pseudo) {
 		}
 
     	if (isAuthorized == false) {
-    		console.log ("++++++++++++REJECT++++++++++++")
     		io.to(socket.id).emit('rejectConnexion', {message:authMessage, url:indexUrl});
     		return;
     	}
@@ -268,14 +270,6 @@ io.sockets.on('connection', function (socket, pseudo) {
        
         // On ajoute l'User à la liste des connectés
         users2[socket.id] = objUser; 
-
-        /*
-        console.log("--version Objet---");
-        console.log(objUser); 
-        console.log("--------------");
-        console.log(users2);
-        console.log("/--version Objet---/"); 
-        /**/
 
         // On renvoie l'User crée au nouveau connecté
         // pour l'informer entre autre de son ordre d'arrivée ds la session
@@ -363,7 +357,7 @@ io.sockets.on('connection', function (socket, pseudo) {
 
     // ----------------------------------------------------------------------------------
     // Partie 'signaling'. Ces messages transitent par websocket 
-    // mais n'ont pas vocation à s'afficher dans le tchat...
+    // mais n'ont pas vocation à s'afficher dans le tchat client...
 
     socket.on('signaling', function (message) {
         //console.log ("@ signaling from "+socket.placeListe+socket.pseudo);

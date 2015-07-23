@@ -17,21 +17,57 @@
 
 <body class="ihmPilote">
 
-    <strong>Base 1TO1 Pilote side</strong> v 0.6.0
-    <br/><info id="zone_info_server"></info>
+    <strong><span id="zone_info_server">WebRTC AZKAR</span></strong>
     <hr/>
 
 	<!-- <ul class="flex-container wrap"> -->
 
 
-		<section id="localArea" class="fullSizeContainerBox">    
+		<section id="settingsArea" class="fullSizeContainerBox">
+
+				<div id="top" class="insideFlex pilote shadowBlack floatLeft fourQuarterBox">                                                                                                                                                          
+					<strong> Benchmarks Settings </strong>
+					<hr/>
+				    
+					    <span id="localVideoSetting" class="">
+					    	Pilote Camera view: 
+							<input type="radio" name="lVidSetting" value="hide" id="lVhide" onclick="setPilotVideo('hide')"/> <label for="rVhide">Hide local Video</label>
+							<input type="radio" name="lVidSetting" value="show" id="lVshow" checked/ onclick="setPilotVideo('show')"> <label for="lVshow">Show local Video</label>
+				    	</span>
+						<br/>
+					    <span id="remoteVideoSetting" class="">
+					    	Robot Camera view: 
+							<input type="radio" name="rVidSetting" value="hide" id="rVhide" onclick="setRobotVideo('hide')"/> <label for="rVhide">Hide remote Video</label>
+							<input type="radio" name="rVidSetting" value="low" id="rVlow" onclick="setRobotVideo('low')"/> <label for="rVlow">Show in low Resolution</label>
+							<input type="radio" name="rVidSetting" value="medium" id="rVmedium" onclick="setRobotVideo('medium')" /> <label for="rVmedium">Show in medium Resolution</label>
+							<input type="radio" name="rVidSetting" value="high" id="rVhigh" onclick="setRobotVideo('high')" checked/> <label for="rVhigh">Show in High resolution</label>	
+				    	</span>
+				    	<br/>
+					    <span id="streamSetting" class="">
+					    	Stream local pilote video to robot: 
+							<input type="radio" name="streamVidToRobot" value="open" id="streamOpen" onclick="setPilotStream('open')" checked /> <label for="streamOpen">Yes</label>
+							<input type="radio" name="streamVidToRobot" value="close" id="streamClose" onclick="setPilotStream('close')" /> <label for="streamClose">No</label>
+				    	</span>
+						<br/>
+					    <span id="dataChannelSetting" class="">
+					    	Select controls and navigation data channel: 
+							<input type="radio" name="controlChannel" value="webSocket" id="webSocket" onclick="setCtrlChannel('webSocket')" checked /> <label for="webSocket">webSocket</label>
+							<input type="radio" name="controlChannel" value="webRTC" id="webRTC" onclick="setCtrlChannel('webRTC')"/> <label for="webRTC">webRTC</label>
+							
+				    	</span>
+				    
+	      		</div>
+
+
+		</section>
+
+		<section id="controlArea" class="fullSizeContainerBox">    
 			  
 			<!--<li class="flex-item">-->
 
+								
 
-
-
-
+			
 			<div id="colGaucheHaut" class="floatLeft oneQuarterContainerBox">
 
 				<div id="robotDevices" class="insideFlex oneQuarterbox robot shadowBlack device">  
@@ -129,7 +165,6 @@
 				<div id="remoteVideoArea" class="insideFlex robot tripleQuarterBox shadowBlack floatRight">
 				    <strong> Robot Camera View</strong>
 				    <hr/>
-					    <!--<video id='video' autoplay muted controls="controls"></video>-->
 					    <video id='otherPeer' class="" autoplay muted controls="controls" ></video>
 				</div>
 				
@@ -152,7 +187,7 @@
 
 			<div id="colDroiteMiddle" class="floatLeft oneThirdContainerBox">
 
-				<div id="robotInfos" class="insideFlex OneThirdBox pilote shadowBlack device floatLeft">  
+				<div id="robotInfos" class="insideFlex pilote oneThirdBox shadowBlack device floatLeft">  
 				    
 				    <strong> Robot Informations</strong>
 					<hr/>
@@ -169,7 +204,7 @@
 	 	
 	 	
 				
-				<div id="websocketChat" class="insideFlex pilote OneThirdBox shadowBlack floatLeft">
+				<div id="websocketChat" class="insideFlex pilote oneThirdBox shadowBlack floatLeft">
 					<strong> Websocket Messages & Chat</strong>
 					<hr/>
 			        <form action="/" method="post" id="formulaire_chat_websoket">
@@ -186,7 +221,8 @@
 			</div>
 
 			
-			<div id="colgaucheMiddle" class="floatRight doubleThirdBox">
+			<div id="colgaucheMiddle" class="floatRight doubleThirdContainerBox">
+				
 				<div id="remoteCanvasArea" class="insideFlex robot DoubleThirdBox shadowBlack floatRight">
         			<strong> Navigation</strong>
         			<hr/>
@@ -216,6 +252,7 @@
 				
 
 			
+			<div id="bottom" class="floatRight fullSizeContainerBox">	
 				
 				<div id="dataChannelArea" class="insideFlex pilote shadowBlack floatLeft fourQuarterBox">                                                                                                                                                          
 					<strong> WebRTC dataChannel Log </strong>
@@ -228,7 +265,7 @@
 				 	<div id="zone_chat_WebRTC"></div>
 	      		</div>
 			
-			
+			</div>
 
 </section>
 
@@ -265,11 +302,15 @@
         <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
         <script src="/socket.io/socket.io.js"></script>
         <script src="/js/common.js"></script>
+        <script src="/js/settings.js"></script>
         <script src='/js/lib/adapter.js'></script>
         <script src='/js/mapviewer.js'></script>
         <script src='/js/ws_manager.js'></script>
 		<script src='/js/main.js'></script>
 		
+		<script>
+            $('#zone_info_server').replaceWith(settings.appName() + " V " + settings.appVersion()+" - IHM Pilote");
+    	</script>
 
 
 </body>
