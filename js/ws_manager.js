@@ -78,7 +78,10 @@ socket.on('position_liste2', function(objUser) {
 
      console.log("socket.on(position_liste2,objUser) >>>");
      console.log(objUser);
-     document.title = objUser.placeliste+"-" + objUser.pseudo +"("+objUser.typeClient+") - "+document.title;
+     // document.title = objUser.placeliste+"-" + objUser.pseudo +"("+objUser.typeClient+") - "+document.title;
+     // >>> Même chose sans le numéro d'arrivée pour éviter que AutoIt ne se mélange les pédales dans la détection de la fenêtre du navigateur
+     document.title = objUser.pseudo +"("+objUser.typeClient+") - "+document.title;
+
      myPlaceListe = objUser.placeliste;
      //console.log ("Ordre d'arrivée dans la session websocket: "+placeListe);
      //document.title = "("+myPlaceListe+") " + document.title;
