@@ -62,44 +62,6 @@ app.get('/visiteur/', function (req, res) {
 });
 
 
-/*******************envoi de requetes POST pour les mouvements du robot***********************************/
-
-// Routing Envoi de requetes POST pour la partie des commande STEP pg 40 - 45 RobuBox et voir page 70 --> Translate , relative , absolute , stop 
-app.post('/lokarria/step/translate', function (req, res) {
-    var x = req.body.X;
-    var y = req.body.Y;
-
-    console.log('héhé je veux me deplacer ');
-    res.send( 'héhé je veux me deplacer de : [ x ' +  x + ' , y : ' + y + ' ]');
-    res.end();
- });
-
-app.post('/lokarria/step/relative', function (req, res) {
-    var distance = req.body.distance ;
-    var maxSpeed = req.body.maxSpeed ;
-
-    console.log('héhé je veux faire une rotation relative ');
-    res.send(' je me suis tourné dune rotation relative de  ' + distance + ' rad  avec une vitesse de : ' + maxSpeed + ' rad/s' );
-    res.end();
- });
-
-app.post('/lokarria/step/absolute', function (req, res) {
-    var distance = req.body.distance ;
-    var maxSpeed = req.body.maxSpeed ;
-
-    console.log('héhé je veux faire une rotation absolue ');
-    res.send(' je me suis tourné dune rotation absolue de  ' + distance + ' rad  avec une vitesse de : ' + maxSpeed + 'rad/s');
-    res.end();
- });
-
-app.post('/lokarria/step/stop', function (req, res) {
-    console.log('héhé je veux me stopper ');
-    res.send('requette post reçue pour me stopper et le http status : ' + HttpStatus.OK);
-    res.end();
- });
-
-/******************************************************/
-
 // Lancement du serveur
 server.listen(app.get('port'),ipaddress);
 

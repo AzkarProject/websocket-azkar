@@ -502,12 +502,16 @@ function connect () {
 
 
 	// Ecouteurs de changement de statut de connexion
-	// Permet de déterminer si le pair distant s'est décionnecté.
+	// Permet de déterminer si le pair distant s'est déconnecté.
 	pc.oniceconnectionstatechange = function (e) {
 		
-		console.log("@ pc.oniceconnectionstatechange > timestamp:" + Date.now());
+		
+		var newDate = common.dateNowInMs();
+		console.log("@ pc.oniceconnectionstatechange > " + newDate);
+		
+
 		console.log(">>> stateConnection Event > " + pc.iceConnectionState);
-		$(chatlog).prepend('<strong><i>(stateConnection Event)</i>:</strong> ' + pc.iceConnectionState + '<br/>');
+		$(chatlog).prepend('[R>>'+newDate+'] '+'<strong><i>(stateConnection Event)</i></strong>: ' + pc.iceConnectionState + '<br/>');
 
 
 		// console.log(">>> isStarted = "+ isStarted);
@@ -712,24 +716,26 @@ function bindEvents () {
 	// écouteur de reception message
 	channel.onmessage = function (e) {
 		// add the message to the chat log
-		// chatlog.innerHTML += "<div>l'" +type+" écrit:"+ e.data + "</div>";
-		$(chatlog).prepend('<strong>(<i>'+type+'</i>):</strong> ' + e.data + '<br/>');
+		var receptDate = '[R>>'+common.dateNowInMs()+']';
+		$(chatlog).prepend(receptDate+e.data+'<br/>');
 	};
 }
 
 // send a message the textbox throught
 // the data channel for a chat program
 function sendMessage () {
-	alert ("toto");
-	var msg = message.value;
-	channel.send(msg);
+    var dateSending = common.dateNowInMs();
+	var msgToSend = ' ['+dateSending+'>>E] <strong>'+localObjUser.placeliste+'-'+localObjUser.typeClient+'<i>('+localObjUser.pseudo+')</i></strong>:'+message.value;
+	channel.send(msgToSend);
 	message.value = "";
+	// Affiche le message dans le chatlog websocket
+	$(chatlog).prepend(msgToSend+'<br/>');
 }
 
 
 // Bouton d'envoi du formulaire de chat WebRTC
 $('#formulaire_chat_webRTC').submit(function () {
-    console.log ("WWWWWWWWWWWWW");
+    // console.log ("WWWWWWWWWWWWW");
     var message = $('#send_chat_WebRTC').val();
     channel.send(msg);
 	message.value = "";
