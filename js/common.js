@@ -86,6 +86,21 @@ exports.client = function client (id,pseudo,placeliste,typeClient,connectionDate
   }
   
 
+  // Objet timeStamp converti en date, heure, minute, seconde...
+  // Adapté de http://stackoverflow.com/questions/19485353/function-to-convert-timestamp-to-human-date-in-javascript
+  exports.actualDate = function () {
+    var theDate = new Date();
+    //return theDate.toGMTString();
+    return theDate.toLocaleString();
+    //var theDate = new Date(year, month[, day[, hour[, minutes[, seconds[, milliseconds]]]]]);
+    //return theDate;
+  }
+
+
+
+
+
+
   // Gestion de tableaux
   // ---------------------------
 

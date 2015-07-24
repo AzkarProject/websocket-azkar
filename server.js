@@ -1,10 +1,12 @@
-// Méthodes communes client/serveur
-var common = require('./js/common');
-var settings = require('./js/settings');
+// Elements communs client/serveur
+var common = require('./js/common'); // méthodes génériques et objets
+var settings = require('./js/settings'); // parametres de configuration
+
 
 
 
 var bodyParser = require("body-parser"); // pour recuperer le contenu de requetes POST 
+
 
 // contrôle chargement coté serveur
 var commonTest = common.test();
@@ -31,12 +33,14 @@ var express = require('express');
 app.use(express.static(__dirname));
 
 
+
+
+var bodyParser= require("body-parser"); // pour recuperer le contenu de requetes POST
 //Utiliser body-parser pour la gestion de requete POST
 app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(bodyParser.json()); // support json encoded bodies
-
 var HttpStatus = require('http-status-codes'); // le module qui recupère les status des requetes HTTP
 
 

@@ -334,6 +334,26 @@
 	</script>
 
 
+		<script>	  	 
+		//var type = "appelant";
+		var type = "pilote-appelant";
+		var otherType = "robot-appelé";
+		</script>
+        
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/js/common.js"></script>
+        <script src="/js/settings.js"></script>
+        <script src='/js/lib/adapter.js'></script>
+        <script src='/js/mapviewer.js'></script>
+        <script src='/js/ws_manager.js'></script>
+		<script src='/js/main.js'></script>
+		
+		<script>
+            $('#zone_info_server').replaceWith(settings.appName() + " V " + settings.appVersion()+" - IHM Pilote");
+    	</script>
+
+
 
 </body>
 
