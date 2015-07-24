@@ -42,9 +42,9 @@ function mainSettings() {
 	local_AudioSelect.disabled = false; 
 	local_VideoSelect.disabled = false;	
 	 
-	// (Appelant(Pilote) > Activation/Désativation préalable 
+	// (pilote-Appelant) > Activation/Désativation préalable 
 	// Du formulaire de sélection des devices locaux et de demande de connexion
-	if (type == "appelant") {
+	if (type == "pilote-appelant") {
 		remote_ButtonDevices.disabled = true; 
 		local_ButtonDevices.disabled = true; 
 		//remote_AudioSelect.disabled = true; 
@@ -288,19 +288,19 @@ socket.on('updateUsers', function(data) {
 
     // si on est l'apellé  (Robot)
     // On renvoie à l'autre pair la liste de ses devices
-    if (type == "appelé") {
+    if (type == "robot-appelé") {
     	socket.emit('remoteListDevices', {objUser:localObjUser,listeDevices:listeLocalSources});
     }
 
     // si on est l'apellant (Pilote)
     // ... En cas de besoin...
-    if (type == "appelant") {
+    if (type == "pilote-appelant") {
     	// ...TODO...
     }
 })
 
 // Ecouteurs Websockets exclusifs au Pilote (appelant)
-if (type == "appelant") {
+if (type == "pilote-appelant") {
 	
 	// Reception de la liste des Devices du Robot V2 (version objet)
 	// coté serveur >> socket.broadcast.emit('remoteListDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
@@ -337,7 +337,7 @@ if (type == "appelant") {
 }
 
 // Ecouteurs Websockets exclusifs au Robot (appelé)
-if (type == "appelé") {
+if (type == "robot-appelé") {
 	
 	// Reception cam et micro selectionnés par le pilote (apellant) V2 Objet
 	// Coté serveur >> socket.broadcast.emit('selectedRemoteDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
@@ -359,7 +359,7 @@ if (type == "appelé") {
 		document.getElementById("messageDevicesStateMicro").innerHTML = infoMicro;
 		document.getElementById("messageDevicesStateCams").innerHTML = infoCam;
 
-		// On rebalance à l'appelant le top-départ pour 
+		// On rebalance au pilote-appelant le top-départ pour 
 		// qu'il lance un intilocalMedia de son coté....
 		// socket.emit("readyForSignaling","ready"); // ancienne version
 		socket.emit('readyForSignaling', {objUser:localObjUser,message:"ready"});// Version objet
@@ -406,7 +406,7 @@ function remoteManageDevices () {
 	
 	console.log ("@ remoteManageDevices()");
 	// Activation
-	if (type == "appelant") {
+	if (type == "pilote-appelant") {
 		local_ButtonDevices.disabled = false; 
 	}
 	local_AudioSelect.disabled = false; 
@@ -423,7 +423,7 @@ function remoteManageDevices () {
 function localManageDevices () {
 	
 	console.log ("@ localManageDevices()");
-	if (type == "appelant") {
+	if (type == "pilote-appelant") {
 		local_ButtonDevices.disabled = true; 
 	}
 
@@ -441,7 +441,7 @@ function localManageDevices () {
 
 
 	// On balance coté robot les devices sélectionnés...
-    if (type == "appelant") {
+    if (type == "pilote-appelant") {
     	var selectAudio = remote_AudioSelect.value;
 		var selectVideo = remote_VideoSelect.value;
 		var selectList = {selectAudio,selectVideo}
@@ -491,7 +491,7 @@ function connect () {
 	pc.onaddstream = function (e) {
 		// getStats(pc);
 		console.log("@ pc.onaddstream > timestamp:" + Date.now());
-		//if (type == "appelant") {
+		//if (type == "pilote-appelant") {
 			remoteStream = e.stream;
 			video2.src = URL.createObjectURL(remoteStream);
 		//}
@@ -593,7 +593,7 @@ function connect () {
 
 
 	// Si on est l'apellant
-	if (type === "appelant") { 
+	if (type === "pilote-appelant") { 
 		//console.log("+++++++++ apellant ++++++++++++++ ");
 		
 		// l'apellant crée un dataChannel

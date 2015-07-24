@@ -16,12 +16,8 @@ var nbUsers = 0;
 var socket = io.connect();
 
 var typeUser = null;
-if (type == "appelant") {typeUser = "Pilote";
-} else if (type = "appelé") { typeUser = "Robot";}
-
-
-
-
+if (type == "pilote-appelant") {typeUser = "Pilote";
+} else if (type = "robot-appelé") { typeUser = "Robot";}
 
 
 // On demande le pseudo, on l'envoie au serveur et on l'affiche dans le titre
@@ -102,7 +98,9 @@ socket.on('nouveau_client', function(data) {
 
 // Quand un nouveau client se connecte, on affiche l'information
 socket.on('nouveau_client2', function(objUser) {
-    console.log(">> socket.on('nouveau_client2', objUser");
+    var newDate = common.actualDate();
+
+    console.log("["+newDate+"]>> socket.on('nouveau_client2', objUser");
     var message = "à rejoint le Tchat";
     /*
     console.log(objUser);
@@ -110,7 +108,8 @@ socket.on('nouveau_client2', function(objUser) {
     console.log(objUser.pseudo);
     console.log(objUser.placeliste);
     /**/
-    insereMessage2(objUser,message);
+    //insereMessage2(objUser,message);
+    insereMessage3(newDate,objUser,message);
 })
 
 // Réception d'une info de deconnexion 
@@ -118,6 +117,7 @@ socket.on('nouveau_client2', function(objUser) {
 // >>> On déplace ici l'écouteur ici au cas où la fonction
 // Connect n'as pas encore été apellée.
 socket.on("disconnected", function(data) { 
+  var newDate = common.actualDate();
   console.log(">> socket.on('disconnected',...");
   // On met à jour la liste des cliens connectés
   var users = data;
@@ -146,24 +146,29 @@ socket.on('service', function(data) {
 
 // Quand on reçoit un message, on l'insère dans la page V2
 socket.on('message2', function(data) {
+    var newDate = common.actualDate();
     console.log(">> socket.on('message2',...");
     //console.log(data);
     //console.log(data.message);
     //console.log(data.objUser);
     insereMessage2(data.objUser, data.message);
+    insereMessage3(newDate,data.objUser,data.message);
 })
 
 
 // Quand on reçoit une nouvelle commande de déplacement, on l'insère dans la page
 socket.on('moveOrder', function(data) {
+    var newDate = common.actualDate();
     console.log(">> socket.on('moveOrder',...");
-    insereCommande(data.objUser,data.moveOrder);
+    insereMessage2(data.objUser, data.message);
+    insereMessage3(newDate,data.objUser, data.message);
 })
 
 // Quand on reçoit un message de service
 socket.on('service2', function(data) {
+    var newDate = common.actualDate();
     console.log(">> socket.on('service2',...");
-    insereMessage2(data.objUser, data.message);
+    insereMessage3(newDate,data.objUser, data.message);
 })
 
 
@@ -174,39 +179,15 @@ socket.on('service2', function(data) {
 $('#formulaire_chat_websoket').submit(function () {
     //console.log ("WWWWWWWWWWWWW");
     var message = $('#message').val();
-    /*// Version classique
-    socket.emit('message', message); // Transmet le message aux autres
-    insereMessage(pseudo, message, myPlaceListe); // Affiche le message aussi sur notre page
-    /**/// >>> Version objet
     socket.emit('message2', {objUser:localObjUser,message:message}); // Transmet le message aux autres
-    //{pseudo: socket.pseudo, message: message, placeListe: socket.placeListe});
     insereMessage2(localObjUser, message); // Affiche le message aussi sur notre page
-    
+    var newDate = common.actualDate();
+    insereMessage3(newDate,localObjUser, message); // Affiche le message aussi sur notre page
     $('#message').val('').focus(); // Vide la zone de Chat et remet le focus dessus
     return false; // Permet de bloquer l'envoi "classique" du formulaire
 });
 
-
-// Lorsqu'on envoie le formulaire de commande, on transmet le message de la commande au serveur
-$('#formulaire_envoi_commande').submit(function () {
-    var moveOrder = $('#moveOrder').val();
-    socket.emit('moveOrder', {objUser:localObjUser,moveOrder:moveOrder}); // Transmet l'ordre de deplacement aux autres(robots ???)
-    insereCommande(localObjUser, myPlaceListe) //inserer le message de commande chez le robot
-    $('#moveOrder').val('').focus(); // Vide la zone de Chat et remet le focus dessus
-    return false; // Permet de bloquer l'envoi "classique" du formulaire
-});
-
-
-
-
-/*// Ajoute un message dans la page
-function insereMessage(pseudo, message, placeListe) {
-    $('#zone_chat_websocket').prepend('<p><strong>('+placeListe+') '+ pseudo + '</strong> ' + message + '</p>');
-    console.log ((pseudo + " >> " + message));
-}
-/**/
-
-// Ajoute un message dans la page V2
+// Ajoute un message dans la page
 function insereMessage2(objUser, message) {
     /*
     console.log ("@ insereMessage2(objUser, message)");
@@ -215,14 +196,19 @@ function insereMessage2(objUser, message) {
     console.log(objUser.pseudo);
     console.log(objUser.placeliste);
     /**/
-    $('#zone_chat_websocket').prepend('<strong>'+objUser.placeliste+'-'+objUser.pseudo+' (<i>'+objUser.typeClient+'</i>):</strong> ' + message + '<br/>');
+    //$('#zone_chat_websocket').prepend('<strong>'+objUser.placeliste+'-'+objUser.pseudo+' (<i>'+objUser.typeClient+'</i>):</strong> ' + message + '<br/>');
     // console.log ((objUser.pseudo + " >> " + message));
 }
 
-
-
-// Ajoute une nouvelle commande recue dans la page
-function insereCommande(objUser, moveOrder) {
-    $('#zone_reception_commande_websocket').prepend('<p><strong> '+ objUser.pseudo + '</strong> ' + moveOrder + '</p>');
-    console.log ((pseudo + " >> " + moveOrder));
+// Ajoute un message dans la page
+function insereMessage3(date,objUser, message) {
+    /*
+    console.log ("@ insereMessage2(objUser, message)");
+    console.log(objUser);
+    console.log(message);
+    console.log(objUser.pseudo);
+    console.log(objUser.placeliste);
+    /**/
+    $('#zone_chat_websocket').prepend('['+date+'] <strong>'+objUser.placeliste+'-'+objUser.typeClient+' (<i>'+objUser.pseudo+'</i>):</strong> ' + message + '<br/>');
+    // console.log ((objUser.pseudo + " >> " + message));
 }
