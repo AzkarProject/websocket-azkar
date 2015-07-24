@@ -4,7 +4,7 @@ var settings = require('./js/settings');
 
 
 
-var bodyParser= require("body-parser"); // pour recuperer le contenu de requetes POST 
+var bodyParser = require("body-parser"); // pour recuperer le contenu de requetes POST 
 
 // contrôle chargement coté serveur
 var commonTest = common.test();
@@ -18,9 +18,9 @@ var app = require('express')(),
     fs = require('fs');
 
 // variables d'environnement en variables globale pour les passer à la méthode websocket
-ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP ||"127.0.0.1";
+ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP || "127.0.0.1";
 // ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP ||"192.168.173.1";
-port      = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 2000;
+port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 2000;
 
 // affectation du port
 app.set('port', port);
@@ -32,7 +32,9 @@ app.use(express.static(__dirname));
 
 
 //Utiliser body-parser pour la gestion de requete POST
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 app.use(bodyParser.json()); // support json encoded bodies
 
 var HttpStatus = require('http-status-codes'); // le module qui recupère les status des requetes HTTP
@@ -40,67 +42,105 @@ var HttpStatus = require('http-status-codes'); // le module qui recupère les st
 
 
 // Chargement de la page index.html
-app.get('/', function (req, res) {
-  res.sendFile(__dirname + '/index.html');
+app.get('/', function(req, res) {
+    res.sendFile(__dirname + '/index.html');
 });
-
 
 
 // Routing IHM >>>> TODO coté clients
-app.get('/pilote/', function (req, res) {
+app.get('/pilote/', function(req, res) {
     res.sendFile(__dirname + '/pilote.html');
 });
 
-app.get('/robot/', function (req, res) {
+app.get('/robot/', function(req, res) {
     res.sendFile(__dirname + '/robot.html');
 });
 
 
-app.get('/visiteur/', function (req, res) {
+app.get('/visiteur/', function(req, res) {
     res.sendFile(__dirname + '/visiteur.html');
 });
 
+//pour faire des requettes XMLHttpRequest
+var XMLHttpRequest = require('xhr2');
 
+/*******************envoi de commande de deplacement en differential drive*********************/
+
+app.get('/tourne/', function(req, res) {
+
+    var TargetAngularSpeed = 0.1;
+    var TargetLinearSpeed = 0;
+    var url = 'http://localhost:50000/api/drive';
+    var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance 
+    xmlhttp.open("POST", url);
+    xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xmlhttp.send(JSON.stringify({
+        "Enable": true,
+        "TargetAngularSpeed": TargetAngularSpeed,
+        "TargetLinearSpeed": TargetLinearSpeed
+    }));
+    console.log('héhé je tourne  !! apres lenvoi de la requete POST');
+    res.end();
+});
+
+app.get('/arretteTourne/', function(req, res) {
+
+    var TargetAngularSpeed = 0;
+    var TargetLinearSpeed = 0;
+    var url = 'http://localhost:50000/api/drive';
+    var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance 
+    xmlhttp.open("POST", url);
+    xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xmlhttp.send(JSON.stringify({
+        "Enable": true,
+        "TargetAngularSpeed": TargetAngularSpeed,
+        "TargetLinearSpeed": TargetLinearSpeed
+    }));
+    console.log('héhé jarreter de tourne  !! apres lenvoi de la requete POST');
+    res.end();
+});
+
+/****************************************************************************************************/
 /*******************envoi de requetes POST pour les mouvements du robot***********************************/
 
 // Routing Envoi de requetes POST pour la partie des commande STEP pg 40 - 45 RobuBox et voir page 70 --> Translate , relative , absolute , stop 
-app.post('/lokarria/step/translate', function (req, res) {
+app.post('/lokarria/step/translate', function(req, res) {
     var x = req.body.X;
     var y = req.body.Y;
 
     console.log('héhé je veux me deplacer ');
-    res.send( 'héhé je veux me deplacer de : [ x ' +  x + ' , y : ' + y + ' ]');
+    res.send('héhé je veux me deplacer de : [ x ' + x + ' , y : ' + y + ' ]');
     res.end();
- });
+});
 
-app.post('/lokarria/step/relative', function (req, res) {
-    var distance = req.body.distance ;
-    var maxSpeed = req.body.maxSpeed ;
+app.post('/lokarria/step/relative', function(req, res) {
+    var distance = req.body.distance;
+    var maxSpeed = req.body.maxSpeed;
 
     console.log('héhé je veux faire une rotation relative ');
-    res.send(' je me suis tourné dune rotation relative de  ' + distance + ' rad  avec une vitesse de : ' + maxSpeed + ' rad/s' );
+    res.send(' je me suis tourné dune rotation relative de  ' + distance + ' rad  avec une vitesse de : ' + maxSpeed + ' rad/s');
     res.end();
- });
+});
 
-app.post('/lokarria/step/absolute', function (req, res) {
-    var distance = req.body.distance ;
-    var maxSpeed = req.body.maxSpeed ;
+app.post('/lokarria/step/absolute', function(req, res) {
+    var distance = req.body.distance;
+    var maxSpeed = req.body.maxSpeed;
 
     console.log('héhé je veux faire une rotation absolue ');
     res.send(' je me suis tourné dune rotation absolue de  ' + distance + ' rad  avec une vitesse de : ' + maxSpeed + 'rad/s');
     res.end();
- });
+});
 
-app.post('/lokarria/step/stop', function (req, res) {
+app.post('/lokarria/step/stop', function(req, res) {
     console.log('héhé je veux me stopper ');
     res.send('requette post reçue pour me stopper et le http status : ' + HttpStatus.OK);
     res.end();
- });
+});
 
 /******************************************************/
 
 // Lancement du serveur
-server.listen(app.get('port'),ipaddress);
+server.listen(app.get('port'), ipaddress);
 
 // Pour débugg : Contrôle de la version de socket.io
 var ioVersion = require('socket.io/package').version;
@@ -108,13 +148,13 @@ var expressVersion = require('express/package').version;
 // On affiche ces éléments coté serveur
 console.log("**Socket.IO Version: " + ioVersion);
 console.log("**Express Version: " + expressVersion);
-console.log("**ipAdress = " + ipaddress );
-console.log("**port = " + port );
-console.log("***********************************" );
-console.log("     "+settings.appName() + " V " + settings.appVersion() );
+console.log("**ipAdress = " + ipaddress);
+console.log("**port = " + port);
+console.log("***********************************");
+console.log("     " + settings.appName() + " V " + settings.appVersion());
 
 
-var indexUrl = "http://"+ipaddress+":"+port;
+var indexUrl = "http://" + ipaddress + ":" + port;
 
 
 /*// liste des clients
@@ -143,17 +183,17 @@ histoPosition2 = 0;
 
 // contrôle des connectés coté serveur
 // Ecouteur de connexion d'un nouveau client
-function onSocketConnected(socket){
-  console.log ("-------------------------------");
-  console.log("connexion nouveau client :"+ socket.pseudo + "(ID : " + socket.id + ")");
-  //var infoServer = appName + " V " + appVersion;
-  //io.to(socket.id).emit('infoServer', infoServer);
+function onSocketConnected(socket) {
+    console.log("-------------------------------");
+    console.log("connexion nouveau client :" + socket.pseudo + "(ID : " + socket.id + ")");
+    //var infoServer = appName + " V " + appVersion;
+    //io.to(socket.id).emit('infoServer', infoServer);
 }
 
 
-var debugNbOffer =0;
+var debugNbOffer = 0;
 
- 
+
 /*// Pour le contrôle d'accès:
 // Selon Hugo: Deprecated
 io.set('authorization', function (handshakeData, callback) {
@@ -167,8 +207,8 @@ io.use(function(socket, next) {
   // .. traitement a faire... 
   var isAuthorised = false;
   if (isAuthorised == false) {
-  	next(new Error('not authorized'));
-  	return;
+    next(new Error('not authorized'));
+    return;
   }
   next();
 });
@@ -176,73 +216,76 @@ io.use(function(socket, next) {
 
 
 
-io.sockets.on('connection', function (socket, pseudo) {
- 
-   	
-	onSocketConnected(socket);
+io.sockets.on('connection', function(socket, pseudo) {
 
-   	// Quand un User rentre un pseudo (version objet), 
+
+    onSocketConnected(socket);
+
+    // Quand un User rentre un pseudo (version objet), 
     // on le stocke en variable de session et on informe les autres Users
     socket.on('nouveau_client2', function(data) {
 
-    	// Contrôle d'accès minimal (pour éviter les bugs...)
-		// Si Pilote >> Si 0 Robot ou 1 Pilote déjà présents: Accès refusé
-		// Si Robot >> Si 1 Robot déjà présent: Accès refusé
-		// Si Visiteur >> Si 0 Robot ou 0 Pilote présents: Accès refusé
-		// Comportement attendu du client après un refus d'accès:
-		// >>> Redirection vers la page d'accueil de l'application
-		// Contrainte: L'URL de la page d'accueil doit être dynamique 
-		// donc le serveur websocket doit transmettre cette URL au client
-		// pour forcer sa redirection.
+        // Contrôle d'accès minimal (pour éviter les bugs...)
+        // Si Pilote >> Si 0 Robot ou 1 Pilote déjà présents: Accès refusé
+        // Si Robot >> Si 1 Robot déjà présent: Accès refusé
+        // Si Visiteur >> Si 0 Robot ou 0 Pilote présents: Accès refusé
+        // Comportement attendu du client après un refus d'accès:
+        // >>> Redirection vers la page d'accueil de l'application
+        // Contrainte: L'URL de la page d'accueil doit être dynamique 
+        // donc le serveur websocket doit transmettre cette URL au client
+        // pour forcer sa redirection.
 
-		// 2 possibilités:
-		// Soit contrôler la connexion en amont par un io.use(function...
-		// et après traitement générer une erreur avec un message.
-		// Mais dans ce cas de figure, ce serai trop compliqué 
-		// de transmettre au client l'url de redirection en plus du message d'erreur
-		// Autre solution, plus simple et plus bourrine:
-		// Accepter la connexion, faire le traitement et renvoyer
-		// au client un simple message websocket avec en paramètre l'ip de redirection. 
-		// A sa réception, le client se redirige vers la nouvelle url, se déconnectant d'office. 
+        // 2 possibilités:
+        // Soit contrôler la connexion en amont par un io.use(function...
+        // et après traitement générer une erreur avec un message.
+        // Mais dans ce cas de figure, ce serai trop compliqué 
+        // de transmettre au client l'url de redirection en plus du message d'erreur
+        // Autre solution, plus simple et plus bourrine:
+        // Accepter la connexion, faire le traitement et renvoyer
+        // au client un simple message websocket avec en paramètre l'ip de redirection. 
+        // A sa réception, le client se redirige vers la nouvelle url, se déconnectant d'office. 
 
-		var isAuthorized = true;
-		var	authMessage;
-		if (data.typeUser == "Robot") {
-			
-			// Teste la présence d'un robot dans la liste des clients connectés
-			// Paramètres: (hashTable,attribute,value,typeReturn) typeReturn >> boolean ou count...
-			var isOtherBot = common.searchInObjects(users2,"typeClient","Robot","boolean");
-			if (isOtherBot == true) {
-				isAuthorized = false;
-				authMessage = "Un Robot est déjà connecté...";
-				console.log ("++++++++++++REJECT++++++++++++ >> Is Robot");
-			}
+        var isAuthorized = true;
+        var authMessage;
+        if (data.typeUser == "Robot") {
 
-		} else if (data.typeUser == "Pilote") {
-			var isOneBot = common.searchInObjects(users2,"typeClient","Robot","boolean");
-			if (isOneBot == false) {
-				isAuthorized = false;
-				authMessage = "Pas de robot connecté...";
-				console.log ("++++++++++++REJECT++++++++++++ Pilot >> No Robot");
-			} else if (isOtherPilot == true) {
-				// Teste la présence d'un pilote dans la liste des clients connectés
-				var isOtherPilot = common.searchInObjects(users2,"typeClient","Pilote","boolean");
-				isAuthorized = false;
-				authMessage = "Un Pilote est déjà connecté...";
-				console.log ("++++++++++++REJECT++++++++++++ >> Is Pilot");
-			}
-			
+            // Teste la présence d'un robot dans la liste des clients connectés
+            // Paramètres: (hashTable,attribute,value,typeReturn) typeReturn >> boolean ou count...
+            var isOtherBot = common.searchInObjects(users2, "typeClient", "Robot", "boolean");
+            if (isOtherBot == true) {
+                isAuthorized = false;
+                authMessage = "Un Robot est déjà connecté...";
+                console.log("++++++++++++REJECT++++++++++++ >> Is Robot");
+            }
+
+        } else if (data.typeUser == "Pilote") {
+            var isOneBot = common.searchInObjects(users2, "typeClient", "Robot", "boolean");
+            if (isOneBot == false) {
+                isAuthorized = false;
+                authMessage = "Pas de robot connecté...";
+                console.log("++++++++++++REJECT++++++++++++ Pilot >> No Robot");
+            } else if (isOtherPilot == true) {
+                // Teste la présence d'un pilote dans la liste des clients connectés
+                var isOtherPilot = common.searchInObjects(users2, "typeClient", "Pilote", "boolean");
+                isAuthorized = false;
+                authMessage = "Un Pilote est déjà connecté...";
+                console.log("++++++++++++REJECT++++++++++++ >> Is Pilot");
+            }
 
 
-		}	else if (data.typeUser == "Visiteur") {
-			console.log ("++++++++++++REJECT++++++++++++ >> Is Visitor");
 
-		}
+        } else if (data.typeUser == "Visiteur") {
+            console.log("++++++++++++REJECT++++++++++++ >> Is Visitor");
 
-    	if (isAuthorized == false) {
-    		io.to(socket.id).emit('rejectConnexion', {message:authMessage, url:indexUrl});
-    		return;
-    	}
+        }
+
+        if (isAuthorized == false) {
+            io.to(socket.id).emit('rejectConnexion', {
+                message: authMessage,
+                url: indexUrl
+            });
+            return;
+        }
 
 
 
@@ -252,7 +295,7 @@ io.sockets.on('connection', function (socket, pseudo) {
         // var placeListe = nbUsers +1; // Par contre là ca marche ! PKOI ?
         // Il semblerai que seuls les objets soient persistants, pas les valeurs de types primitifs...
         // A creuser + tard (tester si c'est pareil avec un type "string" )....
-        
+
         // Plan B: On passe par un objet contenant tous les users connectés
         // depuis le début de la session (comme une sorte de log, d'historique..)
         // et on comptera simplement le nombre de propriétés de l'objet.
@@ -266,63 +309,70 @@ io.sockets.on('connection', function (socket, pseudo) {
         var p4 = data.typeUser;
         var p5 = Date.now();
         var p6 = null;
-        var objUser = new common.client(p1,p2,p3,p4,p5,p6);
-       
+        var objUser = new common.client(p1, p2, p3, p4, p5, p6);
+
         // On ajoute l'User à la liste des connectés
-        users2[socket.id] = objUser; 
+        users2[socket.id] = objUser;
 
         // On renvoie l'User crée au nouveau connecté
         // pour l'informer entre autre de son ordre d'arrivée ds la session
         io.to(socket.id).emit('position_liste2', objUser);
-        
-        // 2 - on signale à tout le monde l'arrivée de l'User
-		socket.broadcast.emit('nouveau_client2', objUser);
 
-        
- 		// 3 - on met a jour le nombre de connectés coté client"
+        // 2 - on signale à tout le monde l'arrivée de l'User
+        socket.broadcast.emit('nouveau_client2', objUser);
+
+
+        // 3 - on met a jour le nombre de connectés coté client"
         nbUsers2 = common.lenghtObject(users2);
-        io.sockets.emit('updateUsers',{listUsers: users2});
+        io.sockets.emit('updateUsers', {
+            listUsers: users2
+        });
 
         // 4 - on met à jour la liste des connectés cotés clients
         // ... TODO... EST-ce bien nécéssaire ????
         // exports.searchInObjects = function (hashTable,attribute,value,typeReturn){
 
-		// contrôle fontion tests de tableau d'objet coté serveur
-		//var commonTest2 = common.searchInObjects(users2,"typeClient","Robot","boolean");
-		//console.log("commonTest2 >>> " + commonTest2 + " >>> true = robot - false = pilote");
+        // contrôle fontion tests de tableau d'objet coté serveur
+        //var commonTest2 = common.searchInObjects(users2,"typeClient","Robot","boolean");
+        //console.log("commonTest2 >>> " + commonTest2 + " >>> true = robot - false = pilote");
 
 
 
     });
 
-  	// Quand un user se déconnecte (V2)
-    socket.on('disconnect', function(){  
-        
-		var dUser = users2[socket.id]; 
+    // Quand un user se déconnecte (V2)
+    socket.on('disconnect', function() {
+
+        var dUser = users2[socket.id];
 
 
-		//console.log ("-------------------------------");
-		var message = "Vient de se déconnecter !";
-		// console.log(message + "( ID : " + socket.id + ")");
-        
-		
-		
-		// on retire le connecté de la liste des utilisateurs
-		delete users2[socket.id]; 
-		socket.broadcast.emit('disconnected', {listUsers: users2});
-		//socket.broadcast.emit('disconnected', "WTF");
+        //console.log ("-------------------------------");
+        var message = "Vient de se déconnecter !";
+        // console.log(message + "( ID : " + socket.id + ")");
+
+
+
+        // on retire le connecté de la liste des utilisateurs
+        delete users2[socket.id];
+        socket.broadcast.emit('disconnected', {
+            listUsers: users2
+        });
+        //socket.broadcast.emit('disconnected', "WTF");
         // On prévient tout le monde
-        socket.broadcast.emit('message2',{objUser: dUser, message: message});
-        
+        socket.broadcast.emit('message2', {
+            objUser: dUser,
+            message: message
+        });
+
         // on retire le connecté de la liste des utilsateurs
         // et on actualise le nombre de connectés  
         // delete users2[socket.id]; 
         nbUsers = common.lenghtObject(users2)
 
         // contrôle liste connectés coté serveur
-		console.log (users2);
-		
-        console.log ("Il reste " + nbUsers + " connectés");
+        console.log(users2);
+
+        console.log("Il reste " + nbUsers + " connectés");
         // TODO: Mise à jour de la liste coté client...
 
         // io.sockets.emit('users', users);           
@@ -331,91 +381,112 @@ io.sockets.on('connection', function (socket, pseudo) {
         // envoi d'un second message destiné au signaling WebRTC
         // socket.broadcast.emit('disconnected', { pseudo:"SERVER", message: message, placeListe: "-"});
         // socket.broadcast.emit('disconnected', {listUsers: users2});
-    });  
+    });
 
     // Transmission de messages générique V2 objet
-    socket.on('message2', function (data) {
+    socket.on('message2', function(data) {
         console.log(data);
-        if (data.message){
+        if (data.message) {
             message = ent.encode(data.message); // On vire les caractères html...
-            socket.broadcast.emit('message2',{objUser: data.objUser, message: message});
-    	}
-        console.log ("@ message2 from "+data.objUser.placeliste+"-"+data.objUser.pseudo+ ": "+ message);
-    }); 
+            socket.broadcast.emit('message2', {
+                objUser: data.objUser,
+                message: message
+            });
+        }
+        console.log("@ message2 from " + data.objUser.placeliste + "-" + data.objUser.pseudo + ": " + message);
+    });
 
 
     // Transmission de commande générique V2 objet
-    socket.on('moveOrder', function (data) {
+    socket.on('moveOrder', function(data) {
         console.log(data);
-        if (data.moveOrder){
+        if (data.moveOrder) {
             moveOrder = ent.encode(data.moveOrder); // On vire les caractères html... ???????
-            socket.broadcast.emit('moveOrder',{objUser: data.objUser, moveOrder: moveOrder});
+            socket.broadcast.emit('moveOrder', {
+                objUser: data.objUser,
+                moveOrder: moveOrder
+            });
         }
-        console.log ("@ moveOrder from "+data.objUser.placeliste+"-"+data.objUser.pseudo+ ": "+ moveOrder);
-    }); 
+        console.log("@ moveOrder from " + data.objUser.placeliste + "-" + data.objUser.pseudo + ": " + moveOrder);
+    });
 
 
     // ----------------------------------------------------------------------------------
     // Partie 'signaling'. Ces messages transitent par websocket 
     // mais n'ont pas vocation à s'afficher dans le tchat client...
 
-    socket.on('signaling', function (message) {
+    socket.on('signaling', function(message) {
         //console.log ("@ signaling from "+socket.placeListe+socket.pseudo);
-        console.log ("@ signaling...");
+        console.log("@ signaling...");
         socket.broadcast.emit('signaling', message);
-    }); 
+    });
 
     // Quand est balancé un message 'candidate'
     // il est relayé à tous les autres connectés sauf à celui qui l'a envoyé
-    socket.on('candidate', function (message) {
+    socket.on('candidate', function(message) {
         // console.log ("@ candidate from "+socket.placeListe+socket.pseudo+" timestamp:" + Date.now());
         // socket.broadcast.emit('candidate', {pseudo: socket.pseudo, message: message, placeListe: socket.placeListe});
-        socket.broadcast.emit('candidate', {message: message});
-    }); 
+        socket.broadcast.emit('candidate', {
+            message: message
+        });
+    });
 
     // Quand est balancé un message 'offer'
     // il est relayé à tous les autres connectés sauf à celui qui l'a envoyé
-    socket.on('offer', function (message) {
-        socket.broadcast.emit('offer', {message: message});
-    }); 
+    socket.on('offer', function(message) {
+        socket.broadcast.emit('offer', {
+            message: message
+        });
+    });
 
     // Quand est balancé un message 'answer'
     // il est relayé à tous les autres connectés sauf à celui qui l'a envoyé
-    socket.on('answer', function (message) {
-        socket.broadcast.emit('answer', {message: message});
-    }); 
+    socket.on('answer', function(message) {
+        socket.broadcast.emit('answer', {
+            message: message
+        });
+    });
 
     // ----------------------------------------------------------------------------------
     // Phase pré-signaling ( selections caméras et micros du robot par l'IHM pilote)
 
     // Robot >> Pilote: Offre des cams/micros disponibles coté robot
-    socket.on('remoteListDevices', function (data) {
-    	socket.broadcast.emit('remoteListDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
-    	/*// Contrôle >>
-    	var place = data.objUser.placeliste;
-    	var login = data.objUser.pseudo;
-    	var role = data.objUser.typeClient;
-    	console.log ("@ remoteListDevices from: "+place+"-"+login+" ("+role+") timestamp:" + Date.now());
-    	console.log(data.objUser);
-    	console.log(data.listeDevices);
-    	/**/   
-    }); 
+    socket.on('remoteListDevices', function(data) {
+        socket.broadcast.emit('remoteListDevices', {
+            objUser: data.objUser,
+            listeDevices: data.listeDevices
+        });
+        /*// Contrôle >>
+        var place = data.objUser.placeliste;
+        var login = data.objUser.pseudo;
+        var role = data.objUser.typeClient;
+        console.log ("@ remoteListDevices from: "+place+"-"+login+" ("+role+") timestamp:" + Date.now());
+        console.log(data.objUser);
+        console.log(data.listeDevices);
+        /**/
+    });
 
 
     // Pilote >> Robot: cams/micros sélectionnés par le Pilote
-    socket.on('selectedRemoteDevices', function (data) {
-    	socket.broadcast.emit('selectedRemoteDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
-    	/*// Contrôle >>
-    	var place = data.objUser.placeliste;
-    	var login = data.objUser.pseudo;
-    	var role = data.objUser.typeUser;
-    	console.log ("@ selectedRemoteDevices from: "+place+"-"+login+" ("+role+") timestamp:" + Date.now());
-    	console.log(data);
-    	/**/
-    }); 
+    socket.on('selectedRemoteDevices', function(data) {
+        socket.broadcast.emit('selectedRemoteDevices', {
+            objUser: data.objUser,
+            listeDevices: data.listeDevices
+        });
+        /*// Contrôle >>
+        var place = data.objUser.placeliste;
+        var login = data.objUser.pseudo;
+        var role = data.objUser.typeUser;
+        console.log ("@ selectedRemoteDevices from: "+place+"-"+login+" ("+role+") timestamp:" + Date.now());
+        console.log(data);
+        /**/
+    });
 
     // Robot >> Pilote: Signal de fin pré-signaling...
-    socket.on('readyForSignaling', function (data) {
-        socket.broadcast.emit('readyForSignaling', {objUser:data.objUser, message:data.message});
-    }); 
+    socket.on('readyForSignaling', function(data) {
+        socket.broadcast.emit('readyForSignaling', {
+            objUser: data.objUser,
+            message: data.message
+        });
+    });
 });
