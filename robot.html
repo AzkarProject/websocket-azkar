@@ -19,10 +19,6 @@
 
     <strong><span id="zone_info_server">WebRTC AZKAR</span></strong>
     <hr/>
-
-	    
-
-
 		
 		<section id="bloc_1to1_messages" class="fullSizeContainerBox">
 				
@@ -102,16 +98,6 @@
 		</section>
 
 
-		
-
-		
-
-
-
-
-
-
-
 		<section id="bloc_1toN" class="fullSizeContainerBox">
 			
 			<div  class="floatLeft oneQuarterContainerBox">
@@ -141,109 +127,19 @@
 		  	 	</div>
 			</div>
 
-
-
-
-
-
-
 		</section>
 
 		
-		
-
-
-
-
-
-
-
-
-
-
-		<section id="bloc_1toN_2" class="fullSizeContainerBox">
-		    
-		   
-			    <!--
-			    <div class="insideFlex myvideo robot halfBox">
-				    <strong> WebRTC localVideo (Robot)</strong>
-					
-				    <video id='video' autoplay muted controls="controls"></video>
-				</div>
-				-->
-				
-
-			    <!--
-			    <div class="insideFlex yourvideo pilote halfBox">
-				    <strong> WebRTC remoteVideo (Pilote)</strong>
-					
-				    <video id='otherPeer' autoplay muted controls="controls" ></video>
-		  	 	</div>
-		  	 	-->
-	  	 	
-	  	 	
-				<!--
-				<div class="insideFlex robot halfBox">
-					<strong> Websocket Chat Test </strong>
-					
-			        <form action="/" method="post" id="formulaire_chat_websoket">
-			            <input type="text" name="message" id="message" placeholder="Votre message..." size="28" autofocus />
-			            <input type="submit" id="envoi_message" value="Envoyer" />
-			        </form>
-		       	 	
-				 	<div id="zone_chat_websocket"></div>
-				 	<div id="zone_reception_commande_websocket"></div>
-	      		</div>
-	      		-->
-       
-		  
-				
-				<!--
-				<div class="insideFlex robot halfBox">
-					<strong> WebRTC dataChannel Test </strong>
-			        <div id="formulaire_chat_webRTC" class="pseudoForm">
-			            <input type="text" name="message" id="send_chat_WebRTC" placeholder="Waiting open channel..." size="28" autofocus />
-			            <button id="sendButton" disabled onclick="sendMessage()">Envoyer</button>
-			        </div>
-		       	 	<br/>
-				 	<div id="zone_chat_WebRTC"></div>
-	      		</div>
-	      		-->
-
-
-
-	  	 
-	  	</section>
 	
-
-
-		<!--
-		<section id="block_1">			
-			<li class="flex-item insideFlex robot">	
-
-				<strong> Car drive simulator test </strong>
-				<hr/>
-				<div id='simulateur-area'></div>
-				<div id='simulateur-area2'></div>
-			</li>
-	  	</section>
-	  	-->
-
-
-
        	<script>	  	 
-		var otherType = "appelant";
+		var otherType = "pilote-appelant";
 		var type = "robot-appelé";
 		</script>
 
-        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+         <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
         <script src="/socket.io/socket.io.js"></script>
         <script src="/js/common.js"></script>
         <script src="/js/settings.js"></script>
-        <!--
-        <script src="/js/lib/phaser.min.js"></script>
-        <script src="/js/simulateur.js"></script>
-		-->
         <script src='/js/lib/adapter.js'></script>
         <script src='/js/ws_manager.js'></script>
 		<script src='/js/main.js'></script>

@@ -17,7 +17,7 @@ var socket = io.connect();
 
 var typeUser = null;
 if (type == "pilote-appelant") {typeUser = "Pilote";
-} else if (type = "robot-appelé") { typeUser = "Robot";}
+} else if (type == "robot-appelé") { typeUser = "Robot";}
 
 
 // On demande le pseudo, on l'envoie au serveur et on l'affiche dans le titre
@@ -30,28 +30,11 @@ if (!pseudo) { pseudo = typeUser;}
 // socket.emit('nouveau_client', pseudo); // Version 1
 socket.emit('nouveau_client2', {pseudo: pseudo, typeUser: typeUser}); // Version objet
 
-/*
-var socket = io.connect(socketServer, 
-                {rememberTransport: false, 
-                'reconnect': true,
-                'reconnection delay': 500,
-                'max reconnection attempts': 10,
-                'secure': true});
-
-socket.on('disconnect', function() {
-    alert('client socketio disconnect!')
-});
-/**/
-
-
-
 // liste des users connectés
 var users = {};
 
 // Objet User courant.
 var localObjUser;
-
-
 
 // ------------------------------------------------------
 // Pour contrôle hosting
@@ -87,28 +70,12 @@ socket.on('position_liste2', function(objUser) {
 
 // Fonctions websocket dédiées au tchat ---------------------------
 
-/*// Quand un nouveau client se connecte, on affiche l'information
-socket.on('nouveau_client', function(data) {
-    console.log(">> socket.on('nouveau_client', function(pseudo)");
-    //$('#zone_chat').prepend('<p><em>(' +data.placeListe+')'+ data.pseudo + ' à rejoint le Chat !</em></p>');
-    var message = "a rejoint le Tchat";
-    insereMessage(data.pseudo, message, data.placeListe);
-})
-/**/
 
 // Quand un nouveau client se connecte, on affiche l'information
 socket.on('nouveau_client2', function(objUser) {
-    var newDate = common.actualDate();
-
-    console.log("["+newDate+"]>> socket.on('nouveau_client2', objUser");
+    var newDate = '[R>>'+common.dateNowInMs()+']';
+    console.log("[R>>"+newDate+"]>> socket.on('nouveau_client2', objUser");
     var message = "à rejoint le Tchat";
-    /*
-    console.log(objUser);
-    console.log(message);
-    console.log(objUser.pseudo);
-    console.log(objUser.placeliste);
-    /**/
-    //insereMessage2(objUser,message);
     insereMessage3(newDate,objUser,message);
 })
 
@@ -117,7 +84,7 @@ socket.on('nouveau_client2', function(objUser) {
 // >>> On déplace ici l'écouteur ici au cas où la fonction
 // Connect n'as pas encore été apellée.
 socket.on("disconnected", function(data) { 
-  var newDate = common.actualDate();
+  var newDate = '[R>>'+common.dateNowInMs()+']';
   console.log(">> socket.on('disconnected',...");
   // On met à jour la liste des cliens connectés
   var users = data;
@@ -127,46 +94,26 @@ socket.on("disconnected", function(data) {
   onDisconnect();
 });
   
-
-/*// Quand on reçoit un message, on l'insère dans la page
-socket.on('message', function(data) {
-    console.log(">> socket.on('message',...");
-    insereMessage(data.pseudo, data.message, data.placeListe)
-})
-
-// Quand on reçoit un message de service
-socket.on('service', function(data) {
-    console.log(">> socket.on('service',...");
-    insereMessage(data.pseudo, data.message);
-})
-/**/
-
-
 // >> V2 User en version Objet
 
 // Quand on reçoit un message, on l'insère dans la page V2
 socket.on('message2', function(data) {
-    var newDate = common.actualDate();
+    var newDate = '[R>>'+common.dateNowInMs()+']';
     console.log(">> socket.on('message2',...");
-    //console.log(data);
-    //console.log(data.message);
-    //console.log(data.objUser);
-    insereMessage2(data.objUser, data.message);
     insereMessage3(newDate,data.objUser,data.message);
 })
 
 
 // Quand on reçoit une nouvelle commande de déplacement, on l'insère dans la page
 socket.on('moveOrder', function(data) {
-    var newDate = common.actualDate();
+    var newDate = '[R>>'+common.dateNowInMs()+']';
     console.log(">> socket.on('moveOrder',...");
-    insereMessage2(data.objUser, data.message);
     insereMessage3(newDate,data.objUser, data.message);
 })
 
 // Quand on reçoit un message de service
 socket.on('service2', function(data) {
-    var newDate = common.actualDate();
+    var newDate = '[R>>'+common.dateNowInMs()+']';
     console.log(">> socket.on('service2',...");
     insereMessage3(newDate,data.objUser, data.message);
 })
@@ -179,36 +126,15 @@ socket.on('service2', function(data) {
 $('#formulaire_chat_websoket').submit(function () {
     //console.log ("WWWWWWWWWWWWW");
     var message = $('#message').val();
+    var newDate = '['+common.dateNowInMs()+'>>E]';
     socket.emit('message2', {objUser:localObjUser,message:message}); // Transmet le message aux autres
-    insereMessage2(localObjUser, message); // Affiche le message aussi sur notre page
-    var newDate = common.actualDate();
     insereMessage3(newDate,localObjUser, message); // Affiche le message aussi sur notre page
     $('#message').val('').focus(); // Vide la zone de Chat et remet le focus dessus
     return false; // Permet de bloquer l'envoi "classique" du formulaire
 });
 
 // Ajoute un message dans la page
-function insereMessage2(objUser, message) {
-    /*
-    console.log ("@ insereMessage2(objUser, message)");
-    console.log(objUser);
-    console.log(message);
-    console.log(objUser.pseudo);
-    console.log(objUser.placeliste);
-    /**/
-    //$('#zone_chat_websocket').prepend('<strong>'+objUser.placeliste+'-'+objUser.pseudo+' (<i>'+objUser.typeClient+'</i>):</strong> ' + message + '<br/>');
-    // console.log ((objUser.pseudo + " >> " + message));
-}
-
-// Ajoute un message dans la page
 function insereMessage3(date,objUser, message) {
-    /*
-    console.log ("@ insereMessage2(objUser, message)");
-    console.log(objUser);
-    console.log(message);
-    console.log(objUser.pseudo);
     console.log(objUser.placeliste);
-    /**/
-    $('#zone_chat_websocket').prepend('['+date+'] <strong>'+objUser.placeliste+'-'+objUser.typeClient+' (<i>'+objUser.pseudo+'</i>):</strong> ' + message + '<br/>');
-    // console.log ((objUser.pseudo + " >> " + message));
+    $('#zone_chat_websocket').prepend(date+' <strong>'+objUser.placeliste+'-'+objUser.typeClient+' (<i>'+objUser.pseudo+'</i>):</strong> ' + message + '<br/>');
 }

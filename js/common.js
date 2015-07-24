@@ -35,8 +35,6 @@ exports.client = function client (id,pseudo,placeliste,typeClient,connectionDate
   this.disConnectionDate = disConnectionDate;
 }
 
-
-
  
 // ---------------------------------
 // Fonctions utiles (génériques)
@@ -86,19 +84,36 @@ exports.client = function client (id,pseudo,placeliste,typeClient,connectionDate
   }
   
 
-  // Objet timeStamp converti en date, heure, minute, seconde...
-  // Adapté de http://stackoverflow.com/questions/19485353/function-to-convert-timestamp-to-human-date-in-javascript
-  exports.actualDate = function () {
+  // Fourni un Objet timeStamp converti en date, heure, minute, seconde...
+  exports.actualDateToString = function () {
     var theDate = new Date();
-    //return theDate.toGMTString();
     return theDate.toLocaleString();
-    //var theDate = new Date(year, month[, day[, hour[, minutes[, seconds[, milliseconds]]]]]);
-    //return theDate;
+  }
+
+  // Fournit l'heure en cours + milisecondes
+  exports.dateNowInMs = function () {
+    var theDate = new Date();
+    var h = theDate.getHours();
+    var m = theDate.getMinutes();
+    var s = theDate.getSeconds();
+    var ms = theDate.getMilliseconds();
+    return h+":"+m+":"+s+":"+ms;
   }
 
 
-
-
+  //Convert milliseconds to object with days, hours, minutes, and seconds
+  // source : https://gist.github.com/remino/1563878
+   exports.convertMS = function (ms) {
+    var d, h, m, s;
+    s = Math.floor(ms / 1000);
+    m = Math.floor(s / 60);
+    s = s % 60;
+    h = Math.floor(m / 60);
+    m = m % 60;
+    d = Math.floor(h / 24);
+    h = h % 24;
+    return { d: d, h: h, m: m, s: s };
+  }
 
 
   // Gestion de tableaux
@@ -301,6 +316,7 @@ exports.toObject = function  (arr) {
       // var toto = JSON.stringify(obj, null, 4);
       var toto = JSON.stringify(obj);
       console.log(toto);
+      return toto;
     }
 
    
