@@ -716,27 +716,26 @@ function bindEvents () {
 	// écouteur de reception message
 	channel.onmessage = function (e) {
 		// add the message to the chat log
-		var receptDate = '[R>>'+common.dateNowInMs()+']';
-		$(chatlog).prepend(receptDate+e.data+'<br/>');
+		var dateR = common.dateER('R');
+		$(chatlog).prepend(dateR+' '+e.data+'\n');
 	};
 }
 
-// send a message the textbox throught
-// the data channel for a chat program
+// envoi message par WebRTC
 function sendMessage () {
-    var dateSending = common.dateNowInMs();
-	var msgToSend = ' ['+dateSending+'>>E] <strong>'+localObjUser.placeliste+'-'+localObjUser.typeClient+'<i>('+localObjUser.pseudo+')</i></strong>:'+message.value;
+    var dateE = common.dateER('E');
+	var msgToSend = dateE+' ['+localObjUser.typeClient+'] '+message.value;
+	//var msgToSend = ' ['+dateSending+'>>E] <strong>'+localObjUser.placeliste+'-'+localObjUser.typeClient+'<i>('+localObjUser.pseudo+')</i></strong>:'+message.value;
 	channel.send(msgToSend);
 	message.value = "";
 	// Affiche le message dans le chatlog websocket
-	$(chatlog).prepend(msgToSend+'<br/>');
+	$(chatlog).prepend(msgToSend+'\n');
 }
 
 
 // Bouton d'envoi du formulaire de chat WebRTC
 $('#formulaire_chat_webRTC').submit(function () {
-    // console.log ("WWWWWWWWWWWWW");
-    var message = $('#send_chat_WebRTC').val();
+    var message = $('#send_chat_WebRTC').val()+'\n';
     channel.send(msg);
 	message.value = "";
     $('#send_chat_WebRTC').val('').focus(); // Vide la zone de Chat et remet le focus dessus
