@@ -76,7 +76,7 @@ socket.on('nouveau_client2', function(objUser) {
     var newDate = '[R>>'+common.dateNowInMs()+']';
     console.log("[R>>"+newDate+"]>> socket.on('nouveau_client2', objUser");
     var message = "à rejoint le Tchat";
-    insereMessage3(newDate,objUser,message);
+    insereMessage3(objUser,message);
 })
 
 // Réception d'une info de deconnexion 
@@ -84,38 +84,45 @@ socket.on('nouveau_client2', function(objUser) {
 // >>> On déplace ici l'écouteur ici au cas où la fonction
 // Connect n'as pas encore été apellée.
 socket.on("disconnected", function(data) { 
-  var newDate = '[R>>'+common.dateNowInMs()+']';
   console.log(">> socket.on('disconnected',...");
+
+  var dateR = common.dateER('R');
+  // var msg = dateR+' '+data.message;
+  // insereMessage3(data.objUser,msg); // Plante puisque no data.objUser  !!!
+
   // On met à jour la liste des cliens connectés
   var users = data;
   var debug = common.stringObjectDump(users,"users");
   console.log(debug); 
+  
   // On lance la méthode de préparatoire à la renégo WebRTC
+  // Todo >>>> Tester déclenchement a la detection WebRTC...
+  // Pour voir si ca résoud le problème de déco intempestive sur openShift
   onDisconnect();
 });
   
 // >> V2 User en version Objet
 
-// Quand on reçoit un message, on l'insère dans la page V2
+// Quand on reçoit un message, on l'insère dans la page
 socket.on('message2', function(data) {
-    var newDate = '[R>>'+common.dateNowInMs()+']';
-    console.log(">> socket.on('message2',...");
-    insereMessage3(newDate,data.objUser,data.message);
+    var dateR = common.dateER('R');
+    var msg = dateR+' '+data.message;
+    insereMessage3(data.objUser,msg);
 })
 
 
 // Quand on reçoit une nouvelle commande de déplacement, on l'insère dans la page
 socket.on('moveOrder', function(data) {
-    var newDate = '[R>>'+common.dateNowInMs()+']';
-    console.log(">> socket.on('moveOrder',...");
-    insereMessage3(newDate,data.objUser, data.message);
+    var dateR = common.dateER('R');
+    var msg = dateR+' '+data.message;
+    insereMessage3(data.objUser, data.message);
 })
 
 // Quand on reçoit un message de service
 socket.on('service2', function(data) {
-    var newDate = '[R>>'+common.dateNowInMs()+']';
-    console.log(">> socket.on('service2',...");
-    insereMessage3(newDate,data.objUser, data.message);
+    var dateR = common.dateER('R');
+    var msg = dateR+' '+data.message;
+    insereMessage3(data.objUser,data.message);
 })
 
 
@@ -126,15 +133,26 @@ socket.on('service2', function(data) {
 $('#formulaire_chat_websoket').submit(function () {
     //console.log ("WWWWWWWWWWWWW");
     var message = $('#message').val();
-    var newDate = '['+common.dateNowInMs()+'>>E]';
+    // On ajoute la dateE au message
+    var dateE = '[E-'+common.dateNowInMs()+']';
+    message = dateE + ' '+message;
     socket.emit('message2', {objUser:localObjUser,message:message}); // Transmet le message aux autres
-    insereMessage3(newDate,localObjUser, message); // Affiche le message aussi sur notre page
+    insereMessage3(localObjUser, message); // Affiche le message aussi sur notre page
     $('#message').val('').focus(); // Vide la zone de Chat et remet le focus dessus
     return false; // Permet de bloquer l'envoi "classique" du formulaire
 });
 
-// Ajoute un message dans la page
-function insereMessage3(date,objUser, message) {
-    console.log(objUser.placeliste);
-    $('#zone_chat_websocket').prepend(date+' <strong>'+objUser.placeliste+'-'+objUser.typeClient+' (<i>'+objUser.pseudo+'</i>):</strong> ' + message + '<br/>');
+// Affiche le message ds le tchat
+function insereMessage3(objUser, message) {
+    /**
+    var text;
+    if (objUser){
+      text = '['+objUser.typeClient+'] '+ message;
+    } else {
+      text = '['+????+'] '+ message;
+    }
+    /**/
+    text = '['+objUser.typeClient+'] '+ message;
+
+    $('#zone_chat_websocket').prepend(text+'\n');
 }

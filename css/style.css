@@ -142,6 +142,43 @@ form {margin-bottom: 9px;}
 .ihmRobot #visitorsList {height:190px}
 
 
+/* Zones de tchat */
+
+/* ---- Chat Websocket */
+#zone_chat_websocket, #zone_chat_WebRTC {
+  font-size:12px; 
+  border:1px solid #ffffff;
+  background-color:#ffffff;
+  padding: 2px;
+  overflow: auto;
+}
+
+.ihmPilote #zone_chat_websocket {height: 200px;width:100%} 
+.ihmPilote #zone_chat_WebRTC {height:210px;}
+.ihmRobot #zone_chat_websocket {height: 50px;}  
+.ihmRobot #zone_chat_WebRTC {height: 50px;}
+
+#log {
+	font-size:10px;
+	background: #000000;
+	color: #ffffff;
+}
+
+#dataChannelReceive {
+  margin: 0px; 
+  width: 98%;
+}
+/**/
+
+
+
+
+
+
+
+
+
+
 
 /* Jauges */
 .ihmPilote #robotInfos .jauge #battery_level {width: 300px;}
@@ -269,28 +306,3 @@ button:active{
   filter: drop-shadow(10px 10px 10px red);/* OK sous firefox 35.0.1*/
 }
 
-/* Zones de tchat */
-
-/* ---- Chat Websocket */
-#zone_chat_websocket, #zone_chat_WebRTC {
-  font-size:12px; 
-  border:1px solid #ffffff;
-  background-color:#ffffff;
-  padding: 2px;
-  overflow: auto;
-}
-
-.ihmPilote #zone_chat_websocket, .ihmPilote #zone_chat_WebRTC {height: 210px;}
-.ihmRobot #zone_chat_websocket, .ihmRobot #zone_chat_WebRTC {height: 50px;}
-
-#log {
-	font-size:10px;
-	background: #000000;
-	color: #ffffff;
-}
-
-#dataChannelReceive {
-  margin: 0px; 
-  width: 98%;
-}
-/**/

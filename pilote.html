@@ -181,9 +181,14 @@
 		             <button id="envoi_message" type="submit" >Envoyer</button>
 
 		        </form>
-	       	 	
-			 	<div id="zone_chat_websocket"></div>
-			 	<div id="zone_reception_commande_websocket"></div>
+			 	<!--<div id="zone_chat_websocket"></div>-->
+			 	<textarea class="input" id="zone_chat_websocket" placeholder="Once upon a time..."></textarea>
+				<form id="text-options">
+            		<label>Filename: <input type="text" class="filename" id="text-filename" placeholder="a plain document"/>.txt</label>
+            		<input type="submit" value="Save"/>
+        		</form>
+
+
       		</div>
    
 		</div>
@@ -242,9 +247,11 @@
     
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script> 
     <script src="/socket.io/socket.io.js"></script>
+    <script src='/js/lib/FileSaver.min.js'></script>
+    <script src='/js/lib/adapter.js'></script>
+
     <script src="/js/common.js"></script>
     <script src="/js/settings.js"></script>
-    <script src='/js/lib/adapter.js'></script>
     <script src='/js/mapviewer.js'></script>
     <script src='/js/ws_manager.js'></script>
 	<script src='/js/main.js'></script>
