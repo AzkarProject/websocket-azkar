@@ -224,39 +224,39 @@
     </script>
     <script>
     /**
-                window.gamepad = new Gamepad();
+                                                            window.gamepad = new Gamepad();
 
-                gamepad.bind(Gamepad.Event.CONNECTED, function(device) {
-                    console.log("a new gamepad connected");
-                });
+                                                            gamepad.bind(Gamepad.Event.CONNECTED, function(device) {
+                                                                console.log("a new gamepad connected");
+                                                            });
 
-                gamepad.bind(Gamepad.Event.DISCONNECTED, function(device) {
-                    console.log("gamepad disconnected");
-                });
+                                                            gamepad.bind(Gamepad.Event.DISCONNECTED, function(device) {
+                                                                console.log("gamepad disconnected");
+                                                            });
 
-                gamepad.bind(Gamepad.Event.UNSUPPORTED, function(device) {
-                    // an unsupported gamepad connected (add new mapping)
-                    console.log(" an unsupported gamepad connected (add new mapping)");
-                });
+                                                            gamepad.bind(Gamepad.Event.UNSUPPORTED, function(device) {
+                                                                // an unsupported gamepad connected (add new mapping)
+                                                                console.log(" an unsupported gamepad connected (add new mapping)");
+                                                            });
 
-                gamepad.bind(Gamepad.Event.BUTTON_DOWN, function(e) {
-                    // e.control of gamepad e.gamepad pressed down  
-                    if (e.control == "FACE_1" || (e.control == "LEFT_BOTTOM_SHOULDER") || (e.control == "RIGHT_BOTTOM_SHOULDER"))
-                        console.log(e.control + " of gamepad  " + e.gamepad + "pressed down");
-                });
+                                                            gamepad.bind(Gamepad.Event.BUTTON_DOWN, function(e) {
+                                                                // e.control of gamepad e.gamepad pressed down  
+                                                                if (e.control == "FACE_1" || (e.control == "LEFT_BOTTOM_SHOULDER") || (e.control == "RIGHT_BOTTOM_SHOULDER"))
+                                                                    console.log(e.control + " of gamepad  " + e.gamepad + "pressed down");
+                                                            });
 
-                gamepad.bind(Gamepad.Event.BUTTON_UP, function(e) {
-                    // e.control of gamepad e.gamepad released
-                    if (e.control == "FACE_1" || (e.control == "LEFT_BOTTOM_SHOULDER") || (e.control == "RIGHT_BOTTOM_SHOULDER"))
-                        console.log(e.control + " of gamepad  " + e.gamepad + "released");
-                });
+                                                            gamepad.bind(Gamepad.Event.BUTTON_UP, function(e) {
+                                                                // e.control of gamepad e.gamepad released
+                                                                if (e.control == "FACE_1" || (e.control == "LEFT_BOTTOM_SHOULDER") || (e.control == "RIGHT_BOTTOM_SHOULDER"))
+                                                                    console.log(e.control + " of gamepad  " + e.gamepad + "released");
+                                                            });
 
-                gamepad.bind(Gamepad.Event.AXIS_CHANGED, function(e) {
-                    // e.axis changed to value e.value for gamepad e.gamepad
-                    if (e.axis == "LEFT_STICK_X")
-                        console.log(e.axis + "changed to value  " + e.value + "for gamepad  " + e.gamepad);
-                });
-                /**/
+                                                            gamepad.bind(Gamepad.Event.AXIS_CHANGED, function(e) {
+                                                                // e.axis changed to value e.value for gamepad e.gamepad
+                                                                if (e.axis == "LEFT_STICK_X")
+                                                                    console.log(e.axis + "changed to value  " + e.value + "for gamepad  " + e.gamepad);
+                                                            });
+                                                            /**/
 
     /* gamepad.bind(Gamepad.Event.TICK, function(gamepads) {
          // gamepads were updated (around 60 times a second)
@@ -269,6 +269,7 @@
         }*/
 
     $(document).ready(function() {
+
         // Attach it to the window so it can be inspected at the console.
         window.gamepad = new Gamepad();
 
@@ -278,53 +279,35 @@
             $('#gamepads').append('<li id="gamepad-' + device.index + '"><h1>Gamepad #' + device.index + ': &quot;' + device.id + '&quot;</h1></li>');
 
             var mainWrap = $('#gamepad-' + device.index),
-                statesWrap,
-                logWrap,
-                control,
-                enable,
-                targetLinearSpeed,
-                targetAngularSpeed,
-                i;
+                statesWrap, logWrap, control, enable, targetLinearSpeed, targetAngularSpeed, i;
 
             mainWrap.append('<strong>State</strong><ul id="states-' + device.index + '"></ul>');
-            mainWrap.append('<strong>Events</strong><ul id="log-' + device.index + '"></ul>');
-
+            
             statesWrap = $('#states-' + device.index)
-            logWrap = $('#log-' + device.index)
 
-            for (control in device.state) {
-                if (control == "FACE_1") {
-                    enable = device.state[control];
-                    statesWrap.append('<li>' + control + ': <span id="state-' + device.index + '-' + control + '">' + enable + '</span></li>');
-                    console.log("enable  : " + enable);
-                } else if (control == "LEFT_BOTTOM_SHOULDER") {
-                    targetLinearSpeed = device.state[control];
-                    statesWrap.append('<li>' + control + ': <span id="state-' + device.index + '-' + control + '">' + targetLinearSpeed + '</span></li>');
-                    console.log("targetLinearSpeed : " + targetLinearSpeed);
-                } else if (control == "RIGHT_BOTTOM_SHOULDER") {
-                    targetLinearSpeed = device.state[control];
-                    statesWrap.append('<li>' + control + ': <span id="state-' + device.index + '-' + control + '">' + targetLinearSpeed + '</span></li>');
-                    console.log("targetLinearSpeed : " + targetLinearSpeed);
-                }
-            }
+            enable = device.state["FACE_1"];
+            statesWrap.append('<li>' + "FACE_1" + ': <span id="state-' + device.index + '-' + "FACE_1" + '">' + enable + '</span></li>');
+            console.log("enable  : " + enable);
 
-            for (i = 0; i < device.axes.length; i++) {
-                if (i == 0) {
-                    targetAngularSpeed = device.axes[i];
-                    statesWrap.append('<li>Raw Axis ' + i + ': <span id="axis-' + device.index + '-' + i + '">' + targetAngularSpeed + '</span></li>');
-                    console.log("targetAngularSpeed : " + targetAngularSpeed);
-                }
+            targetLinearSpeed = device.state["LEFT_BOTTOM_SHOULDER"];
+            statesWrap.append('<li>' + "LEFT_BOTTOM_SHOULDER" + ': <span id="state-' + device.index + '-' + "LEFT_BOTTOM_SHOULDER" + '">' + targetLinearSpeed + '</span></li>');
+            console.log("targetLinearSpeed : " + targetLinearSpeed);
 
-            }
+            targetLinearSpeed = device.state["RIGHT_BOTTOM_SHOULDER"];
+            statesWrap.append('<li>' + "RIGHT_BOTTOM_SHOULDER" + ': <span id="state-' + device.index + '-' + "RIGHT_BOTTOM_SHOULDER" + '">' + targetLinearSpeed + '</span></li>');
+            console.log("targetLinearSpeed : " + targetLinearSpeed);
+
+            targetAngularSpeed = device.axes[0];
+            statesWrap.append('<li>Raw Axis ' + 0 + ': <span id="axis-' + device.index + '-' + 0 + '">' + targetAngularSpeed + '</span></li>');
+            console.log("targetAngularSpeed : " + targetAngularSpeed);
+
 
             $('#connect-notice').hide();
         });
 
         gamepad.bind(Gamepad.Event.DISCONNECTED, function(device) {
             console.log('Disconnected', device);
-
             $('#gamepad-' + device.index).remove();
-
             if (gamepad.count() == 0) {
                 $('#connect-notice').show();
             }
@@ -336,56 +319,39 @@
                 control,
                 value,
                 enable,
-                targetLinearSpeed,
+                targetLinearSpeedPos, targetLinearSpeedNeg,
                 targetAngularSpeed,
-                i,
-                j;
+                i, j;
 
-            for (i = 0; i < gamepads.length; i++) {
-                gamepad = gamepads[i];
-                wrap = $('#gamepad-' + i);
+            gamepad = gamepads[0];
+            wrap = $('#gamepad-' + 0);
 
-                if (gamepad) {
-                    for (control in gamepad.state) {
-                        if (control == "FACE_1") {
-                            enable = gamepad.state[control];
-                            $('#state-' + gamepad.index + '-' + control + '').html(enable);
-                        } else if (control == "LEFT_BOTTOM_SHOULDER") {
-                            targetLinearSpeed = gamepad.state[control];
-                            targetLinearSpeed = targetLinearSpeed * -1;
-                            $('#state-' + gamepad.index + '-' + control + '').html(targetLinearSpeed);
-                        } else if (control == "RIGHT_BOTTOM_SHOULDER") {
-                            targetLinearSpeed = gamepad.state[control];
-                            $('#state-' + gamepad.index + '-' + control + '').html(targetLinearSpeed);
-                        }
+            if (gamepad) {
 
-                    }
+                enable = gamepad.state["FACE_1"];
+                $('#state-' + gamepad.index + '-' + "FACE_1" + '').html(enable);
 
-                    targetAngularSpeed = gamepad.axes[0];
-                    $('#axis-' + gamepad.index + '-' + 0 + '').html(targetAngularSpeed);
+                targetLinearSpeedNeg = gamepad.state["LEFT_BOTTOM_SHOULDER"];
+                targetLinearSpeedNeg = targetLinearSpeedNeg * -1;
+                $('#state-' + gamepad.index + '-' + "LEFT_BOTTOM_SHOULDER" + '').html(targetLinearSpeedNeg);
 
-                }
+                targetLinearSpeedPos = gamepad.state["RIGHT_BOTTOM_SHOULDER"];
+                $('#state-' + gamepad.index + '-' + "RIGHT_BOTTOM_SHOULDER" + '').html(targetLinearSpeedPos);
+
+                targetAngularSpeed = gamepad.axes[0];
+                $('#axis-' + gamepad.index + '-' + 0 + '').html(targetAngularSpeed);
             }
+
+
         });
 
-        /* gamepad.bind(Gamepad.Event.BUTTON_DOWN, function(e) {
-            
-            $('#log-' + e.gamepad.index).append('<li>' + e.control + ' down</li>');
-        });
 
-        gamepad.bind(Gamepad.Event.BUTTON_UP, function(e) {
-            $('#log-' + e.gamepad.index).append('<li>' + e.control + ' up</li>');
-        });
-
-        gamepad.bind(Gamepad.Event.AXIS_CHANGED, function(e) {
-            $('#log-' + e.gamepad.index).append('<li>' + e.axis + ' changed to ' + e.value + '</li>');
-        });
-*/
         if (!gamepad.init()) {
             alert('Your browser does not support gamepads, get the latest Google Chrome or Firefox.');
         }
+
+
     });
-    /**/
     </script>
     <script>
     //var type = "appelant";
@@ -400,7 +366,6 @@
     <script src='/js/mapviewer.js'></script>
     <script src='/js/ws_manager.js'></script>
     <script src='/js/main.js'></script>
-    <script src='/js/differentialDrive.js'></script>
     <script>
     $('#zone_info_server').replaceWith(settings.appName() + " V " + settings.appVersion() + " - IHM Pilote");
     </script>
