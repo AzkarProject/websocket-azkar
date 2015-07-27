@@ -22,31 +22,31 @@
             <strong> Benchmarks Settings </strong>
             <hr/>
             <span id="localVideoSetting" class="">
-					    	Pilote Camera view: 
-							<input type="radio" name="lVidSetting" value="hide" id="lVhide" onclick="setPilotVideo('hide')"/> <label for="rVhide">Hide local Video</label>
-							<input type="radio" name="lVidSetting" value="show" id="lVshow" checked/ onclick="setPilotVideo('show')"> <label for="lVshow">Show local Video</label>
-				    	</span>
+                            Pilote Camera view: 
+                            <input type="radio" name="lVidSetting" value="hide" id="lVhide" onclick="setPilotVideo('hide')"/> <label for="rVhide">Hide local Video</label>
+                            <input type="radio" name="lVidSetting" value="show" id="lVshow" checked/ onclick="setPilotVideo('show')"> <label for="lVshow">Show local Video</label>
+                        </span>
             <br/>
             <span id="remoteVideoSetting" class="">
-					    	Robot Camera view: 
-							<input type="radio" name="rVidSetting" value="hide" id="rVhide" onclick="setRobotVideo('hide')"/> <label for="rVhide">Hide remote Video</label>
-							<input type="radio" name="rVidSetting" value="low" id="rVlow" onclick="setRobotVideo('low')"/> <label for="rVlow">Show in low Resolution</label>
-							<input type="radio" name="rVidSetting" value="medium" id="rVmedium" onclick="setRobotVideo('medium')" /> <label for="rVmedium">Show in medium Resolution</label>
-							<input type="radio" name="rVidSetting" value="high" id="rVhigh" onclick="setRobotVideo('high')" checked/> <label for="rVhigh">Show in High resolution</label>	
-				    	</span>
+                            Robot Camera view: 
+                            <input type="radio" name="rVidSetting" value="hide" id="rVhide" onclick="setRobotVideo('hide')"/> <label for="rVhide">Hide remote Video</label>
+                            <input type="radio" name="rVidSetting" value="low" id="rVlow" onclick="setRobotVideo('low')"/> <label for="rVlow">Show in low Resolution</label>
+                            <input type="radio" name="rVidSetting" value="medium" id="rVmedium" onclick="setRobotVideo('medium')" /> <label for="rVmedium">Show in medium Resolution</label>
+                            <input type="radio" name="rVidSetting" value="high" id="rVhigh" onclick="setRobotVideo('high')" checked/> <label for="rVhigh">Show in High resolution</label>   
+                        </span>
             <br/>
             <span id="streamSetting" class="">
-					    	Stream local pilote video to robot: 
-							<input type="radio" name="streamVidToRobot" value="open" id="streamOpen" onclick="setPilotStream('open')" checked /> <label for="streamOpen">Yes</label>
-							<input type="radio" name="streamVidToRobot" value="close" id="streamClose" onclick="setPilotStream('close')" /> <label for="streamClose">No</label>
-				    	</span>
+                            Stream local pilote video to robot: 
+                            <input type="radio" name="streamVidToRobot" value="open" id="streamOpen" onclick="setPilotStream('open')" checked /> <label for="streamOpen">Yes</label>
+                            <input type="radio" name="streamVidToRobot" value="close" id="streamClose" onclick="setPilotStream('close')" /> <label for="streamClose">No</label>
+                        </span>
             <br/>
             <span id="dataChannelSetting" class="">
-					    	Select controls and navigation data channel: 
-							<input type="radio" name="controlChannel" value="webSocket" id="webSocket" onclick="setCtrlChannel('webSocket')" checked /> <label for="webSocket">webSocket</label>
-							<input type="radio" name="controlChannel" value="webRTC" id="webRTC" onclick="setCtrlChannel('webRTC')"/> <label for="webRTC">webRTC</label>
-							
-				    	</span>
+                            Select controls and navigation data channel: 
+                            <input type="radio" name="controlChannel" value="webSocket" id="webSocket" onclick="setCtrlChannel('webSocket')" checked /> <label for="webSocket">webSocket</label>
+                            <input type="radio" name="controlChannel" value="webRTC" id="webRTC" onclick="setCtrlChannel('webRTC')"/> <label for="webRTC">webRTC</label>
+                            
+                        </span>
         </div>
     </section>
     <section id="controlArea" class="fullSizeContainerBox">
@@ -101,9 +101,9 @@
                 <p><a href="/arretteTourne/">stop</a></p>
                 <div id="divBtSpeed">
                     <!--
-						<button id="btnIncrease" class="btnCommandsPad" onclick="cmdIncrease()">+</button>
-						<button id="btnDecrease" class="btnCommandsPad" onclick="cmdDecrease()">-</button>
-						-->
+                        <button id="btnIncrease" class="btnCommandsPad" onclick="cmdIncrease()">+</button>
+                        <button id="btnDecrease" class="btnCommandsPad" onclick="cmdDecrease()">-</button>
+                        -->
                     <button id="btnIncrease" class="btnCommandsPad" onclick="cmdSpeed(-0.1)">-</button>
                     <progress id="jaugeSpeedSetting" value="0.5" max="1"></progress>
                     <button id="btnDecrease" class="btnCommandsPad" onclick="cmdSpeed(0.1)">+</button>
@@ -204,16 +204,8 @@
             </div>
         </div>
     </section>
-	
-
-
-<ul id="gamepads"></ul>
-	<p id="connect-notice">toto connecte ta mannette stp :)  !!</p>
-
-
-
-
-
+    <ul id="gamepads"></ul>
+    <p id="connect-notice">toto connecte ta mannette stp :) !!</p>
     <script>
     var type = "appelant";
     var otherType = "appelé";
@@ -230,131 +222,188 @@
     <script>
     $('#zone_info_server').replaceWith(settings.appName() + " V " + settings.appVersion() + " - IHM Pilote");
     </script>
+    <script>
+    /**
+                window.gamepad = new Gamepad();
 
-<script>
+                gamepad.bind(Gamepad.Event.CONNECTED, function(device) {
+                    console.log("a new gamepad connected");
+                });
 
-	$(document).ready(function() {
-		// Attach it to the window so it can be inspected at the console.
-		window.gamepad = new Gamepad();
+                gamepad.bind(Gamepad.Event.DISCONNECTED, function(device) {
+                    console.log("gamepad disconnected");
+                });
 
-		gamepad.bind(Gamepad.Event.CONNECTED, function(device) {
-			console.log('Connected', device);
+                gamepad.bind(Gamepad.Event.UNSUPPORTED, function(device) {
+                    // an unsupported gamepad connected (add new mapping)
+                    console.log(" an unsupported gamepad connected (add new mapping)");
+                });
 
-			$('#gamepads').append('<li id="gamepad-' + device.index + '"><h1>Gamepad #' + device.index + ': &quot;' + device.id + '&quot;</h1></li>');
+                gamepad.bind(Gamepad.Event.BUTTON_DOWN, function(e) {
+                    // e.control of gamepad e.gamepad pressed down  
+                    if (e.control == "FACE_1" || (e.control == "LEFT_BOTTOM_SHOULDER") || (e.control == "RIGHT_BOTTOM_SHOULDER"))
+                        console.log(e.control + " of gamepad  " + e.gamepad + "pressed down");
+                });
 
-			var mainWrap = $('#gamepad-' + device.index),
-				statesWrap,
-				logWrap,
-				control,
-				value,
-				i;
+                gamepad.bind(Gamepad.Event.BUTTON_UP, function(e) {
+                    // e.control of gamepad e.gamepad released
+                    if (e.control == "FACE_1" || (e.control == "LEFT_BOTTOM_SHOULDER") || (e.control == "RIGHT_BOTTOM_SHOULDER"))
+                        console.log(e.control + " of gamepad  " + e.gamepad + "released");
+                });
 
-			mainWrap.append('<strong>State</strong><ul id="states-' + device.index + '"></ul>');
-			mainWrap.append('<strong>Events</strong><ul id="log-' + device.index + '"></ul>');
+                gamepad.bind(Gamepad.Event.AXIS_CHANGED, function(e) {
+                    // e.axis changed to value e.value for gamepad e.gamepad
+                    if (e.axis == "LEFT_STICK_X")
+                        console.log(e.axis + "changed to value  " + e.value + "for gamepad  " + e.gamepad);
+                });
+                /**/
 
-			statesWrap = $('#states-' + device.index)
-			logWrap = $('#log-' + device.index)
+    /* gamepad.bind(Gamepad.Event.TICK, function(gamepads) {
+         // gamepads were updated (around 60 times a second)
+         console.log("gamepads were updated (around 60 times a second)") ;
+     });*/
+    /*
+        if (!gamepad.init()) {
+            // Your browser does not support gamepads, get the latest Google Chrome or Firefox
+            alert('Your browser does not support gamepads, get the latest Google Chrome or Firefox.');
+        }*/
 
-			for (control in device.state) {
-				value = device.state[control];
+    $(document).ready(function() {
+        // Attach it to the window so it can be inspected at the console.
+        window.gamepad = new Gamepad();
 
-				statesWrap.append('<li>' + control + ': <span id="state-' + device.index + '-' + control + '">' + value + '</span></li>');
-			}
-			for (i = 0; i < device.buttons.length; i++) {
-				value = device.buttons[i];
-				statesWrap.append('<li>Raw Button ' + i + ': <span id="button-' + device.index + '-' + i + '">' + value + '</span></li>');
-			}
-			for (i = 0; i < device.axes.length; i++) {
-				value = device.axes[i];
-				statesWrap.append('<li>Raw Axis ' + i + ': <span id="axis-' + device.index + '-' + i + '">' + value + '</span></li>');
-			}
+        gamepad.bind(Gamepad.Event.CONNECTED, function(device) {
+            console.log('Connected', device);
 
-			$('#connect-notice').hide();
-		});
+            $('#gamepads').append('<li id="gamepad-' + device.index + '"><h1>Gamepad #' + device.index + ': &quot;' + device.id + '&quot;</h1></li>');
 
-		gamepad.bind(Gamepad.Event.DISCONNECTED, function(device) {
-			console.log('Disconnected', device);
+            var mainWrap = $('#gamepad-' + device.index),
+                statesWrap,
+                logWrap,
+                control,
+                enable,
+                targetLinearSpeed,
+                targetAngularSpeed,
+                i;
 
-			$('#gamepad-' + device.index).remove();
+            mainWrap.append('<strong>State</strong><ul id="states-' + device.index + '"></ul>');
+            mainWrap.append('<strong>Events</strong><ul id="log-' + device.index + '"></ul>');
 
-			if (gamepad.count() == 0) {
-				$('#connect-notice').show();
-			}
-		});
+            statesWrap = $('#states-' + device.index)
+            logWrap = $('#log-' + device.index)
 
-		gamepad.bind(Gamepad.Event.TICK, function(gamepads) {
-			var gamepad,
-				wrap,
-				control,
-				value,
-				i,
-				j;
+            for (control in device.state) {
+                if (control == "FACE_1") {
+                    enable = device.state[control];
+                    statesWrap.append('<li>' + control + ': <span id="state-' + device.index + '-' + control + '">' + enable + '</span></li>');
+                    console.log("enable  : " + enable);
+                } else if (control == "LEFT_BOTTOM_SHOULDER") {
+                    targetLinearSpeed = device.state[control];
+                    statesWrap.append('<li>' + control + ': <span id="state-' + device.index + '-' + control + '">' + targetLinearSpeed + '</span></li>');
+                    console.log("targetLinearSpeed : " + targetLinearSpeed);
+                } else if (control == "RIGHT_BOTTOM_SHOULDER") {
+                    targetLinearSpeed = device.state[control];
+                    statesWrap.append('<li>' + control + ': <span id="state-' + device.index + '-' + control + '">' + targetLinearSpeed + '</span></li>');
+                    console.log("targetLinearSpeed : " + targetLinearSpeed);
+                }
+            }
 
-			for (i = 0; i < gamepads.length; i++) {
-				gamepad = gamepads[i];
-				wrap = $('#gamepad-' + i);
+            for (i = 0; i < device.axes.length; i++) {
+                if (i == 0) {
+                    targetAngularSpeed = device.axes[i];
+                    statesWrap.append('<li>Raw Axis ' + i + ': <span id="axis-' + device.index + '-' + i + '">' + targetAngularSpeed + '</span></li>');
+                    console.log("targetAngularSpeed : " + targetAngularSpeed);
+                }
 
-				if (gamepad) {
-					for (control in gamepad.state) {
-						value = gamepad.state[control];
+            }
 
-						$('#state-' + gamepad.index + '-' + control + '').html(value);
-					}
-					for (j = 0; j < gamepad.buttons.length; j++) {
-						value = gamepad.buttons[j];
+            $('#connect-notice').hide();
+        });
 
-						$('#button-' + gamepad.index + '-' + j + '').html(value);
-					}
-					for (j = 0; j < gamepad.axes.length; j++) {
-						value = gamepad.axes[j];
+        gamepad.bind(Gamepad.Event.DISCONNECTED, function(device) {
+            console.log('Disconnected', device);
 
-						$('#axis-' + gamepad.index + '-' + j + '').html(value);
-					}
-				}
-			}
-		});
+            $('#gamepad-' + device.index).remove();
 
-		gamepad.bind(Gamepad.Event.BUTTON_DOWN, function(e) {
-			$('#log-' + e.gamepad.index).append('<li>' + e.control + ' down</li>');
-		});
+            if (gamepad.count() == 0) {
+                $('#connect-notice').show();
+            }
+        });
 
-		gamepad.bind(Gamepad.Event.BUTTON_UP, function(e) {
-			$('#log-' + e.gamepad.index).append('<li>' + e.control + ' up</li>');
-		});
+        gamepad.bind(Gamepad.Event.TICK, function(gamepads) {
+            var gamepad,
+                wrap,
+                control,
+                value,
+                enable,
+                targetLinearSpeed,
+                targetAngularSpeed,
+                i,
+                j;
 
-		gamepad.bind(Gamepad.Event.AXIS_CHANGED, function(e) {
-			$('#log-' + e.gamepad.index).append('<li>' + e.axis + ' changed to ' + e.value + '</li>');
-		});
+            for (i = 0; i < gamepads.length; i++) {
+                gamepad = gamepads[i];
+                wrap = $('#gamepad-' + i);
 
-		if (!gamepad.init()) {
-			alert('Your browser does not support gamepads, get the latest Google Chrome or Firefox.');
-		}
-	});
+                if (gamepad) {
+                    for (control in gamepad.state) {
+                        if (control == "FACE_1") {
+                            enable = gamepad.state[control];
+                            $('#state-' + gamepad.index + '-' + control + '').html(enable);
+                        } else if (control == "LEFT_BOTTOM_SHOULDER") {
+                            targetLinearSpeed = gamepad.state[control];
+                            targetLinearSpeed = targetLinearSpeed * -1;
+                            $('#state-' + gamepad.index + '-' + control + '').html(targetLinearSpeed);
+                        } else if (control == "RIGHT_BOTTOM_SHOULDER") {
+                            targetLinearSpeed = gamepad.state[control];
+                            $('#state-' + gamepad.index + '-' + control + '').html(targetLinearSpeed);
+                        }
 
-	</script>
+                    }
 
+                    targetAngularSpeed = gamepad.axes[0];
+                    $('#axis-' + gamepad.index + '-' + 0 + '').html(targetAngularSpeed);
 
-		<script>	  	 
-		//var type = "appelant";
-		var type = "pilote-appelant";
-		var otherType = "robot-appelé";
-		</script>
-        
-        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-        <script src="/socket.io/socket.io.js"></script>
-        <script src="/js/common.js"></script>
-        <script src="/js/settings.js"></script>
-        <script src='/js/lib/adapter.js'></script>
-        <script src='/js/mapviewer.js'></script>
-        <script src='/js/ws_manager.js'></script>
-		<script src='/js/main.js'></script>
-		
-		<script>
-            $('#zone_info_server').replaceWith(settings.appName() + " V " + settings.appVersion()+" - IHM Pilote");
-    	</script>
+                }
+            }
+        });
 
+        /* gamepad.bind(Gamepad.Event.BUTTON_DOWN, function(e) {
+            
+            $('#log-' + e.gamepad.index).append('<li>' + e.control + ' down</li>');
+        });
 
+        gamepad.bind(Gamepad.Event.BUTTON_UP, function(e) {
+            $('#log-' + e.gamepad.index).append('<li>' + e.control + ' up</li>');
+        });
 
+        gamepad.bind(Gamepad.Event.AXIS_CHANGED, function(e) {
+            $('#log-' + e.gamepad.index).append('<li>' + e.axis + ' changed to ' + e.value + '</li>');
+        });
+*/
+        if (!gamepad.init()) {
+            alert('Your browser does not support gamepads, get the latest Google Chrome or Firefox.');
+        }
+    });
+    /**/
+    </script>
+    <script>
+    //var type = "appelant";
+    var type = "pilote-appelant";
+    var otherType = "robot-appelé";
+    </script>
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/settings.js"></script>
+    <script src='/js/lib/adapter.js'></script>
+    <script src='/js/mapviewer.js'></script>
+    <script src='/js/ws_manager.js'></script>
+    <script src='/js/main.js'></script>
+    <script src='/js/differentialDrive.js'></script>
+    <script>
+    $('#zone_info_server').replaceWith(settings.appName() + " V " + settings.appVersion() + " - IHM Pilote");
+    </script>
 </body>
 
 </html>

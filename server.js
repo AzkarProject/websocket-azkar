@@ -35,7 +35,7 @@ app.use(express.static(__dirname));
 
 
 
-var bodyParser= require("body-parser"); // pour recuperer le contenu de requetes POST
+var bodyParser = require("body-parser"); // pour recuperer le contenu de requetes POST
 //Utiliser body-parser pour la gestion de requete POST
 app.use(bodyParser.urlencoded({
     extended: true
@@ -249,6 +249,7 @@ io.sockets.on('connection', function(socket, pseudo) {
         // au client un simple message websocket avec en paramètre l'ip de redirection. 
         // A sa réception, le client se redirige vers la nouvelle url, se déconnectant d'office. 
 
+        /*
         var isAuthorized = true;
         var authMessage;
         if (data.typeUser == "Robot") {
@@ -290,7 +291,7 @@ io.sockets.on('connection', function(socket, pseudo) {
             });
             return;
         }
-
+        /**/
 
 
         // On lui attribue un numéro correspondant a sa position d'arrivée dans la session:
@@ -494,3 +495,4 @@ io.sockets.on('connection', function(socket, pseudo) {
         });
     });
 });
+
