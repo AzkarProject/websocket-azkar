@@ -131,7 +131,7 @@
                     TargetLinearSpeedNeg = TargetLinearSpeedNeg * -1;
                     var lSpeed = lSpeed + TargetLinearSpeedNeg;
 
-                    socket.emit("moveOrder",{ command:'Move', aSpeed:aSpeed, lSpeed:lSpeed, Enable:'true' });
+                    socket.emit("moveOrder",{ command:'Move', aSpeed:aSpeed, lSpeed:lSpeed, enable:'true' });
                     /**/
 
                 } else {
@@ -139,7 +139,7 @@
                     
                     if (btHommeMort == "true") {
                         console.log(' >>>>> STOP gamepad');
-                        socket.emit("moveOrder",{command:'Stop',aSpeed:0, lSpeed:0, Enable:'false'});
+                        socket.emit("moveOrder",{command:'Stop',aSpeed:0, lSpeed:0, enable:'false'});
                         btHommeMort = "false";
                     }  
                     /**/
