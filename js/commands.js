@@ -139,7 +139,7 @@
                     
                     if (btHommeMort == "true") {
                         console.log(' >>>>> STOP gamepad');
-                        socket.emit("moveOrder",{ command:'Stop',aSpeed:0, lSpeed:0, Enable:'false'});
+                        socket.emit("moveOrder",{command:'Stop',aSpeed:0, lSpeed:0, Enable:'false'});
                         btHommeMort = "false";
                     }  
                     /**/

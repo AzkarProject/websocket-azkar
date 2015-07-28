@@ -75,7 +75,7 @@ function onMoveOrder(enable,aSpeed,lSpeed){
 
 
         var btnA;
-        var aSpeed = Math.round(aSpeed*100)/1000;
+        var aSpeedMov = Math.round(aSpeed*100)/1000;
         // var lSpeed = Math.round(lSpeed*100)/1000;
 
 
@@ -88,10 +88,10 @@ function onMoveOrder(enable,aSpeed,lSpeed){
         xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         xmlhttp.send(JSON.stringify({
             "Enable": btnA,
-            "TargetAngularSpeed": aSpeed,
+            "TargetAngularSpeed": aSpeedMov,
             "TargetLinearSpeed": lSpeed
         }));
-        console.log('@onMoveOrder >>'+roundASpeed);
+        console.log('@onMoveOrder >>'+aSpeedMov);
         //res.end();
 }
 
