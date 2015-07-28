@@ -99,9 +99,13 @@
                 </div>
                 <p><a href="/tourne/">tourne</a></p>
                 <p><a href="/arretteTourne/">stop</a></p>
+                <button id="btnDown" class="btnCommandsPad" onclick='alert(enable)';>&darr;</button>
+                 
+
                 <div id="divBtSpeed">
                     <!--
                         <button id="btnIncrease" class="btnCommandsPad" onclick="cmdIncrease()">+</button>
+                        alert(" enable  : " + enable   + " | targetLinearSpeedPos  : " +  targetLinearSpeedPos + " | targetLinearSpeedNeg :" targetLinearSpeedNeg + " | targetAngularSpeed : " + targetAngularSpeed );
                         <button id="btnDecrease" class="btnCommandsPad" onclick="cmdDecrease()">-</button>
                         -->
                     <button id="btnIncrease" class="btnCommandsPad" onclick="cmdSpeed(-0.1)">-</button>
@@ -207,7 +211,7 @@
     <ul id="gamepads"></ul>
     <p id="connect-notice">toto connecte ta mannette stp :) !!</p>
     <script>
-    var type = "appelant";
+    var type = "pilote-appelant";
     var otherType = "appelé";
     </script>
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
@@ -224,39 +228,39 @@
     </script>
     <script>
     /**
-                                                            window.gamepad = new Gamepad();
+                                                                    window.gamepad = new Gamepad();
 
-                                                            gamepad.bind(Gamepad.Event.CONNECTED, function(device) {
-                                                                console.log("a new gamepad connected");
-                                                            });
+                                                                    gamepad.bind(Gamepad.Event.CONNECTED, function(device) {
+                                                                        console.log("a new gamepad connected");
+                                                                    });
 
-                                                            gamepad.bind(Gamepad.Event.DISCONNECTED, function(device) {
-                                                                console.log("gamepad disconnected");
-                                                            });
+                                                                    gamepad.bind(Gamepad.Event.DISCONNECTED, function(device) {
+                                                                        console.log("gamepad disconnected");
+                                                                    });
 
-                                                            gamepad.bind(Gamepad.Event.UNSUPPORTED, function(device) {
-                                                                // an unsupported gamepad connected (add new mapping)
-                                                                console.log(" an unsupported gamepad connected (add new mapping)");
-                                                            });
+                                                                    gamepad.bind(Gamepad.Event.UNSUPPORTED, function(device) {
+                                                                        // an unsupported gamepad connected (add new mapping)
+                                                                        console.log(" an unsupported gamepad connected (add new mapping)");
+                                                                    });
 
-                                                            gamepad.bind(Gamepad.Event.BUTTON_DOWN, function(e) {
-                                                                // e.control of gamepad e.gamepad pressed down  
-                                                                if (e.control == "FACE_1" || (e.control == "LEFT_BOTTOM_SHOULDER") || (e.control == "RIGHT_BOTTOM_SHOULDER"))
-                                                                    console.log(e.control + " of gamepad  " + e.gamepad + "pressed down");
-                                                            });
+                                                                    gamepad.bind(Gamepad.Event.BUTTON_DOWN, function(e) {
+                                                                        // e.control of gamepad e.gamepad pressed down  
+                                                                        if (e.control == "FACE_1" || (e.control == "LEFT_BOTTOM_SHOULDER") || (e.control == "RIGHT_BOTTOM_SHOULDER"))
+                                                                            console.log(e.control + " of gamepad  " + e.gamepad + "pressed down");
+                                                                    });
 
-                                                            gamepad.bind(Gamepad.Event.BUTTON_UP, function(e) {
-                                                                // e.control of gamepad e.gamepad released
-                                                                if (e.control == "FACE_1" || (e.control == "LEFT_BOTTOM_SHOULDER") || (e.control == "RIGHT_BOTTOM_SHOULDER"))
-                                                                    console.log(e.control + " of gamepad  " + e.gamepad + "released");
-                                                            });
+                                                                    gamepad.bind(Gamepad.Event.BUTTON_UP, function(e) {
+                                                                        // e.control of gamepad e.gamepad released
+                                                                        if (e.control == "FACE_1" || (e.control == "LEFT_BOTTOM_SHOULDER") || (e.control == "RIGHT_BOTTOM_SHOULDER"))
+                                                                            console.log(e.control + " of gamepad  " + e.gamepad + "released");
+                                                                    });
 
-                                                            gamepad.bind(Gamepad.Event.AXIS_CHANGED, function(e) {
-                                                                // e.axis changed to value e.value for gamepad e.gamepad
-                                                                if (e.axis == "LEFT_STICK_X")
-                                                                    console.log(e.axis + "changed to value  " + e.value + "for gamepad  " + e.gamepad);
-                                                            });
-                                                            /**/
+                                                                    gamepad.bind(Gamepad.Event.AXIS_CHANGED, function(e) {
+                                                                        // e.axis changed to value e.value for gamepad e.gamepad
+                                                                        if (e.axis == "LEFT_STICK_X")
+                                                                            console.log(e.axis + "changed to value  " + e.value + "for gamepad  " + e.gamepad);
+                                                                    });
+                                                                    /**/
 
     /* gamepad.bind(Gamepad.Event.TICK, function(gamepads) {
          // gamepads were updated (around 60 times a second)
@@ -279,23 +283,23 @@
             $('#gamepads').append('<li id="gamepad-' + device.index + '"><h1>Gamepad #' + device.index + ': &quot;' + device.id + '&quot;</h1></li>');
 
             var mainWrap = $('#gamepad-' + device.index),
-                statesWrap, logWrap, control, enable, targetLinearSpeed, targetAngularSpeed, i;
+                statesWrap, logWrap, control, i;
 
             mainWrap.append('<strong>State</strong><ul id="states-' + device.index + '"></ul>');
-            
+
             statesWrap = $('#states-' + device.index)
 
             enable = device.state["FACE_1"];
             statesWrap.append('<li>' + "FACE_1" + ': <span id="state-' + device.index + '-' + "FACE_1" + '">' + enable + '</span></li>');
             console.log("enable  : " + enable);
+             //alert(enable2);
+            targetLinearSpeedNeg = device.state["LEFT_BOTTOM_SHOULDER"];
+            statesWrap.append('<li>' + "LEFT_BOTTOM_SHOULDER" + ': <span id="state-' + device.index + '-' + "LEFT_BOTTOM_SHOULDER" + '">' + targetLinearSpeedNeg + '</span></li>');
+            console.log("targetLinearSpeed : " + targetLinearSpeedNeg);
 
-            targetLinearSpeed = device.state["LEFT_BOTTOM_SHOULDER"];
-            statesWrap.append('<li>' + "LEFT_BOTTOM_SHOULDER" + ': <span id="state-' + device.index + '-' + "LEFT_BOTTOM_SHOULDER" + '">' + targetLinearSpeed + '</span></li>');
-            console.log("targetLinearSpeed : " + targetLinearSpeed);
-
-            targetLinearSpeed = device.state["RIGHT_BOTTOM_SHOULDER"];
-            statesWrap.append('<li>' + "RIGHT_BOTTOM_SHOULDER" + ': <span id="state-' + device.index + '-' + "RIGHT_BOTTOM_SHOULDER" + '">' + targetLinearSpeed + '</span></li>');
-            console.log("targetLinearSpeed : " + targetLinearSpeed);
+            targetLinearSpeedPos = device.state["RIGHT_BOTTOM_SHOULDER"];
+            statesWrap.append('<li>' + "RIGHT_BOTTOM_SHOULDER" + ': <span id="state-' + device.index + '-' + "RIGHT_BOTTOM_SHOULDER" + '">' + targetLinearSpeedPos + '</span></li>');
+            console.log("targetLinearSpeed : " + targetLinearSpeedPos);
 
             targetAngularSpeed = device.axes[0];
             statesWrap.append('<li>Raw Axis ' + 0 + ': <span id="axis-' + device.index + '-' + 0 + '">' + targetAngularSpeed + '</span></li>');
@@ -318,9 +322,6 @@
                 wrap,
                 control,
                 value,
-                enable,
-                targetLinearSpeedPos, targetLinearSpeedNeg,
-                targetAngularSpeed,
                 i, j;
 
             gamepad = gamepads[0];
@@ -345,29 +346,12 @@
 
         });
 
-
         if (!gamepad.init()) {
             alert('Your browser does not support gamepads, get the latest Google Chrome or Firefox.');
         }
 
 
     });
-    </script>
-    <script>
-    //var type = "appelant";
-    var type = "pilote-appelant";
-    var otherType = "robot-appelé";
-    </script>
-    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/js/common.js"></script>
-    <script src="/js/settings.js"></script>
-    <script src='/js/lib/adapter.js'></script>
-    <script src='/js/mapviewer.js'></script>
-    <script src='/js/ws_manager.js'></script>
-    <script src='/js/main.js'></script>
-    <script>
-    $('#zone_info_server').replaceWith(settings.appName() + " V " + settings.appVersion() + " - IHM Pilote");
     </script>
 </body>
 
