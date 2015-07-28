@@ -1,7 +1,7 @@
 // Elements communs client/serveur
 var common = require('./js/common'); // méthodes génériques et objets
 var settings = require('./js/settings'); // parametres de configuration
-
+// var request = require('request');
 
 
 
@@ -73,16 +73,25 @@ var XMLHttpRequest = require('xhr2');
 
 function onMoveOrder(enable,aSpeed,lSpeed){
 
+
+        var btnA;
+        var aSpeed = Math.round(aSpeed*100)/1000;
+        // var lSpeed = Math.round(lSpeed*100)/1000;
+
+
+        if ( enable == 'true') { btnA = true; }
+        else { btnA = false; }
+        
         var url = 'http://localhost:50000/api/drive';
         var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance 
         xmlhttp.open("POST", url);
         xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         xmlhttp.send(JSON.stringify({
-            "Enable": enable,
+            "Enable": btnA,
             "TargetAngularSpeed": aSpeed,
             "TargetLinearSpeed": lSpeed
         }));
-        console.log('@onMoveOrder');
+        console.log('@onMoveOrder >>'+roundASpeed);
         //res.end();
 }
 
