@@ -70,6 +70,25 @@ var XMLHttpRequest = require('xhr2');
 
 /*******************envoi de commande de deplacement en differential drive*********************/
 
+
+function onMoveOrder(enable,aSpeed,lSpeed){
+
+        var url = 'http://localhost:50000/api/drive';
+        var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance 
+        xmlhttp.open("POST", url);
+        xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xmlhttp.send(JSON.stringify({
+            "Enable": enable,
+            "TargetAngularSpeed": aSpeed,
+            "TargetLinearSpeed": lSpeed
+        }));
+        console.log('@onMoveOrder');
+        //res.end();
+}
+
+
+
+
 app.get('/tourne/', function(req, res) {
   
     /*
@@ -409,15 +428,13 @@ io.sockets.on('connection', function(socket, pseudo) {
 
     // Transmission de commande générique V2 objet
     socket.on('moveOrder', function(data) {
-        console.log(data);
-        if (data.moveOrder) {
-            moveOrder = ent.encode(data.moveOrder); // On vire les caractères html... ???????
-            socket.broadcast.emit('moveOrder', {
-                objUser: data.objUser,
-                moveOrder: moveOrder
-            });
-        }
-        console.log("@ moveOrder from " + data.objUser.placeliste + "-" + data.objUser.pseudo + ": " + moveOrder);
+        
+       console.log("@ moveOrder >>>> " + data.command );
+       onMoveOrder(data.enable,data.aSpeed,data.lSpeed)
+       //  socket.emit("moveOrder",{ command:'Move', aSpeed:aSpeed, lSpeed:lSpeed, Enable:btHommeMort });
+
+
+        
     });
 
 

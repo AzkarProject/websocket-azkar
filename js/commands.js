@@ -48,6 +48,7 @@
         // Attach it to the window so it can be inspected at the console.
         //window.gamepad = new Gamepad();
         var gamepad = new Gamepad();
+        var btHommeMort = 'false';
 
         gamepad.bind(Gamepad.Event.CONNECTED, function(device) {
             console.log('Connected', device);
@@ -106,59 +107,49 @@
             gamepad = gamepads[0];
             wrap = $('#gamepad-' + 0);
 
+            
+            
             if (gamepad) {
-
                 
-                //alert('TOTO');
+                
+
+
                 
                 if (gamepad.state["FACE_1"] === 1 ) { 
-                   // alert("Bouton A Gamepad activé")
+                    
 
-
-
+                    console.log(' >>>>> START gamepad');
+                   
+                    btHommeMort = "true";
   
                     //var TargetAngularSpeed = 0.1;
-                    var TargetAngularSpeed = gamepad.axes[0];
-
-
-                    var TargetLinearSpeed = gamepad.state["RIGHT_BOTTOM_SHOULDER"];
+                    var aSpeed = gamepad.axes[0];
+                    var lSpeed = gamepad.state["RIGHT_BOTTOM_SHOULDER"];
                     
-                    // TODO >>>> Mixer les 2 variables linearspeed pour marche avant et neglinearspeed pour marche arrière...
-                    // Ex faire positif + négatif et envoyer la somme des 2...
-                    var targetLinearSpeedNeg = gamepad.state["LEFT_BOTTOM_SHOULDER"];
-                    targetLinearSpeedNeg = targetLinearSpeedNeg * -1;
+                    // Mixage des 2 variables linearspeed pour marche avant et neglinearspeed pour marche arrière...
+                    var TargetLinearSpeedNeg = gamepad.state["LEFT_BOTTOM_SHOULDER"];
+                    TargetLinearSpeedNeg = TargetLinearSpeedNeg * -1;
+                    var lSpeed = lSpeed + TargetLinearSpeedNeg;
 
-
-
-
-                    var url = 'http://localhost:50000/api/drive';
-                    var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance 
-                    xmlhttp.open("POST", url);
-                    xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-                    xmlhttp.send(JSON.stringify({
-                        "Enable": true,
-                        "TargetAngularSpeed": TargetAngularSpeed,
-                        "TargetLinearSpeed": TargetLinearSpeed
-                    }));
-                     console.log(' >>>>> START gamepad');
+                    socket.emit("moveOrder",{ command:'Move', aSpeed:aSpeed, lSpeed:lSpeed, Enable:'true' });
+                    /**/
 
                 } else {
-
-                    var TargetAngularSpeed = 0;
-                    var TargetLinearSpeed = 0;
-                    var url = 'http://localhost:50000/api/drive';
-                    var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance 
-                    xmlhttp.open("POST", url);
-                    xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-                    xmlhttp.send(JSON.stringify({
-                        "Enable": true,
-                        "TargetAngularSpeed": TargetAngularSpeed,
-                        "TargetLinearSpeed": TargetLinearSpeed
-                    }));
-                    console.log(' >>>>> STOP gamepad');
+                    
+                    
+                    if (btHommeMort == "true") {
+                        console.log(' >>>>> STOP gamepad');
+                        socket.emit("moveOrder",{ command:'Stop',aSpeed:0, lSpeed:0, Enable:'false'});
+                        btHommeMort = "false";
+                    }  
+                    /**/
 
 
                 }
+                /**/
+
+
+                
                 //debug = common.dateER('GAMEPAD')
                 //console.log (debug);
 
@@ -175,15 +166,6 @@
                 targetAngularSpeed = gamepad.axes[0];
                 $('#axis-' + gamepad.index + '-' + 0 + '').html(targetAngularSpeed);
             
-
-
-
-
-
-
-
-
-
             }
 
 
