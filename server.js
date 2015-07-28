@@ -71,7 +71,8 @@ var XMLHttpRequest = require('xhr2');
 /*******************envoi de commande de deplacement en differential drive*********************/
 
 app.get('/tourne/', function(req, res) {
-
+  
+    /*
     var TargetAngularSpeed = 0.1;
     var TargetLinearSpeed = 0;
     var url = 'http://localhost:50000/api/drive';
@@ -85,6 +86,10 @@ app.get('/tourne/', function(req, res) {
     }));
     console.log('héhé je tourne  !! apres lenvoi de la requete POST');
     res.end();
+    /**/
+
+
+
 });
 
 app.get('/arretteTourne/', function(req, res) {

@@ -62,6 +62,20 @@ exports.client = function client (id,pseudo,placeliste,typeClient,connectionDate
   // Fonctions temporelles
   // ---------------------------
   
+  
+  // >>> Fct Spécifiques aAZKAR
+  // Retourne une date now préformatée formatée [E-12:30:00:00:00]
+  // Paramètre: flag pour la première lettre...
+  exports.dateER = function (flag){
+    var theDate = new Date();
+    var h = theDate.getHours();
+    var m = theDate.getMinutes();
+    var s = theDate.getSeconds();
+    var ms = theDate.getMilliseconds();
+    return '['+flag+'-'+h+":"+m+":"+s+":"+ms+']';
+    }
+
+
   // Retourne un crhono brut
   exports.doChrono = function (startTime){
       var time=new Date(); 
