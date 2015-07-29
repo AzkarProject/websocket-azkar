@@ -2,9 +2,6 @@
 var common = require('./js/common'); // méthodes génériques et objets
 var settings = require('./js/settings'); // parametres de configuration
 // var request = require('request');
-
-
-
 var bodyParser = require("body-parser"); // pour recuperer le contenu de requetes POST 
 
 
@@ -31,8 +28,6 @@ app.set('port', port);
 // les dépendances css du document html
 var express = require('express');
 app.use(express.static(__dirname));
-
-
 
 
 var bodyParser = require("body-parser"); // pour recuperer le contenu de requetes POST
@@ -70,36 +65,44 @@ var XMLHttpRequest = require('xhr2');
 
 /*******************envoi de commande de deplacement en differential drive*********************/
 
+//flag moveOder en cours  
+var flagDrive = false; //Par défaut a false , à la reception de moveOrder ==> True 
 
-function onMoveOrder(enable,aSpeed,lSpeed){
-
-
-        var btnA;
-        var aSpeedMov = Math.round(aSpeed*100)/1000;
-        // var lSpeed = Math.round(lSpeed*100)/1000;
+function onMoveOrder(enable, aSpeed, lSpeed) {
 
 
-        if ( enable == 'true') { btnA = true; }
-        else { btnA = false; }
-        
-        var url = 'http://localhost:50000/api/drive';
-        var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance 
-        xmlhttp.open("POST", url);
-        xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        xmlhttp.send(JSON.stringify({
-            "Enable": btnA,
-            "TargetAngularSpeed": aSpeedMov,
-            "TargetLinearSpeed": lSpeed
-        }));
-        console.log('@onMoveOrder >>'+aSpeedMov);
-        //res.end();
+    var btnA;
+    var aSpeedMov = Math.round(aSpeed * 100) / 1000;
+    //var aSpeedMov = Math.round(aSpeed*100)/500;
+    // var aSpeedMov = aSpeed;
+    // var lSpeed = Math.round(lSpeed*100)/1000;
+
+
+    if (enable == 'true') {
+        btnA = true;
+
+    } else {
+        btnA = false;
+    }
+
+    var url = 'http://localhost:50000/api/drive';
+    var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance 
+    xmlhttp.open("POST", url);
+    xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xmlhttp.send(JSON.stringify({
+        "Enable": btnA,
+        "TargetAngularSpeed": aSpeedMov,
+        "TargetLinearSpeed": lSpeed
+    }));
+    console.log('@onMoveOrder >> angular spped :' + aSpeedMov + '  et linear speed :' + lSpeed);
+    //res.end();
 }
 
 
 
 
 app.get('/tourne/', function(req, res) {
-  
+
     /*
     var TargetAngularSpeed = 0.1;
     var TargetLinearSpeed = 0;
@@ -124,7 +127,8 @@ app.get('/arretteTourne/', function(req, res) {
 
     var TargetAngularSpeed = 0;
     var TargetLinearSpeed = 0;
-    var url = 'http://localhost:50000/api/drive';
+    var url = 'http://192.168.1.72:50000/api/drive';
+   // var url = 'http://localhost:50000/api/drive'; //192.168.1.72:50000 avec le wifi du robot localhost:50000 en local
     var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance 
     xmlhttp.open("POST", url);
     xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
@@ -141,6 +145,7 @@ app.get('/arretteTourne/', function(req, res) {
 /*******************envoi de requetes POST pour les mouvements du robot***********************************/
 
 // Routing Envoi de requetes POST pour la partie des commande STEP pg 40 - 45 RobuBox et voir page 70 --> Translate , relative , absolute , stop 
+/*
 app.post('/lokarria/step/translate', function(req, res) {
     var x = req.body.X;
     var y = req.body.Y;
@@ -173,7 +178,7 @@ app.post('/lokarria/step/stop', function(req, res) {
     res.send('requette post reçue pour me stopper et le http status : ' + HttpStatus.OK);
     res.end();
 });
-
+/**/
 /******************************************************/
 
 // Lancement du serveur
@@ -203,8 +208,6 @@ var histoUsers = {};
 var placeHisto = 0;
 histoPosition = 0;
 /**/
-
-
 
 // --- idem mais pour la version Objet
 
@@ -374,8 +377,6 @@ io.sockets.on('connection', function(socket, pseudo) {
         //var commonTest2 = common.searchInObjects(users2,"typeClient","Robot","boolean");
         //console.log("commonTest2 >>> " + commonTest2 + " >>> true = robot - false = pilote");
 
-
-
     });
 
     // Quand un user se déconnecte (V2)
@@ -387,8 +388,6 @@ io.sockets.on('connection', function(socket, pseudo) {
         //console.log ("-------------------------------");
         var message = "Vient de se déconnecter !";
         // console.log(message + "( ID : " + socket.id + ")");
-
-
 
         // on retire le connecté de la liste des utilisateurs
         delete users2[socket.id];
@@ -437,13 +436,16 @@ io.sockets.on('connection', function(socket, pseudo) {
 
     // Transmission de commande générique V2 objet
     socket.on('moveOrder', function(data) {
-        
-       console.log("@ moveOrder >>>> " + data.command );
-       onMoveOrder(data.enable,data.aSpeed,data.lSpeed)
-       //  socket.emit("moveOrder",{ command:'Move', aSpeed:aSpeed, lSpeed:lSpeed, Enable:btHommeMort });
 
-
-        
+        console.log("@ moveOrder >>>> " + data.command);
+        onMoveOrder(data.enable, data.aSpeed, data.lSpeed)
+            //  socket.emit("moveOrder",{ command:'Move', aSpeed:aSpeed, lSpeed:lSpeed, Enable:btHommeMort });
+        if (data.command == 'Move') {
+            //memoriser le dernier timeStamp
+            flagDrive = true;
+        } else if (data.command == 'Stop') {
+            flagDrive = false;
+        }
     });
 
 
@@ -526,4 +528,3 @@ io.sockets.on('connection', function(socket, pseudo) {
         });
     });
 });
-
