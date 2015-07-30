@@ -23,9 +23,6 @@ function alertAndRedirect(message,url) {
 function mainSettings() {
 	console.log("@mainSettings()");
 
-	
-
-
 
 	// pré-signaling -------------------------------------------------
 
@@ -391,7 +388,9 @@ function initLocalMedia() {
 	navigator.getUserMedia(constraint, function (stream) {
 		localStream = stream;
 		// Affectation d'une souce vidéo au Stream
-		video1.src = URL.createObjectURL(localStream);	
+		if (type == "pilote-Appelant") {
+			video1.src = URL.createObjectURL(localStream);
+		}	
 		pc.addStream(localStream);
 		// Maintenant on peut se connecter à l'autre pair
 		connect();
@@ -491,10 +490,10 @@ function connect () {
 	pc.onaddstream = function (e) {
 		// getStats(pc);
 		console.log("@ pc.onaddstream > timestamp:" + Date.now());
-		//if (type == "pilote-appelant") {
+		if (type == "pilote-appelant") {
 			remoteStream = e.stream;
 			video2.src = URL.createObjectURL(remoteStream);
-		//}
+		}
 
 		//remoteStream = e.stream;
 		//video2.src = URL.createObjectURL(remoteStream);
@@ -717,7 +716,7 @@ function bindEvents () {
 	channel.onmessage = function (e) {
 		// add the message to the chat log
 		var dateR = common.dateER('R');
-		$(chatlog).prepend(dateR+' '+e.data+'\n');
+		$(chatlog).prepend(dateR+' '+e.data+"\r\n");
 	};
 }
 
@@ -725,11 +724,10 @@ function bindEvents () {
 function sendMessage () {
     var dateE = common.dateER('E');
 	var msgToSend = dateE+' ['+localObjUser.typeClient+'] '+message.value;
-	//var msgToSend = ' ['+dateSending+'>>E] <strong>'+localObjUser.placeliste+'-'+localObjUser.typeClient+'<i>('+localObjUser.pseudo+')</i></strong>:'+message.value;
 	channel.send(msgToSend);
 	message.value = "";
 	// Affiche le message dans le chatlog websocket
-	$(chatlog).prepend(msgToSend+'\n');
+	$(chatlog).prepend(msgToSend+"\r\n");
 }
 
 

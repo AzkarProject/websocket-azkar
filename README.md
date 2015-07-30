@@ -1,4 +1,4 @@
-# AZKAR WebRTC script Base. V 0.7.1.3
+# AZKAR WebRTC script Base. V 0.7.1.4
 ------------------------------------------------------------
 
 Test en ligne du script base 1to1:
@@ -14,11 +14,11 @@ http://websocket-azkar.rhcloud.com/
 - [x] Signaling Websocket
 - [x] RemoteStream
 - [x] Paths Pilotes/Robots
-- [ ] Websocket
-    - [ ] >> Implémenter Backups Logs
-- [ ] RTCdataChannel
-    - [ ] >> Implémenter Backups Logs
-    - [ ] Fix Date E&R ds même message
+- [X] Websocket
+    - [X] >> Implémenter Backups Logs
+- [X] RTCdataChannel
+    - [X] >> Implémenter Backups Logs
+    - [X] Fix Date E&R ds même message
 - [ ] Gest° Déco/Reco
     - [ ] Tracer TOUS les messages transitants sur le server....
         - [ ] Implémenter Backup Logs coté serveur 
@@ -59,7 +59,7 @@ http://websocket-azkar.rhcloud.com/
             - [ ] Charge Batterie
             - [ ] Vitesse en temps réel
         - [x] Bloc tchat websocket
-        - [ ] Bloc logs webRTC
+        - [X] Bloc logs webRTC
         - [ ] Bloc Settings 
     - [ ] IHM Robot
         - [X] CSS Mookups
