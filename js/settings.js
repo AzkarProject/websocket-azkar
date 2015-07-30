@@ -5,7 +5,7 @@ exports.appName = function(){
 };
 
 exports.appVersion = function(){
-    return '0.7.1.3';
+    return '0.7.1.4';
 };
 
 

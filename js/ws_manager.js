@@ -152,7 +152,6 @@ function insereMessage3(objUser, message) {
       text = '['+????+'] '+ message;
     }
     /**/
-    text = '['+objUser.typeClient+'] '+ message;
-
-    $('#zone_chat_websocket').prepend(text+'\n');
+    text = '['+objUser.typeClient+'] '+ message + '\r\n';
+    $('#zone_chat_websocket').prepend(text);
 }

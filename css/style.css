@@ -11,10 +11,6 @@ form {margin-bottom: 9px;}
 .ihmRobot #selectionMicros select {width:100%}
 .ihmRobot #selectionCams select {width:100%}
 
-
-
-
-
 /* ------------------- */
 .floatLeft {float:left;}
 .floatRight {float:right;}
@@ -154,7 +150,7 @@ form {margin-bottom: 9px;}
 }
 
 .ihmPilote #zone_chat_websocket {height: 200px;width:100%} 
-.ihmPilote #zone_chat_WebRTC {height:210px;}
+.ihmPilote #zone_chat_WebRTC {height:200px;width:100%}
 .ihmRobot #zone_chat_websocket {height: 50px;}  
 .ihmRobot #zone_chat_WebRTC {height: 50px;}
 
@@ -169,15 +165,6 @@ form {margin-bottom: 9px;}
   width: 98%;
 }
 /**/
-
-
-
-
-
-
-
-
-
 
 
 /* Jauges */

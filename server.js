@@ -62,6 +62,40 @@ app.get('/visiteur/', function (req, res) {
 });
 
 
+
+
+/*******************envoi de commande de deplacement en differential drive*********************/
+
+//pour faire des requettes XMLHttpRequest
+var XMLHttpRequest = require('xhr2');
+
+function onMoveOrder(enable,aSpeed,lSpeed){
+        
+        var btnA; // Bouton homme mort...
+        var aSpeedMov = Math.round(aSpeed*100)/1000;
+
+        if ( enable == 'true') { btnA = true; }
+        else { btnA = false; }
+        
+        var url = 'http://localhost:50000/api/drive';
+        var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance 
+        xmlhttp.open("POST", url);
+        xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xmlhttp.send(JSON.stringify({
+            "Enable": btnA,
+            "TargetAngularSpeed": aSpeedMov,
+            "TargetLinearSpeed": lSpeed
+        }));
+        console.log('@onMoveOrder >>'+aSpeedMov);
+}
+
+
+
+
+
+
+
+
 // Lancement du serveur
 server.listen(app.get('port'),ipaddress);
 
@@ -307,15 +341,18 @@ io.sockets.on('connection', function (socket, pseudo) {
     }); 
 
 
-    // Transmission de commande générique V2 objet
-    socket.on('moveOrder', function (data) {
-        console.log(data);
-        if (data.moveOrder){
-            moveOrder = ent.encode(data.moveOrder); // On vire les caractères html... ???????
-            socket.broadcast.emit('moveOrder',{objUser: data.objUser, moveOrder: moveOrder});
-        }
-        console.log ("@ moveOrder from "+data.objUser.placeliste+"-"+data.objUser.pseudo+ ": "+ moveOrder);
-    }); 
+    // ---------------------------------------------------------------------------------
+    // Partie commandes du robot par websocket (stop, moveDrive, moveSteps, goto & clicAndGo)
+
+     // Transmission de commande générique V2 objet
+    socket.on('moveOrder', function(data) {
+        
+       console.log("@ moveOrder >>>> " + data.command );
+       //  ex: >> socket.emit("moveOrder",{ command:'Move', aSpeed:aSpeed, lSpeed:lSpeed, Enable:btHommeMort });
+       onMoveOrder(data.enable,data.aSpeed,data.lSpeed)
+       
+    });
+
 
 
     // ----------------------------------------------------------------------------------
