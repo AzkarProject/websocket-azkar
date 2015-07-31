@@ -114,8 +114,7 @@
 
             if (gamepad.state["FACE_1"] === 1) {
                 
-
-                //   btHommeMort = "true"; // ??????????????????
+                  btHommeMort = "true"; 
 
                 var TargetLinearSpeedPos = gamepad.state["RIGHT_BOTTOM_SHOULDER"]; // vitesse marche avant
                 var TargetLinearSpeedNeg = gamepad.state["LEFT_BOTTOM_SHOULDER"]; // vitesse marche arrière
@@ -142,17 +141,19 @@
                 console.log(' >>>>> START gamepad');
 
             } else {
+                
+                if (btHommeMort == "true") {
                 socket.emit("moveOrder", {
                     command: 'Stop',
                     aSpeed: 0,
                     lSpeed: 0,
                     enable: 'false'
                 });
-                // if (btHommeMort == "true") {
+                }
                 console.log(' >>>>> STOP gamepad');
 
-               // btHommeMort = "false";
-                //   }
+               btHommeMort = "false";
+                
                 /**/
             }
             /**/
