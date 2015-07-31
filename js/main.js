@@ -388,8 +388,9 @@ function initLocalMedia() {
 	navigator.getUserMedia(constraint, function (stream) {
 		localStream = stream;
 		// Affectation d'une souce vidéo au Stream
+		video1.src = URL.createObjectURL(localStream);
 		if (type == "pilote-Appelant") {
-			video1.src = URL.createObjectURL(localStream);
+			//video1.src = URL.createObjectURL(localStream);
 		}	
 		pc.addStream(localStream);
 		// Maintenant on peut se connecter à l'autre pair
@@ -490,13 +491,15 @@ function connect () {
 	pc.onaddstream = function (e) {
 		// getStats(pc);
 		console.log("@ pc.onaddstream > timestamp:" + Date.now());
+		/*
 		if (type == "pilote-appelant") {
 			remoteStream = e.stream;
 			video2.src = URL.createObjectURL(remoteStream);
 		}
+		/**/
 
-		//remoteStream = e.stream;
-		//video2.src = URL.createObjectURL(remoteStream);
+		remoteStream = e.stream;
+		video2.src = URL.createObjectURL(remoteStream);
 	};
 
 
@@ -505,14 +508,18 @@ function connect () {
 	pc.oniceconnectionstatechange = function (e) {
 		
 		
-		var newDate = common.dateNowInMs();
-		console.log("@ pc.oniceconnectionstatechange > " + newDate);
+		//var newDate = common.dateNowInMs();
+		var dateE = common.dateER('E');
+		console.log("@ pc.oniceconnectionstatechange > " + dateE);
 		
 
 		console.log(">>> stateConnection Event > " + pc.iceConnectionState);
-		$(chatlog).prepend('[R>>'+newDate+'] '+'<strong><i>(stateConnection Event)</i></strong>: ' + pc.iceConnectionState + '<br/>');
+		$(chatlog).prepend( dateE+' [stateConnection Event] ' + pc.iceConnectionState + '\n');
 
-
+		if (pc.iceConnectionState == 'disconnected') {
+			// alert("Déconnexion peer !!!");
+			onDisconnect();
+		}
 		// console.log(">>> isStarted = "+ isStarted);
 		/**/
 		// Statut connected: env 1 seconde de latence
@@ -716,7 +723,7 @@ function bindEvents () {
 	channel.onmessage = function (e) {
 		// add the message to the chat log
 		var dateR = common.dateER('R');
-		$(chatlog).prepend(dateR+' '+e.data+"\r\n");
+		$(chatlog).prepend(dateR+' '+e.data+"\n");
 	};
 }
 
@@ -727,7 +734,7 @@ function sendMessage () {
 	channel.send(msgToSend);
 	message.value = "";
 	// Affiche le message dans le chatlog websocket
-	$(chatlog).prepend(msgToSend+"\r\n");
+	$(chatlog).prepend(msgToSend+"\n");
 }
 
 

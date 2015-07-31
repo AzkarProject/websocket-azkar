@@ -65,11 +65,15 @@ exports.client = function client (id,pseudo,placeliste,typeClient,connectionDate
   // Paramètre: flag pour la première lettre...
   exports.dateER = function (flag){
     var theDate = new Date();
+    //return '['+flag+'-'+theDate+']';
+    
     var h = theDate.getHours();
     var m = theDate.getMinutes();
     var s = theDate.getSeconds();
     var ms = theDate.getMilliseconds();
     return '['+flag+'-'+h+":"+m+":"+s+":"+ms+']';
+    /**/
+    
     }
 
 

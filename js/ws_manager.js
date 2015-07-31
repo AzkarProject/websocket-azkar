@@ -73,9 +73,9 @@ socket.on('position_liste2', function(objUser) {
 
 // Quand un nouveau client se connecte, on affiche l'information
 socket.on('nouveau_client2', function(objUser) {
-    var newDate = '[R>>'+common.dateNowInMs()+']';
-    console.log("[R>>"+newDate+"]>> socket.on('nouveau_client2', objUser");
-    var message = "à rejoint le Tchat";
+    var dateR = common.dateER('R');
+    console.log(dateR+">> socket.on('nouveau_client2', objUser");
+    var message = dateR + " à rejoint le Tchat";
     insereMessage3(objUser,message);
 })
 
@@ -87,8 +87,8 @@ socket.on("disconnected", function(data) {
   console.log(">> socket.on('disconnected',...");
 
   var dateR = common.dateER('R');
-  // var msg = dateR+' '+data.message;
-  // insereMessage3(data.objUser,msg); // Plante puisque no data.objUser  !!!
+  var msg = dateR+' '+data.message;
+  insereMessage3(data.objUser,msg); // Plante puisque no data.objUser  !!!
 
   // On met à jour la liste des cliens connectés
   var users = data;
@@ -98,7 +98,9 @@ socket.on("disconnected", function(data) {
   // On lance la méthode de préparatoire à la renégo WebRTC
   // Todo >>>> Tester déclenchement a la detection WebRTC...
   // Pour voir si ca résoud le problème de déco intempestive sur openShift
-  onDisconnect();
+  // onDisconnect();
+  // >>>> Tests en local: renégo webSoket et WebRTC OK
+  // >>>> Todo >> Tests en ligne sur OpenShift...
 });
   
 // >> V2 User en version Objet
@@ -110,19 +112,18 @@ socket.on('message2', function(data) {
     insereMessage3(data.objUser,msg);
 })
 
-
 // Quand on reçoit une nouvelle commande de déplacement, on l'insère dans la page
 socket.on('moveOrder', function(data) {
     var dateR = common.dateER('R');
     var msg = dateR+' '+data.message;
-    insereMessage3(data.objUser, data.message);
+    insereMessage3(data.objUser, msg);
 })
 
 // Quand on reçoit un message de service
 socket.on('service2', function(data) {
     var dateR = common.dateER('R');
     var msg = dateR+' '+data.message;
-    insereMessage3(data.objUser,data.message);
+    insereMessage3(data.objUser,msg);
 })
 
 
@@ -144,14 +145,16 @@ $('#formulaire_chat_websoket').submit(function () {
 
 // Affiche le message ds le tchat
 function insereMessage3(objUser, message) {
-    /**
+    
     var text;
+    
     if (objUser){
       text = '['+objUser.typeClient+'] '+ message;
     } else {
-      text = '['+????+'] '+ message;
+      text = '[????] '+ message;
     }
     /**/
-    text = '['+objUser.typeClient+'] '+ message + '\r\n';
+    text += '\n';
+    
     $('#zone_chat_websocket').prepend(text);
 }
