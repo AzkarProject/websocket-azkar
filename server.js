@@ -104,7 +104,7 @@ function onMoveOrder(enable, aSpeed, lSpeed) {
             console.log('dans le then  ');
             console.log('@onMoveOrder >> angular speed :' + aSpeedMov + '  et linear speed :' + lSpeed);
         })
-    console.log('après  le send move ');
+  
 }
 
 
