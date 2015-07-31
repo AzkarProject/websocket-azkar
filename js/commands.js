@@ -1,37 +1,37 @@
     /**
-                                                                                                        window.gamepad = new Gamepad();
+                                                                                                            window.gamepad = new Gamepad();
 
-                                                                                                        gamepad.bind(Gamepad.Event.CONNECTED, function(device) {
-                                                                                                            console.log("a new gamepad connected");
-                                                                                                        });
+                                                                                                            gamepad.bind(Gamepad.Event.CONNECTED, function(device) {
+                                                                                                                console.log("a new gamepad connected");
+                                                                                                            });
 
-                                                                                                        gamepad.bind(Gamepad.Event.DISCONNECTED, function(device) {
-                                                                                                            console.log("gamepad disconnected");
-                                                                                                        });
+                                                                                                            gamepad.bind(Gamepad.Event.DISCONNECTED, function(device) {
+                                                                                                                console.log("gamepad disconnected");
+                                                                                                            });
 
-                                                                                                        gamepad.bind(Gamepad.Event.UNSUPPORTED, function(device) {
-                                                                                                            // an unsupported gamepad connected (add new mapping)
-                                                                                                            console.log(" an unsupported gamepad connected (add new mapping)");
-                                                                                                        });
+                                                                                                            gamepad.bind(Gamepad.Event.UNSUPPORTED, function(device) {
+                                                                                                                // an unsupported gamepad connected (add new mapping)
+                                                                                                                console.log(" an unsupported gamepad connected (add new mapping)");
+                                                                                                            });
 
-                                                                                                        gamepad.bind(Gamepad.Event.BUTTON_DOWN, function(e) {
-                                                                                                            // e.control of gamepad e.gamepad pressed down  
-                                                                                                            if (e.control == "FACE_1" || (e.control == "LEFT_BOTTOM_SHOULDER") || (e.control == "RIGHT_BOTTOM_SHOULDER"))
-                                                                                                                console.log(e.control + " of gamepad  " + e.gamepad + "pressed down");
-                                                                                                        });
+                                                                                                            gamepad.bind(Gamepad.Event.BUTTON_DOWN, function(e) {
+                                                                                                                // e.control of gamepad e.gamepad pressed down  
+                                                                                                                if (e.control == "FACE_1" || (e.control == "LEFT_BOTTOM_SHOULDER") || (e.control == "RIGHT_BOTTOM_SHOULDER"))
+                                                                                                                    console.log(e.control + " of gamepad  " + e.gamepad + "pressed down");
+                                                                                                            });
 
-                                                                                                        gamepad.bind(Gamepad.Event.BUTTON_UP, function(e) {
-                                                                                                            // e.control of gamepad e.gamepad released
-                                                                                                            if (e.control == "FACE_1" || (e.control == "LEFT_BOTTOM_SHOULDER") || (e.control == "RIGHT_BOTTOM_SHOULDER"))
-                                                                                                                console.log(e.control + " of gamepad  " + e.gamepad + "released");
-                                                                                                        });
+                                                                                                            gamepad.bind(Gamepad.Event.BUTTON_UP, function(e) {
+                                                                                                                // e.control of gamepad e.gamepad released
+                                                                                                                if (e.control == "FACE_1" || (e.control == "LEFT_BOTTOM_SHOULDER") || (e.control == "RIGHT_BOTTOM_SHOULDER"))
+                                                                                                                    console.log(e.control + " of gamepad  " + e.gamepad + "released");
+                                                                                                            });
 
-                                                                                                        gamepad.bind(Gamepad.Event.AXIS_CHANGED, function(e) {
-                                                                                                            // e.axis changed to value e.value for gamepad e.gamepad
-                                                                                                            if (e.axis == "LEFT_STICK_X")
-                                                                                                                console.log(e.axis + "changed to value  " + e.value + "for gamepad  " + e.gamepad);
-                                                                                                        });
-                                                                                                        /**/
+                                                                                                            gamepad.bind(Gamepad.Event.AXIS_CHANGED, function(e) {
+                                                                                                                // e.axis changed to value e.value for gamepad e.gamepad
+                                                                                                                if (e.axis == "LEFT_STICK_X")
+                                                                                                                    console.log(e.axis + "changed to value  " + e.value + "for gamepad  " + e.gamepad);
+                                                                                                            });
+                                                                                                            /**/
 
     /* gamepad.bind(Gamepad.Event.TICK, function(gamepads) {
          // gamepads were updated (around 60 times a second)
@@ -107,14 +107,11 @@
         gamepad = gamepads[0];
         wrap = $('#gamepad-' + 0);
 
-
-
         if (gamepad) {
 
-
             if (gamepad.state["FACE_1"] === 1) {
-                
-                  btHommeMort = "true"; 
+
+                btHommeMort = "true";
 
                 var TargetLinearSpeedPos = gamepad.state["RIGHT_BOTTOM_SHOULDER"]; // vitesse marche avant
                 var TargetLinearSpeedNeg = gamepad.state["LEFT_BOTTOM_SHOULDER"]; // vitesse marche arrière
@@ -141,22 +138,18 @@
                 console.log(' >>>>> START gamepad');
 
             } else {
-                
                 if (btHommeMort == "true") {
-                socket.emit("moveOrder", {
-                    command: 'Stop',
-                    aSpeed: 0,
-                    lSpeed: 0,
-                    enable: 'false'
-                });
+                    socket.emit("moveOrder", {
+                        command: 'Stop',
+                        aSpeed: 0,
+                        lSpeed: 0,
+                        enable: 'false'
+                    });
+                    console.log(' >>>>> STOP gamepad');
+                    btHommeMort = "false";
                 }
-                console.log(' >>>>> STOP gamepad');
-
-               btHommeMort = "false";
-                
-                /**/
             }
-            /**/
+
             //debug = common.dateER('GAMEPAD')
             //console.log (debug);
 
