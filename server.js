@@ -3,7 +3,7 @@ var common = require('./js/common'); // méthodes génériques et objets
 var settings = require('./js/settings'); // parametres de configuration
 // var request = require('request');
 var bodyParser = require("body-parser"); // pour recuperer le contenu de requetes POST 
-
+var Q = require('Q') ;
 
 // contrôle chargement coté serveur
 var commonTest = common.test();
@@ -101,14 +101,14 @@ function onMoveOrder(enable, aSpeed, lSpeed) {
 
 
     var url = 'http://localhost:50000/api/drive';
-    sendMove(url)
-        .then(function()) {
+    sendMove(url,enable, aSpeed, lSpeed)
+        .then(function() {
             console.log('@onMoveOrder >> angular speed :' + aSpeedMov + '  et linear speed :' + lSpeed);
-        }
+        })
 }
 
 
-function sendMove(url) {
+function sendMove(url,enable, aSpeed, lSpeed) {
     return Q.Promise(function(resolve, reject, notify) {
 
         var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance 
