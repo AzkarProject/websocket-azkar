@@ -118,7 +118,6 @@ function sendMove(url, enable, aSpeed, lSpeed) {
         btnA = false;
     }
 
-
     return Q.Promise(function(resolve, reject, notify) {
 
         var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance 
