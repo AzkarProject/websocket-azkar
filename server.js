@@ -3,7 +3,7 @@ var common = require('./js/common'); // méthodes génériques et objets
 var settings = require('./js/settings'); // parametres de configuration
 // var request = require('request');
 var bodyParser = require("body-parser"); // pour recuperer le contenu de requetes POST 
-var Q = require('Q') ;
+var Q = require('Q');
 
 // contrôle chargement coté serveur
 var commonTest = common.test();
@@ -97,22 +97,31 @@ function onMoveOrder(enable, aSpeed, lSpeed) {
         console.log('@onMoveOrder >> angular spped :' + aSpeedMov + '  et linear speed :' + lSpeed);
         //res.end();*/
 
-
-
-
     var url = 'http://localhost:50000/api/drive';
-    sendMove(url,enable, aSpeed, lSpeed)
+ console.log('avant le send move ');
+    sendMove(url, enable, aSpeed, lSpeed)
         .then(function() {
+            console.log('dans le then  ');
             console.log('@onMoveOrder >> angular speed :' + aSpeedMov + '  et linear speed :' + lSpeed);
         })
+        console.log('après  le send move ');
 }
 
 
-function sendMove(url,enable, aSpeed, lSpeed) {
+function sendMove(url, enable, aSpeed, lSpeed) {
+
+    var aSpeedMov = Math.round(aSpeed * 100) / 1000;
+    if (enable == 'true') {
+        btnA = true;
+    } else {
+        btnA = false;
+    }
+
+
     return Q.Promise(function(resolve, reject, notify) {
 
         var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance 
-
+ console.log('avant xmlhttp request  le onload du send move ');
         xmlhttp.open("POST", url);
         xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
@@ -129,6 +138,7 @@ function sendMove(url,enable, aSpeed, lSpeed) {
         function onload() {
             if (xmlhttp.status === 200) {
                 resolve(xmlhttp.responseText);
+                console.log('dans  le onload du send move ');
             } else {
                 reject(new Error("Status code was " + xmlhttp.status));
             }
