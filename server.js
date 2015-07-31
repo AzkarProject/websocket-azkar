@@ -112,11 +112,14 @@ function sendMove(url, enable, aSpeed, lSpeed) {
 
     //var aSpeedMov = Math.round(aSpeed * 100) / 1000;
     var aSpeedMov = aSpeed;
-    if (enable == 'true') {
+    var btnA = (enable == 'true' ? true : false ); //  
+   
+   /* if (enable == 'true') {
         btnA = true;
     } else {
         btnA = false;
-    }
+    }*/
+
 
     return Q.Promise(function(resolve, reject, notify) {
 
