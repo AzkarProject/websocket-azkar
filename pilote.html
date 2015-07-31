@@ -26,32 +26,61 @@
 			<strong> Benchmarks Settings </strong>
 			<hr/>
 		    
+			    <span id="dataChannelSetting" class="">
+			    	Navigation channel: 
+					<input type="radio" name="controlChannel" value="webSocket" id="webSocket" onclick="setNavChannel('webSocket')" checked /> <label for="webSocket">webSocket</label>
+					<input type="radio" name="controlChannel" value="webRTC" id="webRTC" onclick="setNavChannel('webRTC')"/> <label for="webRTC">webRTC</label>
+					
+		    	</span>
+				<br/>
 			    <span id="localVideoSetting" class="">
-			    	Pilote Camera view: 
-					<input type="radio" name="lVidSetting" value="hide" id="lVhide" onclick="setPilotVideo('hide')"/> <label for="rVhide">Hide local Video</label>
-					<input type="radio" name="lVidSetting" value="show" id="lVshow" checked/ onclick="setPilotVideo('show')"> <label for="lVshow">Show local Video</label>
+			    	IHM Pilote > Local Camera view: 
+					<input type="radio" name="PlVidSetting" value="show" id="PlVshow" checked onclick="setLocalPilotView('show')"> <label for="PlVshow">Show</label>
+					<input type="radio" name="PlVidSetting" value="hide" id="PlVhide" onclick="setLocalPilotView('hide')"/> <label for="PlVhide">Hide</label>
+					&nbsp;&nbsp; || &nbsp;&nbsp; IHM Robot > Local Camera view: 
+					<input type="radio" name="RlVidSetting" value="show" id="RlVshow" checked onclick="setLocalRobotView('show')"> <label for="RlVshow">Show</label>
+					<input type="radio" name="RlVidSetting" value="hide" id="RlVhide" onclick="setLocalRobotView('hide')"/> <label for="RlVhide">Hide</label>
 		    	</span>
 				<br/>
 			    <span id="remoteVideoSetting" class="">
-			    	Robot Camera view: 
-					<input type="radio" name="rVidSetting" value="hide" id="rVhide" onclick="setRobotVideo('hide')"/> <label for="rVhide">Hide remote Video</label>
-					<input type="radio" name="rVidSetting" value="low" id="rVlow" onclick="setRobotVideo('low')"/> <label for="rVlow">Show in low Resolution</label>
-					<input type="radio" name="rVidSetting" value="medium" id="rVmedium" onclick="setRobotVideo('medium')" /> <label for="rVmedium">Show in medium Resolution</label>
-					<input type="radio" name="rVidSetting" value="high" id="rVhigh" onclick="setRobotVideo('high')" checked/> <label for="rVhigh">Show in High resolution</label>	
+			    	IHM Pilote > Remote Camera view: 
+					<input type="radio" name="PRVidSetting" value="high" id="PRVhigh" onclick="setRemotePiloteView('high')" checked/> <label for="PRVhigh">High res</label>
+					<input type="radio" name="PRVidSetting" value="medium" id="PRVmedium" onclick="setRemotePiloteView('medium')" /> <label for="PRVmedium">Medium res</label>
+					<input type="radio" name="PRVidSetting" value="low" id="PRVlow" onclick="setRemotePiloteView('low')"/> <label for="PRVlow">Low res</label>
+					<input type="radio" name="PRVidSetting" value="hide" id="PRVhide" onclick="setRemotePiloteView('hide')"/> <label for="PRVhide">Hide</label>
+					&nbsp;&nbsp; || &nbsp;&nbsp; IHM Robot > Remote Camera view: 
+					<input type="radio" name="RRVidSetting" value="show" id="RRVshow" checked onclick="setRemoteRobotView('show')"> <label for="RRVshow">Show</label>
+					<input type="radio" name="RRVidSetting" value="hide" id="RRVhide" onclick="setRemoteRobotView('hide')"/> <label for="RRVhide">Hide</label>
+
+	
 		    	</span>
 		    	<br/>
 			    <span id="streamSetting" class="">
-			    	Stream local pilote video to robot: 
-					<input type="radio" name="streamVidToRobot" value="open" id="streamOpen" onclick="setPilotStream('open')" checked /> <label for="streamOpen">Yes</label>
-					<input type="radio" name="streamVidToRobot" value="close" id="streamClose" onclick="setPilotStream('close')" /> <label for="streamClose">No</label>
+			    	IHM Pilote > Send local stream to IHM Robot: 
+					<input type="radio" name="streamVidToRobot" value="open" id="streamOpen" onclick="setPilotStreamToRobot('open')" checked /> <label for="streamOpen">Yes</label>
+					<input type="radio" name="streamVidToRobot" value="close" id="streamClose" onclick="setPilotStreamToRobot('close')" /> <label for="streamClose">No</label>
 		    	</span>
-				<br/>
-			    <span id="dataChannelSetting" class="">
-			    	Select controls and navigation data channel: 
-					<input type="radio" name="controlChannel" value="webSocket" id="webSocket" onclick="setCtrlChannel('webSocket')" checked /> <label for="webSocket">webSocket</label>
-					<input type="radio" name="controlChannel" value="webRTC" id="webRTC" onclick="setCtrlChannel('webRTC')"/> <label for="webRTC">webRTC</label>
-					
-		    	</span>
+				<hr/>
+		    	<script>                        
+				function setNavChannel(navChSet) {
+					navChannel = navChSet;
+				}
+				function setLocalPilotView(lPVSet) {
+					localPilotView = lPVSet;
+				}
+				function setLocalRobotView(lRVSet) {
+					localRobotView = lRVSet;
+				}
+				function setRemotePiloteView(rPVSet) {
+					remotePiloteView = rPVSet;
+				}
+				function setRemoteRobotView(rRVSet) {
+					remoteRobotView = rRVSet;
+				}
+				function setPilotStreamToRobot(pRStream) {
+					pilotStreamToRobot = pRStream;
+				}
+				</script>
 		    
   		</div>
 

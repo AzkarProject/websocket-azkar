@@ -5,14 +5,7 @@ exports.appName = function(){
 };
 
 exports.appVersion = function(){
-    return '0.7.1.5';
+    return '0.7.1.6';
 };
-
-
-
-
-
-
-
 
 })(typeof exports === 'undefined'? this['settings']={}: exports);

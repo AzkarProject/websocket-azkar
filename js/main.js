@@ -20,8 +20,21 @@ function alertAndRedirect(message,url) {
 
 
 // Initialisation des variables, objets et paramètres du script
+// NB toutes les variables sont déclarées en global...
 function mainSettings() {
 	console.log("@mainSettings()");
+
+	// Settings de Benchmarking
+
+	navChannel = 'webSocket';
+	localPilotView = 'show';
+	localRobotView = 'show';
+	remotePiloteView = 'show';
+	remoteRobotView = 'high';
+	pilotStreamToRobot = 'open';
+
+	console.log ("Default navChannel > "+navChannel);
+
 
 
 	// pré-signaling -------------------------------------------------
@@ -387,16 +400,19 @@ function initLocalMedia() {
 	// Initialisation du localStream et lancement connexion
 	navigator.getUserMedia(constraint, function (stream) {
 		localStream = stream;
-		// Affectation d'une souce vidéo au Stream
-		video1.src = URL.createObjectURL(localStream);
-		if (type == "pilote-Appelant") {
-			//video1.src = URL.createObjectURL(localStream);
-		}	
+		var showLocalVideo = true;
+		if (type == "pilote-appelant") {
+			if (localPilotView != 'show') showLocalVideo = false;
+		
+		} else if (type == "robot-appellé"){
+			if (localRobotView != 'show') showLocalVideo = false;
+		} 
+		if (showLocalVideo == true) video1.src = URL.createObjectURL(localStream);
 		pc.addStream(localStream);
-		// Maintenant on peut se connecter à l'autre pair
 		connect();
 	}, errorHandler);
 };
+
 
 // IHM Pilote:
 // Activation du formulaire de selection des devices locaux
@@ -436,10 +452,7 @@ function localManageDevices () {
 
 	// Animation CSS de désactivation du formulaire devices robot...
 	document.getElementById("robotDevices").className = "insideFlex oneQuarterbox  robot devices shadowBlack device";
-
 	
-
-
 	// On balance coté robot les devices sélectionnés...
     if (type == "pilote-appelant") {
     	var selectAudio = remote_AudioSelect.value;
@@ -491,15 +504,18 @@ function connect () {
 	pc.onaddstream = function (e) {
 		// getStats(pc);
 		console.log("@ pc.onaddstream > timestamp:" + Date.now());
-		/*
-		if (type == "pilote-appelant") {
-			remoteStream = e.stream;
-			video2.src = URL.createObjectURL(remoteStream);
-		}
-		/**/
-
 		remoteStream = e.stream;
-		video2.src = URL.createObjectURL(remoteStream);
+		//video2.src = URL.createObjectURL(remoteStream);
+		var showRemoteVideo = true;
+		if (type == "pilote-appelant") {
+			if (remotePiloteView == 'hide') showRemoteVideo = false;
+			 // showRemoteVideo = false;
+		} else if (type == "robot-appellé"){
+			if (remotePiloteView != 'show') showRemoteVideo = false;
+		} 
+		if (showRemoteVideo == true) video2.src = URL.createObjectURL(remoteStream);
+		// video2.src = URL.createObjectURL(remoteStream);
+		/**/
 	};
 
 
