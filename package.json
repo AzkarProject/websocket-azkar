@@ -7,6 +7,8 @@
         "socket.io": "~1.3.4",
         "body-parser": "~1.8.1",
         "http-status-codes" : "~1.0.5",
+        "xhr2": "*",
+         "q":"*",
         "ent": "~0.1.0"
     },
 	"scripts": {

@@ -1,8 +1,8 @@
 // Elements communs client/serveur
 var common = require('./js/common'); // méthodes génériques et objets
 var settings = require('./js/settings'); // parametres de configuration
-
-
+var bodyParser = require("body-parser"); // pour recuperer le contenu de requetes POST 
+var HttpStatus = require('http-status-codes'); // le module qui recupère les status des requetes HTTP
 
  
 
@@ -32,12 +32,10 @@ app.use(express.static(__dirname));
 
 
 
-
-var bodyParser= require("body-parser"); // pour recuperer le contenu de requetes POST
 //Utiliser body-parser pour la gestion de requete POST
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json()); // support json encoded bodies
-var HttpStatus = require('http-status-codes'); // le module qui recupère les status des requetes HTTP
+
 
 
 
@@ -68,7 +66,9 @@ app.get('/visiteur/', function (req, res) {
 
 //pour faire des requettes XMLHttpRequest
 var XMLHttpRequest = require('xhr2');
+var Q=require('Q');
 
+/*
 function onMoveOrder(enable,aSpeed,lSpeed){
         
         var btnA; // Bouton homme mort...
@@ -88,10 +88,61 @@ function onMoveOrder(enable,aSpeed,lSpeed){
         }));
         console.log('@onMoveOrder >>'+aSpeedMov);
 }
+/**/
+
+// Version Michael
+// flag moveOder en cours  
+var flagDrive = false; //Par défaut a false , à la reception de moveOrder ==> True 
+
+function onMoveOrder(enable, aSpeed, lSpeed) {
+
+    var url = 'http://localhost:50000/api/drive';
+    sendMove(url)
+        .then(function() {
+            console.log('@onMoveOrder >> angular speed :' + aSpeedMov + '  et linear speed :' + lSpeed);
+        })
+}
 
 
+function sendMove(url) {
+    return Q.Promise(function(resolve, reject, notify) {
 
+        
+        var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance 
 
+        xmlhttp.open("POST", url);
+        xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+        xmlhttp.onload = onload;
+        xmlhttp.onerror = onerror;
+        xmlhttp.onprogress = onprogress;
+
+        xmlhttp.send(JSON.stringify({
+            "Enable": btnA,
+            "TargetAngularSpeed": aSpeedMov,
+            "TargetLinearSpeed": lSpeed
+        }));
+
+        function onload() {
+            if (xmlhttp.status === 200) {
+                resolve(xmlhttp.responseText);
+            } else {
+                reject(new Error("Status code was " + xmlhttp.status));
+            }
+        }
+
+        function onerror() {
+            reject(new Error("Can't XHR " + JSON.stringify(url)));
+        }
+
+        function onprogress(event) {
+            notify(event.loaded / event.total);
+        }
+
+    })
+}
+
+/**/
 
 
 
@@ -113,22 +164,7 @@ console.log("     "+settings.appName() + " V " + settings.appVersion() );
 
 var indexUrl = "http://"+ipaddress+":"+port;
 
-
-/*// liste des clients
-var users = {};
-var nbUsers = 0;
-
-// Historique des connexions
-var histoUsers = {};
-var placeHisto = 0;
-histoPosition = 0;
-/**/
-
-
-
-// --- idem mais pour la version Objet
-
-// liste des clients
+// liste des clients connectés
 var users2 = {};
 var nbUsers2 = 0;
 
