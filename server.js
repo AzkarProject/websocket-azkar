@@ -69,35 +69,81 @@ var XMLHttpRequest = require('xhr2');
 var flagDrive = false; //Par défaut a false , à la reception de moveOrder ==> True 
 
 function onMoveOrder(enable, aSpeed, lSpeed) {
+    /*
+
+        var btnA;
+        var aSpeedMov = Math.round(aSpeed * 100) / 1000;
+        //var aSpeedMov = Math.round(aSpeed*100)/500;
+        // var aSpeedMov = aSpeed;
+        // var lSpeed = Math.round(lSpeed*100)/1000;
 
 
-    var btnA;
-    var aSpeedMov = Math.round(aSpeed * 100) / 1000;
-    //var aSpeedMov = Math.round(aSpeed*100)/500;
-    // var aSpeedMov = aSpeed;
-    // var lSpeed = Math.round(lSpeed*100)/1000;
+        if (enable == 'true') {
+            btnA = true;
+
+        } else {
+            btnA = false;
+        }
+
+        var url = 'http://localhost:50000/api/drive';
+        var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance 
+        xmlhttp.open("POST", url);
+        xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xmlhttp.send(JSON.stringify({
+            "Enable": btnA,
+            "TargetAngularSpeed": aSpeedMov,
+            "TargetLinearSpeed": lSpeed
+        }));
+        console.log('@onMoveOrder >> angular spped :' + aSpeedMov + '  et linear speed :' + lSpeed);
+        //res.end();*/
 
 
-    if (enable == 'true') {
-        btnA = true;
 
-    } else {
-        btnA = false;
-    }
 
     var url = 'http://localhost:50000/api/drive';
-    var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance 
-    xmlhttp.open("POST", url);
-    xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    xmlhttp.send(JSON.stringify({
-        "Enable": btnA,
-        "TargetAngularSpeed": aSpeedMov,
-        "TargetLinearSpeed": lSpeed
-    }));
-    console.log('@onMoveOrder >> angular spped :' + aSpeedMov + '  et linear speed :' + lSpeed);
-    //res.end();
+    sendMove(url)
+        .then(function()) {
+            console.log('@onMoveOrder >> angular speed :' + aSpeedMov + '  et linear speed :' + lSpeed);
+        }
 }
 
+
+function sendMove(url) {
+    return Q.Promise(function(resolve, reject, notify) {
+
+        var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance 
+
+        xmlhttp.open("POST", url);
+        xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+        xmlhttp.onload = onload;
+        xmlhttp.onerror = onerror;
+        xmlhttp.onprogress = onprogress;
+
+        xmlhttp.send(JSON.stringify({
+            "Enable": btnA,
+            "TargetAngularSpeed": aSpeedMov,
+            "TargetLinearSpeed": lSpeed
+        }));
+
+        function onload() {
+            if (xmlhttp.status === 200) {
+                resolve(xmlhttp.responseText);
+            } else {
+                reject(new Error("Status code was " + xmlhttp.status));
+            }
+        }
+
+        function onerror() {
+            reject(new Error("Can't XHR " + JSON.stringify(url)));
+        }
+
+        function onprogress(event) {
+            notify(event.loaded / event.total);
+        }
+
+    })
+}
 
 
 
@@ -128,7 +174,7 @@ app.get('/arretteTourne/', function(req, res) {
     var TargetAngularSpeed = 0;
     var TargetLinearSpeed = 0;
     var url = 'http://192.168.1.72:50000/api/drive';
-   // var url = 'http://localhost:50000/api/drive'; //192.168.1.72:50000 avec le wifi du robot localhost:50000 en local
+    // var url = 'http://localhost:50000/api/drive'; //192.168.1.72:50000 avec le wifi du robot localhost:50000 en local
     var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance 
     xmlhttp.open("POST", url);
     xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");

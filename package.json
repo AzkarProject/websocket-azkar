@@ -9,6 +9,7 @@
         "body-parser": "~1.8.1",
         "xhr2": "*",
         "request": "*",
+        "q":"*",
         "http-proxy-agent": "*",
         "http-proxy": "^1.11.1",
         "http-status-codes": "~1.0.5",
