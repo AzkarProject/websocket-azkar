@@ -1,4 +1,4 @@
-# AZKAR WebRTC script Base (Thierry) V 0.7.1.5
+# AZKAR WebRTC script Base (Thierry) V 0.7.1.6
 ------------------------------------------------------------
 
 Test en ligne du script base 1to1:
@@ -26,12 +26,12 @@ http://websocket-azkar.rhcloud.com/
     - [ ] BUG: OpenShift > Persistance msg fantômes après déco...
     - [ ] BUG: OpenShift > déco intempestives
         - [ ] Fix: Vider buffer >> messages fantômes..
-        - [ ] FiX: Désacoupler déco WebSocket/WebRTC
+        - [X] FiX: Désacoupler déco WebSocket/WebRTC
     - [ ] Si déco WebSocket >> Reco transparante   
 - [ ] Intégra° Commandes & Carto (Michael)
     - [ ] Switch WebSocket/WebRTC
     - [ ] >> Commandes Drive
-        - [ ] GamePad
+        - [X] GamePad
         - [ ] Clavier
         - [ ] Sécurité Homme/mort coté serveur
             - >>> ex boucle 100ms>cmd/350ms sans recept cmd >> Stop...
@@ -60,7 +60,7 @@ http://websocket-azkar.rhcloud.com/
             - [ ] Vitesse en temps réel
         - [x] Bloc tchat websocket
         - [X] Bloc logs webRTC
-        - [ ] Bloc Settings 
+        - [i] Bloc Settings 
     - [ ] IHM Robot
         - [X] CSS Mookups
         - [x] Contrôle d'accès

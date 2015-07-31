@@ -21,7 +21,8 @@ if (type == "pilote-appelant") {typeUser = "Pilote";
 
 
 // On demande le pseudo, on l'envoie au serveur et on l'affiche dans le titre
-var pseudo = prompt('Votre pseudo? (par défaut ce sera "'+typeUser+'")');
+var pseudo = null;
+// pseudo = prompt('Votre pseudo? (par défaut ce sera "'+typeUser+'")');
 
 
 if (!pseudo) { pseudo = typeUser;}
