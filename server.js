@@ -98,19 +98,20 @@ function onMoveOrder(enable, aSpeed, lSpeed) {
         //res.end();*/
 
     var url = 'http://localhost:50000/api/drive';
- console.log('avant le send move ');
+
     sendMove(url, enable, aSpeed, lSpeed)
         .then(function() {
             console.log('dans le then  ');
             console.log('@onMoveOrder >> angular speed :' + aSpeedMov + '  et linear speed :' + lSpeed);
         })
-        console.log('après  le send move ');
+    console.log('après  le send move ');
 }
 
 
 function sendMove(url, enable, aSpeed, lSpeed) {
 
-    var aSpeedMov = Math.round(aSpeed * 100) / 1000;
+    //var aSpeedMov = Math.round(aSpeed * 100) / 1000;
+    var aSpeedMov = aSpeed;
     if (enable == 'true') {
         btnA = true;
     } else {
@@ -121,7 +122,7 @@ function sendMove(url, enable, aSpeed, lSpeed) {
     return Q.Promise(function(resolve, reject, notify) {
 
         var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance 
- console.log('avant xmlhttp request  le onload du send move ');
+
         xmlhttp.open("POST", url);
         xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
@@ -193,7 +194,6 @@ app.get('/arretteTourne/', function(req, res) {
         "TargetAngularSpeed": TargetAngularSpeed,
         "TargetLinearSpeed": TargetLinearSpeed
     }));
-    console.log('héhé jarreter de tourne  !! apres lenvoi de la requete POST');
     res.end();
 });
 
