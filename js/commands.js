@@ -123,11 +123,11 @@
                 btHommeMort = "true";
                 var lSpeed = gamepad.state["RIGHT_BOTTOM_SHOULDER"];
                 //var TargetAngularSpeed = 0.1;
-                float deadzoneX = 0.10 f;
+                var deadzoneX = 0.16 ; //zone en dessous de laquelle la commande angulaire vaut 0 
 
                 var aSpeed = gamepad.axes[0];
                 aSpeed = aSpeed * (-1);
-                aSpeed = (abs(aSpeed) < deadzoneX ? 0 : aSpeed);
+                aSpeed = (Math.abs(aSpeed) < deadzoneX ? 0 : aSpeed);
                 console.log('@onMoveOrder >> angular speed :' + aSpeed + '  et linear speed :' + lSpeed);
                 // Mixage des 2 variables linearspeed pour marche avant et neglinearspeed pour marche arrière...
                 var TargetLinearSpeedNeg = gamepad.state["LEFT_BOTTOM_SHOULDER"];
