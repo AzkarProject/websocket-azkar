@@ -141,7 +141,7 @@ function sendMove(url, enable, aSpeed, lSpeed) {
         function onload() {
             if (xmlhttp.status === 200) {
                 resolve(xmlhttp.responseText);
-                console.log('dans  le onload du send move ');
+               // console.log('dans  le onload du send move ');
             } else {
                 reject(new Error("Status code was " + xmlhttp.status));
             }
@@ -495,7 +495,7 @@ io.sockets.on('connection', function(socket, pseudo) {
     // Transmission de commande générique V2 objet
     socket.on('moveOrder', function(data) {
 
-        console.log("@ moveOrder >>>> " + data.command);
+        console.log("@ moveOrder >>>> " + data.command + "[ vitesse angulaire : " + data.aSpeed + " | vitesse linéaire : " + data.lSpeed + " ]");
         onMoveOrder(data.enable, data.aSpeed, data.lSpeed)
             //  socket.emit("moveOrder",{ command:'Move', aSpeed:aSpeed, lSpeed:lSpeed, Enable:btHommeMort });
         if (data.command == 'Move') {
