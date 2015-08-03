@@ -68,28 +68,6 @@ app.get('/visiteur/', function (req, res) {
 var XMLHttpRequest = require('xhr2');
 var Q=require('Q');
 
-/*
-function onMoveOrder(enable,aSpeed,lSpeed){
-        
-        var btnA; // Bouton homme mort...
-        var aSpeedMov = Math.round(aSpeed*100)/1000;
-
-        if ( enable == 'true') { btnA = true; }
-        else { btnA = false; }
-        
-        var url = 'http://localhost:50000/api/drive';
-        var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance 
-        xmlhttp.open("POST", url);
-        xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        xmlhttp.send(JSON.stringify({
-            "Enable": btnA,
-            "TargetAngularSpeed": aSpeedMov,
-            "TargetLinearSpeed": lSpeed
-        }));
-        console.log('@onMoveOrder >>'+aSpeedMov);
-}
-/**/
-
 // Version Michael
 // flag moveOder en cours  
 var flagDrive = false; //Par défaut a false , à la reception de moveOrder ==> True 
@@ -440,8 +418,9 @@ io.sockets.on('connection', function (socket, pseudo) {
 
     // Pilote >> Robot: cams/micros sélectionnés par le Pilote
     socket.on('selectedRemoteDevices', function (data) {
-    	socket.broadcast.emit('selectedRemoteDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
-    	/*// Contrôle >>
+    	//socket.broadcast.emit('selectedRemoteDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
+    	socket.broadcast.emit('selectedRemoteDevices', {objUser:data.objUser, listeDevices:data.listeDevices, settings:data.settings});
+        /*// Contrôle >>
     	var place = data.objUser.placeliste;
     	var login = data.objUser.pseudo;
     	var role = data.objUser.typeUser;

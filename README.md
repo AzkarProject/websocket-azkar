@@ -1,4 +1,4 @@
-# AZKAR WebRTC script Base (Thierry) V 0.7.1.6
+# AZKAR WebRTC script Base (Thierry) V 0.7.1.7
 ------------------------------------------------------------
 
 Test en ligne du script base 1to1:
@@ -60,11 +60,11 @@ http://websocket-azkar.rhcloud.com/
             - [ ] Vitesse en temps réel
         - [x] Bloc tchat websocket
         - [X] Bloc logs webRTC
-        - [i] Bloc Settings 
+        - [X] Bloc Settings 
     - [ ] IHM Robot
         - [X] CSS Mookups
         - [x] Contrôle d'accès
-        - [ ] Bloc Logs WebSocket/WebRTC
+        - [X] Bloc Logs WebSocket/WebRTC
         - [ ] Bloc Settings > Activer Gest° Volume
 - [ ] Factorisation Main.js
 - [ ] Tests fonctionnels
