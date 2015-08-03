@@ -55,6 +55,10 @@ app.get('/robot/', function(req, res) {
     res.sendFile(__dirname + '/robot.html');
 });
 
+app.get('/cartographie/', function(req, res) {
+    res.sendFile(__dirname + '/cartographie.html');
+});
+
 
 app.get('/visiteur/', function(req, res) {
     res.sendFile(__dirname + '/visiteur.html');

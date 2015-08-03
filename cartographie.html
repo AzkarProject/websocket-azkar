@@ -1,0 +1,49 @@
+<html>
+
+<head>
+</head>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name='keywords' content='WebRTC, HTML5, JavaScript' />
+    <meta name='description' content='WebRTC benchmarks base for AZKAR project' />
+    <!-- viewport sert a controler la mise en page sur les appareils mobiles -->
+    <meta name='viewport' content='width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1'>
+    <link rel="stylesheet" href="/css/style.css" />
+    <title>WebRTC AZKAR</title>
+</head>
+
+<body>
+    <canvas id="cartographie">
+    </canvas>
+    <script>
+
+    function getImage(imageURL) {
+        var img_obj = new Image();
+        img_obj.src = imageURL;
+        return img_obj;
+    }
+
+    var canvas = document.getElementById('cartographie');
+    var context = canvas.getContext('2d');
+
+
+    image = getImage('127.0.0.1:50000/nav/maps/map');
+    image.onload = function() {
+        canvas.width = image.width;
+        canvas.height = image.height;
+
+        context.drawImage(image, 0, 0);
+    };
+    </script>
+    
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src='/js/lib/adapter.js'></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/settings.js"></script>
+    <script src='/js/mapviewer.js'></script>
+    <script src='/js/ws_manager.js'></script>
+    <script src='/js/commands.js'></script>
+    <script src='/js/main.js'></script>
+</body>
