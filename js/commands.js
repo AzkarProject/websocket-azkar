@@ -140,7 +140,7 @@
                     enable: 'true'
                 });
             } else {
-                if (btHommeMort == true) {
+                if (btHommeMort) {
                     console.log(' >>>>> STOP gamepad');
                     socket.emit("moveOrder", {
                         command: 'Stop',
