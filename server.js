@@ -167,7 +167,6 @@ function sendMove(url, enable, aSpeed, lSpeed) {
 /*******Gestion de la cartographie *******************/
 
 
-
 /*mise en place d'un proxy */
 
 var httpProxy = require('http-proxy');
@@ -176,42 +175,42 @@ var httpProxy = require('http-proxy');
 // Http Proxy Server with bad target
 //
 var proxy = httpProxy.createServer({
-  target:'http://localhost:50000'
+    target: 'http://localhost:50000'
 });
 
 proxy.listen(2000);
 
 //
 // Listen for the `error` event on `proxy`.
-proxy.on('error', function (err, req, res) {
-  res.writeHead(500, {
-    'Content-Type': 'text/plain'
-  });
+proxy.on('error', function(err, req, res) {
+    res.writeHead(500, {
+        'Content-Type': 'text/plain'
+    });
 
-  res.end('Something went wrong. And we are reporting a custom error message.');
+    res.end('Something went wrong. And we are reporting a custom error message.');
 });
 
 //
 // Listen for the `proxyRes` event on `proxy`.
 //
-proxy.on('proxyRes', function (proxyRes, req, res) {
-  console.log('RAW Response from the target', JSON.stringify(proxyRes.headers, true, 2));
+proxy.on('proxyRes', function(proxyRes, req, res) {
+    console.log('RAW Response from the target', JSON.stringify(proxyRes.headers, true, 2));
 });
 
 //
 // Listen for the `open` event on `proxy`.
 //
-proxy.on('open', function (proxySocket) {
-  // listen for messages coming FROM the target here
-  proxySocket.on('data', hybiParseAndLogMessage);
+proxy.on('open', function(proxySocket) {
+    // listen for messages coming FROM the target here
+    proxySocket.on('data', hybiParseAndLogMessage);
 });
 
 //
 // Listen for the `close` event on `proxy`.
 //
-proxy.on('close', function (req, socket, head) {
-  // view disconnected websocket connections
-  console.log('Client disconnected');
+proxy.on('close', function(req, socket, head) {
+    // view disconnected websocket connections
+    console.log('Client disconnected');
 });
 
 
@@ -220,15 +219,18 @@ proxy.on('close', function (req, socket, head) {
 
 function onAfficherCarto() {
 
-   // var url = 'http://192.168.1.72:50000/nav/maps/map';
+    var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance 
+    var url = 'http://localhost:50000/nav/maps/map';
+    xmlhttp.open("GET", url);
+    xmlhttp.send();
+    if (xmlhttp.status == 200) {
+        console.log("requette bien envoyee  : " +
+            xmlhttp.responseText);
 
-    //
-    // Create your proxy server and set the target in the options.
-    //
-  //  httpProxy.createProxyServer({target: 'http://localhost:50000'}).listen(2000); // a changer par 192.173.1.72:50000 au cas ou le reseau change 
-request('with proxy', 'http://127.0.0.1:50000/nav/maps/map', '127.0.0.1:2000');
-console.log("apres creation du proxy ! ") ; 
-  
+    }
+
+    console.log("apres l'envoi du GET ! ");
+
 
 }
 
@@ -249,9 +251,9 @@ var request = function(name, url, proxy) {
     };
     var body = '';
     // proxy set
-    if(proxy) {
+    if (proxy) {
         var proxy = URL.parse(proxy, false);
-        options.path = options.protocol+ '//'+ options.host+ options.path;
+        options.path = options.protocol + '//' + options.host + options.path;
         options.headers.host = options.host;
         options.protocol = proxy.protocol;
         options.host = proxy.host;
@@ -259,7 +261,7 @@ var request = function(name, url, proxy) {
     }
     console.log(name, 'request options:', options);
 
-    var r = (options.protocol == 'http:'?http:https).request(options, function(res) {
+    var r = (options.protocol == 'http:' ? http : https).request(options, function(res) {
         res.on('end', function() {
             // just print ip, instead of whole body
             console.log(name, body.match(/check_ip" value="([^"]*)"/)[1]);
@@ -653,8 +655,8 @@ io.sockets.on('connection', function(socket, pseudo) {
     socket.on('afficheCarto', function(data) {
 
         console.log("@ afficherCarto  >>>> " + data.message);
-        onAfficherCarto() ;
-       socket.broadcast.emit("afficheCarto", data );
+        onAfficherCarto();
+        socket.broadcast.emit("afficheCarto", data);
 
     });
 
