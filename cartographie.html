@@ -2,27 +2,11 @@
 <html>
 
 <head>
-    <script>
-    var canvas, context;
-    window.onload = function() {
-        canvas = document.getElementById("myCanvas");
-        context = canvas.getContext("2d");
-
-        draw();
-    };
-
-    function draw() {
-        var imageObj = document.querySelector("#logo");
-        console.log("image is already loaded, we draw it!");
-        context.drawImage(imageObj, 0, 10, 100, 100);
-    }
-    </script>
+    <link rel="stylesheet" href="/css/style.css" />
 </head>
 
 <body>
-    <canvas id="myCanvas" width="512" height="512"></canvas>
-    </p>
-    <img id="logo" src="127.0.0.1:50000/nav/maps/map">
+    <canvas id="myCanvas" width="2000" height="2000"></canvas>
 </body>
 
 </html>
