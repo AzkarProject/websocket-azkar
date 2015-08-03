@@ -33,52 +33,52 @@
 					
 		    	</span>
 				<br/>
-			    <span id="localVideoSetting" class="">
-			    	IHM Pilote > Local Camera view: 
-					<input type="radio" name="PlVidSetting" value="show" id="PlVshow" checked onclick="setLocalPilotView('show')"> <label for="PlVshow">Show</label>
-					<input type="radio" name="PlVidSetting" value="hide" id="PlVhide" onclick="setLocalPilotView('hide')"/> <label for="PlVhide">Hide</label>
-					&nbsp;&nbsp; || &nbsp;&nbsp; IHM Robot > Local Camera view: 
+			    <span id="streamSetting" class="">
+			    	Video Stream Settings - Open & Send Pilote Stream to Robot:
+					<input type="radio" name="streamVidToRobot" value="open" id="streamOpen" onclick="setPilotStreamToRobot('open')" checked /> <label for="streamOpen">Yes</label>
+					<input type="radio" name="streamVidToRobot" value="close" id="streamClose" onclick="setPilotStreamToRobot('close')" /> <label for="streamClose">No</label>
+		    	</span>
+			    <br/>
+			    <span id="robotVideoSetting" class="">
+					IHM Robot - Local view: 
 					<input type="radio" name="RlVidSetting" value="show" id="RlVshow" checked onclick="setLocalRobotView('show')"> <label for="RlVshow">Show</label>
 					<input type="radio" name="RlVidSetting" value="hide" id="RlVhide" onclick="setLocalRobotView('hide')"/> <label for="RlVhide">Hide</label>
+		    		&nbsp;&nbsp; || &nbsp;&nbsp; Remote view: 
+					<input type="radio" name="RRVidSetting" value="show" id="RRVshow" checked onclick="setRemoteRobotView('show')"> <label for="RRVshow">Show</label>
+					<input type="radio" name="RRVidSetting" value="hide" id="RRVhide" onclick="setRemoteRobotView('hide')"/> <label for="RRVhide">Hide</label>
 		    	</span>
 				<br/>
-			    <span id="remoteVideoSetting" class="">
-			    	IHM Pilote > Remote Camera view: 
+			    <span id="piloteVideoSetting" class="">
+			    	IHM Pilote - Local view: 
+					<input type="radio" name="PlVidSetting" value="show" id="PlVshow" checked onclick="setLocalPilotView('show')"> <label for="PlVshow">Show</label>
+					<input type="radio" name="PlVidSetting" value="hide" id="PlVhide" onclick="setLocalPilotView('hide')"/> <label for="PlVhide">Hide</label>
+					&nbsp;&nbsp; || &nbsp;&nbsp; Remote view: 
 					<input type="radio" name="PRVidSetting" value="high" id="PRVhigh" onclick="setRemotePiloteView('high')" checked/> <label for="PRVhigh">High res</label>
 					<input type="radio" name="PRVidSetting" value="medium" id="PRVmedium" onclick="setRemotePiloteView('medium')" /> <label for="PRVmedium">Medium res</label>
 					<input type="radio" name="PRVidSetting" value="low" id="PRVlow" onclick="setRemotePiloteView('low')"/> <label for="PRVlow">Low res</label>
 					<input type="radio" name="PRVidSetting" value="hide" id="PRVhide" onclick="setRemotePiloteView('hide')"/> <label for="PRVhide">Hide</label>
-					&nbsp;&nbsp; || &nbsp;&nbsp; IHM Robot > Remote Camera view: 
-					<input type="radio" name="RRVidSetting" value="show" id="RRVshow" checked onclick="setRemoteRobotView('show')"> <label for="RRVshow">Show</label>
-					<input type="radio" name="RRVidSetting" value="hide" id="RRVhide" onclick="setRemoteRobotView('hide')"/> <label for="RRVhide">Hide</label>
+		    	</span>
+		    	
 
-	
-		    	</span>
-		    	<br/>
-			    <span id="streamSetting" class="">
-			    	IHM Pilote > Send local stream to IHM Robot: 
-					<input type="radio" name="streamVidToRobot" value="open" id="streamOpen" onclick="setPilotStreamToRobot('open')" checked /> <label for="streamOpen">Yes</label>
-					<input type="radio" name="streamVidToRobot" value="close" id="streamClose" onclick="setPilotStreamToRobot('close')" /> <label for="streamClose">No</label>
-		    	</span>
 				<hr/>
 		    	<script>                        
 				function setNavChannel(navChSet) {
-					navChannel = navChSet;
+					parameters.navCh = navChSet;
 				}
 				function setLocalPilotView(lPVSet) {
-					localPilotView = lPVSet;
+					parameters.lPview = lPVSet;
 				}
 				function setLocalRobotView(lRVSet) {
-					localRobotView = lRVSet;
+					parameters.lRview = lRVSet;
 				}
 				function setRemotePiloteView(rPVSet) {
-					remotePiloteView = rPVSet;
+					parameters.rPview = rPVSet;
 				}
 				function setRemoteRobotView(rRVSet) {
-					remoteRobotView = rRVSet;
+					parameters.rRView = rRVSet;
 				}
 				function setPilotStreamToRobot(pRStream) {
-					pilotStreamToRobot = pRStream;
+					parameters.pStoR = pRStream;
 				}
 				</script>
 		    
@@ -226,10 +226,11 @@
 		            <input type="text" name="message" id="message" placeholder="Votre message..." size="28" autofocus />
 		             <button id="envoi_message" type="submit" >Envoyer</button>
 		        </form>
+			 	<hr class="hrForm">
 			 	<textarea class="input" id="zone_chat_websocket" placeholder="Once upon a time..."></textarea>
 				<form id="text-options1">
-            		<label>Filename: <input type="text1" class="filename" id="text-filename1" placeholder="webSocket_log"/>.txt</label>
-            		<input type="submit" value="Save"/>
+            		<label>Filename: <input type="text1" class="filename" id="text-filename1" placeholder="Pilote_WS_LOGS"/>.txt</label>
+            		<button id="saveLogs_webSocket" type="submit" value="Save"/>Save</button>
         		</form>
 
 
@@ -271,17 +272,14 @@
 				<strong> WebRTC dataChannel Log </strong>
 				<hr/>
 		        <div id="formulaire_chat_webRTC" class="pseudoForm">
-		            <input type="text" name="message" id="send_chat_WebRTC" placeholder="Waiting open channel..." size="28" autofocus />
-		            <button id="sendButton" disabled onclick="sendMessage()">Envoyer</button>
+		            <input type="text" name="message" id="input_chat_WebRTC" disabled placeholder="Waiting open channel..." size="28" autofocus />
+		            <button id="env_msg_WebRTC" disabled onclick="sendMessage()">Envoyer</button>
 		        </div>
-	       	 	<br/>
-			 	<!--
-			 	<div id="zone_chat_WebRTC"></div>
-			 	-->
+				<hr class="hrForm">
 				<textarea class="input" id="zone_chat_WebRTC" placeholder="Once upon a time..."></textarea>
 					<form id="text-options2">
-	            		<label>Filename: <input type="text" class="filename" id="text-filename2" placeholder="webRTC_log"/>.txt</label>
-	            		<input type="submit" value="Save"/>
+	            		<label>Filename: <input type="text" class="filename" id="text-filename2" placeholder="Pilote_WebRTC_LOGS"/>.txt</label>
+	            		<button id="saveLogs_webRTC" type="submit" value="Save"/>Save</button>
 	        		</form>
         	</div>
 		
