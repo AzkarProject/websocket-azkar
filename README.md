@@ -1,4 +1,4 @@
-# AZKAR WebRTC script Base (Thierry) V 0.7.1.7
+# AZKAR WebRTC V 0.7.2.1
 ------------------------------------------------------------
 
 Test en ligne du script base 1to1:
@@ -15,19 +15,15 @@ http://websocket-azkar.rhcloud.com/
 - [x] RemoteStream
 - [x] Paths Pilotes/Robots
 - [X] Websocket
-    - [X] >> Implémenter Backups Logs
 - [X] RTCdataChannel
-    - [X] >> Implémenter Backups Logs
-    - [X] Fix Date E&R ds même message
 - [ ] Gest° Déco/Reco
-    - [ ] Tracer TOUS les messages transitants sur le server....
-        - [ ] Implémenter Backup Logs coté serveur 
-    - [ ] BUG: OpenShift > 1 Robot déjà connecté
-    - [ ] BUG: OpenShift > Persistance msg fantômes après déco...
-    - [ ] BUG: OpenShift > déco intempestives
-        - [ ] Fix: Vider buffer >> messages fantômes..
-        - [X] FiX: Désacoupler déco WebSocket/WebRTC
-    - [ ] Si déco WebSocket >> Reco transparante   
+    - [X] Implémenta° pré-signaling
+    - [X] FiX: Désacoupler déco WebSocket/WebRTC 
+    - [ ] BUGS OpenShift:
+        - [ ] Tracer TOUS les messages transitants sur le server....
+            - [ ] Implémenter Backup Logs coté serveur 
+        - [ ] BUG: OpenShift > 1 Robot déjà connecté
+        - [ ] BUG: OpenShift > Persistance msg fantômes après déco...           
 - [ ] Intégra° Commandes & Carto (Michael)
     - [ ] Switch WebSocket/WebRTC
     - [ ] >> Commandes Drive

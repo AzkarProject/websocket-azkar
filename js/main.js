@@ -121,10 +121,19 @@ function mainSettings() {
 	// Si une renégociation à déjas eu lieu
 	// >> pour éviter de réinitialiser +sieurs fois le même écouteur
 	isRenegociate = false;
+
+	// Etat des clients pour le signaling
+	piloteCnxStatus = pc.iceConnectionState;	
+	robotCnxStatus = pc.iceConnectionState;	
+
+
+
+	// console.log ("!!! pc.iceConnectionState >>>>>> " + pc.iceConnectionState);
+
 }
 mainSettings();
 
-//------ 1 Pé-signaling ----------------------------------------------------------
+//------ Phase 1 Pé-signaling ----------------------------------------------------------
 
 // rejectConnexion', message:message, url:indexUrl);
 socket.on('error', errorHandler);
@@ -177,43 +186,14 @@ function gotSources(sourceInfos) {
 	  	var sourceDevice = new common.sourceDevice();
 	  	sourceDevice.id = sourceInfo.id;
 	    sourceDevice.label= sourceInfo.label;
-	    //sourceDevice.label= sourceDevice.label+'('+sourceInfo.id+')';
 	    sourceDevice.kind = sourceInfo.kind;
 	    sourceDevice.facing = sourceInfo.facing;
 	    sourceInfos[i] = sourceDevice;
 
-	    /*// On n'affiche que les XX premiers caractères de l'ID...
-	    // ... Juste pour éviter des débordements d'affichage...
-	    var newID = sourceInfo.id;
-	    var microID = newID.substring(0,13);
-	    microID += "...";
-
-	    // Si un sourceInfoLabel existe, même traitement (pour éviter les formulaires a rallonge...
-	    if (sourceInfo.label) {
-	    	var label = sourceInfo.label
-	    	var newLabel = label.substring(0,32)+"...";
-	    	sourceInfo.label = newLabel;
-	    }
-	    /**/
-
-
-
 	    // Conflit webcam Chromium/Chrome si même device choisi sur le PC local
 	    // >>> L'ID fournie par L'API MediaStreamTrack.getSources est différente
 	    // selon le navigateur et ne permet pas de différencier cams et micros correctement
-	    // TODO: Trouver une solution de contournement pour les tests sur une même machine
-	  	/*if (origin == "local") {
-		  	console.log("--------------------------------------");
-		  	console.log("option.id:"+option.id);
-		    console.log("option.value:"+option.value); 
-		    console.log("sourceInfo.id:"+sourceInfo.id);
-		    console.log("sourceDevice.id:"+sourceDevice.id);
-
-		    console.log("sourceInfo.label:"+sourceInfo.label);
-			console.log("sourceDevice.label:"+sourceDevice.label);
-			console.log("--------------------------------------");
-	    }
-	    /**/
+	    // TODO: Trouver une solution de contournement pour les tests interNavigateurs sur une même machine
 	    
 	    if (sourceInfo.kind === 'audio') {
 	      	
@@ -257,9 +237,25 @@ if (typeof MediaStreamTrack === 'undefined') {
   	MediaStreamTrack.getSources(gotSources);
 }
 
+
+// IHM Pilote
+// Ouverture du premier des formulaires de selection des devices
+// Et par conséquence dévérouillage du lancement de la connexion
+function activeManageDevices () {
+	    
+	    // On active les sélecteurs de listes
+		remote_ButtonDevices.disabled = false; 
+		remote_AudioSelect.disabled = false; 
+		remote_VideoSelect.disabled = false; 
+
+		// Une petite animation CSS pour visualiser l'invite de formulaire...
+		document.getElementById("robotDevices").className = "insideFlex oneQuarterbox robot shadowGreen devicesInvite";
+}
+
+
 // IHM Pilote:
-// Activation du formulaire de selection des devices locaux
-// (Micro et WebCam) et de demande de connexion.
+// Traitement du formulaire de selection des devices du robot
+// et ouverture du formulaire de selection des devices du pilote 
 // Avec animation CSS d'invite du formulaire
 function remoteManageDevices () {
 	
@@ -270,6 +266,7 @@ function remoteManageDevices () {
 	}
 	local_AudioSelect.disabled = false; 
 	local_VideoSelect.disabled = false;
+	
 	// Invite de formulaire...
 	document.getElementById("piloteDevices").className = "insideFlex oneQuarterbox pilote devices shadowGreen devicesInvite"; 
 }
@@ -316,6 +313,8 @@ function localManageDevices () {
     }
 }
 
+// -- > ecouteurs webSocket de pré-signaling
+
 // Ecouteurs Websockets exclusifs au Pilote (appelant)
 if (type == "pilote-appelant") {
 	
@@ -333,24 +332,26 @@ if (type == "pilote-appelant") {
 	    // On alimente les listes de micro/caméra distantes
 	    gotSources(data.listeDevices);
 
-	    // On active les sélecteurs de listes
-		remote_ButtonDevices.disabled = false; 
-		remote_AudioSelect.disabled = false; 
-		remote_VideoSelect.disabled = false; 
-
-		// Une petite animation CSS pour visualiser l'invite de formulaire...
-		document.getElementById("robotDevices").className = "insideFlex oneQuarterbox robot shadowGreen devicesInvite";
-	
-
 	})
 	
 	// Reception du signal de fin pré-signaling
 	socket.on("readyForSignaling", function(data) {
-		console.log(">> socket.on('remoteListDevices',...");
+		console.log(">> socket.on('readyForSignaling',...");
+
 		if (data.message == "ready") {
 			initLocalMedia();
 		}
 	})
+
+
+	// Reception du statut de connexion du robot
+	socket.on("robotCnxStatus", function(data) {	
+		robotCnxStatus = data.message; 
+		// On vérifie l'état de sa propre connexion et de celle du robot
+		if ( piloteCnxStatus == 'new' && robotCnxStatus == 'new') {
+			activeManageDevices(); // On acive les formulaires permettant de relancer la connexion
+		}
+	});	
 }
 
 // Ecouteurs Websockets exclusifs au Robot (appelé)
@@ -372,6 +373,7 @@ if (type == "robot-appelé") {
 		//var debugg = common.stringObjectDump(data,"selectedRemoteDevice")
 		// console.log(debugg);
 		console.log(data);
+		
 		// On lance l'initlocalmedia
 		initLocalMedia();
 
@@ -386,8 +388,20 @@ if (type == "robot-appelé") {
 		// On rebalance au pilote-appelant le top-départ pour 
 		// qu'il lance un intilocalMedia de son coté....
 		// socket.emit("readyForSignaling","ready"); // ancienne version
+
+		// Fix Bug renégociation > On vérifie que c'est une renégo et
+		// si c'est le cas, on attend d'avoir l'état du statut webRTC ps iceConnexionXtate à "new"
+		// pour lancer le message de fin de pré-signaling . A faire ds l'écouteur idoine...
 		socket.emit('readyForSignaling', {objUser:localObjUser,message:"ready"});// Version objet
 	})
+
+	// Reception du statut de connexion du pilote
+	socket.on("pilotetCnxStatus", function(data) {	
+		piloteCnxStatus = data.message; 
+	});
+
+
+
 }
 
 // Quand on reçoit une mise à jour de la liste 
@@ -405,18 +419,21 @@ socket.on('updateUsers', function(data) {
     // si on est l'apellé  (Robot)
     // On renvoie à l'autre pair la liste de ses devices
     if (type == "robot-appelé") {
-    	socket.emit('remoteListDevices', {objUser:localObjUser,listeDevices:listeLocalSources});
+		socket.emit('remoteListDevices', {objUser:localObjUser,listeDevices:listeLocalSources});
+		// On lui envoie ensuite son etat de connexion
+		robotCnxStatus = pc.iceConnectionState;	
+		socket.emit("robotCnxStatus", robotCnxStatus);	
     }
 
     // si on est l'apellant (Pilote)
     // ... En cas de besoin...
     if (type == "pilote-appelant") {
-    	// ...TODO...
+    	// 1 on vérifie l'état de sa propre connexion
     }
 })
 
 
-// ---- 2 Signaling --------------------------------------------------
+// ---- Phase 2 Signaling --------------------------------------------------
 
 // initialisation du localStream et appel connexion
 function initLocalMedia() {
@@ -566,7 +583,6 @@ function connect () {
 	// Permet de déterminer si le pair distant s'est déconnecté.
 	pc.oniceconnectionstatechange = function (e) {
 		
-		
 		//var newDate = common.dateNowInMs();
 		var dateE = common.dateER('E');
 		console.log("@ pc.oniceconnectionstatechange > " + dateE);
@@ -575,10 +591,40 @@ function connect () {
 		console.log(">>> stateConnection Event > " + pc.iceConnectionState);
 		$(chatlog).prepend( dateE+' [stateConnection Event] ' + pc.iceConnectionState + '\n');
 
-		if (pc.iceConnectionState == 'disconnected') {
-			// alert("Déconnexion peer !!!");
-			onDisconnect();
+		// On informe l'autre pair de son statut de connexion	
+		if (type == 'pilote-appelant') {
+			piloteCnxStatus = pc.iceConnectionState;	
+			socket.emit("piloteCnxStatus", piloteCnxStatus);
+			// Si on change de status suite à une déco du robot
+			// On redéclenche l'ouverture des formulaires de connexion 
+			// a la condition que le robot soit lui aussi prêt a se reconnecter... (new...)
+			if ( piloteCnxStatus == 'new' && robotCnxStatus == 'new') {
+				activeManageDevices(); // On active les formulaires permettant de relancer la connexion
+			}
+
+		} else if (type == 'robot-appelé') {
+			robotCnxStatus = pc.iceConnectionState;	
+			socket.emit("robotCnxStatus", robotCnxStatus);
 		}
+		/**/
+
+		// On lance le processus de décoonnexion pour préparer une reconnexion
+		if (pc.iceConnectionState == 'disconnected') {
+			onDisconnect();
+		}  
+		
+		// Si 
+
+		// Fix Bug renégociation > Coté Robot on attend d'avoir 
+		// l'état du statut pc.iceConnectionState à "new"
+		/*// pour lancer le message de fin de pré-signaling. 
+		if ( pc.iceConnectionState == 'new' && type == "robot-appelé") {
+			alert (">> Send Msg WS readyForSignaling")
+			socket.emit('readyForSignaling', {objUser:localObjUser,message:"ready"});
+		}
+		/**/
+
+
 		// console.log(">>> isStarted = "+ isStarted);
 		/**/
 		// Statut connected: env 1 seconde de latence
@@ -674,9 +720,9 @@ function connect () {
 		pc.createOffer(doOffer, errorHandler, constraints);
 
 	
-	// Sinon si on est l'apellé
-	} else { 
-		//console.log("+++++++++ apellé ++++++++++++++ ");
+	// Sinon si on est l'apellé (Robot)
+	} else if (type === "robot-appelé"){ 
+		//console.log("+++++++++ appelé ++++++++++++++ ");
 		// dataChannel
 		// answerer must wait for the data channel
 		
@@ -715,7 +761,7 @@ function connect () {
 	}
 }
 
-// ----- 3 Post-Signaling --------------------------------------------
+// ----- Phase 3 Post-Signaling --------------------------------------------
 
 // A la déconnection du pair distant:
 function onDisconnect () {
