@@ -3,19 +3,35 @@ var common = require('./js/common'); // méthodes génériques et objets
 var settings = require('./js/settings'); // parametres de configuration
 var bodyParser = require("body-parser"); // pour recuperer le contenu de requetes POST 
 var HttpStatus = require('http-status-codes'); // le module qui recupère les status des requetes HTTP
-
- 
-
-// contrôle chargement coté serveur
-var commonTest = common.test();
-console.log(commonTest + " correctement chargé coté serveur !!!");
+//pour faire des requettes XMLHttpRequest
+var XMLHttpRequest = require('xhr2');
+var Q=require('Q');
 
 var app = require('express')(),
     server = require('http').createServer(app),
     //server = require('https').createServer(app),
     io = require('socket.io').listen(server),
     ent = require('ent'), // Permet de bloquer les caractères HTML (sécurité équivalente à htmlentities en PHP)
-    fs = require('fs');
+    fs = require('fs'); 
+
+// Pour que nodejs puisse servir correctement 
+// les dépendances css du document html
+var express = require('express');
+
+
+// Pour débugg : Contrôle de la version de socket.io
+var ioVersion = require('socket.io/package').version;
+var expressVersion = require('express/package').version;
+
+
+
+// ------ Fin des requires ------------------
+
+// contrôle chargement coté serveur
+var commonTest = common.test();
+console.log(commonTest + " correctement chargé coté serveur !!!");
+
+
 
 // variables d'environnement en variables globale pour les passer à la méthode websocket
 ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP ||"127.0.0.1";
@@ -25,18 +41,18 @@ port      = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 2000;
 // affectation du port
 app.set('port', port);
 
-// Pour que nodejs puisse servir correctement 
-// les dépendances css du document html
-var express = require('express');
-app.use(express.static(__dirname));
-
-
 
 //Utiliser body-parser pour la gestion de requete POST
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json()); // support json encoded bodies
 
 
+
+
+// ------------ routing ------------
+
+// Pour la récup des dépedances CSS par nodejs
+app.use(express.static(__dirname));
 
 
 // Chargement de la page index.html
@@ -59,14 +75,7 @@ app.get('/visiteur/', function (req, res) {
     res.sendFile(__dirname + '/visiteur.html');
 });
 
-
-
-
 /*******************envoi de commande de deplacement en differential drive*********************/
-
-//pour faire des requettes XMLHttpRequest
-var XMLHttpRequest = require('xhr2');
-var Q=require('Q');
 
 // Version Michael
 // flag moveOder en cours  
@@ -123,14 +132,10 @@ function sendMove(url) {
 /**/
 
 
-
-
 // Lancement du serveur
 server.listen(app.get('port'),ipaddress);
 
-// Pour débugg : Contrôle de la version de socket.io
-var ioVersion = require('socket.io/package').version;
-var expressVersion = require('express/package').version;
+
 // On affiche ces éléments coté serveur
 console.log("**Socket.IO Version: " + ioVersion);
 console.log("**Express Version: " + expressVersion);
@@ -399,6 +404,17 @@ io.sockets.on('connection', function (socket, pseudo) {
         socket.broadcast.emit('answer', {message: message});
     }); 
 
+    //  Retransmission du status de connexion WebRTC du pilote
+    socket.on('piloteCnxStatus', function (message) {
+        socket.broadcast.emit('piloteCnxStatus', {message: message});
+    }); 
+
+    //  Retransmission du status de connexion WebRTC du robot
+    socket.on('robotCnxStatus', function (message) {
+        socket.broadcast.emit('robotCnxStatus', {message: message});
+    }); 
+
+
     // ----------------------------------------------------------------------------------
     // Phase pré-signaling ( selections caméras et micros du robot par l'IHM pilote)
 
@@ -433,4 +449,11 @@ io.sockets.on('connection', function (socket, pseudo) {
     socket.on('readyForSignaling', function (data) {
         socket.broadcast.emit('readyForSignaling', {objUser:data.objUser, message:data.message});
     }); 
+
+
+
+
+
+
+
 });
