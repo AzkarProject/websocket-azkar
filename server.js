@@ -3,9 +3,11 @@
 // Elements communs client/serveur
 var common = require('./js/common'); // méthodes génériques et objets
 var settings = require('./js/settings'); // parametres de configuration
-// var request = require('request');
+var request = require('request');
 var bodyParser = require("body-parser"); // pour recuperer le contenu de requetes POST 
 var HttpStatus = require('http-status-codes'); // le module qui recupère les status des requetes HTTP
+var Q = require('Q');
+var httpProxy = require('http-proxy');
 
 // contrôle chargement coté serveur
 var commonTest = common.test();
@@ -57,6 +59,10 @@ app.get('/robot/', function(req, res) {
     res.sendFile(__dirname + '/robot.html');
 });
 
+app.get('/cartographie/', function(req, res) {
+    res.sendFile(__dirname + '/cartographie.html');
+});
+
 
 app.get('/visiteur/', function(req, res) {
     res.sendFile(__dirname + '/visiteur.html');
@@ -99,18 +105,30 @@ function onMoveOrder(enable, aSpeed, lSpeed) {
         console.log('@onMoveOrder >> angular spped :' + aSpeedMov + '  et linear speed :' + lSpeed);
         //res.end();*/
 
-
-
-
     var url = 'http://localhost:50000/api/drive';
-    sendMove(url)
+
+    sendMove(url, enable, aSpeed, lSpeed)
         .then(function() {
+            console.log('dans le then  ');
             console.log('@onMoveOrder >> angular speed :' + aSpeedMov + '  et linear speed :' + lSpeed);
         })
+
 }
 
 
-function sendMove(url) {
+function sendMove(url, enable, aSpeed, lSpeed) {
+
+    //var aSpeedMov = Math.round(aSpeed * 100) / 1000;
+    var aSpeedMov = aSpeed;
+    var btnA = (enable == 'true' ? true : false); //  
+
+    /* if (enable == 'true') {
+         btnA = true;
+     } else {
+         btnA = false;
+     }*/
+
+
     return Q.Promise(function(resolve, reject, notify) {
 
         var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance 
@@ -131,6 +149,7 @@ function sendMove(url) {
         function onload() {
             if (xmlhttp.status === 200) {
                 resolve(xmlhttp.responseText);
+                // console.log('dans  le onload du send move ');
             } else {
                 reject(new Error("Status code was " + xmlhttp.status));
             }
@@ -146,6 +165,146 @@ function sendMove(url) {
 
     })
 }
+
+/***/
+/*******Gestion de la cartographie *******************/
+
+
+/*mise en place d'un proxy */
+
+var httpProxy = require('http-proxy');
+// Error example
+//
+// Http Proxy Server with bad target
+//
+var proxy = httpProxy.createServer({
+    target: 'http://localhost:50000'
+});
+
+proxy.listen(2000);
+
+//
+// Listen for the `error` event on `proxy`.
+proxy.on('error', function(err, req, res) {
+    res.writeHead(500, {
+        'Content-Type': 'text/plain'
+    });
+
+    res.end('Something went wrong. And we are reporting a custom error message.');
+});
+
+//
+// Listen for the `proxyRes` event on `proxy`.
+//
+proxy.on('proxyRes', function(proxyRes, req, res) {
+    console.log('RAW Response from the target', JSON.stringify(proxyRes.headers, true, 2));
+});
+
+//
+// Listen for the `open` event on `proxy`.
+//
+proxy.on('open', function(proxySocket) {
+    // listen for messages coming FROM the target here
+    proxySocket.on('data', hybiParseAndLogMessage);
+});
+
+//
+// Listen for the `close` event on `proxy`.
+//
+proxy.on('close', function(req, socket, head) {
+    // view disconnected websocket connections
+    console.log('Client disconnected');
+});
+
+
+
+/****************************/
+
+function onAfficherCarto() {
+
+    var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance 
+    var url = 'http://localhost:50000/nav/maps/map';
+    xmlhttp.open("GET", url);
+    xmlhttp.send();
+    if (xmlhttp.status == 200) {
+        console.log("requette bien envoyee  : " +
+            xmlhttp.responseText);
+
+    }
+
+    console.log("apres l'envoi du GET ! ");
+
+
+}
+
+
+/*********************************************/
+
+var http = require('http'),
+    https = require('https'),
+    URL = require('url');
+
+var request = function(name, url, proxy) {
+    // options
+    var options = URL.parse(url, false);
+    // headers
+    options.headers = {
+        accept: '*/*',
+        'content-length': 0
+    };
+    var body = '';
+    // proxy set
+    if (proxy) {
+        var proxy = URL.parse(proxy, false);
+        options.path = options.protocol + '//' + options.host + options.path;
+        options.headers.host = options.host;
+        options.protocol = proxy.protocol;
+        options.host = proxy.host;
+        options.port = proxy.port;
+    }
+    console.log(name, 'request options:', options);
+
+    var r = (options.protocol == 'http:' ? http : https).request(options, function(res) {
+        res.on('end', function() {
+            // just print ip, instead of whole body
+            console.log(name, body.match(/check_ip" value="([^"]*)"/)[1]);
+            // console.log(name, body);
+        });
+        res.on('readable', function() {
+            body += this.read().toString();
+        });
+    });
+    r.end();
+};
+
+
+
+
+
+/*********************************************/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -185,7 +344,6 @@ app.get('/arretteTourne/', function(req, res) {
         "TargetAngularSpeed": TargetAngularSpeed,
         "TargetLinearSpeed": TargetLinearSpeed
     }));
-    console.log('héhé jarreter de tourne  !! apres lenvoi de la requete POST');
     res.end();
 });
 
@@ -485,7 +643,7 @@ io.sockets.on('connection', function(socket, pseudo) {
     // Transmission de commande générique V2 objet
     socket.on('moveOrder', function(data) {
 
-        console.log("@ moveOrder >>>> " + data.command);
+        console.log("@ moveOrder >>>> " + data.command + "[ vitesse angulaire : " + data.aSpeed + " | vitesse linéaire : " + data.lSpeed + " ]");
         onMoveOrder(data.enable, data.aSpeed, data.lSpeed)
             //  socket.emit("moveOrder",{ command:'Move', aSpeed:aSpeed, lSpeed:lSpeed, Enable:btHommeMort });
         if (data.command == 'Move') {
@@ -495,6 +653,16 @@ io.sockets.on('connection', function(socket, pseudo) {
             flagDrive = false;
         }
     });
+
+    // cartographie 
+    socket.on('afficheCarto', function(data) {
+
+        console.log("@ afficherCarto  >>>> " + data.message);
+        onAfficherCarto();
+        socket.broadcast.emit("afficheCarto", data);
+
+    });
+
 
 
     // ----------------------------------------------------------------------------------
