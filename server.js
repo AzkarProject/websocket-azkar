@@ -14,9 +14,7 @@ var app = require('express')(),
     ent = require('ent'), // Permet de bloquer les caractères HTML (sécurité équivalente à htmlentities en PHP)
     fs = require('fs'); 
 
-// Pour que nodejs puisse servir correctement 
-// les dépendances css du document html
-var express = require('express');
+
 
 
 // Pour débugg : Contrôle de la version de socket.io
@@ -42,17 +40,21 @@ port  = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 2000;
 app.set('port', port);
 
 
-//Utiliser body-parser pour la gestion de requete POST
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json()); // support json encoded bodies
+// Pour que nodejs puisse servir correctement 
+// les dépendances css du document html
+var express = require('express');
+app.use(app.static(__dirname));
+
+
+// Utiliser body-parser pour la gestion de requete POST
+// app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.json()); // support json encoded bodies
 
 
 
 
 // ------------ routing ------------
 
-// Pour la récup des dépedances CSS par nodejs
-app.use(express.static(__dirname));
 
 
 // Chargement de la page index.html
@@ -84,13 +86,13 @@ var flagDrive = false; //Par défaut a false , à la reception de moveOrder ==> 
 function onMoveOrder(enable, aSpeed, lSpeed) {
 
     var url = 'http://localhost:50000/api/drive';
-    sendMove(url)
+    // sendMove(url)
         .then(function() {
             console.log('@onMoveOrder >> angular speed :' + aSpeedMov + '  et linear speed :' + lSpeed);
         })
 }
 
-
+/*
 function sendMove(url) {
     return Q.Promise(function(resolve, reject, notify) {
 
