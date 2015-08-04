@@ -1,0 +1,44 @@
+$ git push ssh://.....
+
+Counting objects: 7, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (4/4), done.
+Writing objects: 100% (4/4), 390 bytes | 0 bytes/s, done.
+Total 4 (delta 3), reused 0 (delta 0)
+remote: Stopping NodeJS cartridge
+remote: Tue Aug 04 2015 12:16:08 GMT-0400 (EDT): Stopping application 'websocket' ...
+remote: Tue Aug 04 2015 12:16:09 GMT-0400 (EDT): Stopped Node application 'websocket'
+remote: Saving away previously installed Node modules
+remote: Building git ref 'master', commit 283b932
+remote: Building NodeJS cartridge
+remote: npm info it worked if it ends with ok
+remote: npm info using npm@1.4.28
+remote: npm info using node@v0.10.35
+remote: npm WARN package.json AZKAR-WebRTC-script-Base@0.0.1 No repository field.
+remote: npm info preinstall AZKAR-WebRTC-script-Base@0.0.1
+remote: npm info build /var/lib/openshift/54f48c24e0b8cd2f4d00001c/app-root/runtime/repo
+remote: npm info linkStuff AZKAR-WebRTC-script-Base@0.0.1
+remote: npm info install AZKAR-WebRTC-script-Base@0.0.1
+remote: npm info postinstall AZKAR-WebRTC-script-Base@0.0.1
+remote: npm info prepublish AZKAR-WebRTC-script-Base@0.0.1
+remote: npm info ok
+remote: Preparing build for deployment
+remote: Deployment id is da3ac2d7
+remote: Activating deployment
+remote: Starting NodeJS cartridge
+remote: Tue Aug 04 2015 12:16:47 GMT-0400 (EDT): Starting application 'websocket' ...
+remote: Waiting for application port (8080) become available ...
+remote: Application 'websocket' failed to start (port 8080 not available)
+remote: -------------------------
+remote: Git Post-Receive Result: failure
+remote: Activation status: failure
+remote: Activation failed for the following gears:
+remote: 54f48c24e0b8cd2f4d00001c (Error activating gear: CLIENT_ERROR: Failed to execute: 'control start' for /var/lib/o
+penshift/54f48c24e0b8cd2f4d00001c/nodejs
+remote: #<IO:0x0000000136d390>
+remote: #<IO:0x0000000136d318>
+remote: )
+remote: Deployment completed with status: failure
+remote: postreceive failed
+To ssh://54f48c24e0b8cd2f4d00001c@websocket-azkar.rhcloud.com/~/git/websocket.git/
+   7e8fc69..283b932  master -> master
