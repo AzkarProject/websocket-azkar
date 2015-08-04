@@ -36,7 +36,7 @@ console.log(commonTest + " correctement chargé coté serveur !!!");
 // variables d'environnement en variables globale pour les passer à la méthode websocket
 ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP ||"127.0.0.1";
 // ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP ||"192.168.173.1";
-port      = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 2000;
+port  = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 2000;
 
 // affectation du port
 app.set('port', port);
