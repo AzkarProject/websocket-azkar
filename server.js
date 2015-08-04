@@ -1,21 +1,37 @@
 // Elements communs client/serveur
 var common = require('./js/common'); // méthodes génériques et objets
 var settings = require('./js/settings'); // parametres de configuration
-
-
-
- 
-
-// contrôle chargement coté serveur
-var commonTest = common.test();
-console.log(commonTest + " correctement chargé coté serveur !!!");
+var bodyParser = require("body-parser"); // pour recuperer le contenu de requetes POST 
+var HttpStatus = require('http-status-codes'); // le module qui recupère les status des requetes HTTP
+//pour faire des requettes XMLHttpRequest
+var XMLHttpRequest = require('xhr2');
+var Q=require('Q');
 
 var app = require('express')(),
     server = require('http').createServer(app),
     //server = require('https').createServer(app),
     io = require('socket.io').listen(server),
     ent = require('ent'), // Permet de bloquer les caractères HTML (sécurité équivalente à htmlentities en PHP)
-    fs = require('fs');
+    fs = require('fs'); 
+
+// Pour que nodejs puisse servir correctement 
+// les dépendances css du document html
+var express = require('express');
+
+
+// Pour débugg : Contrôle de la version de socket.io
+var ioVersion = require('socket.io/package').version;
+var expressVersion = require('express/package').version;
+
+
+
+// ------ Fin des requires ------------------
+
+// contrôle chargement coté serveur
+var commonTest = common.test();
+console.log(commonTest + " correctement chargé coté serveur !!!");
+
+
 
 // variables d'environnement en variables globale pour les passer à la méthode websocket
 ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP ||"127.0.0.1";
@@ -25,20 +41,18 @@ port      = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 2000;
 // affectation du port
 app.set('port', port);
 
-// Pour que nodejs puisse servir correctement 
-// les dépendances css du document html
-var express = require('express');
-app.use(express.static(__dirname));
 
-
-
-
-var bodyParser= require("body-parser"); // pour recuperer le contenu de requetes POST
 //Utiliser body-parser pour la gestion de requete POST
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json()); // support json encoded bodies
-var HttpStatus = require('http-status-codes'); // le module qui recupère les status des requetes HTTP
 
+
+
+
+// ------------ routing ------------
+
+// Pour la récup des dépedances CSS par nodejs
+app.use(express.static(__dirname));
 
 
 // Chargement de la page index.html
@@ -61,51 +75,67 @@ app.get('/visiteur/', function (req, res) {
     res.sendFile(__dirname + '/visiteur.html');
 });
 
+/*******************envoi de commande de deplacement en differential drive*********************/
 
-/*******************envoi de requetes POST pour les mouvements du robot***********************************/
+// Version Michael
+// flag moveOder en cours  
+var flagDrive = false; //Par défaut a false , à la reception de moveOrder ==> True 
 
-// Routing Envoi de requetes POST pour la partie des commande STEP pg 40 - 45 RobuBox et voir page 70 --> Translate , relative , absolute , stop 
-app.post('/lokarria/step/translate', function (req, res) {
-    var x = req.body.X;
-    var y = req.body.Y;
+function onMoveOrder(enable, aSpeed, lSpeed) {
 
-    console.log('héhé je veux me deplacer ');
-    res.send( 'héhé je veux me deplacer de : [ x ' +  x + ' , y : ' + y + ' ]');
-    res.end();
- });
+    var url = 'http://localhost:50000/api/drive';
+    sendMove(url)
+        .then(function() {
+            console.log('@onMoveOrder >> angular speed :' + aSpeedMov + '  et linear speed :' + lSpeed);
+        })
+}
 
-app.post('/lokarria/step/relative', function (req, res) {
-    var distance = req.body.distance ;
-    var maxSpeed = req.body.maxSpeed ;
 
-    console.log('héhé je veux faire une rotation relative ');
-    res.send(' je me suis tourné dune rotation relative de  ' + distance + ' rad  avec une vitesse de : ' + maxSpeed + ' rad/s' );
-    res.end();
- });
+function sendMove(url) {
+    return Q.Promise(function(resolve, reject, notify) {
 
-app.post('/lokarria/step/absolute', function (req, res) {
-    var distance = req.body.distance ;
-    var maxSpeed = req.body.maxSpeed ;
+        
+        var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance 
 
-    console.log('héhé je veux faire une rotation absolue ');
-    res.send(' je me suis tourné dune rotation absolue de  ' + distance + ' rad  avec une vitesse de : ' + maxSpeed + 'rad/s');
-    res.end();
- });
+        xmlhttp.open("POST", url);
+        xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
-app.post('/lokarria/step/stop', function (req, res) {
-    console.log('héhé je veux me stopper ');
-    res.send('requette post reçue pour me stopper et le http status : ' + HttpStatus.OK);
-    res.end();
- });
+        xmlhttp.onload = onload;
+        xmlhttp.onerror = onerror;
+        xmlhttp.onprogress = onprogress;
 
-/******************************************************/
+        xmlhttp.send(JSON.stringify({
+            "Enable": btnA,
+            "TargetAngularSpeed": aSpeedMov,
+            "TargetLinearSpeed": lSpeed
+        }));
+
+        function onload() {
+            if (xmlhttp.status === 200) {
+                resolve(xmlhttp.responseText);
+            } else {
+                reject(new Error("Status code was " + xmlhttp.status));
+            }
+        }
+
+        function onerror() {
+            reject(new Error("Can't XHR " + JSON.stringify(url)));
+        }
+
+        function onprogress(event) {
+            notify(event.loaded / event.total);
+        }
+
+    })
+}
+
+/**/
+
 
 // Lancement du serveur
 server.listen(app.get('port'),ipaddress);
 
-// Pour débugg : Contrôle de la version de socket.io
-var ioVersion = require('socket.io/package').version;
-var expressVersion = require('express/package').version;
+
 // On affiche ces éléments coté serveur
 console.log("**Socket.IO Version: " + ioVersion);
 console.log("**Express Version: " + expressVersion);
@@ -117,22 +147,7 @@ console.log("     "+settings.appName() + " V " + settings.appVersion() );
 
 var indexUrl = "http://"+ipaddress+":"+port;
 
-
-/*// liste des clients
-var users = {};
-var nbUsers = 0;
-
-// Historique des connexions
-var histoUsers = {};
-var placeHisto = 0;
-histoPosition = 0;
-/**/
-
-
-
-// --- idem mais pour la version Objet
-
-// liste des clients
+// liste des clients connectés
 var users2 = {};
 var nbUsers2 = 0;
 
@@ -345,15 +360,18 @@ io.sockets.on('connection', function (socket, pseudo) {
     }); 
 
 
-    // Transmission de commande générique V2 objet
-    socket.on('moveOrder', function (data) {
-        console.log(data);
-        if (data.moveOrder){
-            moveOrder = ent.encode(data.moveOrder); // On vire les caractères html... ???????
-            socket.broadcast.emit('moveOrder',{objUser: data.objUser, moveOrder: moveOrder});
-        }
-        console.log ("@ moveOrder from "+data.objUser.placeliste+"-"+data.objUser.pseudo+ ": "+ moveOrder);
-    }); 
+    // ---------------------------------------------------------------------------------
+    // Partie commandes du robot par websocket (stop, moveDrive, moveSteps, goto & clicAndGo)
+
+     // Transmission de commande générique V2 objet
+    socket.on('moveOrder', function(data) {
+        
+       console.log("@ moveOrder >>>> " + data.command );
+       //  ex: >> socket.emit("moveOrder",{ command:'Move', aSpeed:aSpeed, lSpeed:lSpeed, Enable:btHommeMort });
+       onMoveOrder(data.enable,data.aSpeed,data.lSpeed)
+       
+    });
+
 
 
     // ----------------------------------------------------------------------------------
@@ -386,6 +404,17 @@ io.sockets.on('connection', function (socket, pseudo) {
         socket.broadcast.emit('answer', {message: message});
     }); 
 
+    //  Retransmission du status de connexion WebRTC du pilote
+    socket.on('piloteCnxStatus', function (message) {
+        socket.broadcast.emit('piloteCnxStatus', {message: message});
+    }); 
+
+    //  Retransmission du status de connexion WebRTC du robot
+    socket.on('robotCnxStatus', function (message) {
+        socket.broadcast.emit('robotCnxStatus', {message: message});
+    }); 
+
+
     // ----------------------------------------------------------------------------------
     // Phase pré-signaling ( selections caméras et micros du robot par l'IHM pilote)
 
@@ -405,8 +434,9 @@ io.sockets.on('connection', function (socket, pseudo) {
 
     // Pilote >> Robot: cams/micros sélectionnés par le Pilote
     socket.on('selectedRemoteDevices', function (data) {
-    	socket.broadcast.emit('selectedRemoteDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
-    	/*// Contrôle >>
+    	//socket.broadcast.emit('selectedRemoteDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
+    	socket.broadcast.emit('selectedRemoteDevices', {objUser:data.objUser, listeDevices:data.listeDevices, settings:data.settings});
+        /*// Contrôle >>
     	var place = data.objUser.placeliste;
     	var login = data.objUser.pseudo;
     	var role = data.objUser.typeUser;
@@ -419,4 +449,11 @@ io.sockets.on('connection', function (socket, pseudo) {
     socket.on('readyForSignaling', function (data) {
         socket.broadcast.emit('readyForSignaling', {objUser:data.objUser, message:data.message});
     }); 
+
+
+
+
+
+
+
 });

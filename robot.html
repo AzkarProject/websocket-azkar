@@ -19,13 +19,12 @@
 
     <strong><span id="zone_info_server">WebRTC AZKAR</span></strong>
     <hr/>
-
-	    
-
-
 		
 		<section id="bloc_1to1_messages" class="fullSizeContainerBox">
 				
+				<!--
+				
+
 				<div id="dataChannelArea" class="insideFlex robot shadowBlack floatLeft doubleQuarterBox">                                             
 			        <div id="formulaire_chat_webRTC" class="pseudoForm">
 			            <strong> WebRTC dataChannel Log  &nbsp;&nbsp;&nbsp;&nbsp;   </strong>
@@ -47,8 +46,85 @@
 				 	<div id="zone_chat_websocket"></div>
 	      		</div>
 
+		
+				-->
+
+			<div id="websocketChat" class="insideFlex robot shadowBlack floatLeft doubleQuarterBox">  
+				
+			    <form action="/" method="post" id="formulaire_chat_websoket" style="text-align:center" >
+			        <strong>Websocket Chat & Logs&nbsp;</strong>
+		            <input type="text" name="message" id="message" placeholder="Votre message..." size="28" autofocus />
+		            <button id="env_msg_ws" type="submit" >Envoyer</button>
+		        </form>
+		        <hr class="hrForm">
+			 	<textarea class="input" style="width:100%" id="zone_chat_websocket" placeholder="Once upon a time..."></textarea>
+				<hr class="hrForm">
+				<form id="text-options1" style="text-align:center">
+            		<label>Filename: <input type="text1" class="filename" id="text-filename1" placeholder="Robot_WS_LOGS"/>.txt</label>
+            		<button id="saveLogs_webSocket" type="submit" value="Save"/>Save</button>
+        		</form>
+			</div>
+
+      		<div id="dataChannelArea" class="insideFlex robot shadowBlack floatLeft doubleQuarterBox"> 
+			        
+			   <div id="formulaire_chat_webRTC" class="pseudoForm" style="text-align:center">
+			        <strong>WebRTC Chat & Logs&nbsp;</strong>
+		            <input type="text" name="message" id="input_chat_WebRTC" disabled placeholder="Waiting open channel..." size="28" autofocus />
+		            <button id="env_msg_WebRTC" disabled onclick="sendMessage()">Envoyer</button>
+			   </div>
+			    <hr class="hrForm">
+				<textarea class="input" id="zone_chat_WebRTC" style="width:100%" placeholder="Once upon a time..."></textarea>
+				<hr class="hrForm">
+				<form id="text-options2" style="text-align:center">
+	            	<label>Filename: <input type="text" class="filename" id="text-filename2" placeholder="Robot_webRTC_LOGS"/>.txt</label>
+	            	<button id="saveLogs_webRTC" type="submit" value="Save"/>Save</button>
+	        	</form>
+	      		
+
+	      	</div>
+
+
+
+
+
+
+
 		</section>		
 				
+
+
+
+		<section id="bloc_1toN" class="fullSizeContainerBox">
+			
+			<div  class="floatLeft oneQuarterContainerBox">
+				<div id="piloteCam" class="insideFlex pilote shadowBlack">
+				    <strong> Pilot Camera</strong>
+				    <hr/>
+				    <video id='otherPeer' autoplay muted controls="controls" ></video>
+		  	 	</div>
+			</div>
+		
+
+			<div  class="floatLeft oneQuarterContainerBox">
+				<div id="robotCam" class="insideFlex robot shadowBlack">
+				    <strong> Robot Camera</strong>
+				    <hr/>
+				    <video id='video' autoplay muted controls="controls"></video>
+		  	 	</div>
+			</div>
+
+
+
+			<div  class="floatLeft doubleQuarterContainerBox">
+				<div id="visitorsList" class="insideFlex robot shadowBlack">
+						<strong>Visitor's List</strong>
+						<hr/>
+						BOOOOO
+		  	 	</div>
+			</div>
+
+		</section>
+
 		<section id="bloc_1to1_settings" class="fullSizeContainerBox">
 
 				
@@ -101,150 +177,23 @@
 
 		</section>
 
-
 		
-
-		
-
-
-
-
-
-
-
-		<section id="bloc_1toN" class="fullSizeContainerBox">
-			
-			<div  class="floatLeft oneQuarterContainerBox">
-				<div id="piloteCam" class="insideFlex pilote shadowBlack">
-				    <strong> Pilot Camera</strong>
-				    <hr/>
-				    <video id='otherPeer' autoplay muted controls="controls" ></video>
-		  	 	</div>
-			</div>
-		
-
-			<div  class="floatLeft oneQuarterContainerBox">
-				<div id="robotCam" class="insideFlex robot shadowBlack">
-				    <strong> Robot Camera</strong>
-				    <hr/>
-				    <video id='video' autoplay muted controls="controls"></video>
-		  	 	</div>
-			</div>
-
-
-
-			<div  class="floatLeft doubleQuarterContainerBox">
-				<div id="visitorsList" class="insideFlex robot shadowBlack">
-						<strong>Visitor's List</strong>
-						<hr/>
-						BOOOOO
-		  	 	</div>
-			</div>
-
-
-
-
-
-
-
-		</section>
-
-		
-		
-
-
-
-
-
-
-
-
-
-
-		<section id="bloc_1toN_2" class="fullSizeContainerBox">
-		    
-		   
-			    <!--
-			    <div class="insideFlex myvideo robot halfBox">
-				    <strong> WebRTC localVideo (Robot)</strong>
-					
-				    <video id='video' autoplay muted controls="controls"></video>
-				</div>
-				-->
-				
-
-			    <!--
-			    <div class="insideFlex yourvideo pilote halfBox">
-				    <strong> WebRTC remoteVideo (Pilote)</strong>
-					
-				    <video id='otherPeer' autoplay muted controls="controls" ></video>
-		  	 	</div>
-		  	 	-->
-	  	 	
-	  	 	
-				<!--
-				<div class="insideFlex robot halfBox">
-					<strong> Websocket Chat Test </strong>
-					
-			        <form action="/" method="post" id="formulaire_chat_websoket">
-			            <input type="text" name="message" id="message" placeholder="Votre message..." size="28" autofocus />
-			            <input type="submit" id="envoi_message" value="Envoyer" />
-			        </form>
-		       	 	
-				 	<div id="zone_chat_websocket"></div>
-				 	<div id="zone_reception_commande_websocket"></div>
-	      		</div>
-	      		-->
-       
-		  
-				
-				<!--
-				<div class="insideFlex robot halfBox">
-					<strong> WebRTC dataChannel Test </strong>
-			        <div id="formulaire_chat_webRTC" class="pseudoForm">
-			            <input type="text" name="message" id="send_chat_WebRTC" placeholder="Waiting open channel..." size="28" autofocus />
-			            <button id="sendButton" disabled onclick="sendMessage()">Envoyer</button>
-			        </div>
-		       	 	<br/>
-				 	<div id="zone_chat_WebRTC"></div>
-	      		</div>
-	      		-->
-
-
-
-	  	 
-	  	</section>
 	
-
-
-		<!--
-		<section id="block_1">			
-			<li class="flex-item insideFlex robot">	
-
-				<strong> Car drive simulator test </strong>
-				<hr/>
-				<div id='simulateur-area'></div>
-				<div id='simulateur-area2'></div>
-			</li>
-	  	</section>
-	  	-->
-
-
-
        	<script>	  	 
-		var otherType = "appelant";
+		var otherType = "pilote-appelant";
 		var type = "robot-appelé";
 		</script>
-
-        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+		<!--
+         <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+         -->
+         <script src='/js/lib/jquery-1.10.1.min.js'></script>
         <script src="/socket.io/socket.io.js"></script>
+        <script src='/js/lib/adapter.js'></script>
+		<script src="/js/lib/FileSaver.js"></script>
+
         <script src="/js/common.js"></script>
         <script src="/js/settings.js"></script>
-        <!--
-        <script src="/js/lib/phaser.min.js"></script>
-        <script src="/js/simulateur.js"></script>
-		-->
-        <script src='/js/lib/adapter.js'></script>
+        <script src="/js/logs.js"></script>
         <script src='/js/ws_manager.js'></script>
 		<script src='/js/main.js'></script>
 
