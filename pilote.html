@@ -20,298 +20,303 @@
     <strong><span id="zone_info_server">WebRTC AZKAR</span></strong>
     <hr/>
 
-	<!-- <ul class="flex-container wrap"> -->
+	<section id="settingsArea" class="fullSizeContainerBox">
 
-
-		<section id="settingsArea" class="fullSizeContainerBox">
-
-				<div id="top" class="insideFlex pilote shadowBlack floatLeft fourQuarterBox">                                                                                                                                                          
-					<strong> Benchmarks Settings </strong>
-					<hr/>
-				    
-					    <span id="localVideoSetting" class="">
-					    	Pilote Camera view: 
-							<input type="radio" name="lVidSetting" value="hide" id="lVhide" onclick="setPilotVideo('hide')"/> <label for="rVhide">Hide local Video</label>
-							<input type="radio" name="lVidSetting" value="show" id="lVshow" checked/ onclick="setPilotVideo('show')"> <label for="lVshow">Show local Video</label>
-				    	</span>
-						<br/>
-					    <span id="remoteVideoSetting" class="">
-					    	Robot Camera view: 
-							<input type="radio" name="rVidSetting" value="hide" id="rVhide" onclick="setRobotVideo('hide')"/> <label for="rVhide">Hide remote Video</label>
-							<input type="radio" name="rVidSetting" value="low" id="rVlow" onclick="setRobotVideo('low')"/> <label for="rVlow">Show in low Resolution</label>
-							<input type="radio" name="rVidSetting" value="medium" id="rVmedium" onclick="setRobotVideo('medium')" /> <label for="rVmedium">Show in medium Resolution</label>
-							<input type="radio" name="rVidSetting" value="high" id="rVhigh" onclick="setRobotVideo('high')" checked/> <label for="rVhigh">Show in High resolution</label>	
-				    	</span>
-				    	<br/>
-					    <span id="streamSetting" class="">
-					    	Stream local pilote video to robot: 
-							<input type="radio" name="streamVidToRobot" value="open" id="streamOpen" onclick="setPilotStream('open')" checked /> <label for="streamOpen">Yes</label>
-							<input type="radio" name="streamVidToRobot" value="close" id="streamClose" onclick="setPilotStream('close')" /> <label for="streamClose">No</label>
-				    	</span>
-						<br/>
-					    <span id="dataChannelSetting" class="">
-					    	Select controls and navigation data channel: 
-							<input type="radio" name="controlChannel" value="webSocket" id="webSocket" onclick="setCtrlChannel('webSocket')" checked /> <label for="webSocket">webSocket</label>
-							<input type="radio" name="controlChannel" value="webRTC" id="webRTC" onclick="setCtrlChannel('webRTC')"/> <label for="webRTC">webRTC</label>
-							
-				    	</span>
-				    
-	      		</div>
-
-
-		</section>
-
-		<section id="controlArea" class="fullSizeContainerBox">    
-			  
-			<!--<li class="flex-item">-->
-
-								
-
-			
-			<div id="colGaucheHaut" class="floatLeft oneQuarterContainerBox">
-
-				<div id="robotDevices" class="insideFlex oneQuarterbox robot shadowBlack device">  
-					<strong>Robot Devices</strong>
-					<hr/>
-
-					<div class="select">
-						<label for="remote_audioSource">Audio: </label>
-						<select id="remote_audioSource"></select>
-				    </div>
-
-				    <div class="select">
-				      	<label for="remote_videoSource">Video: </label>
-				      	<select id="remote_videoSource"></select>
-				    </div>
-					<hr/>
-				    <button id="remote_ButtonDevices" onclick="remoteManageDevices()">Sélectionner</button>
-				</div>
-	 	
-   
-			  
-				<div id="piloteDevices" class="insideFlex oneQuarterbox pilote shadowBlack device">  
-				    	<strong> Pilote Devices</strong>
-				    <hr/>
-				    	<video id='video' autoplay muted controls="controls"></video>
-				    <hr/>
-					<div class="select">
-						<label for="local_audioSource">Audio: </label>
-						<select id="local_audioSource"></select>
-				    </div>
-
-				    <div class="select">
-				      	<label for="local_videoSource">Video: </label>
-				      	<select id="local_videoSource"></select>
-				    </div>
-
-				    <hr/>
-				    <button class="shadowBlack" id="local_ButtonDevices" onclick="localManageDevices()">Ouvrir la connexion</button>
-				</div>
-
-				
-
-				<div id="robotCommands" class="insideFlex oneQuarterbox robot shadowBlack device">  
-					<strong>Robot controls</strong>
-					<hr/>
-				    <div id="divBtUp"><button id="btnUp" class="btnCommandsPad" onclick="cmdUp()">&uarr;</button></div>
-					<div id="divBtLeft"><button id="btnLeft" class="btnCommandsPad" onclick="cmdLeft()">&larr;</button></div>
-					<div id="divBtRight"><button id="btnRight" class="btnCommandsPad" onclick="cmdRight()">&rarr;</button></div>
-					<div id="divBtDown"><button id="btnDown" class="btnCommandsPad" onclick="cmdDown()">&darr;</button></div>
+		<div id="top" class="insideFlex pilote shadowBlack floatLeft fourQuarterBox">                                                                                                                                                          
+			<strong> Benchmarks Settings </strong>
+			<hr/>
+		    
+			    <span id="dataChannelSetting" class="">
+			    	Navigation channel: 
+					<input type="radio" name="controlChannel" value="webSocket" id="webSocket" onclick="setNavChannel('webSocket')" checked /> <label for="webSocket">webSocket</label>
+					<input type="radio" name="controlChannel" value="webRTC" id="webRTC" onclick="setNavChannel('webRTC')"/> <label for="webRTC">webRTC</label>
 					
-					<div id ="divBtSpeed">
-						<!--
-						<button id="btnIncrease" class="btnCommandsPad" onclick="cmdIncrease()">+</button>
-						<button id="btnDecrease" class="btnCommandsPad" onclick="cmdDecrease()">-</button>
-						-->
-						
-						<button id="btnIncrease" class="btnCommandsPad" onclick="cmdSpeed(-0.1)">-</button>
-						<progress id="jaugeSpeedSetting" value="0.5" max="1"></progress>
-						<button id="btnDecrease" class="btnCommandsPad" onclick="cmdSpeed(0.1)">+</button>
-						<br/>
-						Speed Setting: <span id="speedSetting">m.s</span>
+		    	</span>
+				<br/>
+			    <span id="streamSetting" class="">
+			    	Video Stream Settings - Open & Send Pilote Stream to Robot:
+					<input type="radio" name="streamVidToRobot" value="open" id="streamOpen" onclick="setPilotStreamToRobot('open')" checked /> <label for="streamOpen">Yes</label>
+					<input type="radio" name="streamVidToRobot" value="close" id="streamClose" onclick="setPilotStreamToRobot('close')" /> <label for="streamClose">No</label>
+		    	</span>
+			    <br/>
+			    <span id="robotVideoSetting" class="">
+					IHM Robot - Local view: 
+					<input type="radio" name="RlVidSetting" value="show" id="RlVshow" checked onclick="setLocalRobotView('show')"> <label for="RlVshow">Show</label>
+					<input type="radio" name="RlVidSetting" value="hide" id="RlVhide" onclick="setLocalRobotView('hide')"/> <label for="RlVhide">Hide</label>
+		    		&nbsp;&nbsp; || &nbsp;&nbsp; Remote view: 
+					<input type="radio" name="RRVidSetting" value="show" id="RRVshow" checked onclick="setRemoteRobotView('show')"> <label for="RRVshow">Show</label>
+					<input type="radio" name="RRVidSetting" value="hide" id="RRVhide" onclick="setRemoteRobotView('hide')"/> <label for="RRVhide">Hide</label>
+		    	</span>
+				<br/>
+			    <span id="piloteVideoSetting" class="">
+			    	IHM Pilote - Local view: 
+					<input type="radio" name="PlVidSetting" value="show" id="PlVshow" checked onclick="setLocalPilotView('show')"> <label for="PlVshow">Show</label>
+					<input type="radio" name="PlVidSetting" value="hide" id="PlVhide" onclick="setLocalPilotView('hide')"/> <label for="PlVhide">Hide</label>
+					&nbsp;&nbsp; || &nbsp;&nbsp; Remote view: 
+					<input type="radio" name="PRVidSetting" value="high" id="PRVhigh" onclick="setRemotePiloteView('high')" checked/> <label for="PRVhigh">High res</label>
+					<input type="radio" name="PRVidSetting" value="medium" id="PRVmedium" onclick="setRemotePiloteView('medium')" /> <label for="PRVmedium">Medium res</label>
+					<input type="radio" name="PRVidSetting" value="low" id="PRVlow" onclick="setRemotePiloteView('low')"/> <label for="PRVlow">Low res</label>
+					<input type="radio" name="PRVidSetting" value="hide" id="PRVhide" onclick="setRemotePiloteView('hide')"/> <label for="PRVhide">Hide</label>
+		    	</span>
+		    	
 
-					</div>
-
-				
-
-					<script>
-						function jaugeSpeedSetting() {
-							var ava = document.getElementById("jaugeSpeedSetting");
-							var prc = document.getElementById("speedSetting");
-							prc.innerHTML = ava.value + " m.s";
-						}
-						
-						jaugeSpeedSetting();
-						
-						function cmdSpeed(val) {
-							var ava = document.getElementById("jaugeSpeedSetting");
-							if((ava.value+val)<=ava.max && (ava.value+val)>=0) {
-								ava.value += val;
-							}
-							jaugeSpeedSetting();
-						}
-					
-					</script>
-
-
-
-				</div>
-
-			</div>
-			
-
-			<div id="colDroiteHaut" class="floatRight tripleQuarterBox">
-
-				<div id="remoteVideoArea" class="insideFlex robot tripleQuarterBox shadowBlack floatRight">
-				    <strong> Robot Camera View</strong>
-				    <hr/>
-					    <video id='otherPeer' class="" autoplay muted controls="controls" ></video>
-				</div>
-				
-			</div>
-
-
-					
-			
+				<hr/>
+		    	<script>                        
+				function setNavChannel(navChSet) {
+					parameters.navCh = navChSet;
+				}
+				function setLocalPilotView(lPVSet) {
+					parameters.lPview = lPVSet;
+				}
+				function setLocalRobotView(lRVSet) {
+					parameters.lRview = lRVSet;
+				}
+				function setRemotePiloteView(rPVSet) {
+					parameters.rPview = rPVSet;
+				}
+				function setRemoteRobotView(rRVSet) {
+					parameters.rRView = rRVSet;
+				}
+				function setPilotStreamToRobot(pRStream) {
+					parameters.pStoR = pRStream;
+				}
+				</script>
+		    
+  		</div>
 
 
+	</section>
 
-
-
-
-
-
-
-
-
-
-			<div id="colDroiteMiddle" class="floatLeft oneThirdContainerBox">
-
-				<div id="robotInfos" class="insideFlex pilote oneThirdBox shadowBlack device floatLeft">  
-				    
-				    <strong> Robot Informations</strong>
-					<hr/>
-					<div class="jauge">
-						<label for="battery_level">Battery Level:</label>
-						<progress id="battery_level" class="floatRight" value="50" max="200"></progress>
-				    </div>
-
-				    <div class="jauge">
-				      	<label for="speed_robot">Real Speed:</label>
-				      	<progress id="speed_robot" class="floatRight" value="50" max="100"></progress>
-				    </div>
-				</div>
-	 	
-	 	
-				
-				<div id="websocketChat" class="insideFlex pilote oneThirdBox shadowBlack floatLeft">
-					<strong> Websocket Messages & Chat</strong>
-					<hr/>
-			        <form action="/" method="post" id="formulaire_chat_websoket">
-			            <input type="text" name="message" id="message" placeholder="Votre message..." size="28" autofocus />
-			            <!--<input type="submit" id="envoi_message" value="Envoyer" />-->
-			             <button id="envoi_message" type="submit" >Envoyer</button>
-
-			        </form>
-		       	 	
-				 	<div id="zone_chat_websocket"></div>
-				 	<div id="zone_reception_commande_websocket"></div>
-	      		</div>
-       
-			</div>
-
-			
-			<div id="colgaucheMiddle" class="floatRight doubleThirdContainerBox">
-				
-				<div id="remoteCanvasArea" class="insideFlex robot DoubleThirdBox shadowBlack floatRight">
-        			<strong> Navigation</strong>
-        			<hr/>
-	        			<canvas id="mapviewer_canvas" width="620" height="350" class="floatright">
-	            		Votre navigateur ne supporte pas les canvas.
-	        			</canvas>
-        			<div id="points_interets_area" class="floatLeft">
-						
-						<form action="/" method="post" id="formulaire_points_interets">
-						   <p>
-						       <input type="radio" name="goto" value="x,y" id="salon" /> <label for="salon">Salon</label><br />
-						       <input type="radio" name="goto" value="x,y" id="cuisine" /> <label for="cuisine">Cuisine</label><br />
-						       <input type="radio" name="goto" value="x,y" id="chambre" /> <label for="chambre">Chambre</label><br />
-						       <input type="radio" name="goto" value="x,y" id="sdb" /> <label for="sdb">Salle de bain</label><br />
-						       <input type="radio" name="goto" value="x,y" id="entree" /> <label for="entree">Entrée</label><br />
-						       <button id="envoi_goto" type="submit" >Go</button>
-						   </p>
-						</form>
-
-
-        			</div>
-
-
-
-        		</div>	
-        	</div>
-				
-
-			
-			<div id="bottom" class="floatRight fullSizeContainerBox">	
-				
-				<div id="dataChannelArea" class="insideFlex pilote shadowBlack floatLeft fourQuarterBox">                                                                                                                                                          
-					<strong> WebRTC dataChannel Log </strong>
-					<hr/>
-			        <div id="formulaire_chat_webRTC" class="pseudoForm">
-			            <input type="text" name="message" id="send_chat_WebRTC" placeholder="Waiting open channel..." size="28" autofocus />
-			            <button id="sendButton" disabled onclick="sendMessage()">Envoyer</button>
-			        </div>
-		       	 	<br/>
-				 	<div id="zone_chat_WebRTC"></div>
-	      		</div>
-			
-			</div>
-
-</section>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	
-	
-
-
-
-
-
-
-
-		<script>	  	 
-		//var type = "appelant";
-		var type = "pilote-appelant";
-		var otherType = "robot-appelé";
-		</script>
-        
-        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-        <script src="/socket.io/socket.io.js"></script>
-        <script src="/js/common.js"></script>
-        <script src="/js/settings.js"></script>
-        <script src='/js/lib/adapter.js'></script>
-        <script src='/js/mapviewer.js'></script>
-        <script src='/js/ws_manager.js'></script>
-		<script src='/js/main.js'></script>
 		
-		<script>
-            $('#zone_info_server').replaceWith(settings.appName() + " V " + settings.appVersion()+" - IHM Pilote");
-    	</script>
+	<section id="controlArea" class="fullSizeContainerBox">    
+			  
+		<div id="colGaucheHaut" class="floatLeft oneQuarterContainerBox">
+
+			<div id="robotDevices" class="insideFlex oneQuarterbox robot shadowBlack device">  
+				<strong>Robot Devices</strong>
+				<hr/>
+
+				<div class="select">
+					<label for="remote_audioSource">Audio: </label>
+					<select id="remote_audioSource"></select>
+			    </div>
+
+			    <div class="select">
+			      	<label for="remote_videoSource">Video: </label>
+			      	<select id="remote_videoSource"></select>
+			    </div>
+				<hr/>
+			    <button id="remote_ButtonDevices" onclick="remoteManageDevices()">Sélectionner</button>
+			</div>
+
+		  
+			<div id="piloteDevices" class="insideFlex oneQuarterbox pilote shadowBlack device">  
+			    	<strong> Pilote Devices</strong>
+			    <hr/>
+			    	<video id='video' autoplay muted controls="controls"></video>
+			    <hr/>
+				<div class="select">
+					<label for="local_audioSource">Audio: </label>
+					<select id="local_audioSource"></select>
+			    </div>
+
+			    <div class="select">
+			      	<label for="local_videoSource">Video: </label>
+			      	<select id="local_videoSource"></select>
+			    </div>
+
+			    <hr/>
+			    <button class="shadowBlack" id="local_ButtonDevices" onclick="localManageDevices()">Ouvrir la connexion</button>
+			</div>
+
+
+			<div id="robotCommands" class="insideFlex oneQuarterbox robot shadowBlack device">
+				<strong>Robot controls</strong> <span id ="connect-notice" ></span>
+                <hr/>
+
+                <div id="step-commands">
+                    
+                    <div id="divBtUp">
+                        <button id="btnUp" class="btnCommandsPad" onclick="cmdUp()">&uarr;</button>
+                    </div>
+                    <div id="divBtLeft">
+                        <button id="btnLeft" class="btnCommandsPad" onclick="cmdLeft()">&larr;</button>
+                    </div>
+                    <div id="divBtRight">
+                        <button id="btnRight" class="btnCommandsPad" onclick="cmdRight()">&rarr;</button>
+                    </div>
+                    <div id="divBtDown">
+                        <button id="btnDown" class="btnCommandsPad" onclick="cmdDown()">&darr;</button>
+                    </div>
+                    <div id="divBtSpeed">
+                            <!--
+                                <button id="btnIncrease" class="btnCommandsPad" onclick="cmdIncrease()">+</button>
+                                alert(" enable  : " + enable   + " | targetLinearSpeedPos  : " +  targetLinearSpeedPos + " | targetLinearSpeedNeg :" targetLinearSpeedNeg + " | targetAngularSpeed : " + targetAngularSpeed );
+                                <button id="btnDecrease" class="btnCommandsPad" onclick="cmdDecrease()">-</button>
+                                -->
+                        <button id="btnIncrease" class="btnCommandsPad" onclick="cmdSpeed(-0.1)">-</button>
+                        <progress id="jaugeSpeedSetting" value="0.5" max="1"></progress>
+                        <button id="btnDecrease" class="btnCommandsPad" onclick="cmdSpeed(0.1)">+</button>
+                        <br/> Speed Setting: <span id="speedSetting">m.s</span>
+                    
+                        <script>
+                        function jaugeSpeedSetting() {
+                            var ava = document.getElementById("jaugeSpeedSetting");
+                            var prc = document.getElementById("speedSetting");
+                            prc.innerHTML = ava.value + " m.s";
+                        }
+
+                        jaugeSpeedSetting();
+
+                        function cmdSpeed(val) {
+                            var ava = document.getElementById("jaugeSpeedSetting");
+                            if ((ava.value + val) <= ava.max && (ava.value + val) >= 0) {
+                                ava.value += val;
+                            }
+                            jaugeSpeedSetting();
+                        }
+                        </script>
+                    </div> 
+
+                </div>
+
+                <div id="drive-commands" style="display:none; overflow: scroll; height:150px">   
+	                    <ul id="gamepads"></ul>
+	            </div>
+                
+
+			</div> <!-- id="robotCommands" -->
+		
+		</div> <!-- id="colGaucheHaut" -->
+		
+
+		<div id="colDroiteHaut" class="floatRight tripleQuarterBox">
+
+			<div id="remoteVideoArea" class="insideFlex robot tripleQuarterBox shadowBlack floatRight">
+			    <strong> Robot Camera View</strong>
+			    <hr/>
+				    <video id='otherPeer' class="" autoplay muted controls="controls" ></video>
+			</div>
+			
+		</div>
+
+		<div id="colDroiteMiddle" class="floatLeft oneThirdContainerBox">
+
+			<div id="robotInfos" class="insideFlex pilote oneThirdBox shadowBlack device floatLeft">  
+			    
+			    <strong> Robot Informations</strong>
+				<hr/>
+				<div class="jauge">
+					<label for="battery_level">Battery Level:</label>
+					<progress id="battery_level" class="floatRight" value="50" max="200"></progress>
+			    </div>
+
+			    <div class="jauge">
+			      	<label for="speed_robot">Real Speed:</label>
+			      	<progress id="speed_robot" class="floatRight" value="50" max="100"></progress>
+			    </div>
+			</div>
+ 	
+ 	
+			
+			<div id="websocketChat" class="insideFlex pilote oneThirdBox shadowBlack floatLeft">
+				<strong> Websocket Messages & Chat</strong>
+				<hr/>
+		        <form action="/" method="post" id="formulaire_chat_websoket">
+		            <input type="text" name="message" id="message" placeholder="Votre message..." size="28" autofocus />
+		             <button id="envoi_message" type="submit" >Envoyer</button>
+		        </form>
+			 	<hr class="hrForm">
+			 	<textarea class="input" id="zone_chat_websocket" placeholder="Once upon a time..."></textarea>
+				<form id="text-options1">
+            		<label>Filename: <input type="text1" class="filename" id="text-filename1" placeholder="Pilote_WS_LOGS"/>.txt</label>
+            		<button id="saveLogs_webSocket" type="submit" value="Save"/>Save</button>
+        		</form>
+
+
+      		</div>
+   
+		</div>
+
+		
+		<div id="colgaucheMiddle" class="floatRight doubleThirdContainerBox">
+			
+			<div id="remoteCanvasArea" class="insideFlex robot DoubleThirdBox shadowBlack floatRight">
+    			<strong> Navigation</strong>
+    			<hr/>
+        			<canvas id="mapviewer_canvas" width="620" height="350" class="floatright">
+            		Votre navigateur ne supporte pas les canvas.
+        			</canvas>
+    			<div id="points_interets_area" class="floatLeft">
+					
+					<form action="/" method="post" id="formulaire_points_interets">
+					   <p>
+					       <input type="radio" name="goto" value="x,y" id="salon" /> <label for="salon">Salon</label><br />
+					       <input type="radio" name="goto" value="x,y" id="cuisine" /> <label for="cuisine">Cuisine</label><br />
+					       <input type="radio" name="goto" value="x,y" id="chambre" /> <label for="chambre">Chambre</label><br />
+					       <input type="radio" name="goto" value="x,y" id="sdb" /> <label for="sdb">Salle de bain</label><br />
+					       <input type="radio" name="goto" value="x,y" id="entree" /> <label for="entree">Entrée</label><br />
+					       <button id="envoi_goto" type="submit" >Go</button>
+					   </p>
+					</form>
+
+    			</div>
+
+    		</div>	
+
+    	</div>
+		
+		<div id="bottom" class="floatRight fullSizeContainerBox">	
+			
+			<div id="dataChannelArea" class="insideFlex pilote shadowBlack floatLeft fourQuarterBox">                                                                                                                                                          
+				<strong> WebRTC dataChannel Log </strong>
+				<hr/>
+		        <div id="formulaire_chat_webRTC" class="pseudoForm">
+		            <input type="text" name="message" id="input_chat_WebRTC" disabled placeholder="Waiting open channel..." size="28" autofocus />
+		            <button id="env_msg_WebRTC" disabled onclick="sendMessage()">Envoyer</button>
+		        </div>
+				<hr class="hrForm">
+				<textarea class="input" id="zone_chat_WebRTC" placeholder="Once upon a time..."></textarea>
+					<form id="text-options2">
+	            		<label>Filename: <input type="text" class="filename" id="text-filename2" placeholder="Pilote_WebRTC_LOGS"/>.txt</label>
+	            		<button id="saveLogs_webRTC" type="submit" value="Save"/>Save</button>
+	        		</form>
+        	</div>
+		
+		</div>
+
+	</section>
+
+
+	<script>	  	 
+	//var type = "appelant";
+	var type = "pilote-appelant";
+	var otherType = "robot-appelé";
+	</script>
+    
+    <!--
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    -->
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script src='/js/lib/jquery-1.10.1.min.js'></script>
+    <script src='/js/lib/adapter.js'></script>
+    <script src="/js/lib/gamepad.js"></script>
+    <script src="/js/lib/FileSaver.js"></script>
+
+    <script src="/js/common.js"></script>
+    <script src="/js/settings.js"></script>
+    
+    <script src='/js/mapviewer.js'></script>
+    <script src="/js/logs.js"></script>
+    <script src='/js/ws_manager.js'></script>
+
+    <script src='/js/commands.js'></script>
+    <script src='/js/main.js'></script>
+	
+	<script>
+        $('#zone_info_server').replaceWith(settings.appName() + " V " + settings.appVersion()+" - IHM Pilote");
+	</script>
 
 
 </body>
