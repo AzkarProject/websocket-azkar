@@ -1,9 +1,11 @@
+
+
 // Elements communs client/serveur
 var common = require('./js/common'); // méthodes génériques et objets
 var settings = require('./js/settings'); // parametres de configuration
 // var request = require('request');
 var bodyParser = require("body-parser"); // pour recuperer le contenu de requetes POST 
-
+var HttpStatus = require('http-status-codes'); // le module qui recupère les status des requetes HTTP
 
 // contrôle chargement coté serveur
 var commonTest = common.test();
@@ -36,7 +38,7 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(bodyParser.json()); // support json encoded bodies
-var HttpStatus = require('http-status-codes'); // le module qui recupère les status des requetes HTTP
+
 
 
 
@@ -102,9 +104,9 @@ function onMoveOrder(enable, aSpeed, lSpeed) {
 
     var url = 'http://localhost:50000/api/drive';
     sendMove(url)
-        .then(function()) {
+        .then(function() {
             console.log('@onMoveOrder >> angular speed :' + aSpeedMov + '  et linear speed :' + lSpeed);
-        }
+        })
 }
 
 
