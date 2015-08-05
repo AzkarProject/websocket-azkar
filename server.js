@@ -137,6 +137,8 @@ io.sockets.on('connection', function (socket, pseudo) {
 
 		var isAuthorized = true;
 		var	authMessage;
+		var rMsg = "> Connexion Rejetée: ";
+		var rReason;
 		if (data.typeUser == "Robot") {
 			
 			// Teste la présence d'un robot dans la liste des clients connectés
@@ -144,34 +146,33 @@ io.sockets.on('connection', function (socket, pseudo) {
 			var isOtherBot = common.searchInObjects(users2,"typeClient","Robot","boolean");
 			if (isOtherBot == true) {
 				isAuthorized = false;
-				authMessage = "Un Robot est déjà connecté...";
-				console.log ("++++++++++++REJECT++++++++++++ >> Is Robot");
+				authMessage = "Robot déjà connecté...\n Veuillez attendre votre tour.";
+				rReason = " > Because 2 Robots";
 			}
 
 		} else if (data.typeUser == "Pilote") {
 			var isOneBot = common.searchInObjects(users2,"typeClient","Robot","boolean");
 			if (isOneBot == false) {
 				isAuthorized = false;
-				authMessage = "Pas de robot connecté...";
-				console.log ("++++++++++++REJECT++++++++++++ Pilot >> No Robot");
+				authMessage = "Robot non connecté... \n Ressayez plus tard.";
+				rReason = " > Because no robot";
 			} else if (isOtherPilot == true) {
 				// Teste la présence d'un pilote dans la liste des clients connectés
 				var isOtherPilot = common.searchInObjects(users2,"typeClient","Pilote","boolean");
 				isAuthorized = false;
-				authMessage = "Un Pilote est déjà connecté...";
-				console.log ("++++++++++++REJECT++++++++++++ >> Is Pilot");
+				authMessage = "Pilote déjà connecté... \n Veuillez attendre votre tour.";
+				rReason = " > Because 2 Pilotes";
 			}
-			
-
-
-		}	else if (data.typeUser == "Visiteur") {
-			console.log ("++++++++++++REJECT++++++++++++ >> Is Visitor");
-
+		} else if (data.typeUser == "Visiteur") {
+			// console.log ("++++++++++++REJECT++++++++++++ >> Is Visitor");
 		}
 
     	if (isAuthorized == false) {
+			console.log(rMsg + "(ID: " + socket.id+ ") "+ rReason);
     		io.to(socket.id).emit('rejectConnexion', {message:authMessage, url:indexUrl});
     		return;
+    	} else {
+    		// ...
     	}
 
 
@@ -213,6 +214,8 @@ io.sockets.on('connection', function (socket, pseudo) {
         nbUsers2 = common.lenghtObject(users2);
         io.sockets.emit('updateUsers',{listUsers: users2});
 
+        console.log ("> Il y a " + nbUsers2 + " connectés");
+
         // 4 - on met à jour la liste des connectés cotés clients
         // ... TODO... EST-ce bien nécéssaire ????
         // exports.searchInObjects = function (hashTable,attribute,value,typeReturn){
@@ -225,15 +228,14 @@ io.sockets.on('connection', function (socket, pseudo) {
 
     });
 
-  	// Quand un user se déconnecte (V2)
+  	// Quand un user se déconnecte
     socket.on('disconnect', function(){  
         
 		var dUser = users2[socket.id]; 
 
-
 		//console.log ("-------------------------------");
-		var message = "Deconnexion WebSocket ";
-		console.log(message + "( ID: " + socket.id + " - Type: "+dUser.typeClient+")");
+		var message = "> Connexion sortante: ";
+		console.log(message + "(ID: " + socket.id+ ")");
         
 		// on retire le connecté de la liste des utilisateurs
 		delete users2[socket.id]; 
@@ -244,9 +246,9 @@ io.sockets.on('connection', function (socket, pseudo) {
         nbUsers = common.lenghtObject(users2)
 
         // contrôle liste connectés coté serveur
-		console.log (users2);
+		// console.log (users2);
 		
-        console.log ("Il reste " + nbUsers + " connectés");
+        console.log ("> Il reste " + nbUsers + " connectés");
         // TODO: Mise à jour de la liste coté client...
 
         // io.sockets.emit('users', users);           
@@ -399,8 +401,8 @@ function sendDrive(url) {
 // Pour Contrôle des connectés coté serveur
 // Ecouteur de connexion d'un nouveau client
 function onSocketConnected(socket){
-  console.log ("-------------------------------");
-  console.log("connexion nouveau client :"+ socket.pseudo + "(ID : " + socket.id + ")");
+  // console.log ("-------------------------------");
+  console.log("> Connexion entrante: (ID: " + socket.id + ")");
   //var infoServer = appName + " V " + appVersion;
   //io.to(socket.id).emit('infoServer', infoServer);
 }
