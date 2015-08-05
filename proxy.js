@@ -1,6 +1,7 @@
 /*mise en place d'un proxy */
 var sys = require('sys'),
     http = require('http'),
+    request = require('request'),
     url = require('url');
 
 //gestionna
@@ -44,6 +45,6 @@ http.createServer(function(b_req, b_res) {
         })
 
     });
-}).listen(2000,"127.0.0.1");
+}).listen(8000,"127.0.0.1");
 
-sys.puts("Server running at http://127.0.0.1:2000/") ;
+console.log("Server running at http://127.0.0.1:8000/") ;
