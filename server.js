@@ -27,12 +27,8 @@ var Q = require('q');
 ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP ||"127.0.0.1";
 // ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP ||"192.168.173.1";
 port  = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 2000;
-
-
-
-
-
-
+// Récupération du Nom de la machine 
+hostName = os.hostname();
 
 // affectation du port
 app.set('port', port);
@@ -73,12 +69,11 @@ server.listen(app.get('port'),ipaddress);
 
 // ------ Partie Websocket ------------------
 
-// Récupération du Nom de la machine 
-var hostName = os.hostname();
+// Adresse de redirection pour les connexions refusées
+var indexUrl;
+if (process.env.OPENSHIFT_NODEJS_IP) indexUrl = "http://websocket-azkar.rhcloud.com";
+else indexUrl = "http://"+ipaddress+":"+port;
 
-// Adresse de redirection pour les clients
-// var indexUrl = "http://"+ipaddress+":"+port;
-var indexUrl = "http://"+hostName+":"+port;
 
 // liste des clients connectés
 var users2 = {};
