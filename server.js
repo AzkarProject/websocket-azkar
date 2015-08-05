@@ -413,7 +413,7 @@ var entVersion = require('ent/package').version;
 var bodyparserVersion = require('body-parser/package').version;
 var HttpStatusVersion = require('http-status-codes/package').version;
 var xhr2Version = require('xhr2/package').version;
-var QVersion = require('Q/package').version;
+var QVersion = require('q/package').version;
 
 // Affichage de contrôle coté serveur
 console.log("**Socket.IO Version: " + ioVersion);
