@@ -10,6 +10,8 @@ var app = require('express')(),
     fs = require('fs'); 
 
 var express = require('express');
+var os = require("os");
+
 
 // Ajouts Michael
 var bodyParser = require("body-parser"); // pour recuperer le contenu de requêtes POST 
@@ -25,6 +27,12 @@ var Q = require('q');
 ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP ||"127.0.0.1";
 // ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP ||"192.168.173.1";
 port  = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 2000;
+
+
+
+
+
+
 
 // affectation du port
 app.set('port', port);
@@ -65,8 +73,12 @@ server.listen(app.get('port'),ipaddress);
 
 // ------ Partie Websocket ------------------
 
+// Récupération du Nom de la machine 
+var hostName = os.hostname();
+
 // Adresse de redirection pour les clients
-var indexUrl = "http://"+ipaddress+":"+port;
+// var indexUrl = "http://"+ipaddress+":"+port;
+var indexUrl = "http://"+hostName+":"+port;
 
 // liste des clients connectés
 var users2 = {};
@@ -416,18 +428,26 @@ var xhr2Version = require('xhr2/package').version;
 var QVersion = require('q/package').version;
 
 // Affichage de contrôle coté serveur
-console.log("**Socket.IO Version: " + ioVersion);
-console.log("**Express Version: " + expressVersion);
-console.log("**Ent  Version: " + entVersion);
-console.log("**Body-parser Version: " + bodyparserVersion);
-console.log("**Http-status-codes Version: " + HttpStatusVersion);
-console.log("**Xhr2 Version: " + xhr2Version);
-console.log("**Q Version: " + QVersion);
+console.log("** Socket.IO Version: " + ioVersion);
+console.log("** Express Version: " + expressVersion);
+console.log("** Ent  Version: " + entVersion);
+console.log("** Body-parser Version: " + bodyparserVersion);
+console.log("** Http-status-codes Version: " + HttpStatusVersion);
+console.log("** Xhr2 Version: " + xhr2Version);
+console.log("** Q Version: " + QVersion);
 
 
 console.log("***********************************" );
-console.log("**ipAdress = " + ipaddress );
-console.log("**port = " + port );
+var hostMsg = "Serveur NodeJs hébergé ";
+if (process.env.OPENSHIFT_NODEJS_IP) hostMsg += "sur OpenShift";
+else if (process.env.IP) hostMsg += "sur ???";
+else  hostMsg += "en Local";
+hostMsg += (" (hostName: "+hostName+")");
+
+console.log("** "+ hostMsg );
+console.log("** Adresse IP = " + ipaddress );
+console.log("** N° de port = " + port );
 console.log("***********************************" );
-console.log("     "+settings.appName() + " V " + settings.appVersion() );
+console.log(settings.appName() + " V " + settings.appVersion() );
+console.log("***********************************" );
 /**/
