@@ -104,6 +104,20 @@ io.use(function(socket, next) {
 });
 //**/
 
+
+/*
+connection.on('close', function(reasonCode, description) {
+    delete clients[id];
+    console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
+});
+/**/
+
+/*
+io.sockets.on('disconnect', function (socket)  {
+	console.log(new Date() + ' Peer disconnected.');
+});
+/**/
+
 io.sockets.on('connection', function (socket, pseudo) {
 
 	onSocketConnected(socket);
@@ -223,14 +237,11 @@ io.sockets.on('connection', function (socket, pseudo) {
 		// contrôle fontion tests de tableau d'objet coté serveur
 		//var commonTest2 = common.searchInObjects(users2,"typeClient","Robot","boolean");
 		//console.log("commonTest2 >>> " + commonTest2 + " >>> true = robot - false = pilote");
-
-
-
     });
 
   	// Quand un user se déconnecte
     socket.on('disconnect', function(){  
-        
+        console.log("*****");
 		var dUser = users2[socket.id]; 
 
 		//console.log ("-------------------------------");
@@ -258,6 +269,7 @@ io.sockets.on('connection', function (socket, pseudo) {
         // socket.broadcast.emit('disconnected', { pseudo:"SERVER", message: message, placeListe: "-"});
         // socket.broadcast.emit('disconnected', {listUsers: users2});
     });  
+	/**/
 
     // Transmission de messages génériques 
     socket.on('message2', function (data) {
