@@ -132,6 +132,9 @@ io.sockets.on('connection', function (socket, pseudo) {
 		// au client un simple message websocket avec en paramètre l'ip de redirection. 
 		// A sa réception, le client se redirige vers la nouvelle url, se déconnectant d'office. 
 
+		// TODO: A régler Bug sur OpenShift:
+		// >>>> Si déco/reco du robot, celui-ci n'est toujours compté parmis les connectés...
+
 		var isAuthorized = true;
 		var	authMessage;
 		if (data.typeUser == "Robot") {
@@ -229,21 +232,15 @@ io.sockets.on('connection', function (socket, pseudo) {
 
 
 		//console.log ("-------------------------------");
-		var message = "Vient de se déconnecter !";
-		// console.log(message + "( ID : " + socket.id + ")");
+		var message = "Deconnexion WebSocket ";
+		console.log(message + "( ID: " + socket.id + " - Type: "+dUser.typeClient+")");
         
-		
-		
 		// on retire le connecté de la liste des utilisateurs
 		delete users2[socket.id]; 
 		socket.broadcast.emit('disconnected', {listUsers: users2});
-		//socket.broadcast.emit('disconnected', "WTF");
         // On prévient tout le monde
         socket.broadcast.emit('message2',{objUser: dUser, message: message});
-        
-        // on retire le connecté de la liste des utilsateurs
-        // et on actualise le nombre de connectés  
-        // delete users2[socket.id]; 
+        // On actualise le nombre de connectés  
         nbUsers = common.lenghtObject(users2)
 
         // contrôle liste connectés coté serveur
