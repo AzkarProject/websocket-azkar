@@ -1,7 +1,8 @@
 // Elements communs client/serveur
 var common = require('./js/common'); // méthodes génériques et objets
-/*
+
 var settings = require('./js/settings'); // parametres de configuration
+/*
 var bodyParser = require("body-parser"); // pour recuperer le contenu de requetes POST 
 //var HttpStatus = require('http-status-codes'); // le module qui recupère les status des requetes HTTP
 
