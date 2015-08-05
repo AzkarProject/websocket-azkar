@@ -11,11 +11,12 @@ var app = require('express')(),
 
 var express = require('express');
 
-// Ajouts Michael
+/*// Ajouts Michael
 var bodyParser = require("body-parser"); // pour recuperer le contenu de requêtes POST 
 var HttpStatus = require('http-status-codes'); // le module qui recupère les status des requêtes HTTP
 var XMLHttpRequest = require('xhr2'); // pour faire des requêtes XMLHttpRequest
-var Q=require('Q');
+var Q = require('q');
+/**/
 
 
 // ------ Variables d'environnement & paramètrages serveurs ------------------
@@ -32,9 +33,10 @@ app.set('port', port);
 // les dépendances css du document html
 app.use(express.static(__dirname));
 
-// Appel à body-parser pour la gestion de requêtes POST
+/*// Appel à body-parser pour la gestion de requêtes POST
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json()); // support json encoded bodies
+/**/
 
 // ------------ routing ------------
 
@@ -97,7 +99,7 @@ io.use(function(socket, next) {
 
 io.sockets.on('connection', function (socket, pseudo) {
 
-	onSocketConnected(socket);
+	// onSocketConnected(socket);
 
    	// Quand un User rentre un pseudo (version objet), 
     // on le stocke en variable de session et on informe les autres Users
@@ -328,11 +330,12 @@ io.sockets.on('connection', function (socket, pseudo) {
 
 // ------------ Fonctions Commande de déplacement par websocket ( Partie Michael)------------
 
-// interfaces de lancement des fonctions d'envoi de commandes
+/*// interfaces de lancement des fonctions d'envoi de commandes
 function onStop(parameters) {console.log('todo...');};
 function onStep(parameters) {console.log('todo...');};
 function onGoto(parameters) {console.log('todo...');};
 function onClicAndGo(parameters) {console.log('todo...');};
+/**/
 // Interfaces de lancement de la commande senDriveOrder 
 function onDrive(enable, aSpeed, lSpeed) {
     var url = 'http://localhost:50000/api/drive';
@@ -342,11 +345,12 @@ function onDrive(enable, aSpeed, lSpeed) {
         })
 }
 
-// fonctions d'envois de commandes
+/*// fonctions d'envois de commandes
 function sendStop(url) {console.log('todo...');};
 function sendStep(url) {console.log('todo...');};
 function sendGoto(url) {console.log('todo...');};
 function sendClicAndGo(url) {console.log('todo...');};
+/**/
 // Envoi d'une commande de type "Drive" au robot avec une "promize"
 function sendDrive(url) {
     return Q.Promise(function(resolve, reject, notify) {
@@ -389,17 +393,18 @@ function sendDrive(url) {
 // ------------ fonctions Diverses ------------
 
 // Pour Contrôle des connectés coté serveur
-// Ecouteur de connexion d'un nouveau client
+/*// Ecouteur de connexion d'un nouveau client
 function onSocketConnected(socket){
   console.log ("-------------------------------");
   console.log("connexion nouveau client :"+ socket.pseudo + "(ID : " + socket.id + ")");
   //var infoServer = appName + " V " + appVersion;
   //io.to(socket.id).emit('infoServer', infoServer);
 }
+/**/
 
 // ----- Contrôles pour débuggage coté serveur
 
-// Contrôle des versions node.modules (Pour debugg sur Openshift)
+/*// Contrôle des versions node.modules (Pour debugg sur Openshift)
 var ioVersion = require('socket.io/package').version;
 var expressVersion = require('express/package').version;
 var entVersion = require('ent/package').version;
@@ -425,3 +430,4 @@ console.log("**ipAdress = " + ipaddress );
 console.log("**port = " + port );
 console.log("***********************************" );
 console.log("     "+settings.appName() + " V " + settings.appVersion() );
+/**/
