@@ -330,7 +330,7 @@ io.sockets.on('connection', function (socket, pseudo) {
 
 // ------------ Fonctions Commande de déplacement par websocket ( Partie Michael)------------
 
-/*// interfaces de lancement des fonctions d'envoi de commandes
+// interfaces de lancement des fonctions d'envoi de commandes
 function onStop(parameters) {console.log('todo...');};
 function onStep(parameters) {console.log('todo...');};
 function onGoto(parameters) {console.log('todo...');};
@@ -345,7 +345,7 @@ function onDrive(enable, aSpeed, lSpeed) {
         })
 }
 
-/*// fonctions d'envois de commandes
+// fonctions d'envois de commandes
 function sendStop(url) {console.log('todo...');};
 function sendStep(url) {console.log('todo...');};
 function sendGoto(url) {console.log('todo...');};
