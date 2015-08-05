@@ -118,7 +118,7 @@ io.sockets.on('disconnect', function (socket)  {
 });
 /**/
 
-io.sockets.on('connection', function (socket, pseudo) {
+io.on('connection', function (socket, pseudo) {
 
 	onSocketConnected(socket);
 
@@ -286,16 +286,11 @@ io.sockets.on('connection', function (socket, pseudo) {
     // Partie commandes du robot par websocket (stop, moveDrive, moveSteps, goto & clicAndGo)
 
     // A la réception d'un ordre de commande
-    socket.on('moveOrder', function(data) {
-        
+    socket.on('moveOrder', function(data) { 
        // TODO >>> implémenter tests sur data.command pour apeller le traitement isoine (onDriveOrder, onStop, onStep, onGoto, onClicAndGo, etc...)
-
        console.log("@ moveOrder >>>> " + data.command );
        // ex: >> socket.emit("moveOrder",{ command:'Move', aSpeed:aSpeed, lSpeed:lSpeed, Enable:btHommeMort });
-       onDriveOrder(data.enable,data.aSpeed,data.lSpeed) //
-       
-   
-       
+       onDrive(data.enable,data.aSpeed,data.lSpeed) //
     });
 
     // ----------------------------------------------------------------------------------
