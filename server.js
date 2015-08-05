@@ -11,7 +11,7 @@ var app = require('express')(),
 
 var express = require('express');
 
-/*// Ajouts Michael
+// Ajouts Michael
 var bodyParser = require("body-parser"); // pour recuperer le contenu de requêtes POST 
 var HttpStatus = require('http-status-codes'); // le module qui recupère les status des requêtes HTTP
 var XMLHttpRequest = require('xhr2'); // pour faire des requêtes XMLHttpRequest
@@ -33,7 +33,7 @@ app.set('port', port);
 // les dépendances css du document html
 app.use(express.static(__dirname));
 
-/*// Appel à body-parser pour la gestion de requêtes POST
+// Appel à body-parser pour la gestion de requêtes POST
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json()); // support json encoded bodies
 /**/
@@ -393,7 +393,7 @@ function sendDrive(url) {
 // ------------ fonctions Diverses ------------
 
 // Pour Contrôle des connectés coté serveur
-/*// Ecouteur de connexion d'un nouveau client
+// Ecouteur de connexion d'un nouveau client
 function onSocketConnected(socket){
   console.log ("-------------------------------");
   console.log("connexion nouveau client :"+ socket.pseudo + "(ID : " + socket.id + ")");
