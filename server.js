@@ -46,7 +46,7 @@ app.set('port', port);
 // Pour que nodejs puisse servir correctement 
 // les dépendances css du document html
 var express = require('express');
-app.use(app.static(__dirname));
+app.use(express.static(__dirname));
 
 
 // Utiliser body-parser pour la gestion de requete POST
