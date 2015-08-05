@@ -1,13 +1,25 @@
-/*mise en place d'un proxy */
-var sys = require('sys'),
-    http = require('http'),
+/*mise en place d'un proxy 
+ 
+ -pour le tester il faut aller dans parametres du navigateur --> paramètres avancés --> paramètre du proxy et 
+  décocher la case ==>  utiliser http 1.1 avec une connexion par proxy 
+
+  Exemples de requetes qui fonctionne :
+  -information sur la carte :  http://192.168.173.1:8080/?url=http://127.0.0.1:50000/nav/maps/parameters
+  -recuperer la carte en png : http://192.168.173.1:8080/?url=http://127.0.0.1:50000/nav/maps/map
+
+*/
+var http = require('http'),
     request = require('request'),
     url = require('url');
 
-//gestionna
+
+var ip = "192.168.173.1"; //ou si nous sommes en local  127.0.0.1 
+var port = 8080; // si nous voulons faire des requetes http sinon un autre port pour le tester en local
+
+//gestionnaire d'eereur 
 function notFound(res) {
     res.writeHead(404, "text/plain");
-    res.end("404 : File not found ");
+    res.end("404 : File not found || votre fichier n'existe pas ");
 }
 
 http.createServer(function(b_req, b_res) {
@@ -27,7 +39,6 @@ http.createServer(function(b_req, b_res) {
     });
     p_req.end();
 
-
     //Listen for the response : gestionnaire de reponse 
     p_req.addListener('response', function(p_res) {
         //pass through headers
@@ -45,6 +56,6 @@ http.createServer(function(b_req, b_res) {
         })
 
     });
-}).listen(8000,"127.0.0.1");
+}).listen(port, ip);
 
-console.log("Server running at http://127.0.0.1:8000/") ;
+console.log("Server running at ip:port  --->> : " + ip + ":" + port);
