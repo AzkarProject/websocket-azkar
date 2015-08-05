@@ -1,11 +1,14 @@
 // Elements communs client/serveur
 var common = require('./js/common'); // méthodes génériques et objets
+/*
 var settings = require('./js/settings'); // parametres de configuration
 var bodyParser = require("body-parser"); // pour recuperer le contenu de requetes POST 
-var HttpStatus = require('http-status-codes'); // le module qui recupère les status des requetes HTTP
+//var HttpStatus = require('http-status-codes'); // le module qui recupère les status des requetes HTTP
+
 //pour faire des requettes XMLHttpRequest
-var XMLHttpRequest = require('');
+var XMLHttpRequest = require('xhr2');
 var Q=require('Q');
+/**/ // TEST OPENSHIFT
 
 var app = require('express')(),
     server = require('http').createServer(app),
@@ -63,7 +66,7 @@ app.get('/', function (req, res) {
 });
 
 
-// Routing IHM >>>> TODO coté clients
+/*// Routing IHM >>>> TODO coté clients
 app.get('/pilote/', function (req, res) {
     res.sendFile(__dirname + '/pilote.html');
 });
@@ -76,11 +79,12 @@ app.get('/robot/', function (req, res) {
 app.get('/visiteur/', function (req, res) {
     res.sendFile(__dirname + '/visiteur.html');
 });
+/**/ // Tests OPENSHIFT
 
 /*******************envoi de commande de deplacement en differential drive*********************/
 
 // Version Michael
-// flag moveOder en cours  
+/*// flag moveOder en cours  
 var flagDrive = false; //Par défaut a false , à la reception de moveOrder ==> True 
 
 function onMoveOrder(enable, aSpeed, lSpeed) {
@@ -91,6 +95,7 @@ function onMoveOrder(enable, aSpeed, lSpeed) {
             console.log('@onMoveOrder >> angular speed :' + aSpeedMov + '  et linear speed :' + lSpeed);
         })
 }
+/**/ // TEST OPENSHIFT
 
 /*
 function sendMove(url) {
@@ -130,8 +135,7 @@ function sendMove(url) {
 
     })
 }
-
-/**/
+/**/ // TEST OPENSHIFT
 
 
 // Lancement du serveur
@@ -370,7 +374,7 @@ io.sockets.on('connection', function (socket, pseudo) {
         
        console.log("@ moveOrder >>>> " + data.command );
        //  ex: >> socket.emit("moveOrder",{ command:'Move', aSpeed:aSpeed, lSpeed:lSpeed, Enable:btHommeMort });
-       onMoveOrder(data.enable,data.aSpeed,data.lSpeed)
+       // onMoveOrder(data.enable,data.aSpeed,data.lSpeed) // TEST OPENSHIFT
        
     });
 
