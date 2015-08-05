@@ -99,7 +99,7 @@ io.use(function(socket, next) {
 
 io.sockets.on('connection', function (socket, pseudo) {
 
-	// onSocketConnected(socket);
+	onSocketConnected(socket);
 
    	// Quand un User rentre un pseudo (version objet), 
     // on le stocke en variable de session et on informe les autres Users
@@ -404,7 +404,7 @@ function onSocketConnected(socket){
 
 // ----- Contrôles pour débuggage coté serveur
 
-/*// Contrôle des versions node.modules (Pour debugg sur Openshift)
+// Contrôle des versions node.modules (Pour debugg sur Openshift)
 var ioVersion = require('socket.io/package').version;
 var expressVersion = require('express/package').version;
 var entVersion = require('ent/package').version;
