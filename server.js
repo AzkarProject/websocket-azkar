@@ -1,25 +1,6 @@
-// Elements communs client/serveur
+// ------------------------ Elements communs client/serveur
 var common = require('./js/common'); // méthodes génériques & objets
 var settings = require('./js/settings'); // paramètres de configuration
-
-var app = require('express')(),
-    server = require('http').createServer(app),
-    //server = require('https').createServer(app),
-    io = require('socket.io').listen(server),
-    ent = require('ent'), // Permet de bloquer les caractères HTML (sécurité équivalente à htmlentities en PHP)
-    fs = require('fs'); 
-
-var express = require('express');
-var os = require("os");
-
-
-// Ajouts Michael
-var bodyParser = require("body-parser"); // pour recuperer le contenu de requêtes POST 
-var HttpStatus = require('http-status-codes'); // le module qui recupère les status des requêtes HTTP
-var XMLHttpRequest = require('xhr2'); // pour faire des requêtes XMLHttpRequest
-var Q = require('q');
-/**/
-
 
 // ------ Variables d'environnement & paramètrages serveurs ------------------
 
@@ -28,7 +9,38 @@ ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP ||"127.0.0.1";
 // ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP ||"192.168.173.1";
 port  = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 2000;
 // Récupération du Nom de la machine 
+var os = require("os");
 hostName = os.hostname();
+
+
+console.log("***********************************" );
+console.log('' );
+console.log(settings.appName() + " V " + settings.appVersion() );
+console.log('' );
+console.log("***********************************" );
+var hostMsg = "Serveur NodeJs hébergé ";
+if (process.env.OPENSHIFT_NODEJS_IP) hostMsg += "sur OpenShift";
+else if (process.env.IP) hostMsg += "sur ???";
+else  hostMsg += "en Local";
+hostMsg += (" (hostName: "+hostName+")");
+console.log(hostMsg);
+
+
+var app = require('express')(),
+    // server = require('http').createServer(app),
+    server = require('http').createServer(app),
+    //server = require('https').createServer(app),
+    io = require('socket.io').listen(server),
+    ent = require('ent'), // Permet de bloquer les caractères HTML (sécurité équivalente à htmlentities en PHP)
+    fs = require('fs'); 
+
+var express = require('express');
+
+// Ajouts Michael
+var bodyParser = require("body-parser"); // pour recuperer le contenu de requêtes POST 
+var HttpStatus = require('http-status-codes'); // le module qui recupère les status des requêtes HTTP
+var XMLHttpRequest = require('xhr2'); // pour faire des requêtes XMLHttpRequest
+var Q = require('q');
 
 // affectation du port
 app.set('port', port);
@@ -40,15 +52,6 @@ app.use(express.static(__dirname));
 // Appel à body-parser pour la gestion de requêtes POST
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json()); // support json encoded bodies
-/**/
-
-/*// Tests de session d'autorisation...
-app.configure(function () {
-    app.use(express.cookieParser());
-    app.use(express.session({secret: 'secret', key: 'express.sid'}));
-});
-/**/
-
 
 // ------------ routing ------------
 
@@ -92,55 +95,6 @@ var histoUsers2 = {};
 var placeHisto2 = 0;
 histoPosition2 = 0;
 
-
-// Debugg openshift 
-/*// Ecouter les évènements io
-var router = require('socket.io-events')();
-router.on('*', function (sock, args, next) {
-	var name = args.shift(), msg = args.shift();
-	console.log('> Socket on: ', name, msg);
-});
-// io.use(router);
-/**/
-
-/*var secret ="secret";
-io.set('authorization', function(handshakeData, ack) {
-    var cookies = require('cookie');
-    var signedCookies = parseCookies(cookies, secret);
-    sessionStore.get(signedCookies['connect.sid'], function(err, sessionData) {
-        handshakeData.session = sessionData || {};
-        handshakeData.sid = signedCookies['connect.sid'] || null;
-        ack(err, err ? false : true);
-    });
-});
-/**/
-
-/*// Pour le contrôle d'accès:
-// Selon Hugo: Deprecated
-io.set('authorization', function (handshakeData, callback) {
-  // make sure the handshake data looks good
-  callback('not authorized', false); // error first, 'authorized' boolean second 
-});
-/**/
-
-/*// Autre version, non dépréciée
-io.use(function(socket, next) {
-  // .. traitement a faire... 
-  var isAuthorised = false;
-  if (isAuthorised == false) {
-  	next(new Error('not authorized'));
-  	return;
-  }
-  next();
-});
-//**/
-
-
-/*io.set('heartbeat timeout', 3000);
-io.set('heartbeat interval', 4);*/
-
-console.log(io);
-/**/
 
 io.on('connection', function (socket, pseudo) {
 
@@ -265,7 +219,6 @@ io.on('connection', function (socket, pseudo) {
 
   	// Quand un user se déconnecte
     socket.on('disconnect', function(){  
-        // console.log("*****");
 		var dUser = users2[socket.id]; 
 
 		//console.log ("-------------------------------");
@@ -453,6 +406,7 @@ var xhr2Version = require('xhr2/package').version;
 var QVersion = require('q/package').version;
 
 // Affichage de contrôle coté serveur
+console.log("***********************************" );
 console.log("** Socket.IO Version: " + ioVersion);
 console.log("** Express Version: " + expressVersion);
 console.log("** Ent  Version: " + entVersion);
@@ -460,19 +414,8 @@ console.log("** Body-parser Version: " + bodyparserVersion);
 console.log("** Http-status-codes Version: " + HttpStatusVersion);
 console.log("** Xhr2 Version: " + xhr2Version);
 console.log("** Q Version: " + QVersion);
-
-
 console.log("***********************************" );
-var hostMsg = "Serveur NodeJs hébergé ";
-if (process.env.OPENSHIFT_NODEJS_IP) hostMsg += "sur OpenShift";
-else if (process.env.IP) hostMsg += "sur ???";
-else  hostMsg += "en Local";
-hostMsg += (" (hostName: "+hostName+")");
-
-console.log("** "+ hostMsg );
 console.log("** Adresse IP = " + ipaddress );
 console.log("** N° de port = " + port );
 console.log("***********************************" );
-console.log(settings.appName() + " V " + settings.appVersion() );
-console.log("***********************************" );
-/**/
+

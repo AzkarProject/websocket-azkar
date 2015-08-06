@@ -8,4 +8,9 @@ exports.appVersion = function(){
     return '0.7.2.1';
 };
 
+exports.appHostName = function(){
+    return 'websocket-azkar';
+};
+
+
 })(typeof exports === 'undefined'? this['settings']={}: exports);

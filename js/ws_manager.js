@@ -2,18 +2,23 @@
 // Flags divers
 var isServerInfoReceived = false; 
 
-
-// Contrôle des méthodes communes client/serveur
-var commonTest = common.test();
-console.log(commonTest + " correctement chargé coté client !!!");
-
 // variables diverses
 var myPlaceListe = 0;
 var nbUsers = 0;
 
-
 // Initialisation du canal de signalisation
-var socket = io.connect();
+// On récupère l'URL complète du client
+var currentUrl = window.location.href; 
+// On regarde si l'url contient la chaine "rhcloud.com"
+var isOpenShift = currentUrl.indexOf("rhcloud.com") > -1;
+var pIoConnect = ''; // local:; pas de proxy particulier
+if (isOpenShift) {pIoConnect = 'http://'+settings.appHostName()+'.rhcloud.com:8000'} // proxy Openshift.
+var socket = io.connect(pIoConnect); 
+
+/*// Controle:
+var hostControl = "rhcloud.com: "+currentUrl.indexOf("rhcloud.com") > -1;
+hostControl += '\n appHostName: '+settings.appHostName();
+/**/
 
 var typeUser = null;
 if (type == "pilote-appelant") {typeUser = "Pilote";
