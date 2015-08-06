@@ -73,10 +73,10 @@ app.get('/', function (b_req , b_res) {
 
 server.listen(port, function () {
 
-    console.log('server is listening');
+console.log("Server proxy is running at ip:port  --->> : " + ip + ":" + port);
         
 });
 
 
 
-console.log("Server running at ip:port  --->> : " + ip + ":" + port);
+

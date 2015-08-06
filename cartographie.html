@@ -37,12 +37,15 @@
 
         $.get("http://192.168.173.1:8080/?url=http://127.0.0.1:50000/nav/maps/parameters", function(dataMap) {
             console.log('lalala',dataMap);
-            jsonMapInfo = dataMap;
-            mapInfo = JSON.parse(jsonMapInfo);
+            if(!dataMap)
+                return "pas de données ! :/ " ; 
+
+            mapInfo = JSON.parse(dataMap);
             //get the map width and height to adjust the canvas
             $('#canvasMap').attr("width", mapInfo.Width);
             $('#canvasMap').attr("height", mapInfo.Height);
-            console.log("Dimension " + mapInfo.Width + " " + mapInfo.Height);
+
+            console.log("Dimension Width : " + mapInfo.Width + ",  Height : " + mapInfo.Height);
 
             if (document.getElementById("dim")) {
                 //text info
