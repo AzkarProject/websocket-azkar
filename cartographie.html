@@ -18,7 +18,25 @@
                                 background-position-y:0px;
                                 "></canvas>
     </div>
+    <script>
+    function init(callback) {
 
+        $.get("http://192.168.173.1:8080/?url=http://127.0.0.1:50000/nav/maps/parameters", function(dataMap) {
+            jsonMapInfo = dataMap;
+            mapInfo = JSON.parse(jsonMapInfo);
+            //get the map width and height to adjust the canvas
+            $('#canvasMap').attr("width", mapInfo.Width);
+            $('#canvasMap').attr("height", mapInfo.Height);
+            console.log("Dimension " + mapInfo.Width + " " + mapInfo.Height);
+
+            if (document.getElementById("dim")) {
+                //text info
+                var text = "height : " + mapInfo.Height + "px  width : " + mapInfo.Width + "px";
+                document.getElementById("dim").innerHTML = text;
+            }
+        });
+    }
+    </script>
     <button onclick="getDataMap();">Click me</button>
     <script>
     var type = "pilote-appelant";

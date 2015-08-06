@@ -60,8 +60,3 @@ http.createServer(function(b_req, b_res) {
 }).listen(port, ip);
 
 console.log("Server running at ip:port  --->> : " + ip + ":" + port);
-
-// Chargement de la page index.html
-http.get('/', function(req, res) {
-    res.sendFile(__dirname + '/cartographie.html');
-});

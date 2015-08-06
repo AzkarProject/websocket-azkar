@@ -41,9 +41,6 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json()); // support json encoded bodies
 
-
-
-
 // Chargement de la page index.html
 app.get('/', function(req, res) {
     res.sendFile(__dirname + '/index.html');
