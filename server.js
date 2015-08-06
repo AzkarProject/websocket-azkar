@@ -42,6 +42,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json()); // support json encoded bodies
 /**/
 
+/*// Tests de session d'autorisation...
+app.configure(function () {
+    app.use(express.cookieParser());
+    app.use(express.session({secret: 'secret', key: 'express.sid'}));
+});
+/**/
+
+
 // ------------ routing ------------
 
 // Chargement de la page index.html
@@ -84,6 +92,29 @@ var histoUsers2 = {};
 var placeHisto2 = 0;
 histoPosition2 = 0;
 
+
+// Debugg openshift 
+/*// Ecouter les évènements io
+var router = require('socket.io-events')();
+router.on('*', function (sock, args, next) {
+	var name = args.shift(), msg = args.shift();
+	console.log('> Socket on: ', name, msg);
+});
+// io.use(router);
+/**/
+
+/*var secret ="secret";
+io.set('authorization', function(handshakeData, ack) {
+    var cookies = require('cookie');
+    var signedCookies = parseCookies(cookies, secret);
+    sessionStore.get(signedCookies['connect.sid'], function(err, sessionData) {
+        handshakeData.session = sessionData || {};
+        handshakeData.sid = signedCookies['connect.sid'] || null;
+        ack(err, err ? false : true);
+    });
+});
+/**/
+
 /*// Pour le contrôle d'accès:
 // Selon Hugo: Deprecated
 io.set('authorization', function (handshakeData, callback) {
@@ -105,17 +136,10 @@ io.use(function(socket, next) {
 //**/
 
 
-/*
-connection.on('close', function(reasonCode, description) {
-    delete clients[id];
-    console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
-});
-/**/
+/*io.set('heartbeat timeout', 3000);
+io.set('heartbeat interval', 4);*/
 
-/*
-io.sockets.on('disconnect', function (socket)  {
-	console.log(new Date() + ' Peer disconnected.');
-});
+console.log(io);
 /**/
 
 io.on('connection', function (socket, pseudo) {
@@ -241,7 +265,7 @@ io.on('connection', function (socket, pseudo) {
 
   	// Quand un user se déconnecte
     socket.on('disconnect', function(){  
-        console.log("*****");
+        // console.log("*****");
 		var dUser = users2[socket.id]; 
 
 		//console.log ("-------------------------------");
