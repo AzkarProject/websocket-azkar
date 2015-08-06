@@ -40,16 +40,16 @@
             if(!dataMap)
                 return "pas de données ! :/ " ; 
 
-            mapInfo = JSON.parse(dataMap);
+          //  mapInfo = JSON.parse(dataMap);
             //get the map width and height to adjust the canvas
-            $('#canvasMap').attr("width", mapInfo.Width);
-            $('#canvasMap').attr("height", mapInfo.Height);
+            $('#canvasMap').attr("width", dataMap.Width);
+            $('#canvasMap').attr("height", dataMap.Height);
 
-            console.log("Dimension Width : " + mapInfo.Width + ",  Height : " + mapInfo.Height);
+            console.log("Dimension Width : " + dataMap.Width + ",  Height : " + dataMap.Height);
 console.log('lalala 2 ');
             if (document.getElementById("dim")) {
                 //text info
-                var text = "height : " + mapInfo.Height + "px  width : " + mapInfo.Width + "px";
+                var text = "height : " + dataMap.Height + "px  width : " + dataMap.Width + "px";
                 document.getElementById("dim").innerHTML = text;
                 console.log('lalala 3 ');
             }
