@@ -18,10 +18,25 @@
                                 background-position-y:0px;
                                 "></canvas>
     </div>
+   
+    <button onclick="getDataMap();">Click me</button>
+    <script>
+    var type = "pilote-appelant";
+    var otherType = "pilote-appelé";
+    </script>
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/settings.js"></script>
+    <script src='/js/mapviewer.js'></script>
+    <script src='/js/ws_manager.js'></script>
+    <script src='/js/commands.js'></script>
+    <script src='/js/main.js'></script>
     <script>
     function init(callback) {
 
         $.get("http://192.168.173.1:8080/?url=http://127.0.0.1:50000/nav/maps/parameters", function(dataMap) {
+            console.log('lalala',dataMap);
             jsonMapInfo = dataMap;
             mapInfo = JSON.parse(jsonMapInfo);
             //get the map width and height to adjust the canvas
@@ -37,20 +52,6 @@
         });
     }
     </script>
-    <button onclick="getDataMap();">Click me</button>
-    <script>
-    var type = "pilote-appelant";
-    var otherType = "pilote-appelé";
-    </script>
-    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/js/common.js"></script>
-    <script src="/js/settings.js"></script>
-    <script src='/js/mapviewer.js'></script>
-    <script src='/js/ws_manager.js'></script>
-    <script src='/js/commands.js'></script>
-    <script src='/js/main.js'></script>
-    <script src='/js/cartographie.js'></script>
 </body>
 
 </html>

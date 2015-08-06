@@ -25,15 +25,6 @@ ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP || "127.0.0.1";
 // ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP ||"192.168.173.1";
 port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 2000;
 
-// autoriser le CORS
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
-
-
-
 // affectation du port
 app.set('port', port);
 

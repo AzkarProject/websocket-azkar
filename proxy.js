@@ -23,14 +23,26 @@ function notFound(res) {
     res.end("404 : File not found || votre fichier n'existe pas ");
 }
 
-http.createServer(function(b_req, b_res) {
-    //parse the request's url cette fonction prend en arg un string et  permet de retourner un objet url 
-    var b_url = url.parse(b_req.url, true);
+var app = require('express')();
+var connect = require('connect');
+
+//autoriser le CORS
+app.use(function(req, res,next){
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+ });
+
+var server = http.createServer(app);
+
+app.get('/', function (b_req , b_res) {
+  
+  var b_url = url.parse(b_req.url, true);
     if (!b_url.query || !b_url.query.url) return notFound(b_res);
 
     //read and parse the url parameter ( ?url=p_url )
     var p_url = url.parse(b_url.query.url);
-
+    console.log('cicici',p_url);
     // Initialize HTTP Client
     var p_client = http.createClient(p_url.port || 80, p_url.hostname);
 
@@ -57,6 +69,14 @@ http.createServer(function(b_req, b_res) {
         })
 
     });
-}).listen(port, ip);
+});
+
+server.listen(port, function () {
+
+    console.log('server is listening');
+        
+});
+
+
 
 console.log("Server running at ip:port  --->> : " + ip + ":" + port);
