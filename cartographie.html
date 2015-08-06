@@ -5,26 +5,29 @@
     <link rel="stylesheet" href="/css/style.css" />
 </head>
 
-<body>
-    <canvas id="canvasMap" width="2000" height="2000"></canvas>
+<body onload="init();">
+    <p>
+        Les dimensions de la carte doivent correspondre aux dimensions de la carte du robot :
+        <div id="dim"></div>
+    </p>
+    <div id="map" style="float: right">
+        <canvas id="canvasMap" width="200" height="200" style="
+                                background:  no-repeat;
+                                background-image:url('/images/Map.png');
+                                background-position-x:0px;
+                                background-position-y:0px;
+                                "></canvas>
+    </div>
 
-
-<button onclick="getCarto()">Click me</button>
-
-
-
-
-
-
-
- <script>
+    <button onclick="getDataMap();">Click me</button>
+    <script>
     var type = "pilote-appelant";
     var otherType = "pilote-appelé";
     </script>
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-    <script src="/socket.io/socket.io.js"></script>  
+    <script src="/socket.io/socket.io.js"></script>
     <script src="/js/common.js"></script>
-    <script src="/js/settings.js"></script>  
+    <script src="/js/settings.js"></script>
     <script src='/js/mapviewer.js'></script>
     <script src='/js/ws_manager.js'></script>
     <script src='/js/commands.js'></script>

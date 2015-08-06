@@ -6,6 +6,7 @@
   Exemples de requetes qui fonctionne :
   -information sur la carte :  http://192.168.173.1:8080/?url=http://127.0.0.1:50000/nav/maps/parameters
   -recuperer la carte en png : http://192.168.173.1:8080/?url=http://127.0.0.1:50000/nav/maps/map
+  -recuperer les informations sur la localisation : http://192.168.173.1:8080/?url=http://127.0.0.1:50000/robulab/localization/localization
 
 */
 var http = require('http'),
@@ -59,3 +60,8 @@ http.createServer(function(b_req, b_res) {
 }).listen(port, ip);
 
 console.log("Server running at ip:port  --->> : " + ip + ":" + port);
+
+// Chargement de la page index.html
+http.get('/', function(req, res) {
+    res.sendFile(__dirname + '/cartographie.html');
+});
