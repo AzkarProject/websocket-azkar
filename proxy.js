@@ -42,7 +42,7 @@ app.get('/', function (b_req , b_res) {
 
     //read and parse the url parameter ( ?url=p_url )
     var p_url = url.parse(b_url.query.url);
-    console.log('cicici',p_url);
+   // console.log('cicici',p_url);
     // Initialize HTTP Client
     var p_client = http.createClient(p_url.port || 80, p_url.hostname);
 
