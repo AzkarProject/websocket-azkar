@@ -50,7 +50,7 @@
             offsetX = dataMap.Offset.X;
             offsetY = dataMap.Offset.Y;
 
-            corrOffestX = dataMap.Height - (dataMap.Resolution * offsetX);
+            corrOffestX = dataMap.Height - (dataMap.Resolution * offsetX); // carte / Resolution + offsetx
             corrOffestY = dataMap.Width - (dataMap.Resolution * offsetY);
 
             /****************essai de trouver le 0,0 ************************/
@@ -69,7 +69,7 @@
             console.log('lalala 2 ');
             if (document.getElementById("dim")) {
                 //text info
-                var text = "height : " + dataMap.Height + "px  width : " + dataMap.Width + "px";
+                var text = "height : " + dataMap.Height + "px  et  width : " + dataMap.Width + "px";
                 document.getElementById("dim").innerHTML = text;
                 console.log('lalala 3 ');
             }
