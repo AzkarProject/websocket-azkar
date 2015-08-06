@@ -21,6 +21,7 @@
   "author": "titileterrible <thierry.bergeron@inria.fr>",
   "description": "tchat tps réel avec socket.io + démo WebRTC",
   "devDependencies": {
-    "connect": "^3.4.0"
+    "connect": "^3.4.0",
+    "request": "^2.60.0"
   }
 }
