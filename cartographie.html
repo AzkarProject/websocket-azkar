@@ -33,7 +33,7 @@
     <script src='/js/commands.js'></script>
     <script src='/js/main.js'></script>
     <script>
-    function init(callback) {
+    function init() {
 
         $.get("http://192.168.173.1:8080/?url=http://127.0.0.1:50000/nav/maps/parameters", function(dataMap) {
             console.log('lalala',dataMap);
@@ -46,11 +46,12 @@
             $('#canvasMap').attr("height", mapInfo.Height);
 
             console.log("Dimension Width : " + mapInfo.Width + ",  Height : " + mapInfo.Height);
-
+console.log('lalala 2 ');
             if (document.getElementById("dim")) {
                 //text info
                 var text = "height : " + mapInfo.Height + "px  width : " + mapInfo.Width + "px";
                 document.getElementById("dim").innerHTML = text;
+                console.log('lalala 3 ');
             }
         });
     }
