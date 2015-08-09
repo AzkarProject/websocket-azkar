@@ -3,14 +3,17 @@ var common = require('./js/common'); // méthodes génériques & objets
 var settings = require('./js/settings'); // paramètres de configuration
 
 // ------ Variables d'environnement & paramètrages serveurs ------------------
-
-// variables d'environnement en variables globale pour les passer à la méthode websocket
-ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP ||"127.0.0.1";
-// ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP ||"192.168.173.1";
-port  = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 2000;
 // Récupération du Nom de la machine 
 var os = require("os");
 hostName = os.hostname();
+
+ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP ||"127.0.0.1"; // défaut
+if (hostName == "azkary") ipaddress = "127.0.0.1";// machine bureau
+else if (hostName == "ubuntu64azkar") ipaddress = "192.168.1.10";// Vm_umbutu_dom
+else if (hostName == "thaby") ipaddress = "192.168.173.1";// robulab_wifi
+
+port  = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 2000;
+
 
 
 console.log("***********************************" );
