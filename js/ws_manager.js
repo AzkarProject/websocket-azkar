@@ -15,10 +15,7 @@ var pIoConnect = ''; // local:; pas de proxy particulier
 if (isOpenShift) {pIoConnect = 'http://'+settings.appHostName()+'.rhcloud.com:8000'} // proxy Openshift.
 var socket = io.connect(pIoConnect); 
 
-/*// Controle:
-var hostControl = "rhcloud.com: "+currentUrl.indexOf("rhcloud.com") > -1;
-hostControl += '\n appHostName: '+settings.appHostName();
-/**/
+
 
 var typeUser = null;
 if (type == "pilote-appelant") {typeUser = "Pilote";
