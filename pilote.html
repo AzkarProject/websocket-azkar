@@ -172,7 +172,10 @@
                      * function qui permet de recupérer le niveau de la  la battery et de l'afficher dans le progress bar
                      * elle interroge chaque 1000ms le robot via url et retourne le niveau de la battery en pourcentage
                      */
-                    refreshBattery = function() {
+                    
+                    $(document).ready(function () {
+
+ refreshBattery = function() {
                         var url = "http://192.168.173.1:8080/?url=http://127.0.0.1:50000/robulab/battery/battery"; // url est passé en paramètre , elle sera interpretée par le proxy en premier
                         var delay = 1000; // l'interval de temps au bout du quel on envoi une autre requete pour rafraichir les information
 
@@ -195,7 +198,11 @@
                         progressBar.value = newValue;
                         progressBar.getElementsByTagName('span')[0].textContent = newValue;
                     }
-                    
+
+
+
+});
+                   
                     </script>
                 </div>
                 <div class="jauge">
