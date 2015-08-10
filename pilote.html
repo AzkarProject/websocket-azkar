@@ -250,8 +250,6 @@
     <script>
     $('#zone_info_server').replaceWith(settings.appName() + " V " + settings.appVersion() + " - IHM Pilote");
     </script>
-    <script src="/js/lib/xml2json.js"></script>
-    <script type="text/javascript" src="/js/lib/xmlToJSON.js"></script>
     <script>
     /**
      * function qui permet de recupérer le niveau de la  la battery et de l'afficher dans le progress bar
@@ -268,12 +266,7 @@
                 $.get(url, function(data) {
                     console.log('dataBattery xml-----> ', data);
 
-                   // dataJson = xmlToJSON.parseString(data); // parser le xml en JSON 
-
-
-                //    console.log('dataBattery Json-----> ', dataJson);
-                    //remaining = dataJson.Body.Remaining;
-                   remaining = data.getElementById("Remaining") ;
+                   remaining = data.childNodes(1).childNodes(0).childNodes(3).text ;
                     console.log('remaining  -----> ', remaining);
                     percentage = (remaining <= 100) ? remaining : 100;
                 });
