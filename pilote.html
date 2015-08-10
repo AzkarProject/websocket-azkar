@@ -265,14 +265,12 @@
 
             setInterval(function() {
                 $.get(url, function(data) {
-                    console.log('dataBatery xml-----> ', data);
+                    console.log('dataBattery xml-----> ', data);
 
-                    var xml = $.parseXML(data),
-                        $xml = $(xml),
-                        $test = $xml.find('Remaining');
-
-                    console.log($test.text());
-                    var remaining = $test.text();
+                    // A simple call - myXML is a string containing your XML:
+                    dataJson = xml2json.parser(data);
+                    console.log('dataBattery json ---> ', dataJson);
+                    var remaining =dataJson.Body.Remaining;
                     // console.log('remaining  -----> ', remaining);
                     var percentage = (remaining <= 100) ? remaining : 100;
                 });
