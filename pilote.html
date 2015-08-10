@@ -266,6 +266,7 @@
                 $.get(url, function(data) {
                     console.log('dataBattery xml-----> ', data);
                     dataString = data.toString();
+                    console.log('dataString  -----> ', dataString);
                     remaining = dataString.substr(dataString.indexOf("<Remaining>"), dataString.indexOf("</Remaining>"));
                     console.log('remaining  -----> ', remaining);
                     percentage = (remaining <= 100) ? remaining : 100;
