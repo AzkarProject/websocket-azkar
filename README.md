@@ -73,9 +73,10 @@ http://websocket-azkar.rhcloud.com/
         - [ ] traitement des données de la carte
         - [ ] récupération de la position du robot sur la carte
         - [ ] affichage de la position du robot 
-    - [ ] information de la baterry
-        - [ ] récupération des informations via proxy 
-        - [ ] traitement des informations
+    - [x] information de la baterry
+        - [x] récupération des informations via proxy 
+        - [x] traitement des informations
+        - [x] Affichage dans IHM pilote 
 
 [ ] STEP 2 >>> Livrable base 1toN:
 - [x] Gestion des connectés
