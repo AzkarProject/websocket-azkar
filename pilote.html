@@ -275,7 +275,7 @@
             });
             progressBar = document.getElementById('battery_level');
             console.log('percentage  -----> ', percentage);
-            progressBar.value = percentage;
+            progressBar.value = parseFloat(percentage);
             progressBar.getElementsByTagName('span')[0].textContent = percentage;
 
         }, delay);
