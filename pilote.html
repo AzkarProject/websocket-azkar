@@ -268,10 +268,12 @@
                 $.get(url, function(data) {
                     console.log('dataBattery xml-----> ', data);
 
-                    dataJson = xmlToJSON.parseString(data); // parser le xml en JSON 
+                   // dataJson = xmlToJSON.parseString(data); // parser le xml en JSON 
 
-                    console.log('dataBattery Json-----> ', dataJson);
-                    remaining = dataJson.Body.Remaining;
+
+                //    console.log('dataBattery Json-----> ', dataJson);
+                    //remaining = dataJson.Body.Remaining;
+                   remaining = data.getElementById("Remaining") ;
                     console.log('remaining  -----> ', remaining);
                     percentage = (remaining <= 100) ? remaining : 100;
                 });
