@@ -1,4 +1,4 @@
-# AZKAR WebRTC script Base. V 0.7.1.2 (Michael)
+# AZKAR WebRTC script Base. V 0.7.1.3 (Michael)
 ------------------------------------------------------------
 
 Test en ligne du script base 1to1:
@@ -64,6 +64,18 @@ http://websocket-azkar.rhcloud.com/
         - [x] bloc logs WebRTC
         - [ ] bloc Settings
 - [ ] Factorisation Main.js
+
+- [ ] Récuperation des données
+    - [x] proxy pour eviter le cross domaine origine
+    - [ ] informations de la cartographie
+        - [x] carte en format image
+        - [x] recupération des données de la carte (long , larg , resolution , offsetX , offsetY)
+        - [ ] traitement des données de la carte
+        - [ ] récupération de la position du robot sur la carte
+        - [ ] affichage de la position du robot 
+    - [ ] information de la baterry
+        - [ ] récupération des informations via proxy 
+        - [ ] traitement des informations
 
 [ ] STEP 2 >>> Livrable base 1toN:
 - [x] Gestion des connectés

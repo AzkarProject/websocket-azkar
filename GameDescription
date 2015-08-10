@@ -1,8 +1,0 @@
-How the code is structured
-
-The code in the demo contains four files, each with different portions of the example. The files contain the following logic:
-
-client.js The logic for the game client setup in the browser. --> robot.js
-app.js The server side app to run on node. This handles all the node/express/socket.io set up and code. --> server.js
-game.server.js The logic for the game server (‘lobby’). --> la logic serveur
-game.core.js The logic for the game play itself, both server and client. --> la logic partagé 

@@ -81,16 +81,10 @@
                 <hr/>
                 <button class="shadowBlack" id="local_ButtonDevices" onclick="localManageDevices()">Ouvrir la connexion</button>
             </div>
-
-
-
-
-
             <div id="robotCommands" class="insideFlex oneQuarterbox robot shadowBlack device">
-                <strong>Robot controls</strong> <span id ="connect-notice" > --- Gamepad non détecté</span>
+                <strong>Robot controls</strong> <span id="connect-notice"> --- Gamepad non détecté</span>
                 <hr/>
-                
-               <div id="disconnected-gamepad">
+                <div id="disconnected-gamepad">
                     <div id="divBtUp">
                         <button id="btnUp" class="btnCommandsPad" onclick="cmdUp()">&uarr;</button>
                     </div>
@@ -104,7 +98,7 @@
                         <button id="btnDown" class="btnCommandsPad" onclick="cmdDown()">&darr;</button>
                     </div>
                     <div id="divBtSpeed">
-                            <!--
+                        <!--
                                 <button id="btnIncrease" class="btnCommandsPad" onclick="cmdIncrease()">+</button>
                                 alert(" enable  : " + enable   + " | targetLinearSpeedPos  : " +  targetLinearSpeedPos + " | targetLinearSpeedNeg :" targetLinearSpeedNeg + " | targetAngularSpeed : " + targetAngularSpeed );
                                 <button id="btnDecrease" class="btnCommandsPad" onclick="cmdDecrease()">-</button>
@@ -113,7 +107,6 @@
                         <progress id="jaugeSpeedSetting" value="0.5" max="1"></progress>
                         <button id="btnDecrease" class="btnCommandsPad" onclick="cmdSpeed(0.1)">+</button>
                         <br/> Speed Setting: <span id="speedSetting">m.s</span>
-                    
                         <script>
                         function jaugeSpeedSetting() {
                             var ava = document.getElementById("jaugeSpeedSetting");
@@ -133,11 +126,8 @@
                         </script>
                     </div>
                 </div>
-
                 <div id="connected-GamePad">
-                        
                     <ul id="gamepads"></ul>
-
                     <div id="divBtUp">
                         <button id="btnGpTourne" class="btnCommandsPad" onclick="cmdGpTourne()">Tourne</button>
                     </div>
@@ -147,9 +137,7 @@
                     <div id="divBtRight">
                         <button id="btnGpAlert" class="btnCommandsPad" onclick="cmdGpAlert()">Info</button>
                     </div>
-                    
                     <script>
-
                     function cmdGpTourne() {
                         // Todo
                     }
@@ -158,15 +146,12 @@
                         //todo
                     }
 
-                    function cmdGpAlert()  {
-                          alert(enable)
+                    function cmdGpAlert() {
+                        alert(enable)
                     }
-                   
                     </script>
-               </div>
-        
-       		</div>
-
+                </div>
+            </div>
         </div>
         <div id="colDroiteHaut" class="floatRight tripleQuarterBox">
             <div id="remoteVideoArea" class="insideFlex robot tripleQuarterBox shadowBlack floatRight">
@@ -181,7 +166,36 @@
                 <hr/>
                 <div class="jauge">
                     <label for="battery_level">Battery Level:</label>
-                    <progress id="battery_level" class="floatRight" value="50" max="200"></progress>
+                    <progress id="battery_level" class="floatRight" value="refreshBattery()" max="100"></progress>
+                    <script>
+                    < script >
+
+                        /**
+                         * function qui permet de recupérer le niveau de la  la battery et de l'afficher dans le progress bar
+                         * elle interroge chaque 1000ms le robot via url et retourne le niveau de la battery en pourcentage
+                         */
+                        refreshBattery = function() {
+
+                            var url = "http://192.168.173.1:8080/?url=http://127.0.0.1:50000/robulab/battery/battery"; // url est passé en paramètre , elle sera interpretée par le proxy en premier
+                            var delay = 1000; // l'interval de temps au bout du quel on envoi une autre requete pour rafraichir les information
+
+
+                            setInterval(function() {
+                                $.get(url, function(data) {
+
+                                    console.log('dataBatery -----> ', data);
+
+                                    var remaining = JSON.parse(data).Remaining;
+                                    console.log('remaining', remaining);
+
+                                    var percentage = (remaining <= 100) ? remaining : 100;
+
+                                });
+                            }, delay);
+
+                            return   percentage ; 
+                        }
+                    </script>
                 </div>
                 <div class="jauge">
                     <label for="speed_robot">Real Speed:</label>
@@ -244,13 +258,10 @@
             </div>
         </div>
     </section>
-    
-    
     <ul id="gamepads"></ul>
     <!--
     <p id="connect-notice">toto connecte ta mannette stp :) !!</p>
     -->
-
     <script>
     var type = "pilote-appelant";
     var otherType = "pilote-appelé";
@@ -259,24 +270,15 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src='/js/lib/adapter.js'></script>
     <script src="/js/lib/gamepad.js"></script>
-
-
-
-
     <script src="/js/common.js"></script>
     <script src="/js/settings.js"></script>
-    
     <script src='/js/mapviewer.js'></script>
     <script src='/js/ws_manager.js'></script>
-
     <script src='/js/commands.js'></script>
     <script src='/js/main.js'></script>
-    
-    
     <script>
     $('#zone_info_server').replaceWith(settings.appName() + " V " + settings.appVersion() + " - IHM Pilote");
     </script>
-   
 </body>
 
 </html>
