@@ -166,7 +166,7 @@
                 <hr/>
                 <div class="jauge">
                     <label for="battery_level">Battery Level:</label>
-                    <progress id="battery_level" class="floatRight" max=100><span>0</span>%</progress>
+                    <progress id="battery_level" value="refreshBattery()" class="floatRight" max=100><span>0</span>%</progress>
                 </div>
                 <div class="jauge">
                     <label for="speed_robot">Real Speed:</label>
@@ -256,12 +256,12 @@
      * elle interroge chaque 1000ms le robot via url et retourne le niveau de la battery en pourcentage
      */
 
-    $(document).ready(function() {
+  //  $(document).ready(function() {
 
         refreshBattery = function() {
             var url = "http://192.168.173.1:8080/?url=http://127.0.0.1:50000/robulab/battery/battery"; // url est passé en paramètre , elle sera interpretée par le proxy en premier
             var delay = 1000; // l'interval de temps au bout du quel on envoi une autre requete pour rafraichir les information
-            var dataJson, remaining, percentage, dataString;
+            var dataJson, remaining, percentage, dataString , thenum ;
             setInterval(function() {
                 $.get(url, function(data) {
                  //   console.log('dataBattery xml-----> ', data);
@@ -270,11 +270,11 @@
 
                    // console.log('dataString  -----> ', dataString);
                     remaining = dataString.substr(dataString.indexOf("<Remaining>"), dataString.indexOf("</Remaining>"));
-                    console.log('remaining  -----> ', remaining);
+                  //  console.log('remaining  -----> ', remaining);
 
                     thenum = remaining.match(/\d+/)[0] // "3"
 
-                     console.log('thenum  -----> ', thenum); 
+                  //   console.log('thenum  -----> ', thenum); 
 
                     percentage = (thenum <= 100) ? thenum : 100;
                 });
@@ -293,7 +293,7 @@
 
 
 
-    });
+    //});
     </script>
 </body>
 
