@@ -1,5 +1,3 @@
-
-
 // Elements communs client/serveur
 var common = require('./js/common'); // méthodes génériques et objets
 var settings = require('./js/settings'); // parametres de configuration
@@ -21,8 +19,8 @@ var app = require('express')(),
     fs = require('fs');
 
 // variables d'environnement en variables globale pour les passer à la méthode websocket
-ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP || "127.0.0.1";
-// ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP ||"192.168.173.1";
+//ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP || "127.0.0.1";
+ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP || "192.168.173.1";
 port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 2000;
 
 // affectation du port
@@ -42,7 +40,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json()); // support json encoded bodies
 
 // Chargement de la page index.html
-app.get('/', function(req, res, next ) {
+app.get('/', function(req, res, next) {
     res.sendFile(__dirname + '/index.html');
 });
 
@@ -56,12 +54,12 @@ app.get('/robot/', function(req, res, next) {
     res.sendFile(__dirname + '/robot.html');
 });
 
-app.get('/cartographie/', function(req, res , next) {
+app.get('/cartographie/', function(req, res, next) {
     res.sendFile(__dirname + '/cartographie.html');
 });
 
 
-app.get('/visiteur/', function(req, res , next) {
+app.get('/visiteur/', function(req, res, next) {
     res.sendFile(__dirname + '/visiteur.html');
 });
 
