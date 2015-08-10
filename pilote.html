@@ -251,6 +251,7 @@
     $('#zone_info_server').replaceWith(settings.appName() + " V " + settings.appVersion() + " - IHM Pilote");
     </script>
     <script src="/js/lib/xml2json.js"></script>
+    <script type="text/javascript" src="/js/lib/xmlToJSON.js"></script>
     <script>
     /**
      * function qui permet de recupérer le niveau de la  la battery et de l'afficher dans le progress bar
@@ -262,17 +263,17 @@
         refreshBattery = function() {
             var url = "http://192.168.173.1:8080/?url=http://127.0.0.1:50000/robulab/battery/battery"; // url est passé en paramètre , elle sera interpretée par le proxy en premier
             var delay = 1000; // l'interval de temps au bout du quel on envoi une autre requete pour rafraichir les information
-
+            var dataJson, remaining, percentage;
             setInterval(function() {
                 $.get(url, function(data) {
                     console.log('dataBattery xml-----> ', data);
 
-                    // A simple call - myXML is a string containing your XML:
-                    dataJson = xml2json.parser(data);
-                    console.log('dataBattery json ---> ', dataJson);
-                    var remaining =dataJson.Body.Remaining;
-                    // console.log('remaining  -----> ', remaining);
-                    var percentage = (remaining <= 100) ? remaining : 100;
+                    dataJson = xmlToJSON.parseString(data); // parser le xml en JSON 
+
+                    console.log('dataBattery Json-----> ', dataJson);
+                    remaining = dataJson.Body.Remaining;
+                    console.log('remaining  -----> ', remaining);
+                    percentage = (remaining <= 100) ? remaining : 100;
                 });
             }, delay);
 
