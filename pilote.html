@@ -265,7 +265,9 @@
             setInterval(function() {
                 $.get(url, function(data) {
                     console.log('dataBattery xml-----> ', data);
-                    dataString = data.toString();
+
+                    dataString = new XMLSerializer().serializeToString(data.documentElement);
+
                     console.log('dataString  -----> ', dataString);
                     remaining = dataString.substr(dataString.indexOf("<Remaining>"), dataString.indexOf("</Remaining>"));
                     console.log('remaining  -----> ', remaining);
