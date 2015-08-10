@@ -272,10 +272,8 @@
                         $test = $xml.find('Remaining');
 
                     console.log($test.text());
-
-
-
-                    console.log('remaining  -----> ', remaining);
+                    var remaining = $test.text();
+                    // console.log('remaining  -----> ', remaining);
                     var percentage = (remaining <= 100) ? remaining : 100;
                 });
             }, delay);
