@@ -264,13 +264,18 @@
             var dataJson, remaining, percentage, dataString;
             setInterval(function() {
                 $.get(url, function(data) {
-                    console.log('dataBattery xml-----> ', data);
+                 //   console.log('dataBattery xml-----> ', data);
 
                     dataString = new XMLSerializer().serializeToString(data.documentElement);
 
-                    console.log('dataString  -----> ', dataString);
+                   // console.log('dataString  -----> ', dataString);
                     remaining = dataString.substr(dataString.indexOf("<Remaining>"), dataString.indexOf("</Remaining>"));
                     console.log('remaining  -----> ', remaining);
+
+                    thenum = remaining.match(/\d+/)[0] // "3"
+
+                     console.log('thenum  -----> ', thenum); 
+
                     percentage = (remaining <= 100) ? remaining : 100;
                 });
             }, delay);
