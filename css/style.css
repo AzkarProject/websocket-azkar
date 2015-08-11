@@ -155,9 +155,9 @@ form {margin-bottom: 9px;}
 .ihmRobot #zone_chat_WebRTC {height: 50px;}
 
 #log {
-	font-size:10px;
-	background: #000000;
-	color: #ffffff;
+  font-size:10px;
+  background: #000000;
+  color: #ffffff;
 }
 
 #dataChannelReceive {
