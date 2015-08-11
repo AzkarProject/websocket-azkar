@@ -1,3 +1,6 @@
-todo-openshift.txt
+openshift.txt
 archives
 TESTS
+node_modules
+settings.js
+*~

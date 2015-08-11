@@ -1,81 +1,68 @@
-// Elements communs client/serveur
-var common = require('./js/common'); // méthodes génériques et objets
-var settings = require('./js/settings'); // parametres de configuration
-var bodyParser = require("body-parser"); // pour recuperer le contenu de requetes POST 
-var HttpStatus = require('http-status-codes'); // le module qui recupère les status des requetes HTTP
-//pour faire des requettes XMLHttpRequest
-var XMLHttpRequest = require('xhr2');
-var Q=require('Q');
+// ------------------------ Elements communs client/serveur
+var common = require('./js/common'); // méthodes génériques & objets
+var settings = require('./js/settings'); // paramètres de configuration
+
+// ------ Variables d'environnement & paramètrages serveurs ------------------
+// Récupération du Nom de la machine 
+var os = require("os");
+hostName = os.hostname();
+
+ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP ||"127.0.0.1"; // défaut
+if (hostName == "azkary") ipaddress = "127.0.0.1";// machine bureau
+else if (hostName == "ubuntu64azkar") ipaddress = "192.168.1.10";// Vm_umbutu_dom
+else if (hostName == "VM-AZKAR-Ubuntu") ipaddress = "134.59.130.141"; // Vm_sparks
+else if (hostName == "thaby") ipaddress = "192.168.173.1";// robulab_wifi
+
+port  = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 2000;
+
+
+
+console.log("***********************************" );
+console.log('' );
+console.log(settings.appName() + " V " + settings.appVersion() );
+console.log('' );
+console.log("***********************************" );
+var hostMsg = "Serveur NodeJs hébergé ";
+if (process.env.OPENSHIFT_NODEJS_IP) hostMsg += "sur OpenShift";
+else if (process.env.IP) hostMsg += "sur ???";
+else  hostMsg += "en Local";
+hostMsg += (" (hostName: "+hostName+")");
+console.log(hostMsg);
+
 
 var app = require('express')(),
+    // server = require('http').createServer(app),
     server = require('http').createServer(app),
     //server = require('https').createServer(app),
     io = require('socket.io').listen(server),
     ent = require('ent'), // Permet de bloquer les caractères HTML (sécurité équivalente à htmlentities en PHP)
     fs = require('fs'); 
 
-// Pour que nodejs puisse servir correctement 
-// les dépendances css du document html
 var express = require('express');
 
-
-// Pour débugg Openshift : Contrôle des versions de socket.io
-var ioVersion = require('socket.io/package').version;
-var expressVersion = require('express/package').version;
-var nodeStaticVersion = require('node-static/package').version;
-//var entVersion = require('ent/package').version;
-var bodyparserVersion = require('body-parser/package').version;
-var httpStatusCodesVersion = require('http-status-codes/package').version;
-var xhr2Version = require('xhr2/package').version;
-var qVersion = require('q/package').version;
-
-// On affiche ces éléments coté serveur
-console.log("**Socket.IO Version: " + ioVersion);
-console.log("**Express Version: " + expressVersion);
-console.log("**node-static Version: " + expressVersion);
-// console.log("**ent Version: "+ entVersion;
-//console.log("**body-parser Version: "+ bodyparserVersion;    
-console.log("http-status-codes Version: "+ httpStatusCodesVersion;
-console.log("xhr2 Version : "+ xhr2Version;
-console.log("Q Version : "+ qVersion;
-console.log("***********************************" );
-
-
-// ------ Fin des requires ------------------
-
-// contrôle chargement coté serveur
-var commonTest = common.test();
-console.log(commonTest + " correctement chargé coté serveur !!!");
-
-
-
-// variables d'environnement en variables globale pour les passer à la méthode websocket
-ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP ||"127.0.0.1";
-// ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP ||"192.168.173.1";
-port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 2000;
+// Ajouts Michael
+var bodyParser = require("body-parser"); // pour recuperer le contenu de requêtes POST 
+var HttpStatus = require('http-status-codes'); // le module qui recupère les status des requêtes HTTP
+var XMLHttpRequest = require('xhr2'); // pour faire des requêtes XMLHttpRequest
+var Q = require('q');
 
 // affectation du port
 app.set('port', port);
 
+// Pour que nodejs puisse servir correctement 
+// les dépendances css du document html
+app.use(express.static(__dirname));
 
-//Utiliser body-parser pour la gestion de requete POST
+// Appel à body-parser pour la gestion de requêtes POST
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json()); // support json encoded bodies
 
-
-
-
 // ------------ routing ------------
-
-// Pour la récup des dépedances CSS par nodejs
-app.use(express.static(__dirname));
-
 
 // Chargement de la page index.html
 app.get('/', function (req, res) {
   res.sendFile(__dirname + '/index.html');
 });
-
 
 // Routing IHM >>>> TODO coté clients
 app.get('/pilote/', function (req, res) {
@@ -86,78 +73,22 @@ app.get('/robot/', function (req, res) {
     res.sendFile(__dirname + '/robot.html');
 });
 
-
 app.get('/visiteur/', function (req, res) {
     res.sendFile(__dirname + '/visiteur.html');
 });
-
-/*******************envoi de commande de deplacement en differential drive*********************/
-
-// Version Michael
-// flag moveOder en cours  
-var flagDrive = false; //Par défaut a false , à la reception de moveOrder ==> True 
-
-function onMoveOrder(enable, aSpeed, lSpeed) {
-
-    var url = 'http://localhost:50000/api/drive';
-    sendMove(url)
-        .then(function() {
-            console.log('@onMoveOrder >> angular speed :' + aSpeedMov + '  et linear speed :' + lSpeed);
-        })
-}
-
-
-function sendMove(url) {
-    return Q.Promise(function(resolve, reject, notify) {
-
-        
-        var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance 
-
-        xmlhttp.open("POST", url);
-        xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-
-        xmlhttp.onload = onload;
-        xmlhttp.onerror = onerror;
-        xmlhttp.onprogress = onprogress;
-
-        xmlhttp.send(JSON.stringify({
-            "Enable": btnA,
-            "TargetAngularSpeed": aSpeedMov,
-            "TargetLinearSpeed": lSpeed
-        }));
-
-        function onload() {
-            if (xmlhttp.status === 200) {
-                resolve(xmlhttp.responseText);
-            } else {
-                reject(new Error("Status code was " + xmlhttp.status));
-            }
-        }
-
-        function onerror() {
-            reject(new Error("Can't XHR " + JSON.stringify(url)));
-        }
-
-        function onprogress(event) {
-            notify(event.loaded / event.total);
-        }
-
-    })
-}
-
-/**/
 
 
 // Lancement du serveur
 server.listen(app.get('port'),ipaddress);
 
-console.log("**ipAdress = " + ipaddress );
-console.log("**port = " + port );
-console.log("***********************************" );
-console.log("     "+settings.appName() + " V " + settings.appVersion() );
 
+// ------ Partie Websocket ------------------
 
-var indexUrl = "http://"+ipaddress+":"+port;
+// Adresse de redirection pour les connexions refusées
+var indexUrl;
+if (process.env.OPENSHIFT_NODEJS_IP) indexUrl = "http://websocket-azkar.rhcloud.com";
+else indexUrl = "http://"+ipaddress+":"+port;
+
 
 // liste des clients connectés
 var users2 = {};
@@ -169,44 +100,8 @@ var placeHisto2 = 0;
 histoPosition2 = 0;
 
 
-// contrôle des connectés coté serveur
-// Ecouteur de connexion d'un nouveau client
-function onSocketConnected(socket){
-  console.log ("-------------------------------");
-  console.log("connexion nouveau client :"+ socket.pseudo + "(ID : " + socket.id + ")");
-  //var infoServer = appName + " V " + appVersion;
-  //io.to(socket.id).emit('infoServer', infoServer);
-}
+io.on('connection', function (socket, pseudo) {
 
-
-var debugNbOffer =0;
-
- 
-/*// Pour le contrôle d'accès:
-// Selon Hugo: Deprecated
-io.set('authorization', function (handshakeData, callback) {
-  // make sure the handshake data looks good
-  callback('not authorized', false); // error first, 'authorized' boolean second 
-});
-/**/
-
-/*// Autre version, non dépréciée
-io.use(function(socket, next) {
-  // .. traitement a faire... 
-  var isAuthorised = false;
-  if (isAuthorised == false) {
-  	next(new Error('not authorized'));
-  	return;
-  }
-  next();
-});
-//**/
-
-
-
-io.sockets.on('connection', function (socket, pseudo) {
- 
-   	
 	onSocketConnected(socket);
 
    	// Quand un User rentre un pseudo (version objet), 
@@ -233,8 +128,13 @@ io.sockets.on('connection', function (socket, pseudo) {
 		// au client un simple message websocket avec en paramètre l'ip de redirection. 
 		// A sa réception, le client se redirige vers la nouvelle url, se déconnectant d'office. 
 
+		// TODO: A régler Bug sur OpenShift:
+		// >>>> Si déco/reco du robot, celui-ci n'est toujours compté parmis les connectés...
+
 		var isAuthorized = true;
 		var	authMessage;
+		var rMsg = "> Connexion Rejetée: ";
+		var rReason;
 		if (data.typeUser == "Robot") {
 			
 			// Teste la présence d'un robot dans la liste des clients connectés
@@ -242,34 +142,33 @@ io.sockets.on('connection', function (socket, pseudo) {
 			var isOtherBot = common.searchInObjects(users2,"typeClient","Robot","boolean");
 			if (isOtherBot == true) {
 				isAuthorized = false;
-				authMessage = "Un Robot est déjà connecté...";
-				console.log ("++++++++++++REJECT++++++++++++ >> Is Robot");
+				authMessage = "Robot déjà connecté...\n Veuillez attendre votre tour.";
+				rReason = " > Because 2 Robots";
 			}
 
 		} else if (data.typeUser == "Pilote") {
 			var isOneBot = common.searchInObjects(users2,"typeClient","Robot","boolean");
 			if (isOneBot == false) {
 				isAuthorized = false;
-				authMessage = "Pas de robot connecté...";
-				console.log ("++++++++++++REJECT++++++++++++ Pilot >> No Robot");
+				authMessage = "Robot non connecté... \n Ressayez plus tard.";
+				rReason = " > Because no robot";
 			} else if (isOtherPilot == true) {
 				// Teste la présence d'un pilote dans la liste des clients connectés
 				var isOtherPilot = common.searchInObjects(users2,"typeClient","Pilote","boolean");
 				isAuthorized = false;
-				authMessage = "Un Pilote est déjà connecté...";
-				console.log ("++++++++++++REJECT++++++++++++ >> Is Pilot");
+				authMessage = "Pilote déjà connecté... \n Veuillez attendre votre tour.";
+				rReason = " > Because 2 Pilotes";
 			}
-			
-
-
-		}	else if (data.typeUser == "Visiteur") {
-			console.log ("++++++++++++REJECT++++++++++++ >> Is Visitor");
-
+		} else if (data.typeUser == "Visiteur") {
+			// console.log ("++++++++++++REJECT++++++++++++ >> Is Visitor");
 		}
 
     	if (isAuthorized == false) {
+			console.log(rMsg + "(ID: " + socket.id+ ") "+ rReason);
     		io.to(socket.id).emit('rejectConnexion', {message:authMessage, url:indexUrl});
     		return;
+    	} else {
+    		// ...
     	}
 
 
@@ -311,6 +210,8 @@ io.sockets.on('connection', function (socket, pseudo) {
         nbUsers2 = common.lenghtObject(users2);
         io.sockets.emit('updateUsers',{listUsers: users2});
 
+        console.log ("> Il y a " + nbUsers2 + " connectés");
+
         // 4 - on met à jour la liste des connectés cotés clients
         // ... TODO... EST-ce bien nécéssaire ????
         // exports.searchInObjects = function (hashTable,attribute,value,typeReturn){
@@ -318,39 +219,28 @@ io.sockets.on('connection', function (socket, pseudo) {
 		// contrôle fontion tests de tableau d'objet coté serveur
 		//var commonTest2 = common.searchInObjects(users2,"typeClient","Robot","boolean");
 		//console.log("commonTest2 >>> " + commonTest2 + " >>> true = robot - false = pilote");
-
-
-
     });
 
-  	// Quand un user se déconnecte (V2)
+  	// Quand un user se déconnecte
     socket.on('disconnect', function(){  
-        
 		var dUser = users2[socket.id]; 
 
-
 		//console.log ("-------------------------------");
-		var message = "Vient de se déconnecter !";
-		// console.log(message + "( ID : " + socket.id + ")");
+		var message = "> Connexion sortante: ";
+		console.log(message + "(ID: " + socket.id+ ")");
         
-		
-		
 		// on retire le connecté de la liste des utilisateurs
 		delete users2[socket.id]; 
 		socket.broadcast.emit('disconnected', {listUsers: users2});
-		//socket.broadcast.emit('disconnected', "WTF");
         // On prévient tout le monde
         socket.broadcast.emit('message2',{objUser: dUser, message: message});
-        
-        // on retire le connecté de la liste des utilsateurs
-        // et on actualise le nombre de connectés  
-        // delete users2[socket.id]; 
+        // On actualise le nombre de connectés  
         nbUsers = common.lenghtObject(users2)
 
         // contrôle liste connectés coté serveur
-		console.log (users2);
+		// console.log (users2);
 		
-        console.log ("Il reste " + nbUsers + " connectés");
+        console.log ("> Il reste " + nbUsers + " connectés");
         // TODO: Mise à jour de la liste coté client...
 
         // io.sockets.emit('users', users);           
@@ -360,8 +250,9 @@ io.sockets.on('connection', function (socket, pseudo) {
         // socket.broadcast.emit('disconnected', { pseudo:"SERVER", message: message, placeListe: "-"});
         // socket.broadcast.emit('disconnected', {listUsers: users2});
     });  
+	/**/
 
-    // Transmission de messages générique V2 objet
+    // Transmission de messages génériques 
     socket.on('message2', function (data) {
         console.log(data);
         if (data.message){
@@ -375,86 +266,53 @@ io.sockets.on('connection', function (socket, pseudo) {
     // ---------------------------------------------------------------------------------
     // Partie commandes du robot par websocket (stop, moveDrive, moveSteps, goto & clicAndGo)
 
-     // Transmission de commande générique V2 objet
-    socket.on('moveOrder', function(data) {
-        
+    // A la réception d'un ordre de commande
+    socket.on('moveOrder', function(data) { 
+       // TODO >>> implémenter tests sur data.command pour apeller le traitement isoine (onDriveOrder, onStop, onStep, onGoto, onClicAndGo, etc...)
        console.log("@ moveOrder >>>> " + data.command );
-       //  ex: >> socket.emit("moveOrder",{ command:'Move', aSpeed:aSpeed, lSpeed:lSpeed, Enable:btHommeMort });
-       onMoveOrder(data.enable,data.aSpeed,data.lSpeed)
-       
+       // ex: >> socket.emit("moveOrder",{ command:'Move', aSpeed:aSpeed, lSpeed:lSpeed, Enable:btHommeMort });
+       onDrive(data.enable,data.aSpeed,data.lSpeed) //
     });
-
-
 
     // ----------------------------------------------------------------------------------
     // Partie 'signaling'. Ces messages transitent par websocket 
     // mais n'ont pas vocation à s'afficher dans le tchat client...
-
-    socket.on('signaling', function (message) {
-        //console.log ("@ signaling from "+socket.placeListe+socket.pseudo);
-        console.log ("@ signaling...");
-        socket.broadcast.emit('signaling', message);
-    }); 
-
-    // Quand est balancé un message 'candidate'
-    // il est relayé à tous les autres connectés sauf à celui qui l'a envoyé
+	// Cezs messages sont relayés à tous les autres connectés (sauf à celui qui l'a envoyé)
+    
     socket.on('candidate', function (message) {
-        // console.log ("@ candidate from "+socket.placeListe+socket.pseudo+" timestamp:" + Date.now());
-        // socket.broadcast.emit('candidate', {pseudo: socket.pseudo, message: message, placeListe: socket.placeListe});
         socket.broadcast.emit('candidate', {message: message});
     }); 
 
-    // Quand est balancé un message 'offer'
-    // il est relayé à tous les autres connectés sauf à celui qui l'a envoyé
     socket.on('offer', function (message) {
         socket.broadcast.emit('offer', {message: message});
     }); 
 
-    // Quand est balancé un message 'answer'
-    // il est relayé à tous les autres connectés sauf à celui qui l'a envoyé
     socket.on('answer', function (message) {
         socket.broadcast.emit('answer', {message: message});
     }); 
 
-    //  Retransmission du status de connexion WebRTC du pilote
+
+    // ----------------------------------------------------------------------------------
+    // Phase pré-signaling ( selections caméras et micros du robot par l'IHM pilote et status de la connexion WebRTC de chaque client)
+
+    // Retransmission du statut de connexion WebRTC du pilote
     socket.on('piloteCnxStatus', function (message) {
         socket.broadcast.emit('piloteCnxStatus', {message: message});
     }); 
 
-    //  Retransmission du status de connexion WebRTC du robot
+    // Retransmission du statut de connexion WebRTC du robot
     socket.on('robotCnxStatus', function (message) {
         socket.broadcast.emit('robotCnxStatus', {message: message});
     }); 
 
-
-    // ----------------------------------------------------------------------------------
-    // Phase pré-signaling ( selections caméras et micros du robot par l'IHM pilote)
-
     // Robot >> Pilote: Offre des cams/micros disponibles coté robot
     socket.on('remoteListDevices', function (data) {
     	socket.broadcast.emit('remoteListDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
-    	/*// Contrôle >>
-    	var place = data.objUser.placeliste;
-    	var login = data.objUser.pseudo;
-    	var role = data.objUser.typeClient;
-    	console.log ("@ remoteListDevices from: "+place+"-"+login+" ("+role+") timestamp:" + Date.now());
-    	console.log(data.objUser);
-    	console.log(data.listeDevices);
-    	/**/   
     }); 
-
 
     // Pilote >> Robot: cams/micros sélectionnés par le Pilote
     socket.on('selectedRemoteDevices', function (data) {
-    	//socket.broadcast.emit('selectedRemoteDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
     	socket.broadcast.emit('selectedRemoteDevices', {objUser:data.objUser, listeDevices:data.listeDevices, settings:data.settings});
-        /*// Contrôle >>
-    	var place = data.objUser.placeliste;
-    	var login = data.objUser.pseudo;
-    	var role = data.objUser.typeUser;
-    	console.log ("@ selectedRemoteDevices from: "+place+"-"+login+" ("+role+") timestamp:" + Date.now());
-    	console.log(data);
-    	/**/
     }); 
 
     // Robot >> Pilote: Signal de fin pré-signaling...
@@ -462,10 +320,106 @@ io.sockets.on('connection', function (socket, pseudo) {
         socket.broadcast.emit('readyForSignaling', {objUser:data.objUser, message:data.message});
     }); 
 
-
-
-// WTF GitHUB avec ses conflits fantômes....
-
-
-
 });
+
+// ------------ Fonctions Commande de déplacement par websocket ( Partie Michael)------------
+
+// interfaces de lancement des fonctions d'envoi de commandes
+function onStop(parameters) {console.log('todo...');};
+function onStep(parameters) {console.log('todo...');};
+function onGoto(parameters) {console.log('todo...');};
+function onClicAndGo(parameters) {console.log('todo...');};
+/**/
+// Interfaces de lancement de la commande senDriveOrder 
+function onDrive(enable, aSpeed, lSpeed) {
+    var url = 'http://localhost:50000/api/drive';
+    sendDrive(url)
+        .then(function() {
+            console.log('@onMoveOrder >> angular speed :' + aSpeedMov + '  et linear speed :' + lSpeed);
+        })
+}
+
+// fonctions d'envois de commandes
+function sendStop(url) {console.log('todo...');};
+function sendStep(url) {console.log('todo...');};
+function sendGoto(url) {console.log('todo...');};
+function sendClicAndGo(url) {console.log('todo...');};
+/**/
+// Envoi d'une commande de type "Drive" au robot avec une "promize"
+function sendDrive(url) {
+    return Q.Promise(function(resolve, reject, notify) {
+
+        var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance 
+
+        xmlhttp.open("POST", url);
+        xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+        xmlhttp.onload = onload;
+        xmlhttp.onerror = onerror;
+        xmlhttp.onprogress = onprogress;
+
+        xmlhttp.send(JSON.stringify({
+            "Enable": btnA,
+            "TargetAngularSpeed": aSpeedMov,
+            "TargetLinearSpeed": lSpeed
+        }));
+
+        function onload() {
+            if (xmlhttp.status === 200) {
+                resolve(xmlhttp.responseText);
+            } else {
+                reject(new Error("Status code was " + xmlhttp.status));
+            }
+        }
+
+        function onerror() {
+            reject(new Error("Can't XHR " + JSON.stringify(url)));
+        }
+
+        function onprogress(event) {
+            notify(event.loaded / event.total);
+        }
+
+    })
+}
+
+
+// ------------ fonctions Diverses ------------
+
+// Pour Contrôle des connectés coté serveur
+// Ecouteur de connexion d'un nouveau client
+function onSocketConnected(socket){
+  // console.log ("-------------------------------");
+  console.log("> Connexion entrante: (ID: " + socket.id + ")");
+  //var infoServer = appName + " V " + appVersion;
+  //io.to(socket.id).emit('infoServer', infoServer);
+}
+/**/
+
+// ----- Contrôles pour débuggage coté serveur
+
+// Contrôle des versions node.modules (Pour debugg sur Openshift)
+var ioVersion = require('socket.io/package').version;
+var expressVersion = require('express/package').version;
+var entVersion = require('ent/package').version;
+//var fsVersion = require('express/package').version;
+//var httpVersion = require('socket.io/package').version;
+var bodyparserVersion = require('body-parser/package').version;
+var HttpStatusVersion = require('http-status-codes/package').version;
+var xhr2Version = require('xhr2/package').version;
+var QVersion = require('q/package').version;
+
+// Affichage de contrôle coté serveur
+console.log("***********************************" );
+console.log("** Socket.IO Version: " + ioVersion);
+console.log("** Express Version: " + expressVersion);
+console.log("** Ent  Version: " + entVersion);
+console.log("** Body-parser Version: " + bodyparserVersion);
+console.log("** Http-status-codes Version: " + HttpStatusVersion);
+console.log("** Xhr2 Version: " + xhr2Version);
+console.log("** Q Version: " + QVersion);
+console.log("***********************************" );
+console.log("** Adresse IP = " + ipaddress );
+console.log("** N° de port = " + port );
+console.log("***********************************" );
+

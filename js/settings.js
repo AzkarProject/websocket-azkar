@@ -5,7 +5,7 @@ exports.appName = function(){
 };
 
 exports.appVersion = function(){
-    return '0.7.2.1';
+    return 'Dev-Thierry 0.7.2.2';
 };
 
 })(typeof exports === 'undefined'? this['settings']={}: exports);
