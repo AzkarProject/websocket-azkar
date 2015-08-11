@@ -13,7 +13,8 @@ var nbUsers = 0;
 
 
 // Initialisation du canal de signalisation
-var socket = io.connect();
+//var socket = io.connect();
+
 
 var typeUser = null;
 if (type == "pilote-appelant") {typeUser = "Pilote";
@@ -80,7 +81,7 @@ socket.on('nouveau_client2', function(objUser) {
     insereMessage3(objUser,message);
 })
 
-// Réception d'une info de deconnexion 
+// Réception d'une info de déconnexion 
 // >>> plus réactif que l'écouteur de l'API WebRTC
 // >>> On déplace ici l'écouteur ici au cas où la fonction
 // Connect n'as pas encore été apellée.

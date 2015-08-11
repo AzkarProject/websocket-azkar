@@ -19,10 +19,26 @@ var app = require('express')(),
 var express = require('express');
 
 
-// Pour débugg : Contrôle de la version de socket.io
+// Pour débugg Openshift : Contrôle des versions de socket.io
 var ioVersion = require('socket.io/package').version;
 var expressVersion = require('express/package').version;
+var nodeStaticVersion = require('node-static/package').version;
+//var entVersion = require('ent/package').version;
+var bodyparserVersion = require('body-parser/package').version;
+var httpStatusCodesVersion = require('http-status-codes/package').version;
+var xhr2Version = require('xhr2/package').version;
+var qVersion = require('q/package').version;
 
+// On affiche ces éléments coté serveur
+console.log("**Socket.IO Version: " + ioVersion);
+console.log("**Express Version: " + expressVersion);
+console.log("**node-static Version: " + expressVersion);
+// console.log("**ent Version: "+ entVersion;
+//console.log("**body-parser Version: "+ bodyparserVersion;    
+console.log("http-status-codes Version: "+ httpStatusCodesVersion;
+console.log("xhr2 Version : "+ xhr2Version;
+console.log("Q Version : "+ qVersion;
+console.log("***********************************" );
 
 
 // ------ Fin des requires ------------------
@@ -36,7 +52,7 @@ console.log(commonTest + " correctement chargé coté serveur !!!");
 // variables d'environnement en variables globale pour les passer à la méthode websocket
 ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP ||"127.0.0.1";
 // ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP ||"192.168.173.1";
-port      = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 2000;
+port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 2000;
 
 // affectation du port
 app.set('port', port);
@@ -135,10 +151,6 @@ function sendMove(url) {
 // Lancement du serveur
 server.listen(app.get('port'),ipaddress);
 
-
-// On affiche ces éléments coté serveur
-console.log("**Socket.IO Version: " + ioVersion);
-console.log("**Express Version: " + expressVersion);
 console.log("**ipAdress = " + ipaddress );
 console.log("**port = " + port );
 console.log("***********************************" );

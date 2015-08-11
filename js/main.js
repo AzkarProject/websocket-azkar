@@ -135,6 +135,22 @@ mainSettings();
 
 //------ Phase 1 Pé-signaling ----------------------------------------------------------
 
+
+
+socket.on('data', function (data) {
+    console.log(data);
+});
+
+socket.on('error', function (reason){
+  console.error('Unable to connect Socket.IO', reason);
+});
+
+socket.on('connect', function (){
+  console.info('successfully established a working and authorized connection');
+});
+/**/
+
+
 // rejectConnexion', message:message, url:indexUrl);
 socket.on('error', errorHandler);
 socket.on('rejectConnexion', function(data) {alertAndRedirect(data.message,data.url)})
