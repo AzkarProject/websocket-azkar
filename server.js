@@ -1,6 +1,7 @@
 // ------------------------ Elements communs client/serveur
 var common = require('./js/common'); // méthodes génériques & objets
 var settings = require('./js/settings'); // paramètres de configuration
+var devSettings = require('./js/devSettings'); // Nom de la branche gitHub
 
 // ------ Variables d'environnement & paramètrages serveurs ------------------
 // Récupération du Nom de la machine 
@@ -19,7 +20,7 @@ port  = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 2000;
 
 console.log("***********************************" );
 console.log('' );
-console.log(settings.appName() + " V " + settings.appVersion() );
+console.log('('+ devSettings.appBranch()+') '+ settings.appName() + " V " + settings.appVersion() );
 console.log('' );
 console.log("***********************************" );
 var hostMsg = "Serveur NodeJs hébergé ";
