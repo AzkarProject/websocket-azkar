@@ -80,6 +80,10 @@ app.get('/visiteur/', function(req, res) {
     res.sendFile(__dirname + '/visiteur.html');
 });
 
+app.get('/cartographie/', function(req, res) {
+    res.sendFile(__dirname + '/cartographie.html');
+});
+
 
 // Lancement du serveur
 server.listen(app.get('port'), ipaddress);
