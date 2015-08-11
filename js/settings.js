@@ -5,7 +5,13 @@ exports.appName = function(){
 };
 
 exports.appVersion = function(){
-    return '0.7.1.3 (Michael) ';
+    return '0.7.2.2';
+
 };
+
+exports.appHostName = function(){
+    return 'websocket-azkar';
+};
+
 
 })(typeof exports === 'undefined'? this['settings']={}: exports);

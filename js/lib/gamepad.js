@@ -304,7 +304,7 @@
 		this.gamepads = [];
 		this.listeners = {};
 		this.platform = nullPlatform;
-		this.deadzone = 0.03; // defaut 0.03
+		this.deadzone = 0.03;
 		this.maximizeThreshold = 0.97;
 	};
 

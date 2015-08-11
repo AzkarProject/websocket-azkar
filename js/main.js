@@ -1,28 +1,31 @@
-// console.log("main.js");
-
-// --------- WebRTC ---------------------------------------------
 // Script inspiré de l'article suivant:
 // https://developer.mozilla.org/fr/docs/Web/Guide/API/WebRTC/WebRTC_basics
 // Source github : https://github.com/louisstow/WebRTC/blob/master/media.html
 
-// Gestion des messages d'erreur
-function errorHandler(err) {
-    console.log("ON-ERROR");
-    console.error(err);
-}
-
-function alertAndRedirect(message, url) {
-    //alert (message);
-    window.alert(message)
-    window.location.href = url;
-}
-
-
-
 // Initialisation des variables, objets et paramètres du script
+// NB toutes les variables sont déclarées en global...
 function mainSettings() {
     console.log("@mainSettings()");
 
+    // Banchmarks Settings
+    navCh = 'webSocket';
+    lPview = 'show';
+    lRview = 'show';
+    rPview = 'high';
+    rRView = 'show';
+    pStoR = 'open';
+
+    //parameters = {};
+
+    parameters = {
+        navCh: navCh,
+        lPview: lPview,
+        lRview: lRview,
+        rPview: rPview,
+        rRView: rRView,
+        pStoR: pStoR
+    };
+    //console.log(parameters);
 
     // pré-signaling -------------------------------------------------
 
@@ -56,7 +59,7 @@ function mainSettings() {
     // flag d'origine des listes (local/remote)
     origin = null;
 
-    // webRTC ----------------------
+    // webRTC -------------------------------
 
     // flag de connexion
     isStarted = false;
@@ -69,16 +72,16 @@ function mainSettings() {
     navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || navigator.webkitGetUserMedia;
 
 
-    // grab the video elements from the document
+    // Eléments videos du document html
     video1 = document.getElementById("video");
     video2 = document.getElementById("otherPeer");
 
 
-    // dataChannel elements
-    //chatlog = document.getElementById("chatlog");
+    // RTC DataChannel
+    // Zone d'affichage (textarea)
     chatlog = document.getElementById("zone_chat_WebRTC");
-    //message = document.getElementById("dataChannelSend");
-    message = document.getElementById("send_chat_WebRTC");
+    // Zone de saisie (input)
+    message = document.getElementById("input_chat_WebRTC");
 
     // options pour l'objet PeerConnection
     server = {
@@ -158,18 +161,24 @@ function mainSettings() {
     // >> pour éviter de réinitialiser +sieurs fois le même écouteur
     isRenegociate = false;
 
-    /***************************************/
-    enable2 = "not enabled "; // etat du bouton A
-    targetLinearSpeedPos= null ; // valeur renvoyée par 
-    targetLinearSpeedNeg = null; // valeur renvoyée par 
-    targetAngularSpeed = null ; // valeur renvoyée par l'axe X 
+    // Etat des clients pour le signaling
+    piloteCnxStatus = pc.iceConnectionState;
+    robotCnxStatus = pc.iceConnectionState;
 
 
-    /***************************************/
+
+    // console.log ("!!! pc.iceConnectionState >>>>>> " + pc.iceConnectionState);
+
 }
-
 mainSettings();
-//----------------------------------------------------------------
+
+//------ Phase 1 Pé-signaling ----------------------------------------------------------
+
+// rejectConnexion', message:message, url:indexUrl);
+socket.on('error', errorHandler);
+socket.on('rejectConnexion', function(data) {
+    alertAndRedirect(data.message, data.url)
+})
 
 // Génération des listes de sélection sources (cam/micro) 
 // disponibles localement et a distance
@@ -218,43 +227,14 @@ function gotSources(sourceInfos) {
         var sourceDevice = new common.sourceDevice();
         sourceDevice.id = sourceInfo.id;
         sourceDevice.label = sourceInfo.label;
-        //sourceDevice.label= sourceDevice.label+'('+sourceInfo.id+')';
         sourceDevice.kind = sourceInfo.kind;
         sourceDevice.facing = sourceInfo.facing;
         sourceInfos[i] = sourceDevice;
 
-        /*// On n'affiche que les XX premiers caractères de l'ID...
-        // ... Juste pour éviter des débordements d'affichage...
-        var newID = sourceInfo.id;
-        var microID = newID.substring(0,13);
-        microID += "...";
-
-        // Si un sourceInfoLabel existe, même traitement (pour éviter les formulaires a rallonge...
-        if (sourceInfo.label) {
-        	var label = sourceInfo.label
-        	var newLabel = label.substring(0,32)+"...";
-        	sourceInfo.label = newLabel;
-        }
-        /**/
-
-
-
         // Conflit webcam Chromium/Chrome si même device choisi sur le PC local
         // >>> L'ID fournie par L'API MediaStreamTrack.getSources est différente
         // selon le navigateur et ne permet pas de différencier cams et micros correctement
-        // TODO: Trouver une solution de contournement pour les tests sur une même machine
-        /*if (origin == "local") {
-		  	console.log("--------------------------------------");
-		  	console.log("option.id:"+option.id);
-		    console.log("option.value:"+option.value); 
-		    console.log("sourceInfo.id:"+sourceInfo.id);
-		    console.log("sourceDevice.id:"+sourceDevice.id);
-
-		    console.log("sourceInfo.label:"+sourceInfo.label);
-			console.log("sourceDevice.label:"+sourceDevice.label);
-			console.log("--------------------------------------");
-	    }
-	    /**/
+        // TODO: Trouver une solution de contournement pour les tests interNavigateurs sur une même machine
 
         if (sourceInfo.kind === 'audio') {
 
@@ -296,49 +276,91 @@ if (typeof MediaStreamTrack === 'undefined') {
 } else {
     origin = "local"; // On prévient la fonction apellée que la source sera locale
     MediaStreamTrack.getSources(gotSources);
-
-
-
 }
 
-// rejectConnexion', message:message, url:indexUrl);
-socket.on('error', errorHandler);
 
-socket.on('rejectConnexion', function(data) {
-    alertAndRedirect(data.message, data.url)
-})
+// IHM Pilote
+// Ouverture du premier des formulaires de selection des devices
+// Et par conséquence dévérouillage du lancement de la connexion
+function activeManageDevices() {
+
+    // On active les sélecteurs de listes
+    remote_ButtonDevices.disabled = false;
+    remote_AudioSelect.disabled = false;
+    remote_VideoSelect.disabled = false;
+
+    // Une petite animation CSS pour visualiser l'invite de formulaire...
+    document.getElementById("robotDevices").className = "insideFlex oneQuarterbox robot shadowGreen devicesInvite";
+}
 
 
+// IHM Pilote:
+// Traitement du formulaire de selection des devices du robot
+// et ouverture du formulaire de selection des devices du pilote 
+// Avec animation CSS d'invite du formulaire
+function remoteManageDevices() {
 
-
-
-// (V2 objet) Quand on reçoit une mise à jour de la liste 
-// des connectés de cette session websocket
-// C.A.D un nouvel arrivant...
-socket.on('updateUsers', function(data) {
-
-    console.log(">> socket.on('updateUsers',...");
-    // On met à jour la liste locale des connectés...
-    // console.log(data);
-    users = data;
-    var debug = common.stringObjectDump(users, "users");
-    console.log(debug);
-
-    // si on est l'apellé  (Robot)
-    // On renvoie à l'autre pair la liste de ses devices
-    if (type == "robot-appelé") {
-        socket.emit('remoteListDevices', {
-            objUser: localObjUser,
-            listeDevices: listeLocalSources
-        });
-    }
-
-    // si on est l'apellant (Pilote)
-    // ... En cas de besoin...
+    console.log("@ remoteManageDevices()");
+    // Activation
     if (type == "pilote-appelant") {
-        // ...TODO...
+        local_ButtonDevices.disabled = false;
     }
-})
+    local_AudioSelect.disabled = false;
+    local_VideoSelect.disabled = false;
+
+    // Invite de formulaire...
+    document.getElementById("piloteDevices").className = "insideFlex oneQuarterbox pilote devices shadowGreen devicesInvite";
+}
+
+// IHM Pilote:
+// Au submit du bouton d'ouverture de connexion -> 
+// > Désactivation des formulaires remote et local de selection des devices
+// > Animation CSS de désactivation
+// > Envoi au robot des settings de benchmarks
+// > Envoi au Robot la liste des devices à activer.
+function localManageDevices() {
+
+    console.log("@ localManageDevices()");
+    if (type == "pilote-appelant") {
+        local_ButtonDevices.disabled = true;
+    }
+
+    local_AudioSelect.disabled = true;
+    local_VideoSelect.disabled = true;
+
+    remote_ButtonDevices.disabled = true;
+    remote_AudioSelect.disabled = true;
+    remote_VideoSelect.disabled = true;
+
+    // Animation CSS de désactivation du formulaire devices robot...
+    document.getElementById("robotDevices").className = "insideFlex oneQuarterbox  robot devices shadowBlack device";
+
+    // On balance au robot les paramètres de benchmarkings 
+    // socket.emit('settingBenchmarks', {objUser:localObjUser,listeDevices:selectList}); // Version Objet
+
+    // On balance coté robot les devices sélectionnés...
+    // ... Et les Settings de canal/caméra du benchmarking...
+    if (type == "pilote-appelant") {
+        var selectAudio = remote_AudioSelect.value;
+        var selectVideo = remote_VideoSelect.value;
+        var selectList = {
+            selectAudio, selectVideo
+        };
+        var settings = parameters;
+        // socket.emit("selectedRemoteDevices", selectList); Ancienne version
+        // Coté serveur >> socket.broadcast.emit('selectedRemoteDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
+        socket.emit('selectedRemoteDevices', {
+            objUser: localObjUser,
+            listeDevices: selectList,
+            settings: settings
+        }); // Version Objet
+
+        // Animation CSS de désactivation du formulaire devices pilote...
+        document.getElementById("piloteDevices").className = "insideFlex oneQuarterbox pilote devices shadowBlack device";
+    }
+}
+
+// -- > ecouteurs webSocket de pré-signaling
 
 // Ecouteurs Websockets exclusifs au Pilote (appelant)
 if (type == "pilote-appelant") {
@@ -357,24 +379,26 @@ if (type == "pilote-appelant") {
         // On alimente les listes de micro/caméra distantes
         gotSources(data.listeDevices);
 
-        // On active les sélecteurs de listes
-        remote_ButtonDevices.disabled = false;
-        remote_AudioSelect.disabled = false;
-        remote_VideoSelect.disabled = false;
-
-        // Une petite animation CSS pour visualiser l'invite de formulaire...
-        document.getElementById("robotDevices").className = "insideFlex oneQuarterbox robot shadowGreen devicesInvite";
-
-
     })
 
     // Reception du signal de fin pré-signaling
     socket.on("readyForSignaling", function(data) {
-        console.log(">> socket.on('remoteListDevices',...");
+        console.log(">> socket.on('readyForSignaling',...");
+
         if (data.message == "ready") {
             initLocalMedia();
         }
     })
+
+
+    // Reception du statut de connexion du robot
+    socket.on("robotCnxStatus", function(data) {
+        robotCnxStatus = data.message;
+        // On vérifie l'état de sa propre connexion et de celle du robot
+        if (piloteCnxStatus == 'new' && robotCnxStatus == 'new') {
+            activeManageDevices(); // On acive les formulaires permettant de relancer la connexion
+        }
+    });
 }
 
 // Ecouteurs Websockets exclusifs au Robot (appelé)
@@ -388,6 +412,14 @@ if (type == "robot-appelé") {
         // On rebalance au formulaire les caméras/micros choisies par le pilote
         document.getElementById(data.listeDevices.selectAudio).selected = "selected";
         document.getElementById(data.listeDevices.selectVideo).selected = "selected";
+
+        // On affecte les paramètres de settings
+        parameters = data.settings;
+
+        //console.log(data); 
+        //var debugg = common.stringObjectDump(data,"selectedRemoteDevice")
+        // console.log(debugg);
+        console.log(data);
 
         // On lance l'initlocalmedia
         initLocalMedia();
@@ -403,18 +435,64 @@ if (type == "robot-appelé") {
         // On rebalance au pilote-appelant le top-départ pour 
         // qu'il lance un intilocalMedia de son coté....
         // socket.emit("readyForSignaling","ready"); // ancienne version
+
+        // Fix Bug renégociation > On vérifie que c'est une renégo et
+        // si c'est le cas, on attend d'avoir l'état du statut webRTC ps iceConnexionXtate à "new"
+        // pour lancer le message de fin de pré-signaling . A faire ds l'écouteur idoine...
         socket.emit('readyForSignaling', {
             objUser: localObjUser,
             message: "ready"
         }); // Version objet
     })
+
+    // Reception du statut de connexion du pilote
+    socket.on("pilotetCnxStatus", function(data) {
+        piloteCnxStatus = data.message;
+    });
+
+
+
 }
+
+// Quand on reçoit une mise à jour de la liste 
+// des connectés de cette session websocket
+// C.A.D un nouvel arrivant...
+socket.on('updateUsers', function(data) {
+
+    console.log(">> socket.on('updateUsers',...");
+    // On met à jour la liste locale des connectés...
+    // console.log(data);
+    users = data;
+    //var debug = common.stringObjectDump(users,"users");
+    //console.log(debug);
+
+    // si on est l'apellé  (Robot)
+    // On renvoie à l'autre pair la liste de ses devices
+    if (type == "robot-appelé") {
+        socket.emit('remoteListDevices', {
+            objUser: localObjUser,
+            listeDevices: listeLocalSources
+        });
+        // On lui envoie ensuite son etat de connexion
+        robotCnxStatus = pc.iceConnectionState;
+        socket.emit("robotCnxStatus", robotCnxStatus);
+    }
+
+    // si on est l'apellant (Pilote)
+    // ... En cas de besoin...
+    if (type == "pilote-appelant") {
+        // 1 on vérifie l'état de sa propre connexion
+    }
+})
+
+
+// ---- Phase 2 Signaling --------------------------------------------------
 
 // initialisation du localStream et appel connexion
 function initLocalMedia() {
 
     console.log("@ initLocalMedia()");
-    // Récupération des caméras et micros selectionnés	
+    // Récupération des caméras et micros selectionnés  
     var audioSource = local_AudioSelect.value;
     var videoSource = local_VideoSelect.value;
 
@@ -434,79 +512,51 @@ function initLocalMedia() {
 
     // Initialisation du localStream et lancement connexion
     navigator.getUserMedia(constraint, function(stream) {
+        /*
         localStream = stream;
-        // Affectation d'une souce vidéo au Stream
-        video1.src = URL.createObjectURL(localStream);
+        var showLocalVideo = true;
+        if (type == "pilote-appelant") {
+            if (localPilotView != 'show') showLocalVideo = false;
+        
+        } else if (type == "robot-appellé"){
+            if (localRobotView != 'show') showLocalVideo = false;
+        } 
+        if (showLocalVideo == true) video1.src = URL.createObjectURL(localStream);
         pc.addStream(localStream);
-        // Maintenant on peut se connecter à l'autre pair
         connect();
+        /**/
+
+        /*
+        navCh = = 'webSocket';
+        lPview = 'show';
+        lRview = 'show';
+        rPview = 'show';
+        rRView = 'high';
+        pStoR = 'open';
+        /**/
+
+        localStream = stream;
+        var showLocalVideo = true;
+        if (type == "pilote-appelant") {
+            if (parameters.lPview != 'show') showLocalVideo = false;
+        } else if (type == "robot-appelé") {
+            //alert("local view: " +parameters.lRview);
+            if (parameters.lRview != 'show') showLocalVideo = false;
+        }
+        if (showLocalVideo == true) video1.src = URL.createObjectURL(localStream);
+        pc.addStream(localStream);
+        connect();
+
+
+
+
     }, errorHandler);
 };
-
-// IHM Pilote:
-// Activation du formulaire de selection des devices locaux
-// (Micro et WebCam) et de demande de connexion.
-// Avec animation CSS d'invite du formulaire
-function remoteManageDevices() {
-
-    console.log("@ remoteManageDevices()");
-    // Activation
-    if (type == "pilote-appelant") {
-        local_ButtonDevices.disabled = false;
-    }
-    local_AudioSelect.disabled = false;
-    local_VideoSelect.disabled = false;
-    // Invite de formulaire...
-    document.getElementById("piloteDevices").className = "insideFlex oneQuarterbox pilote devices shadowGreen devicesInvite";
-}
-
-// IHM Pilote:
-// Au submit du bouton d'ouverture de connexion -> 
-// > Désactivation des formulaires remote et local de selection des devices
-// > Animation CSS de désactivation
-// > Envoi au Robot la liste des devices à activer.
-function localManageDevices() {
-
-    console.log("@ localManageDevices()");
-    if (type == "pilote-appelant") {
-        local_ButtonDevices.disabled = true;
-    }
-
-    local_AudioSelect.disabled = true;
-    local_VideoSelect.disabled = true;
-
-    remote_ButtonDevices.disabled = true;
-    remote_AudioSelect.disabled = true;
-    remote_VideoSelect.disabled = true;
-
-    // Animation CSS de désactivation du formulaire devices robot...
-    document.getElementById("robotDevices").className = "insideFlex oneQuarterbox  robot devices shadowBlack device";
-
-
-
-
-    // On balance coté robot les devices sélectionnés...
-    if (type == "pilote-appelant") {
-        var selectAudio = remote_AudioSelect.value;
-        var selectVideo = remote_VideoSelect.value;
-        var selectList = {
-                selectAudio, selectVideo
-            }
-            // socket.emit("selectedRemoteDevices", selectList); Ancienne version
-            // Coté serveur >> socket.broadcast.emit('selectedRemoteDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
-        socket.emit('selectedRemoteDevices', {
-            objUser: localObjUser,
-            listeDevices: selectList
-        }); // Version Objet
-        // Animation CSS de désactivation du formulaire devices pilote...
-        document.getElementById("piloteDevices").className = "insideFlex oneQuarterbox pilote devices shadowBlack device";
-    }
-}
 
 // initialisation de la connexion
 function connect() {
 
-    console.log("@ connect()");
+    //console.log ("@ connect()");
     debugNbConnect += 1;
     console.log("@ connect(" + debugNbConnect + ") > rôle: " + type);
     isStarted = true;
@@ -518,7 +568,7 @@ function connect() {
 
     // Ecouteur déclenché à la génération d'un candidate 
     pc.onicecandidate = function(e) {
-        console.log("@ pc.onicecandidate > timestamp:" + Date.now());
+        //console.log("@ pc.onicecandidate > timestamp:" + Date.now());
         // vérifie que le candidat ne soit pas nul
         if (!e.candidate) {
             // console.log("  > !e.candidate): return ");
@@ -539,25 +589,94 @@ function connect() {
 
     // Ecouteur déclenché a la reception d'un remoteStream
     pc.onaddstream = function(e) {
-        // getStats(pc);
+        /*// getStats(pc);
         console.log("@ pc.onaddstream > timestamp:" + Date.now());
-        //if (type == "pilote-appelant") {
         remoteStream = e.stream;
-        video2.src = URL.createObjectURL(remoteStream);
-        //}
-
-        //remoteStream = e.stream;
         //video2.src = URL.createObjectURL(remoteStream);
+        var showRemoteVideo = true;
+        if (type == "pilote-appelant") {
+            if (remotePiloteView == 'hide') showRemoteVideo = false;
+             // showRemoteVideo = false;
+        } else if (type == "robot-appellé"){
+            if (remotePiloteView != 'show') showRemoteVideo = false;
+        } 
+        if (showRemoteVideo == true) video2.src = URL.createObjectURL(remoteStream);
+        /**/
+
+        /*
+        navCh = = 'webSocket';
+        lPview = 'show';
+        lRview = 'show';
+        rPview = 'show';
+        rRView = 'high';
+        pStoR = 'open';
+        /**/
+
+        console.log("@ pc.onaddstream > timestamp:" + Date.now());
+        remoteStream = e.stream;
+        //video2.src = URL.createObjectURL(remoteStream);
+        var showRemoteVideo = true;
+        if (type == "pilote-appelant") {
+            if (parameters.rPview == 'hide') showRemoteVideo = false;
+            // showRemoteVideo = false;
+        } else if (type == "robot-appelé") {
+            if (parameters.rRView == 'hide') showRemoteVideo = false;
+        }
+        if (showRemoteVideo == true) video2.src = URL.createObjectURL(remoteStream);
+
+
+
+
+
+        // video2.src = URL.createObjectURL(remoteStream);
+        /**/
     };
 
 
     // Ecouteurs de changement de statut de connexion
-    // Permet de déterminer si le pair distant s'est décionnecté.
+    // Permet de déterminer si le pair distant s'est déconnecté.
     pc.oniceconnectionstatechange = function(e) {
 
-        console.log("@ pc.oniceconnectionstatechange > timestamp:" + Date.now());
+        //var newDate = common.dateNowInMs();
+        var dateE = common.dateER('E');
+        console.log("@ pc.oniceconnectionstatechange > " + dateE);
+
+
         console.log(">>> stateConnection Event > " + pc.iceConnectionState);
-        $(chatlog).prepend('<strong><i>(stateConnection Event)</i>:</strong> ' + pc.iceConnectionState + '<br/>');
+        $(chatlog).prepend(dateE + ' [stateConnection Event] ' + pc.iceConnectionState + '\n');
+
+        // On informe l'autre pair de son statut de connexion   
+        if (type == 'pilote-appelant') {
+            piloteCnxStatus = pc.iceConnectionState;
+            socket.emit("piloteCnxStatus", piloteCnxStatus);
+            // Si on change de status suite à une déco du robot
+            // On redéclenche l'ouverture des formulaires de connexion 
+            // a la condition que le robot soit lui aussi prêt a se reconnecter... (new...)
+            if (piloteCnxStatus == 'new' && robotCnxStatus == 'new') {
+                activeManageDevices(); // On active les formulaires permettant de relancer la connexion
+            }
+
+        } else if (type == 'robot-appelé') {
+            robotCnxStatus = pc.iceConnectionState;
+            socket.emit("robotCnxStatus", robotCnxStatus);
+        }
+        /**/
+
+        // On lance le processus de décoonnexion pour préparer une reconnexion
+        if (pc.iceConnectionState == 'disconnected') {
+            onDisconnect();
+        }
+
+        // Si 
+
+        // Fix Bug renégociation > Coté Robot on attend d'avoir 
+        // l'état du statut pc.iceConnectionState à "new"
+        /*// pour lancer le message de fin de pré-signaling. 
+        if ( pc.iceConnectionState == 'new' && type == "robot-appelé") {
+            alert (">> Send Msg WS readyForSignaling")
+            socket.emit('readyForSignaling', {objUser:localObjUser,message:"ready"});
+        }
+        /**/
 
 
         // console.log(">>> isStarted = "+ isStarted);
@@ -605,20 +724,20 @@ function connect() {
 
 
     /*// BUG Qd le client n'as pas encore connecté...
-	// On déplace vers ws_manager...
-	// Réception d'une info de deconnexion 
-	// >>> plus réactif que l'écouteur de l'API WebRTC
-	socket.on("disconnected", function(data) { 
-		console.log(">> socket.on('disconnected',...");
-		// On met à jour la liste des cliens connectés
-		var users = data;
-    	var debug = common.stringObjectDump(users,"users");
-   		console.log(debug);	
+    // On déplace vers ws_manager...
+    // Réception d'une info de deconnexion 
+    // >>> plus réactif que l'écouteur de l'API WebRTC
+    socket.on("disconnected", function(data) { 
+        console.log(">> socket.on('disconnected',...");
+        // On met à jour la liste des cliens connectés
+        var users = data;
+        var debug = common.stringObjectDump(users,"users");
+        console.log(debug); 
 
-	    // On lance la méthode de préparatoire a la renégo
-	    onDisconnect();
-	});
-	/**/
+        // On lance la méthode de préparatoire a la renégo
+        onDisconnect();
+    });
+    /**/
 
     // Fonctions communes apellant/apellé
 
@@ -655,9 +774,9 @@ function connect() {
         pc.createOffer(doOffer, errorHandler, constraints);
 
 
-        // Sinon si on est l'apellé
-    } else {
-        //console.log("+++++++++ apellé ++++++++++++++ ");
+        // Sinon si on est l'apellé (Robot)
+    } else if (type === "robot-appelé") {
+        //console.log("+++++++++ appelé ++++++++++++++ ");
         // dataChannel
         // answerer must wait for the data channel
 
@@ -696,6 +815,8 @@ function connect() {
     }
 }
 
+// ----- Phase 3 Post-Signaling --------------------------------------------
+
 // A la déconnection du pair distant:
 function onDisconnect() {
 
@@ -727,10 +848,9 @@ function onDisconnect() {
 function stopAndStart() {
 
     console.log("@stopAndStart()");
-    send_chat_WebRTC.disabled = true;
-    send_chat_WebRTC.placeholder = "RTCDataChannel close";
-
-    sendButton.disabled = true;
+    input_chat_WebRTC.disabled = true;
+    input_chat_WebRTC.placeholder = "RTCDataChannel close";
+    env_msg_WebRTC.disabled = true;
 
     pc = new PeerConnection(server, options);
     // console.log("------pc = new PeerConnection(server, options);-----");
@@ -743,7 +863,7 @@ function stopAndStart() {
     // connect();
 };
 
-// -------------------- Méthodes RTCDataChannel
+// -------------------- Méthodes RTCDataChannel ----------------------
 
 // bind the channel events
 function bindEvents() {
@@ -751,10 +871,10 @@ function bindEvents() {
     // écouteur d'ouverture
     channel.onopen = function() {
         //console.log("RTCDataChannel is Open");
-        send_chat_WebRTC.disabled = false;
-        send_chat_WebRTC.focus();
-        send_chat_WebRTC.placeholder = "RTCDataChannel is Open !";
-        sendButton.disabled = false;
+        input_chat_WebRTC.focus();
+        input_chat_WebRTC.placeholder = "RTCDataChannel is Open !";
+        input_chat_WebRTC.disabled = false;
+        env_msg_WebRTC.disabled = false;
         //isStarted = true;
         //console.log("isStarted = "+ isStarted);
     };
@@ -762,27 +882,40 @@ function bindEvents() {
     // écouteur de reception message
     channel.onmessage = function(e) {
         // add the message to the chat log
-        // chatlog.innerHTML += "<div>l'" +type+" écrit:"+ e.data + "</div>";
-        $(chatlog).prepend('<strong>(<i>' + type + '</i>):</strong> ' + e.data + '<br/>');
+        var dateR = common.dateER('R');
+        $(chatlog).prepend(dateR + ' ' + e.data + "\n");
     };
 }
 
-// send a message the textbox throught
-// the data channel for a chat program
+// envoi message par WebRTC
 function sendMessage() {
-    alert("toto");
-    var msg = message.value;
-    channel.send(msg);
+    var dateE = common.dateER('E');
+    var msgToSend = dateE + ' [' + localObjUser.typeClient + '] ' + message.value;
+    channel.send(msgToSend);
     message.value = "";
+    // Affiche le message dans le chatlog websocket
+    $(chatlog).prepend(msgToSend + "\n");
 }
 
 
 // Bouton d'envoi du formulaire de chat WebRTC
 $('#formulaire_chat_webRTC').submit(function() {
-    console.log("WWWWWWWWWWWWW");
-    var message = $('#send_chat_WebRTC').val();
+    var message = $('#send_chat_WebRTC').val() + '\n';
     channel.send(msg);
     message.value = "";
     $('#send_chat_WebRTC').val('').focus(); // Vide la zone de Chat et remet le focus dessus
     return false; // Permet de bloquer l'envoi "classique" du formulaire
 });
+
+// --------------------- Gestion des messages d'erreur ------------------
+
+function errorHandler(err) {
+    console.log("ON-ERROR");
+    console.error(err);
+}
+
+function alertAndRedirect(message, url) {
+    //alert (message);
+    window.alert(message)
+    window.location.href = url;
+}
