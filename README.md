@@ -1,4 +1,5 @@
-# AZKAR WebRTC V 0.7.2.2
+
+# AZKAR WebRTC V 0.7.3.0
 ------------------------------------------------------------
 
 Test en ligne du script base 1to1:
@@ -64,6 +65,19 @@ http://websocket-azkar.rhcloud.com/
         - [ ] Bloc Settings > Activer Gest° Volume
 - [ ] Factorisation Main.js
 - [ ] Tests fonctionnels
+
+- [ ] Récuperation des données
+    - [x] proxy pour eviter le cross domaine origine
+    - [ ] informations de la cartographie
+        - [x] carte en format image
+        - [x] recupération des données de la carte (long , larg , resolution , offsetX , offsetY)
+        - [ ] traitement des données de la carte
+        - [ ] récupération de la position du robot sur la carte
+        - [ ] affichage de la position du robot 
+    - [x] information de la baterry
+        - [x] récupération des informations via proxy 
+        - [x] traitement des informations
+        - [x] Affichage dans IHM pilote 
 
 [ ] STEP 2 >>> Livrable base 1toN:
 - [x] Gestion des connectés

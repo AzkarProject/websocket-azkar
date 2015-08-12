@@ -1,147 +1,160 @@
-//
 
-Robot = function (index, game, player) {
-	this.cursor = {
-		left:false,
-		right:false,
-		up:false,
-		down:false		
-	}
+// get that canvas!
+var canvas  = document.getElementById('super-js-adventure'),
+    ctx     = canvas.getContext('2d'),
+    width   = 256,
+    height  = 224,
+    mainLoop = null,
+    key     = [0,0,0,0,0,0,0,0], // left, right, up, down, attack, use item, start, select
+    link    = null, // our intrepid hero
+    gutter  = 2,
+    lastTime = 0,
+    animationUpdateTime = 0,
+    timeSinceLastFrameSwap = 0,
+    elapsed = 0,
+    player  = {
+        x : 0,
+        y : 0
+    };
 
-	this.input = {
-		left:false,
-		right:false,
-		up:false,
-		down:false
-	}
+function Link(x, y) {
 
-    var x = 0;
-    var y = 0;
+    this.img        = new Image();
+    this.img.src    = 'images/link.png';
 
-    this.game = game; // le word 
-    this.player = player;	// le joueur 
-	this.currentSpeed =0; // vitesse actuelle
-    
-    this.robot = game.add.sprite(x, y, 'enemy', 'car');   // l'image du robot   
-    this.robot.anchor.set(0.5);     
-    this.robot.id = index;
+    this.x = x;
+    this.y = y;
 
-    game.physics.enable(this.robot, Phaser.Physics.ARCADE); // activer les loi de la phisic
+    this.fps = 16;
+    this.animationUpdateTime = 1000 / this.fps;
 
-    this.robot.body.immovable = false;
-    this.robot.body.collideWorldBounds = true;
-    this.robot.body.bounce.setTo(0, 0);
-    this.robot.angle = 0;
+    this.timeSinceLastFrameSwap = 0;
 
-    game.physics.arcade.velocityFromRotation(this.robot.rotation, 0, this.robot.body.velocity);
+    this.sequences = {
+        'stand-down':   [3],
+        'stand-up':     [10],
+        'stand-right':  [17],
 
-};
-
-Robot.prototype.update = function() {
-        
-       
-    
-    if (this.cursor.left)
-    {
-        this.robot.angle -= 1;
+        'walk-down':    [3,4,5,6,5,4,3,2,1,0,1,2],
+        'walk-up':      [10,11,12,13,12,11,10,9,8,7,8,9],
+        'walk-right':   [17,18,19,20,19,18,17,16,15,14,15,16]
     }
-    else if (this.cursor.right)
-    {
-        this.robot.angle += 1;
-    }    
-    if (this.cursor.up)
-    {
-        //  The speed we'll travel at
-        this.currentSpeed = 300;
-    }
-    else
-    {
-        if (this.currentSpeed > 0)
-        {
-            this.currentSpeed -= 4;
+    this.sequenceIdx = 0;
+    this.moving = false;
+    this.facing = 'down';
+
+    this.update = function(elapsed) {
+        this.timeSinceLastFrameSwap += elapsed;
+
+        // half the animation speed
+        if( this.timeSinceLastFrameSwap > this.animationUpdateTime ) {
+
+            var seq = this.moving ? 'walk-' : 'stand-';
+            seq += (this.facing == 'left' ? 'right' : this.facing);
+
+            var currentSequence = this.sequences[seq];
+
+            if( this.sequenceIdx < currentSequence.length - 1 )
+                this.sequenceIdx += 1;
+            else
+                this.sequenceIdx = 0;
+
+            var col = currentSequence[this.sequenceIdx] % 7;
+            var row = Math.floor( currentSequence[this.sequenceIdx] / 7 );
+
+            this.offsetX = ( col * 16 ) + ( col * gutter );
+            this.offsetY = row * 25;
+
+            this.timeSinceLastFrameSwap = 0;
         }
     }
-      
-    
-    if (this.currentSpeed > 0)
-    {
-        game.physics.arcade.velocityFromRotation(this.robot.rotation, this.currentSpeed, this.robot.body.velocity);
-    }    
-    else
-    {
-        game.physics.arcade.velocityFromRotation(this.robot.rotation, 0, this.robot.body.velocity);
-    }    
-      
-};
 
+    this.draw = function() {
 
-var game = new Phaser.Game(620, 350, Phaser.AUTO, 'simulateur-area2', { preload: preload, create: create, update: update, render: render });
+        var scaleX = this.facing == 'left' ? -1 : 1;
 
+        ctx.save();
 
-function preload () {
+        ctx.translate(this.x, this.y)
+        ctx.scale(scaleX, 1);
+        ctx.drawImage(this.img, this.offsetX, this.offsetY, 16, 25, -8, 0, 16, 25);
 
-    game.load.atlas('car', 'images/car.png');
-    game.load.image('earth', 'assets/scorched_earth.png');
-    
+        ctx.restore();
+    }
+}
+
+function init() {
+    // Initialise the player!
+    link = new Link(100, 100);
+
+    // Setup the Input
+    Input.init();
+
+    lastTime = window.performance.now();
+
+    // scale_canvas(3);
+}
+
+function scale_canvas(s) {
+    var css = '';
+        var prefixes = ['webkit','moz','o','ms'];
+        for (var i=0; i<prefixes.length; i++)
+        {
+            var prefix = prefixes[i];
+            css += '-'+prefix+'-transform: scale('+s+','+s+');';
+            css += '-'+prefix+'-transform-origin: 0 0;'
+        };
+        canvas.style.cssText = css;
+        canvas.parentNode.style.cssText = 'width:'+width*s+'px;height:'+height*s+'px;';
+}
+
+function main() {
+    /** Here's where we handle all the input, logic and drawing to the screen per frame. **/
+    var now     = window.performance.now(),
+        elapsed = (now - lastTime);
+
+    lastTime = now;
+
+    // Clear the screen
+    ctx.clearRect(0, 0, 256, 224);
+
+    var speed = 2;
+
+    link.moving = false;
+
+    // Handle the Input
+    if (key[2]) {
+        link.moving = true;
+        link.facing = 'up';
+        link.y -= speed;
+    }
+    if( key[3]) {
+        link.moving = true;
+        link.facing = 'down';
+        link.y += speed;
+    }
+    if( key[0]) {
+        link.moving = true;
+        link.facing = 'left';
+        link.x -= speed;
+    }
+    if( key[1]) {
+        link.moving = true;
+        link.facing = 'right';
+        link.x += speed;
+    }
+
+    link.update(elapsed);
+
+    link.draw();
+
+    // call itself by requesting the next animation frame, and so begin the endless loop
+    mainLoop = requestAnimationFrame(main);
 }
 
 
-/*CREATION DU MONDE */
-function create () { 
+// Initialise
+init();
 
-    //  Resize our game world to be a 2000 x 2000 square
-    game.world.setBounds(-1000, -1000, 2000, 2000);
-	game.stage.disableVisibilityChange  = true;
-	
-    //  Our tiled scrolling background
-    land = game.add.tileSprite(0, 0, 620, 350, 'earth'); // la carte de jeu peut etre ....
-    land.fixedToCamera = true;
-    
-    	
-	player = new Robot(myId, game, robot);
-	robot = player.robot;
-	robot.x=0;
-	robot.y=0;
-	
-    robot.bringToTop();
- 
-    game.camera.follow(robot);
-    game.camera.deadzone = new Phaser.Rectangle(150, 150, 500, 300);
-    game.camera.focusOnXY(0, 0);
-
-    cursors = game.input.keyboard.createCursorKeys();
-	
-}
-
-
-
-function update () {
-	//do not update if client not ready
-	if (!ready) return;
-	
-	player.input.left = cursors.left.isDown;
-	player.input.right = cursors.right.isDown;
-	player.input.up = cursors.up.isDown;
-	player.input.tx = game.input.x+ game.camera.x;
-	player.input.ty = game.input.y+ game.camera.y;
-	
-    land.tilePosition.x = -game.camera.x;
-    land.tilePosition.y = -game.camera.y;
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function render () {}
-
+// Start the loop!
+requestAnimationFrame(main);
