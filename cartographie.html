@@ -11,12 +11,7 @@
         <div id="dim"></div>
     </p>
     <div id="map" style="float: right">
-        <canvas id="canvasMap" width="200" height="200" style="
-                                background:  no-repeat;
-                                background-image:url('/images/Map.png');
-                                background-position-x:0px;
-                                background-position-y:0px;
-                                "></canvas>
+        <canvas id="canvasMap" width="200" height="200"></canvas>
     </div>
     <button onclick="getDataMap();">Click me</button>
     <script>
@@ -34,45 +29,50 @@
     <script>
     var canvasMap = document.getElementById("canvasMap");
     var context = canvasMap.getContext("2d");
+    var img = new Image(); // Crée un nouvel objet Image
+    img.src = '/images/map.png'; // Définit le chemin vers sa source
 
 
     function init() {
-        var offsetX, offsetY, corrOffestX, corrOffestY;
+        var offsetX, offsetY, corrOffestX, corrOffestY, corrWidth, corrHeight;
 
         $.get("http://192.168.173.1:8080/?url=http://127.0.0.1:50000/nav/maps/parameters", function(dataMap) {
-            console.log('lalala', dataMap);
+            // console.log('lalala', dataMap);
             if (!dataMap)
                 return "pas de données ! :/ ";
 
-            //  mapInfo = JSON.parse(dataMap);
-            //get the map width and height to adjust the canvas
+            /***********************Traitement des informations*****************************/
 
             offsetX = dataMap.Offset.X;
             offsetY = dataMap.Offset.Y;
 
-            corrOffestX = dataMap.Height - (dataMap.Resolution * offsetX); // carte / Resolution + offsetx
-            corrOffestY = dataMap.Width - (dataMap.Resolution * offsetY);
+            corrHeight = dataMap.Height * dataMap.Resolution;
+            corrWidth = dataMap.Width * dataMap.Resolution;
+
+            /**********************Utilisation des informations traitées*****************************************/
+            $('#canvasMap').attr("width", corrHeight);
+            $('#canvasMap').attr("height", corrWidth);
+
+            if (document.getElementById("dim")) {
+                //text info
+                var text = "height : " + dataMap.Height + "px  et  width : " + dataMap.Width + "px";
+                document.getElementById("dim").innerHTML = text;
+                //    console.log('lalala 3 ');
+            }
+
+            context.drawImage(img,0,0,corrWidth,corrHeight) ;
+
 
             /****************essai de trouver le 0,0 ************************/
             context.beginPath();
-            context.arc(corrOffestX, corrOffestY, 10, 0, 2 * Math.PI, false);
+            context.arc(offsetX, offsetY, 10, 0, 2 * Math.PI, false);
             context.fillStyle = 'green';
             context.fill();
             context.lineWidth = 3;
             context.strokeStyle = '#003300';
             context.stroke();
-            /***************************************************************/
-            $('#canvasMap').attr("width", dataMap.Width);
-            $('#canvasMap').attr("height", dataMap.Height);
 
-            console.log("Dimension Width : " + dataMap.Width + ",  Height : " + dataMap.Height);
-            console.log('lalala 2 ');
-            if (document.getElementById("dim")) {
-                //text info
-                var text = "height : " + dataMap.Height + "px  et  width : " + dataMap.Width + "px";
-                document.getElementById("dim").innerHTML = text;
-                console.log('lalala 3 ');
-            }
+
         });
     }
 
