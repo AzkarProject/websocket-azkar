@@ -40,41 +40,21 @@
                 return "pas de données ! :/ ";
 
             /***********************Traitement des informations*****************************/
-
             offsetX = dataMap.Offset.X;
             offsetY = dataMap.Offset.Y;
-
             corrHeight = dataMap.Height ;
             corrWidth = dataMap.Width ;
-
             /**********************Utilisation des informations traitées*****************************************/
-           //  $('#canvasMap').attr("width", corrHeight);
-           //   $('#canvasMap').attr("height", corrWidth); 
-            // Step it down several times
-            var can2 = document.createElement('canvas');
-            can2.width = corrWidth / 2;
-            can2.height = corrHeight / 2;
-            var ctx2 = can2.getContext('2d');
-
-            // Draw it at 1/2 size 3 times (step down three times)
-
-           // ctx2.drawImage(img, 0, 0, corrWidth / 2, corrHeight / 2);
-        //    ctx2.drawImage(can2, 0, 0, corrWidth / 2, corrHeight / 2, 0, 0, corrWidth / 4, corrHeight / 4);
-         //   ctx2.drawImage(can2, 0, 0, corrWidth / 4, corrHeight / 4, 0, 0, corrWidth / 6, corrHeight / 6);
-            context.drawImage(img, 0, 0, corrWidth/4 , corrHeight /4);
+              context.drawImage(img, 0, 0, corrWidth/4 , corrHeight /4);
            
-
             if (document.getElementById("dim")) {
-                //text info
-                var text = "height : " + dataMap.Height + "px  et  width : " + dataMap.Width + "px";
+                var text = " dimensions reelles de la carte :height : " + dataMap.Height + "px  et  width : " + dataMap.Width + "px";
                 document.getElementById("dim").innerHTML = text;
                 //    console.log('lalala 3 ');
             }
-
             // context.drawImage(img, 0, 0, corrWidth, corrHeight);
 
-
-            /****************essai de trouver le 0,0 ************************/
+            /****************essai de trouver le 0,0 de la carte ************************/
             context.beginPath();
             context.arc(-(offsetX/4), -(offsetY/4), 5, 0, 2 * Math.PI, false);
             context.fillStyle = 'green';
@@ -82,11 +62,8 @@
             context.lineWidth = 3;
             context.strokeStyle = '#003300';
             context.stroke();
-
-
         });
     }
-
 
     /* /** refresh 
      * every 600 ms 
