@@ -29,6 +29,7 @@
     var context = canvasMap.getContext("2d");
     var img = new Image(); // Crée un nouvel objet Image
     img.src = '/images/map.png'; // Définit le chemin vers sa source
+    var stringRobotX, stringRobotY, stringRobotZ, robotX, robotY, robotZ; // les coordonées de localisation du robot
 
 
     function init() {
@@ -42,11 +43,11 @@
             /***********************Traitement des informations*****************************/
             offsetX = dataMap.Offset.X;
             offsetY = dataMap.Offset.Y;
-            corrHeight = dataMap.Height ;
-            corrWidth = dataMap.Width ;
+            corrHeight = dataMap.Height;
+            corrWidth = dataMap.Width;
             /**********************Utilisation des informations traitées*****************************************/
-              context.drawImage(img, 0, 0, corrWidth/4 , corrHeight /4);
-           
+            context.drawImage(img, 0, 0, corrWidth / 4, corrHeight / 4);
+
             if (document.getElementById("dim")) {
                 var text = " dimensions reelles de la carte :height : " + dataMap.Height + "px  et  width : " + dataMap.Width + "px";
                 document.getElementById("dim").innerHTML = text;
@@ -56,13 +57,14 @@
 
             /****************essai de trouver le 0,0 de la carte ************************/
             context.beginPath();
-            context.arc(-(offsetX/4), -(offsetY/4), 5, 0, 2 * Math.PI, false);
+            context.arc(-(offsetX / 4), -(offsetY / 4), 2, 0, 2 * Math.PI, false);
             context.fillStyle = 'green';
             context.fill();
             context.lineWidth = 3;
             context.strokeStyle = '#003300';
             context.stroke();
         });
+        refresh();
     }
 
     /* /** refresh 
@@ -76,26 +78,35 @@
      * 5) redraw locations point
      * */
     function refresh() {
-        /*setInterval(function() {
-                $.get(ipServlet + 'mapServlet?localization=1', function(dataLocalization) {
-                    robotInfo = JSON.parse(dataLocalization);
-                });
-                $.get(ipServlet + 'mapServlet?status=1', function(data) {
-                    robotStatus = JSON.parse(data);
-                });
+        setInterval(function() {
+            //http://192.168.173.1:8080/?url=http://127.0.0.1:50000/robulab/localization/localization
 
+            $.get("http://192.168.173.1:8080/?url=http://127.0.0.1:50000/robulab/localization/localization", function(dataLocalization) {
+                robotInfo = JSON.parse(dataLocalization);
 
-                checkRobotStatus();
-                context.clearRect(0, 0, canvasMap.width, canvasMap.height);
-                //recalcul the locations (only on admin.jsp            
+                stringRobotX = dataString.substr(dataLocalization.indexOf("<X>"), dataString.indexOf("</X>"));
+                stringRobotY = dataString.substr(dataLocalization.indexOf("<Y>"), dataString.indexOf("</Y>"));
+                stringRobotZ = dataString.substr(dataLocalization.indexOf("<Z>"), dataString.indexOf("</Z>"));
 
-                initLocationsPoints();
+                console.log('stringRobotX --> ', stringRobotX);
+                console.log('stringRobotY --> ', stringRobotY);
+                console.log('stringRobotZ --> ', stringRobotZ);
 
-                drawLocationsPoints();
-                context.beginPath();
-                drawRobot();
+                robotX = stringRobotX.match(/\d+/)[0];
+                robotY = stringRobotY.match(/\d+/)[0];
+                robotZ = stringRobotZ.match(/\d+/)[0];
+                console.log('----------------------------------------------------');
+                console.log('robotX --> ', robotX);
+                console.log('robotY --> ', robotY);
+                console.log('robotZ --> ', robotZ);
+                console.log('----------------------------------------------------');
 
-            }, 600); */
+                //  context.save();
+                //  drawRobot(robotX, robotY, robotZ);
+                //  context.restore();
+
+            });
+        }, 600);
     }
 
 
