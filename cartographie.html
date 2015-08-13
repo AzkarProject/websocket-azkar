@@ -11,7 +11,7 @@
         <div id="dim"></div>
     </p>
     <div id="map" style="float: right">
-        <canvas id="canvasMap" width="400" height="400"></canvas>
+        <canvas id="canvasMap" width="800" height="400"></canvas>
     </div>
     <button onclick="getDataMap();">Click me</button>
     <script>
@@ -58,10 +58,10 @@
 
             // Draw it at 1/2 size 3 times (step down three times)
 
-            ctx2.drawImage(img, 0, 0, corrWidth / 2, corrHeight / 2);
-            ctx2.drawImage(can2, 0, 0, corrWidth / 2, corrHeight / 2, 0, 0, corrWidth / 4, corrHeight / 4);
-            ctx2.drawImage(can2, 0, 0, corrWidth / 4, corrHeight / 4, 0, 0, corrWidth / 6, corrHeight / 6);
-            context.drawImage(can2, 0, 0, corrWidth / 6, corrHeight / 6, 0, 0, corrWidth / 6, corrHeight / 6);
+           // ctx2.drawImage(img, 0, 0, corrWidth / 2, corrHeight / 2);
+        //    ctx2.drawImage(can2, 0, 0, corrWidth / 2, corrHeight / 2, 0, 0, corrWidth / 4, corrHeight / 4);
+         //   ctx2.drawImage(can2, 0, 0, corrWidth / 4, corrHeight / 4, 0, 0, corrWidth / 6, corrHeight / 6);
+            context.drawImage(img, 0, 0, corrWidth/4 , corrHeight /4);
            
 
             if (document.getElementById("dim")) {
