@@ -22,9 +22,7 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/common.js"></script>
     <script src="/js/settings.js"></script>
-    <script src='/js/mapviewer.js'></script>
     <script src='/js/ws_manager.js'></script>
-    <script src='/js/commands.js'></script>
     <script src='/js/main.js'></script>
     <script>
     var canvasMap = document.getElementById("canvasMap");
@@ -63,7 +61,7 @@
             ctx2.drawImage(img, 0, 0, corrWidth / 2, corrHeight / 2);
             ctx2.drawImage(can2, 0, 0, corrWidth / 2, corrHeight / 2, 0, 0, corrWidth / 4, corrHeight / 4);
             ctx2.drawImage(can2, 0, 0, corrWidth / 4, corrHeight / 4, 0, 0, corrWidth / 6, corrHeight / 6);
-            canvasMap.drawImage(can2, 0, 0, corrWidth / 6, corrHeight / 6, 0, 200, corrWidth / 6, corrHeight / 6);
+            context.drawImage(can2, 0, 0, corrWidth / 6, corrHeight / 6, 0, 200, corrWidth / 6, corrHeight / 6);
            
 
             if (document.getElementById("dim")) {
@@ -73,7 +71,7 @@
                 //    console.log('lalala 3 ');
             }
 
-            context.drawImage(img, 0, 0, corrWidth, corrHeight);
+            // context.drawImage(img, 0, 0, corrWidth, corrHeight);
 
 
             /****************essai de trouver le 0,0 ************************/
