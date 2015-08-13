@@ -15,11 +15,11 @@ else if (hostName == "ubuntu64azkar") ipaddress = "192.168.1.10"; // Vm Ubuntu -
 else if (hostName == "VM-AZKAR-Ubuntu") ipaddress = "134.59.130.141"; // IP statique de la Vm sparks
 else if (hostName == "thaby") ipaddress = "192.168.173.1"; // Tablette HP - ip du réseau virtuel robulab_wifi
 else if (hostName == "lapto_Asus") ipaddress = "0.0.0.0"; // Pc perso - Livebox domicile - noip > azkar.ddns.net
-
+else if (hostName == "azkar-Latitude-E4200") ipaddress = "0.0.0.0"; // Pc perso - Livebox domicile - noip > azkar.ddns.net
  
 port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 2000; // pour laisser le 80 dispo sur le serveur
 // Seul le port 80 passe malgrès les règles appropriées dans le NAT et le Firewall de la livebox ...
-if (hostName == "lapto_Asus") port = 80;
+if (hostName == "azkar-Latitude-E4200") port = 80;
 // TODO > Trouver bon réglage livebox pour fire cohabiter port 2000(nodejs) et 80(apache) en même temps.
 
 
