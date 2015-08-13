@@ -13,6 +13,7 @@ if (hostName == "azkary") ipaddress = "127.0.0.1"; // machine bureau
 else if (hostName == "ubuntu64azkar") ipaddress = "192.168.1.10"; // Vm_umbutu_dom
 else if (hostName == "VM-AZKAR-Ubuntu") ipaddress = "134.59.130.141"; // Vm_sparks
 else if (hostName == "thaby") ipaddress = "192.168.173.1"; // robulab_wifi
+else if (hostName == "lapto_Asus") ipaddress = "azkar.ddns.net"; // robulab_wifi
 
 port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 2000;
 
