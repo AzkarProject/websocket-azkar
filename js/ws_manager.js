@@ -42,14 +42,14 @@ var localObjUser;
 // ------------------------------------------------------
 // Pour contrôle hosting
 // Affichage des variables d'environnement serveur ds la partie cliente
-socket.on('infoServer', function(data) {
+socket.on('infoServer', function(nomMachine) {
   if (!isServerInfoReceived) {
       isServerInfoReceived = true; 
-      console.log(">> socket.on('infoServer', function(data)");
-      console.log(" Infos serveur: " + data);
-      $('#zone_info_server').prepend(data);
+      $('#zone_info_server').replaceWith(settings.appName() + " V " + settings.appVersion()+ " ("+nomMachine+")");
   }
 })
+
+
 // ----------------------------------------------------------
 
 // Updater le titre de la page (pour le fun...)

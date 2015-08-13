@@ -7,16 +7,20 @@ var devSettings = require('./js/devSettings'); // Nom de la branche gitHub
 // Récupération du Nom de la machine 
 var os = require("os");
 hostName = os.hostname();
+dyDns = 'azkar.ddns.net'; // Adresse no-Ip pour la liveBox perso
 
 ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP || "127.0.0.1"; // défaut
 if (hostName == "azkary") ipaddress = "127.0.0.1"; // machine bureau
-else if (hostName == "ubuntu64azkar") ipaddress = "192.168.1.10"; // Vm_umbutu_dom
-else if (hostName == "VM-AZKAR-Ubuntu") ipaddress = "134.59.130.141"; // Vm_sparks
-else if (hostName == "thaby") ipaddress = "192.168.173.1"; // robulab_wifi
-else if (hostName == "lapto_Asus") ipaddress = "azkar.ddns.net"; // robulab_wifi
+else if (hostName == "ubuntu64azkar") ipaddress = "192.168.1.10"; // Vm Ubuntu - Pc perso - Domicile
+else if (hostName == "VM-AZKAR-Ubuntu") ipaddress = "134.59.130.141"; // IP statique de la Vm sparks
+else if (hostName == "thaby") ipaddress = "192.168.173.1"; // Tablette HP - ip du réseau virtuel robulab_wifi
+else if (hostName == "lapto_Asus") ipaddress = "0.0.0.0"; // Pc perso - Livebox domicile - noip > azkar.ddns.net
 
-port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 2000;
-
+ 
+port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 2000; // pour laisser le 80 dispo sur le serveur
+// Seul le port 80 passe malgrès les règles appropriées dans le NAT et le Firewall de la livebox ...
+if (hostName == "lapto_Asus") port = 80;
+// TODO > Trouver bon réglage livebox pour fire cohabiter port 2000(nodejs) et 80(apache) en même temps.
 
 
 console.log("***********************************");
@@ -24,12 +28,7 @@ console.log('');
 console.log('(' + devSettings.appBranch() + ') ' + settings.appName() + " V " + settings.appVersion());
 console.log('');
 console.log("***********************************");
-var hostMsg = "Serveur NodeJs hébergé ";
-if (process.env.OPENSHIFT_NODEJS_IP) hostMsg += "sur OpenShift";
-else if (process.env.IP) hostMsg += "sur ???";
-else hostMsg += "en Local";
-hostMsg += (" (hostName: " + hostName + ")");
-console.log(hostMsg);
+console.log("Serveur sur machine: " + hostName);
 
 
 var app = require('express')(),
@@ -63,6 +62,9 @@ app.use(bodyParser.json()); // support json encoded bodies
 
 // ------------ routing ------------
 
+
+
+
 // Chargement de la page index.html
 app.get('/', function(req, res) {
     res.sendFile(__dirname + '/index.html');
@@ -85,6 +87,14 @@ app.get('/cartographie/', function(req, res) {
     res.sendFile(__dirname + '/cartographie.html');
 });
 
+// On passe la variable hostName en ajax à l'ihm d'accueil
+// puisqu'on ne peux pas passer par websocket...
+// nb: On pourrai faire pareil avec Pilote et Robot...
+app.get("/getvar", function(req, res){
+    res.json({ hostName: hostName });
+});
+
+
 
 // Lancement du serveur
 server.listen(app.get('port'), ipaddress);
@@ -94,8 +104,9 @@ server.listen(app.get('port'), ipaddress);
 
 // Adresse de redirection pour les connexions refusées
 var indexUrl;
-if (process.env.OPENSHIFT_NODEJS_IP) indexUrl = "http://websocket-azkar.rhcloud.com";
-else indexUrl = "http://" + ipaddress + ":" + port;
+if (process.env.OPENSHIFT_NODEJS_IP) indexUrl = "http://websocket-azkar.rhcloud.com"; // Si hébergement openshift
+if (hostName == "lapto_Asus") indexUrl = "http://" + dyDns; // Si machine derrière liveBox
+else indexUrl = "http://" + ipaddress + ":" + port; // Sinon par défaut...
 
 
 // liste des clients connectés
@@ -212,6 +223,8 @@ io.on('connection', function(socket, pseudo) {
         // On renvoie l'User crée au nouveau connecté
         // pour l'informer entre autre de son ordre d'arrivée ds la session
         io.to(socket.id).emit('position_liste2', objUser);
+        // On lui envoie aussi des infos concerant le serveur (pour débug)
+		io.to(socket.id).emit('infoServer', hostName);
 
         // 2 - on signale à tout le monde l'arrivée de l'User
         socket.broadcast.emit('nouveau_client2', objUser);
@@ -224,6 +237,7 @@ io.on('connection', function(socket, pseudo) {
         });
 
         console.log("> Il y a " + nbUsers2 + " connectés");
+
 
         // 4 - on met à jour la liste des connectés cotés clients
         // ... TODO... EST-ce bien nécéssaire ????
