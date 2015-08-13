@@ -46,12 +46,25 @@
             offsetX = dataMap.Offset.X;
             offsetY = dataMap.Offset.Y;
 
-            corrHeight = dataMap.Height * dataMap.Resolution;
-            corrWidth = dataMap.Width * dataMap.Resolution;
+            corrHeight = dataMap.Height ;
+            corrWidth = dataMap.Width ;
 
             /**********************Utilisation des informations traitées*****************************************/
-            $('#canvasMap').attr("width", corrHeight);
-            $('#canvasMap').attr("height", corrWidth);
+             $('#canvasMap').attr("width", corrHeight);
+             $('#canvasMap').attr("height", corrWidth); 
+            // Step it down several times
+            var can2 = document.createElement('canvas');
+            can2.width = corrWidth / 2;
+            can2.height = corrHeight / 2;
+            var ctx2 = can2.getContext('2d');
+
+            // Draw it at 1/2 size 3 times (step down three times)
+
+            ctx2.drawImage(img, 0, 0, corrWidth / 2, corrHeight / 2);
+            ctx2.drawImage(can2, 0, 0, corrWidth / 2, corrHeight / 2, 0, 0, corrWidth / 4, corrHeight / 4);
+            ctx2.drawImage(can2, 0, 0, corrWidth / 4, corrHeight / 4, 0, 0, corrWidth / 6, corrHeight / 6);
+            canvasMap.drawImage(can2, 0, 0, corrWidth / 6, corrHeight / 6, 0, 200, corrWidth / 6, corrHeight / 6);
+           
 
             if (document.getElementById("dim")) {
                 //text info
@@ -60,7 +73,7 @@
                 //    console.log('lalala 3 ');
             }
 
-            context.drawImage(img,0,0,corrWidth,corrHeight) ;
+            context.drawImage(img, 0, 0, corrWidth, corrHeight);
 
 
             /****************essai de trouver le 0,0 ************************/
