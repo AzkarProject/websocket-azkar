@@ -1,141 +1,228 @@
-//this script is used in index.jsp and admin.jsp
-$(document).ready(function() {
-            var tab = [];
-            var canvasMap = document.getElementById("canvasMap");
-            var context = canvasMap.getContext("2d");
-            var co = 0;
-            //used with admin.jsp
-            cropY = 0;
-            cropX = 0;
+<script>
+    var canvasMap = document.getElementById("canvasMap");
+    var context = canvasMap.getContext("2d");
+    var img = new Image(); // Crée un nouvel objet Image
+    img.src = '/images/map.png'; // Définit le chemin vers sa source
+    var stringRobotX, stringRobotY, stringRobotZ, robotX, robotY, robotZ; // les coordonées de localisation du robot
 
-            /* START */
-            /* call init() then load() and finaly refresh() with setInterval */
-            init( /*load*/ );
 
-            function getDataMap() {
-                 url = "http://192.168.173.1:8080/?url=http://127.0.0.1:50000/nav/maps/parameters" ;
-                $.get(url, function(dataMap) {
-                    jsonMapInfo = dataMap;
-                    mapInfo = JSON.parse(jsonMapInfo);
-                    //get the map width and height to adjust the canvas
-                    $('#canvasMap').attr("width", mapInfo.Width);
-                    $('#canvasMap').attr("height", mapInfo.Height);
-                    console.log("Dimension " + mapInfo.Width + " " + mapInfo.Height);
+    function init() {
+        var offsetX, offsetY, corrOffestX, corrOffestY, corrWidth, corrHeight;
 
-                    if (document.getElementById("dim")) {
-                        //text info
-                        var text = "height : " + mapInfo.Height + "px  width : " + mapInfo.Width + "px";
-                        document.getElementById("dim").innerHTML = text;
-                    }
+        $.get("http://192.168.173.1:8080/?url=http://127.0.0.1:50000/nav/maps/parameters", function(dataMap) {
+            // console.log('lalala', dataMap);
+            if (!dataMap)
+                return "pas de données ! :/ ";
 
-                });
+            /***********************Traitement des informations*****************************/
+            offsetX = dataMap.Offset.X;
+            offsetY = dataMap.Offset.Y;
+            corrHeight = dataMap.Height;
+            corrWidth = dataMap.Width;
+            /**********************Utilisation des informations traitées*****************************************/
+            context.drawImage(img, 0, 0, corrWidth / 4, corrHeight / 4);
 
+            if (document.getElementById("dim")) {
+                var text = " dimensions reelles de la carte :height : " + dataMap.Height + "px  et  width : " + dataMap.Width + "px";
+                document.getElementById("dim").innerHTML = text;
+                //    console.log('lalala 3 ');
             }
+            // context.drawImage(img, 0, 0, corrWidth, corrHeight);
 
+            /****************essai de trouver le 0,0 de la carte ************************/
+            context.beginPath();
+            context.arc(-(offsetX / 4), -(offsetY / 4), 2, 0, 2 * Math.PI, false);
+            context.fillStyle = 'green';
+            context.fill();
+            context.lineWidth = 3;
+            context.strokeStyle = '#003300';
+            context.stroke();
+        });
+        refresh( /*offsetX, offsetY*/);
+    }
 
-
-            function init(callback) {
-
-                /*  $.getJSON("ajax/test.json", function(data) {
-                        var items = [];
-                        $.each(data, function(key, val) {
-                            items.push("<li id='" + key + "'>" + val + "</li>");
-                        });
-*/
-
-                $.get("http://192.168.173.1:8080/?url=http://127.0.0.1:50000/nav/maps/parameters", function(dataMap) {
-                    jsonMapInfo = dataMap;
-                    mapInfo = JSON.parse(jsonMapInfo);
-                    //get the map width and height to adjust the canvas
-                    $('#canvasMap').attr("width", mapInfo.Width);
-                    $('#canvasMap').attr("height", mapInfo.Height);
-                    console.log("Dimension " + mapInfo.Width + " " + mapInfo.Height);
-
-                    if (document.getElementById("dim")) {
-                        //text info
-                        var text = "height : " + mapInfo.Height + "px  width : " + mapInfo.Width + "px";
-                        document.getElementById("dim").innerHTML = text;
-                    }
-                    //if you are on index.jsp
-                    //
-                    /* else {
-                         //load the crops preference (read the variable.json file)
-                         $.get('variable.json', function(prefs) {
-                             mapPrefs = prefs;
-                             setTimeout(function() {
-                                 //mapTop and mapRight <=> change width height canvas 
-                                 //mapBot and mapleft <=> change background position
-                                 mapTop = parseInt(mapPrefs.map.top);
-                                 mapRight = parseInt(mapPrefs.map.right);
-                                 mapBot = parseInt(mapPrefs.map.bot);
-                                 mapLeft = parseInt(mapPrefs.map.left);
-                                 $('#canvasMap').attr("height", mapInfo.Height - mapTop);
-                                 $('#canvasMap').attr("width", mapInfo.Width - mapRight);
-                                 var bgX = (mapLeft * -1) + "px";
-                                 $('#canvasMap').css('background-position-x', bgX);
-                                 cropX = mapLeft * 2;
-                                 var bgY = (mapBot * -1) + "px";
-                                 $('#canvasMap').css('background-position-y', bgY);
-                                 cropY = mapBot * 2;
-                             }, 10);
-                         });
-                     }*/
-                });
-
-                /*get map location and robot positions json*/
-                /*    $.get(ipServlet + 'mapServlet?locations=1', function(dataLocations) {
-                        jsonLocation = eval(dataLocations);
-                        //get robot position
-                        $.get(ipServlet + 'mapServlet?localization=1', function(dataLocalization) {
-                            robotInfo = JSON.parse(dataLocalization);
-                            //then, call load function
-                            if (callback) {
-                                callback();
-                            }
-                        });
-                    });*/
-            }
-
-            /*
-
-             function load(){
-                    mapInfo = JSON.parse(jsonMapInfo);
-                    var offsetX  = mapInfo.Offset.X;
-                    var offsetY  = mapInfo.Offset.Y;         
-                    corrOffestX = mapInfo.Height -(mapInfo.Resolution *offsetX );
-                    corrOffestY=  mapInfo.Width -(mapInfo.Resolution *offsetY );
-                    //calcul the coordinates of locationsPoint on the canvasMap
-                    //and fill tab array
-                    initLocationsPoints();           
-                    //add click event on canvas MAp 
-                    canvasMap.addEventListener('mousedown', function(evt){
-                        var mousePos = getMousePos(canvasMap, evt);
-                        //var message = "Mouse position: " + mousePos.x + "," + mousePos.y;
-                        var j =0;
-                        for(j=0; j<tab.length;j+=1){
-                            //crop
-                            if(Math.abs(tab[j].x - mousePos.x )<20){
-                                if(Math.abs(tab[j].y - mousePos.y )<10){                                      
-                                    gotoPoint(j);
-                                    break;
-                                }
-                            }
-                        }
-                    }, false);
-                    //then call refresh function 
-                    refresh();                
+    /* /** refresh 
+     * every 600 ms 
+     * 1) refresh the status  :   - recuperer le status du robot --> requete get sur url ???
+     *                            - mettre à jour son status --> checkRobotStatus() ;
+     *                            
+     * 2)clean the canvas
+     * 3)recheck the robot position  : recuperer la position du robot --> requete get sur url ?? 
+     * 4)dessiner la position du robot sur le canvas --> drawRobot(x,y) 
+     * 5) redraw locations point
+     * */
+    function refresh() {
+        var robotInfo, dataString, stringRobotX, stringRobotY, stringRobotZ, x, y, z;
+        setInterval(function() {
+            $.get("http://192.168.173.1:8080/?url=http://127.0.0.1:50000/robulab/localization/localization", function(dataLocalization) {
+                if (!dataLocalization) {
+                    console.log('pas pu atteindre le service !! ');
+                    return;
                 }
-                
+
+                dataString = new XMLSerializer().serializeToString(dataLocalization.documentElement);
+
+                stringRobotX = dataString.substr(dataString.indexOf("<X>"), dataString.indexOf("</X>"));
+                stringRobotY = dataString.substr(dataString.indexOf("<Y>"), dataString.indexOf("</Y>"));
+                stringRobotZ = dataString.substr(dataString.indexOf("<Z>"), dataString.indexOf("</Z>"));
+
+                //console.log('stringRobotX --> ', stringRobotX);
+                //console.log('stringRobotY --> ', stringRobotY);
+                //console.log('stringRobotZ --> ', stringRobotZ);
+
+                robotX = stringRobotX.match(/\d+/)[0];
+                robotY = stringRobotY.match(/\d+/)[0];
+                robotZ = stringRobotZ.match(/\d+/)[0];
+                console.log('----------------------------------------------------');
+                console.log('robotX --> ', robotX);
+                console.log('robotY --> ', robotY);
+                console.log('robotZ --> ', robotZ);
+                console.log('----------------------------------------------------');
+             //   x = (robotX - offsetX) / 4;
+             //   y = (robotY - offsetY) / 4;
+             //   z = robotZ;
+
+               /* console.log('----------------------------------------------------');
+                console.log('offsetX --> ', offsetX);
+                console.log('offsetY --> ', offsetY);
+                console.log('----------------------------------------------------'); */
+
+              /*  console.log('----------------------------------------------------');
+                console.log('x --> ', x);
+                console.log('y --> ', y);
+                console.log('z --> ', z);
+                console.log('----------------------------------------------------');*/
+                context.save();
+                drawRobot(robotX,robotY,robotZ);
+                context.restore();
+
+            });
+        }, 600);
+    }
 
 
 
-            */
+    //check robot status
+    // null => offline
+    //0 waiting gotopoint or gotopose request
+    //1 waiting move request 
+    //2 moving
+    function checkRobotStatus() {
+        /*
+        var bool = robotStatus || 0;
+        if(bool){
+            if(robotStatus.Status >=0 ){
+                if(co==0){
+                    $('.statusCo').empty();
+                    $('.statusCo').css("color", "#00FF00")
+                    $('.statusCo').append("Online"); 
+                    $('.status').empty();
+                }
+                co=1;                              
+            }
+            else{                  
+                $("#status").hide();
+                $('.status').empty();
+                $('.statusCo').empty();
+                $('.statusCo').append("Offline"); 
+                $('.statusCo').css("color", "#FF0000");
+                co =0;                
+            }
+        }          
+        else {
+            $('.status').empty();
+            $('.statusCo').empty();
+            $('.statusCo').append("Offline"); 
+            $('.statusCo').css("color", "#FF0000");
+            co =0;
+        }   
+        */
+    }
 
 
-
-
-
-
-
-
+    //calculate x , y and theta 
+    // then draw it 
+    function drawRobot(x, y, z) {
+        circleWithDirection(x, y, z, "blue", 6, 4);
+        /*
+        var rx = robotInfo.Pose.Position.Y * mapInfo.Resolution +corrOffestY ;
+        var ry = robotInfo.Pose.Position.X * mapInfo.Resolution + corrOffestX;
+        var qw = robotInfo.Pose.Orientation.W;
+        var qz = robotInfo.Pose.Orientation.Z;
+        var heading =0;
+        var attitude = 0 ;
+        var qx = 0;
+        var qy = 0;
+        var qy2 = qy*qy;
+        var qz2 = qz*qz;
+        var test= qx*qy + qz*qw;
+        if (test > 0.499) {
+            heading = 360/Math.PI*Math.atan2(qx,qw);
+            attitude = 90;
+            return;
         }
+        if (test < -0.499) {
+            heading = -360/Math.PI*Math.atan2(qx,qw);
+            attitude = -90;
+            return;
+        }
+        heading= Math.atan2(2*qy*qw-2*qx*qz,1-2*qy2-2*qz2);
+        attitude= Math.asin(2*qx*qy+2*qz*qw);
+        var angle = (heading==0)? angle= -attitude:Math.PI+attitude;
+        //draw it 
+        circleWithDirection(mapInfo.Width - rx- 2- cropX/2, mapInfo.Height - ry - 2 - cropY/2,  angle- Math.PI/2,"blue",6,4);
+        */
+    }
+
+    //draw a circle with a line     
+    function circleWithDirection(x, y, theta, color, size, sizeStroke) {
+
+        context.beginPath();
+        context.arc(x, y, size, 0, 2 * Math.PI, false);
+        context.fillStyle = color;
+        context.fill();
+        context.lineWidth = 2;
+        context.strokeStyle = "black";
+        context.stroke();
+        x2 =  Math.cos(theta) * 2;
+        y2 =  Math.sin(theta) * 2;
+        context.closePath();
+        context.beginPath();
+        context.moveTo(x, y);
+        context.lineTo(x2, y2);
+        context.strokeStyle = color;
+        context.lineCap = "round";
+        context.lineWidth = sizeStroke;
+        context.stroke();
+        context.closePath();
+
+    }
+
+
+    //draw a triangle on canvas at the x y  coordinates 
+    //theta is the angle
+    function triangle(x, y, theta) {
+        /*
+        context.stroke();
+        context.beginPath();
+        context.lineWidth =1;
+        context.strokeStyle = "black";
+        context.fillStyle = "#00D2FF";
+        var size = 15;
+        x2 =x + Math.cos(theta) * size;
+        y2 = y+ Math.sin(theta)*size;
+        context.moveTo(x2, y2);       
+        x2 = x + Math.cos(Math.PI*1.15 + theta) * size;
+        y2 = y+ Math.sin(Math.PI*1.15 + theta)*size;
+        context.lineTo(x2, y2);
+        x2 = x + Math.cos(Math.PI + theta) * size/2;
+        y2 = y+ Math.sin(Math.PI + theta)*size/2    ;
+        context.lineTo(x2, y2);
+        x2 = x + Math.cos(Math.PI*0.85  + theta) * size;
+        y2 = y+ Math.sin(Math.PI*0.85 + theta)*size ;
+        context.lineTo(x2, y2);
+        context.closePath();
+        context.fill();
+        context.stroke();         */
+    }
+    </script>
