@@ -88,9 +88,9 @@
 
                 dataString = new XMLSerializer().serializeToString(dataLocalization.documentElement);
 
-                stringRobotX = dataString.substr(dataLocalization.indexOf("<X>"), dataString.indexOf("</X>"));
-                stringRobotY = dataString.substr(dataLocalization.indexOf("<Y>"), dataString.indexOf("</Y>"));
-                stringRobotZ = dataString.substr(dataLocalization.indexOf("<Z>"), dataString.indexOf("</Z>"));
+                stringRobotX = dataString.substr(dataString.indexOf("<X>"), dataString.indexOf("</X>"));
+                stringRobotY = dataString.substr(dataString.indexOf("<Y>"), dataString.indexOf("</Y>"));
+                stringRobotZ = dataString.substr(dataString.indexOf("<Z>"), dataString.indexOf("</Z>"));
 
                 console.log('stringRobotX --> ', stringRobotX);
                 console.log('stringRobotY --> ', stringRobotY);
