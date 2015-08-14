@@ -14,7 +14,32 @@ exports.sendDrive = function (enable, aSpeed,lSpeed){
     // function sendDrive(url, enable, aSpeed,lSpeed) {
     var btnA = (enable == 'true' ? true : false); //  
     //return Q.Promise(function(resolve, reject, notify) {
+    var data = JSON.stringify({
+            "Enable": btnA,
+            "TargetAngularSpeed": aSpeed,
+            "TargetLinearSpeed": lSpeed
+        });
+        
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', url);
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    //xhr.send(data);
+    xhr.send(JSON.stringify({
+            "Enable": btnA,
+            "TargetAngularSpeed": aSpeed,
+            "TargetLinearSpeed": lSpeed
+        }));
 
+
+
+
+
+
+
+
+
+
+        /*
         var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance 
 
         xmlhttp.open("POST", url);
@@ -37,6 +62,8 @@ exports.sendDrive = function (enable, aSpeed,lSpeed){
                 reject(new Error("Status code was " + xmlhttp.status));
             }
         }
+
+        /**/
 
         /*
         function onerror() {
