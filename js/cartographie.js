@@ -6,7 +6,7 @@
     var stringRobotX, stringRobotY, stringRobotZ, robotX, robotY, robotZ; // les coordonées de localisation du robot
 
 
-    function init() {
+    //function init() {
         var offsetX, offsetY, corrOffestX, corrOffestY, corrWidth, corrHeight;
 
         $.get("http://192.168.173.1:8080/?url=http://127.0.0.1:50000/nav/maps/parameters", function(dataMap) {
@@ -39,7 +39,7 @@
             context.stroke();
         });
         refresh( /*offsetX, offsetY*/);
-    }
+ //   }
 
     /* /** refresh 
      * every 600 ms 
