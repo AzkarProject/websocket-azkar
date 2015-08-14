@@ -15,7 +15,7 @@ var http = require('http'),
 
 
 var ip = "127.0.0.1"; //ou si nous sommes en local  127.0.0.1 
-var port = 2000; // si nous voulons faire des requetes http sinon un autre port pour le tester en local
+var port = 80; // si nous voulons faire des requetes http sinon un autre port pour le tester en local
 
 //gestionnaire d'eereur 
 function notFound(res) {
