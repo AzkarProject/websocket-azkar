@@ -107,6 +107,12 @@
                   x = (robotX-offsetX)/4 ;
                   y = (robotY-offsetY)/4 ;
                   z = robotZ; 
+
+                  console.log('----------------------------------------------------');
+                  console.log('x --> ', x);
+                  console.log('y --> ', y);
+                  console.log('z --> ', z);
+                  console.log('----------------------------------------------------');
                   context.save();
                   drawRobot(x, y, z);
                   context.restore();
