@@ -25,11 +25,15 @@ $.get("http://192.168.173.1:8080/?url=http://127.0.0.1:50000/nav/maps/parameters
     //     var text = " dimensions reelles de la carte :height : " + dataMap.Height + "px  et  width : " + dataMap.Width + "px";
     //    document.getElementById("dim").innerHTML = text;
     //    console.log('lalala 3 ');
-}
+//}
 // context.drawImage(img, 0, 0, corrWidth, corrHeight);
 
 /****************essai de trouver le 0,0 de la carte ************************/
-context.beginPath(); context.arc(-(offsetX / 4), -(offsetY / 4), 2, 0, 2 * Math.PI, false); context.fillStyle = 'green'; context.fill(); context.lineWidth = 3; context.strokeStyle = '#003300'; context.stroke();
+context.beginPath();
+context.arc(-(offsetX / 4), -(offsetY / 4), 2, 0, 2 * Math.PI, false); 
+context.fillStyle = 'green'; context.fill(); context.lineWidth = 3; 
+context.strokeStyle = '#003300'; context.stroke();
+
 });
 refresh( /*offsetX, offsetY*/ );
 //   }
