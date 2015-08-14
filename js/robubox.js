@@ -30,7 +30,7 @@ exports.sendDrive = function (enable, aSpeed,lSpeed){
             "TargetAngularSpeed": aSpeed,
             "TargetLinearSpeed": lSpeed
         }));
-
+    xhr.closed;
 
 
 
