@@ -78,11 +78,15 @@
      * 5) redraw locations point
      * */
     function refresh() {
+        var robotInfo, dataString, stringRobotX, stringRobotY, stringRobotZ;
         setInterval(function() {
-            //http://192.168.173.1:8080/?url=http://127.0.0.1:50000/robulab/localization/localization
-
             $.get("http://192.168.173.1:8080/?url=http://127.0.0.1:50000/robulab/localization/localization", function(dataLocalization) {
-                robotInfo = JSON.parse(dataLocalization);
+                if (!dataString) {
+                    console.log('pas pu atteindre le service !! ');
+                    return;
+                }
+
+                dataString = new XMLSerializer().serializeToString(dataLocalization.documentElement);
 
                 stringRobotX = dataString.substr(dataLocalization.indexOf("<X>"), dataString.indexOf("</X>"));
                 stringRobotY = dataString.substr(dataLocalization.indexOf("<Y>"), dataString.indexOf("</Y>"));
@@ -92,14 +96,14 @@
                 console.log('stringRobotY --> ', stringRobotY);
                 console.log('stringRobotZ --> ', stringRobotZ);
 
-            //    robotX = stringRobotX.match(/\d+/)[0];
-              //  robotY = stringRobotY.match(/\d+/)[0];
-            //    robotZ = stringRobotZ.match(/\d+/)[0];
-              //  console.log('----------------------------------------------------');
-            //    console.log('robotX --> ', robotX);
-              //  console.log('robotY --> ', robotY);
-             //   console.log('robotZ --> ', robotZ);
-            //    console.log('----------------------------------------------------');
+                robotX = stringRobotX.match(/\d+/)[0];
+                robotY = stringRobotY.match(/\d+/)[0];
+                robotZ = stringRobotZ.match(/\d+/)[0];
+                console.log('----------------------------------------------------');
+                console.log('robotX --> ', robotX);
+                console.log('robotY --> ', robotY);
+                console.log('robotZ --> ', robotZ);
+                console.log('----------------------------------------------------');
 
                 //  context.save();
                 //  drawRobot(robotX, robotY, robotZ);
