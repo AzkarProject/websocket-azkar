@@ -64,7 +64,7 @@
             context.strokeStyle = '#003300';
             context.stroke();
         });
-        refresh();
+        refresh(offsetX,offsetY);
     }
 
     /* /** refresh 
@@ -77,8 +77,8 @@
      * 4)dessiner la position du robot sur le canvas --> drawRobot(x,y) 
      * 5) redraw locations point
      * */
-    function refresh() {
-        var robotInfo, dataString, stringRobotX, stringRobotY, stringRobotZ;
+    function refresh(offsetX,offsetY) {
+        var robotInfo, dataString, stringRobotX, stringRobotY, stringRobotZ, x, y, z;
         setInterval(function() {
             $.get("http://192.168.173.1:8080/?url=http://127.0.0.1:50000/robulab/localization/localization", function(dataLocalization) {
                 if (!dataLocalization) {
@@ -92,22 +92,24 @@
                 stringRobotY = dataString.substr(dataString.indexOf("<Y>"), dataString.indexOf("</Y>"));
                 stringRobotZ = dataString.substr(dataString.indexOf("<Z>"), dataString.indexOf("</Z>"));
 
-                console.log('stringRobotX --> ', stringRobotX);
-                console.log('stringRobotY --> ', stringRobotY);
-                console.log('stringRobotZ --> ', stringRobotZ);
+                //console.log('stringRobotX --> ', stringRobotX);
+                //console.log('stringRobotY --> ', stringRobotY);
+                //console.log('stringRobotZ --> ', stringRobotZ);
 
                 robotX = stringRobotX.match(/\d+/)[0];
                 robotY = stringRobotY.match(/\d+/)[0];
                 robotZ = stringRobotZ.match(/\d+/)[0];
-                console.log('----------------------------------------------------');
-                console.log('robotX --> ', robotX);
-                console.log('robotY --> ', robotY);
-                console.log('robotZ --> ', robotZ);
-                console.log('----------------------------------------------------');
-
-                //  context.save();
-                //  drawRobot(robotX, robotY, robotZ);
-                //  context.restore();
+                //console.log('----------------------------------------------------');
+                //console.log('robotX --> ', robotX);
+                //console.log('robotY --> ', robotY);
+                //console.log('robotZ --> ', robotZ);
+               // console.log('----------------------------------------------------');
+                  x = (robotX-offsetX)/4 ;
+                  y = (robotY-offsetY)/4 ;
+                  z = robotZ; 
+                  context.save();
+                  drawRobot(x, y, z);
+                  context.restore();
 
             });
         }, 600);
@@ -155,7 +157,8 @@
 
     //calculate x , y and theta 
     // then draw it 
-    function drawRobot() {
+    function drawRobot(x,y,z) {
+        circleWithDirection(x,y,z,"blue",6,4);
         /*
         var rx = robotInfo.Pose.Position.Y * mapInfo.Resolution +corrOffestY ;
         var ry = robotInfo.Pose.Position.X * mapInfo.Resolution + corrOffestX;
@@ -188,7 +191,7 @@
 
     //draw a circle with a line     
     function circleWithDirection(x, y, theta, color, size, sizeStroke) {
-        /*
+        
         context.beginPath();
         context.arc(x, y, size, 0, 2 * Math.PI, false);
         context.fillStyle = color;
@@ -207,7 +210,7 @@
         context.lineWidth = sizeStroke;     
         context.stroke();  
         context.closePath();
-        */
+        
     }
 
 
