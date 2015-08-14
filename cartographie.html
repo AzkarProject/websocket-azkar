@@ -81,7 +81,7 @@
         var robotInfo, dataString, stringRobotX, stringRobotY, stringRobotZ;
         setInterval(function() {
             $.get("http://192.168.173.1:8080/?url=http://127.0.0.1:50000/robulab/localization/localization", function(dataLocalization) {
-                if (!dataString) {
+                if (!dataLocalization) {
                     console.log('pas pu atteindre le service !! ');
                     return;
                 }
