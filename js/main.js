@@ -451,6 +451,21 @@ if (type == "robot-appelé") {
     });
 
 
+    // Reception d'une commande pilote
+    socket.on("moveOrder", function(data) {
+        // onDrive(data.enable, data.aSpeed, data.lSpeed) //
+    
+        var url = 'http://localhost:50000/api/drive';
+        //robubox.sendDrive(url, enable, aSpeed, lSpeed)
+        console.log('@onMoveOrder >> angular speed :' + data.aSpeed + '  et linear speed :' + data.lSpeed);
+        robubox.sendDrive(data.enable, data.aSpeed, data.lSpeed) //
+            /*
+            .then(function() {
+                console.log('@onMoveOrder >> angular speed :' + aSpeed + '  et linear speed :' + lSpeed);
+        }) 
+        /**/  
+
+    });
 
 }
 

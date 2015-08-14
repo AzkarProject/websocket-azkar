@@ -41,11 +41,14 @@ var app = require('express')(),
 
 var express = require('express');
 
-// Ajouts Michael
-var bodyParser = require("body-parser"); // pour recuperer le contenu de requêtes POST 
-var HttpStatus = require('http-status-codes'); // le module qui recupère les status des requêtes HTTP
-var XMLHttpRequest = require('xhr2'); // pour faire des requêtes XMLHttpRequest
-var Q = require('q');
+/*// Ajouts Michael
+bodyParser = require("body-parser"); // pour recuperer le contenu de requêtes POST 
+HttpStatus = require('http-status-codes'); // le module qui recupère les status des requêtes HTTP
+XMLHttpRequest = require('xhr2'); // pour faire des requêtes XMLHttpRequest
+Q = require('q');
+/***/
+// Ajouts Thierry
+var robubox = require('./js/robubox'); // Fonctions de communication avec la Robubox
 
 // affectation du port
 app.set('port', port);
@@ -54,11 +57,12 @@ app.set('port', port);
 // les dépendances css du document html
 app.use(express.static(__dirname));
 
-// Appel à body-parser pour la gestion de requêtes POST
+/*// Appel à body-parser pour la gestion de requêtes POST
 app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(bodyParser.json()); // support json encoded bodies
+/**/
 
 // ------------ routing ------------
 
@@ -117,6 +121,10 @@ var nbUsers2 = 0;
 var histoUsers2 = {};
 var placeHisto2 = 0;
 histoPosition2 = 0;
+
+// ID websockets pour les envois non broadcastés
+wsIdPilote = '';
+wsIdRobot = '';
 
 
 io.on('connection', function(socket, pseudo) {
@@ -190,7 +198,11 @@ io.on('connection', function(socket, pseudo) {
             });
             return;
         } else {
-            // ...
+            // Si tt est ok pour enregistrement ds la liste des connectés,
+            // On renseigne la variable d'identité du pilote et du robot
+            // pour les transferts de messages non broadcastés.
+            if (data.typeUser == "Pilote") wsIdPilote = socket.id;
+            if (data.typeUser == "Robot") wsIdRobot = socket.id;
         }
 
 
@@ -301,12 +313,13 @@ io.on('connection', function(socket, pseudo) {
     // ---------------------------------------------------------------------------------
     // Partie commandes du robot par websocket (stop, moveDrive, moveSteps, goto & clicAndGo)
 
-    // A la réception d'un ordre de commande
+    // A la réception d'un ordre de commande en provenance du pilote
     socket.on('moveOrder', function(data) {
         // TODO >>> implémenter tests sur data.command pour apeller le traitement isoine ( onDrive, onStop, onStep, onGoto, onClicAndGo, etc...)
         console.log("@ moveOrder >>>> " + data.command);
         // ex: >> socket.emit("moveOrder",{ command:'Move', aSpeed:aSpeed, lSpeed:lSpeed, Enable:btHommeMort });
-        onDrive(data.enable, data.aSpeed, data.lSpeed) //
+        // onDrive(data.enable, data.aSpeed, data.lSpeed) //
+        io.to(wsIdRobot).emit('moveOrder', data);
     });
 
     // ----------------------------------------------------------------------------------
@@ -395,8 +408,9 @@ function onGoto(parameters) {
 function onClicAndGo(parameters) {
     console.log('todo...');
 };
+
 /**/
-// Interfaces de lancement de la commande senDriveOrder 
+/*// Interfaces de lancement de la commande senDriveOrder 
 function onDrive(enable, aSpeed, lSpeed) {
     var url = 'http://localhost:50000/api/drive';
     sendDrive(url, enable, aSpeed, lSpeed)
@@ -404,6 +418,7 @@ function onDrive(enable, aSpeed, lSpeed) {
             console.log('@onMoveOrder >> angular speed :' + aSpeed + '  et linear speed :' + lSpeed);
         })
 }
+/**/
 
 
 // fonctions d'envois de commandes
@@ -423,7 +438,9 @@ function sendClicAndGo(url) {
     console.log('todo...');
 };
 /**/
-// Envoi d'une commande de type "Drive" au robot avec une "promize"
+
+
+/*// Envoi d'une commande de type "Drive" au robot avec une "promize"
 function sendDrive(url, enable, aSpeed,lSpeed) {
     var btnA = (enable == 'true' ? true : false); //  
     return Q.Promise(function(resolve, reject, notify) {
@@ -461,6 +478,7 @@ function sendDrive(url, enable, aSpeed,lSpeed) {
 
     })
 }
+/**/
 
 
 // ------------ fonctions Diverses ------------
