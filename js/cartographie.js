@@ -1,4 +1,4 @@
-<script>
+
     var canvasMap = document.getElementById("canvasMap");
     var context = canvasMap.getContext("2d");
     var img = new Image(); // Crée un nouvel objet Image
@@ -225,4 +225,4 @@
         context.fill();
         context.stroke();         */
     }
-    </script>
+    
