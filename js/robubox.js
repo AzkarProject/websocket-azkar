@@ -62,8 +62,8 @@ exports.getBattery = function (){
         console.log ("robubox.getBattery()");
 
         
-        var url = "http://localhost:50000/robulab/battery/battery"; // url est passé en paramètre , elle sera interpretée par le 
-        var delay = 100000; // l'interval de temps au bout du quel on envoi une autre requete pour rafraichir les information
+        var url = "http://127.0.0.1:50000/robulab/battery/battery"; // url est passé en paramètre , elle sera interpretée par le 
+        var delay = 1000; // l'interval de temps au bout du quel on envoi une autre requete pour rafraichir les information
         var dataJson, remaining, percentage, dataString, thenum, progressBar;
 
         /*
