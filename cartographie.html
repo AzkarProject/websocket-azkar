@@ -64,7 +64,7 @@
             context.strokeStyle = '#003300';
             context.stroke();
         });
-        refresh(offsetX, offsetY);
+        refresh( /*offsetX, offsetY*/);
     }
 
     /* /** refresh 
@@ -77,7 +77,7 @@
      * 4)dessiner la position du robot sur le canvas --> drawRobot(x,y) 
      * 5) redraw locations point
      * */
-    function refresh(offsetX, offsetY) {
+    function refresh() {
         var robotInfo, dataString, stringRobotX, stringRobotY, stringRobotZ, x, y, z;
         setInterval(function() {
             $.get("http://192.168.173.1:8080/?url=http://127.0.0.1:50000/robulab/localization/localization", function(dataLocalization) {
@@ -104,22 +104,22 @@
                 console.log('robotY --> ', robotY);
                 console.log('robotZ --> ', robotZ);
                 console.log('----------------------------------------------------');
-                x = (robotX - offsetX) / 4;
-                y = (robotY - offsetY) / 4;
-                z = robotZ;
+             //   x = (robotX - offsetX) / 4;
+             //   y = (robotY - offsetY) / 4;
+             //   z = robotZ;
 
-                console.log('----------------------------------------------------');
+               /* console.log('----------------------------------------------------');
                 console.log('offsetX --> ', offsetX);
                 console.log('offsetY --> ', offsetY);
-                console.log('----------------------------------------------------');
+                console.log('----------------------------------------------------'); */
 
-                console.log('----------------------------------------------------');
+              /*  console.log('----------------------------------------------------');
                 console.log('x --> ', x);
                 console.log('y --> ', y);
                 console.log('z --> ', z);
-                console.log('----------------------------------------------------');
+                console.log('----------------------------------------------------');*/
                 context.save();
-                drawRobot(x, y, z);
+                drawRobot(robotX,robotY,robotZ);
                 context.restore();
 
             });
