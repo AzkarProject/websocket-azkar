@@ -455,7 +455,7 @@ if (type == "robot-appelé") {
     socket.on("moveOrder", function(data) {
         // onDrive(data.enable, data.aSpeed, data.lSpeed) //
     
-        var url = 'http://localhost:50000/api/drive';
+        // var url = 'http://localhost:50000/api/drive';
         //robubox.sendDrive(url, enable, aSpeed, lSpeed)
         console.log('@onMoveOrder >> angular speed :' + data.aSpeed + '  et linear speed :' + data.lSpeed);
         robubox.sendDrive(data.enable, data.aSpeed, data.lSpeed) //
