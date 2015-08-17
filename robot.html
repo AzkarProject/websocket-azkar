@@ -22,33 +22,6 @@
 		
 		<section id="bloc_1to1_messages" class="fullSizeContainerBox">
 				
-				<!--
-				
-
-				<div id="dataChannelArea" class="insideFlex robot shadowBlack floatLeft doubleQuarterBox">                                             
-			        <div id="formulaire_chat_webRTC" class="pseudoForm">
-			            <strong> WebRTC dataChannel Log  &nbsp;&nbsp;&nbsp;&nbsp;   </strong>
-			            <input type="text" name="message" id="send_chat_WebRTC" placeholder="Waiting open channel..." size="28" autofocus />
-			            <button id="sendButton" disabled onclick="sendMessage()">Envoyer</button>
-			        </div>
-			        <hr/>
-				 	<div id="zone_chat_WebRTC"></div>
-	      		</div>
-		
-
-				<div id="websocketChat" class="insideFlex robot shadowBlack floatLeft doubleQuarterBox">
-			        <form action="/" method="post" id="formulaire_chat_websoket">
-			        <strong> Websocket Messages & Chat &nbsp;&nbsp;&nbsp;&nbsp; </strong>
-			            <input type="text" name="message" id="message" placeholder="Votre message..." size="28" autofocus />
-			            <button id="envoi_message" type="submit" >Envoyer</button>
-			        </form>
-			        <hr class="hrForm">
-				 	<div id="zone_chat_websocket"></div>
-	      		</div>
-
-		
-				-->
-
 			<div id="websocketChat" class="insideFlex robot shadowBlack floatLeft doubleQuarterBox">  
 				
 			    <form action="/" method="post" id="formulaire_chat_websoket" style="text-align:center" >
@@ -82,11 +55,6 @@
 	      		
 
 	      	</div>
-
-
-
-
-
 
 
 		</section>		
@@ -130,6 +98,7 @@
 
 				<div id="robotSettings" class="insideFlex robot shadowBlack floatLeft oneThirdContainerBox alignCenter">
 						
+					<!--
 					<strong><span id="Settings Devices Settings">Volume HP </span></strong>
 					 &nbsp;&nbsp;&nbsp;&nbsp;
 					
@@ -138,7 +107,7 @@
 
 					<hr/>
 
-					<!--<pre>&lt;meter value=75 min=0 max=100 low=20 high=80&gt;&lt;/meter&gt;</pre>-->
+					
 					<input min="0" max="100"   value="75" id="meter2range" oninput="effect('meter2', 'meter2range')" type="range"> 
 					
   					
@@ -150,6 +119,11 @@
 						document.getElementById(meter+ "val").innerHTML = currVal;
 					 }
 					 </script>
+					 -->
+					<div class="jauge">
+                   		<label for="battery_level">Battery Level:</label>
+                    	<progress id="battery_level" class="floatRight" max="100"></progress>
+                	</div>
 	      		
 	      		</div>
 
@@ -171,9 +145,6 @@
 					</div>
 				</div>
 
-
-			
-
 		</section>
 
 		
@@ -193,12 +164,14 @@
         <script src="/js/common.js"></script>
         <script src="/js/settings.js"></script>
         <script src="/js/logs.js"></script>
+        <!--<script src='/js/battery.js'></script>-->
+        <script src='/js/robubox.js'></script>
         <script src='/js/ws_manager.js'></script>
 		<script src='/js/main.js'></script>
 
 		<script>
-            $('#zone_info_server').replaceWith(settings.appName() + " V " + settings.appVersion()+" - IHM Robot");
-    	</script>
+			robubox.getBattery();
+		</script>
 
 
 </body>

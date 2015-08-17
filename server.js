@@ -7,15 +7,21 @@ var devSettings = require('./js/devSettings'); // Nom de la branche gitHub
 // Récupération du Nom de la machine 
 var os = require("os");
 hostName = os.hostname();
+dyDns = 'azkar.ddns.net'; // Adresse no-Ip pour la liveBox perso
 
 ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP || "127.0.0.1"; // défaut
 if (hostName == "azkary") ipaddress = "127.0.0.1"; // machine bureau
-else if (hostName == "ubuntu64azkar") ipaddress = "192.168.1.10"; // Vm_umbutu_dom
-else if (hostName == "VM-AZKAR-Ubuntu") ipaddress = "134.59.130.141"; // Vm_sparks
-else if (hostName == "thaby") ipaddress = "192.168.173.1"; // robulab_wifi
-
-port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 2000;
-
+else if (hostName == "ubuntu64azkar") ipaddress = "192.168.1.10"; // Vm Ubuntu - Pc perso - Domicile
+else if (hostName == "VM-AZKAR-Ubuntu") ipaddress = "134.59.130.141"; // IP statique de la Vm sparks
+else if (hostName == "thaby") ipaddress = "192.168.173.1"; // Tablette HP - ip du réseau virtuel robulab_wifi
+else if (hostName == "lapto_Asus") ipaddress = "0.0.0.0"; // Pc perso - Livebox domicile - noip > azkar.ddns.net
+else if (hostName == "azkar-Latitude-E4200") ipaddress = "0.0.0.0"; // Pc perso - Livebox domicile - noip > azkar.ddns.net
+// just a coment for a commit WTF GITHUB
+ 
+port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 2000; // pour laisser le 80 dispo sur le serveur
+// Seul le port 80 passe malgrès les règles appropriées dans le NAT et le Firewall de la livebox ...
+if (hostName == "azkar-Latitude-E4200") port = 80;
+// TODO > Trouver bon réglage livebox pour fire cohabiter port 2000(nodejs) et 80(apache) en même temps.
 
 
 console.log("***********************************");
@@ -23,12 +29,7 @@ console.log('');
 console.log('(' + devSettings.appBranch() + ') ' + settings.appName() + " V " + settings.appVersion());
 console.log('');
 console.log("***********************************");
-var hostMsg = "Serveur NodeJs hébergé ";
-if (process.env.OPENSHIFT_NODEJS_IP) hostMsg += "sur OpenShift";
-else if (process.env.IP) hostMsg += "sur ???";
-else hostMsg += "en Local";
-hostMsg += (" (hostName: " + hostName + ")");
-console.log(hostMsg);
+console.log("Serveur sur machine: " + hostName);
 
 
 var app = require('express')(),
@@ -41,11 +42,14 @@ var app = require('express')(),
 
 var express = require('express');
 
-// Ajouts Michael
-var bodyParser = require("body-parser"); // pour recuperer le contenu de requêtes POST 
-var HttpStatus = require('http-status-codes'); // le module qui recupère les status des requêtes HTTP
-var XMLHttpRequest = require('xhr2'); // pour faire des requêtes XMLHttpRequest
-var Q = require('q');
+/*// Ajouts Michael
+bodyParser = require("body-parser"); // pour recuperer le contenu de requêtes POST 
+HttpStatus = require('http-status-codes'); // le module qui recupère les status des requêtes HTTP
+XMLHttpRequest = require('xhr2'); // pour faire des requêtes XMLHttpRequest
+Q = require('q');
+/***/
+// Ajouts Thierry
+var robubox = require('./js/robubox'); // Fonctions de communication avec la Robubox
 
 // affectation du port
 app.set('port', port);
@@ -54,13 +58,17 @@ app.set('port', port);
 // les dépendances css du document html
 app.use(express.static(__dirname));
 
-// Appel à body-parser pour la gestion de requêtes POST
+/*// Appel à body-parser pour la gestion de requêtes POST
 app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(bodyParser.json()); // support json encoded bodies
+/**/
 
 // ------------ routing ------------
+
+
+
 
 // Chargement de la page index.html
 app.get('/', function(req, res) {
@@ -84,6 +92,14 @@ app.get('/cartographie/', function(req, res) {
     res.sendFile(__dirname + '/cartographie.html');
 });
 
+// On passe la variable hostName en ajax à l'ihm d'accueil
+// puisqu'on ne peux pas passer par websocket...
+// nb: On pourrai faire pareil avec Pilote et Robot...
+app.get("/getvar", function(req, res){
+    res.json({ hostName: hostName });
+});
+
+
 
 // Lancement du serveur
 server.listen(app.get('port'), ipaddress);
@@ -93,8 +109,9 @@ server.listen(app.get('port'), ipaddress);
 
 // Adresse de redirection pour les connexions refusées
 var indexUrl;
-if (process.env.OPENSHIFT_NODEJS_IP) indexUrl = "http://websocket-azkar.rhcloud.com";
-else indexUrl = "http://" + ipaddress + ":" + port;
+if (process.env.OPENSHIFT_NODEJS_IP) indexUrl = "http://websocket-azkar.rhcloud.com"; // Si hébergement openshift
+if (hostName == "lapto_Asus") indexUrl = "http://" + dyDns; // Si machine derrière liveBox
+else indexUrl = "http://" + ipaddress + ":" + port; // Sinon par défaut...
 
 
 // liste des clients connectés
@@ -105,6 +122,10 @@ var nbUsers2 = 0;
 var histoUsers2 = {};
 var placeHisto2 = 0;
 histoPosition2 = 0;
+
+// ID websockets pour les envois non broadcastés
+wsIdPilote = '';
+wsIdRobot = '';
 
 
 io.on('connection', function(socket, pseudo) {
@@ -178,7 +199,11 @@ io.on('connection', function(socket, pseudo) {
             });
             return;
         } else {
-            // ...
+            // Si tt est ok pour enregistrement ds la liste des connectés,
+            // On renseigne la variable d'identité du pilote et du robot
+            // pour les transferts de messages non broadcastés.
+            if (data.typeUser == "Pilote") wsIdPilote = socket.id;
+            if (data.typeUser == "Robot") wsIdRobot = socket.id;
         }
 
 
@@ -211,6 +236,8 @@ io.on('connection', function(socket, pseudo) {
         // On renvoie l'User crée au nouveau connecté
         // pour l'informer entre autre de son ordre d'arrivée ds la session
         io.to(socket.id).emit('position_liste2', objUser);
+        // On lui envoie aussi des infos concerant le serveur (pour débug)
+		io.to(socket.id).emit('infoServer', hostName);
 
         // 2 - on signale à tout le monde l'arrivée de l'User
         socket.broadcast.emit('nouveau_client2', objUser);
@@ -223,6 +250,7 @@ io.on('connection', function(socket, pseudo) {
         });
 
         console.log("> Il y a " + nbUsers2 + " connectés");
+
 
         // 4 - on met à jour la liste des connectés cotés clients
         // ... TODO... EST-ce bien nécéssaire ????
@@ -286,12 +314,13 @@ io.on('connection', function(socket, pseudo) {
     // ---------------------------------------------------------------------------------
     // Partie commandes du robot par websocket (stop, moveDrive, moveSteps, goto & clicAndGo)
 
-    // A la réception d'un ordre de commande
+    // A la réception d'un ordre de commande en provenance du pilote
     socket.on('moveOrder', function(data) {
         // TODO >>> implémenter tests sur data.command pour apeller le traitement isoine ( onDrive, onStop, onStep, onGoto, onClicAndGo, etc...)
         console.log("@ moveOrder >>>> " + data.command);
         // ex: >> socket.emit("moveOrder",{ command:'Move', aSpeed:aSpeed, lSpeed:lSpeed, Enable:btHommeMort });
-        onDrive(data.enable, data.aSpeed, data.lSpeed) //
+        // onDrive(data.enable, data.aSpeed, data.lSpeed) //
+        io.to(wsIdRobot).emit('moveOrder', data);
     });
 
     // ----------------------------------------------------------------------------------
@@ -380,8 +409,9 @@ function onGoto(parameters) {
 function onClicAndGo(parameters) {
     console.log('todo...');
 };
+
 /**/
-// Interfaces de lancement de la commande senDriveOrder 
+/*// Interfaces de lancement de la commande senDriveOrder 
 function onDrive(enable, aSpeed, lSpeed) {
     var url = 'http://localhost:50000/api/drive';
     sendDrive(url, enable, aSpeed, lSpeed)
@@ -389,6 +419,7 @@ function onDrive(enable, aSpeed, lSpeed) {
             console.log('@onMoveOrder >> angular speed :' + aSpeed + '  et linear speed :' + lSpeed);
         })
 }
+/**/
 
 
 // fonctions d'envois de commandes
@@ -408,7 +439,9 @@ function sendClicAndGo(url) {
     console.log('todo...');
 };
 /**/
-// Envoi d'une commande de type "Drive" au robot avec une "promize"
+
+
+/*// Envoi d'une commande de type "Drive" au robot avec une "promize"
 function sendDrive(url, enable, aSpeed,lSpeed) {
     var btnA = (enable == 'true' ? true : false); //  
     return Q.Promise(function(resolve, reject, notify) {
@@ -446,6 +479,7 @@ function sendDrive(url, enable, aSpeed,lSpeed) {
 
     })
 }
+/**/
 
 
 // ------------ fonctions Diverses ------------

@@ -1,5 +1,5 @@
 
-# AZKAR WebRTC V 0.7.3.0
+# AZKAR WebRTC V 0.7.4.0
 ------------------------------------------------------------
 
 Test en ligne du script base 1to1:
@@ -35,7 +35,7 @@ http://websocket-azkar.rhcloud.com/
             - >>> ou boucle 50ms Bouton Homme mort GamePad >
             - [ ] Implémentation Bas niveau > Robot (voir Robosoft)
     - [ ] Cartographie
-        - [ ] Chargement & mise à l'échelle 
+        - [x] Chargement & mise à l'échelle 
         - [ ] Affichage Pos Robot en Tps Réel
         - [ ] Affichage télémétrie en tps réel (optionnel)
     - [ ] Navigation 
@@ -68,6 +68,8 @@ http://websocket-azkar.rhcloud.com/
 
 - [ ] Récuperation des données
     - [x] proxy pour eviter le cross domaine origine
+        - [x] GET
+        - [x] POST
     - [ ] informations de la cartographie
         - [x] carte en format image
         - [x] recupération des données de la carte (long , larg , resolution , offsetX , offsetY)
