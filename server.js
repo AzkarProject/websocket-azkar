@@ -16,6 +16,7 @@ else if (hostName == "VM-AZKAR-Ubuntu") ipaddress = "134.59.130.141"; // IP stat
 else if (hostName == "thaby") ipaddress = "192.168.173.1"; // Tablette HP - ip du réseau virtuel robulab_wifi
 else if (hostName == "lapto_Asus") ipaddress = "0.0.0.0"; // Pc perso - Livebox domicile - noip > azkar.ddns.net
 else if (hostName == "azkar-Latitude-E4200") ipaddress = "0.0.0.0"; // Pc perso - Livebox domicile - noip > azkar.ddns.net
+// just a coment for a commit WTF GITHUB
  
 port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 2000; // pour laisser le 80 dispo sur le serveur
 // Seul le port 80 passe malgrès les règles appropriées dans le NAT et le Firewall de la livebox ...
