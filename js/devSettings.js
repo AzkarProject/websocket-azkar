@@ -1,7 +1,7 @@
 (function(exports){
 
 exports.appBranch = function(){
-    return 'Dev-Master';
+    return 'Master';
 };
 
 
