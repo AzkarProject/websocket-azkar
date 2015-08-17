@@ -101,8 +101,8 @@ exports.sendDrive = function (enable, aSpeed,lSpeed){
 exports.getBattery = function (){
         console.log ("robubox.getBattery()");
 
-        //var url = "http://127.0.0.1:8080/?url=http://127.0.0.1:50000/robulab/battery/battery" ;
-        var url = "http://127.0.0.1:50000/robulab/battery/battery"; // url est passé en paramètre , elle sera interpretée par le 
+        var url = "http://127.0.0.1:8080/?url=http://127.0.0.1:50000/robulab/battery/battery" ;
+        //var url = "http://127.0.0.1:50000/robulab/battery/battery"; // url est passé en paramètre , elle sera interpretée par le 
         var delay = 1000; // l'interval de temps au bout du quel on envoi une autre requete pour rafraichir les information
         var dataJson, remaining, percentage, dataString, thenum, progressBar;
 
