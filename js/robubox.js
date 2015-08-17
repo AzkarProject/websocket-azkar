@@ -11,7 +11,7 @@ exports.sendDrive = function (enable, aSpeed,lSpeed){
     
         
         var btnA = (enable == 'true' ? true : false); 
-        var url = 'http://localhost:50000/api/drive';
+        var url = 'http://127.0.0.1:50000/api/drive';
         var data = JSON.stringify({
                 "Enable": btnA,
                 "TargetAngularSpeed": aSpeed,
