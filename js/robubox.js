@@ -10,7 +10,7 @@
 exports.sendDrive = function (enable, aSpeed,lSpeed){
         // console.log ("robubox.sendDrive()");
         
-        
+        /*
         var btnA = (enable == 'true' ? true : false); 
         //var url = 'http://127.0.0.1:50000/api/drive';
         //var url = "http://127.0.0.1:8080/?url=http://127.0.0.1:50000/api/drive" ;
@@ -32,8 +32,8 @@ exports.sendDrive = function (enable, aSpeed,lSpeed){
 
 
 
-        /*// var url = 'http://localhost:50000/api/drive';
-        var url = "http://127.0.0.1:8080/?url=http://127.0.0.1:50000/api/drive" ;
+        // var url = 'http://localhost:50000/api/drive';
+        var url = "http://127.0.0.1:8080/127.0.0.1:50000/api/drive" ; // Tests CORS-ANYWHERE
 
         // function sendDrive(url, enable, aSpeed,lSpeed) {
         var btnA = (enable == 'true' ? true : false); //  
