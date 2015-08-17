@@ -18,7 +18,7 @@ exports.sendDrive = function (enable, aSpeed,lSpeed){
                 "TargetLinearSpeed": lSpeed
             })
         
-        $.get( url, data )
+        $.post( url, data )
                 .done(function( data ) {
                     console.log( "Data Loaded: " + data );
         });
