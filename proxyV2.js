@@ -3,6 +3,12 @@ var http = require('http'),
 
  var ip = 'http://localhost' ; 
  var port = 8080 ; 
+
+
+ var app = require('express')();
+var connect = require('connect');
+
+
 //
 // Create your proxy server and set the target in the options.
 //
@@ -13,7 +19,11 @@ httpProxy.createProxyServer({target: 'http://localhost:50000'}).listen(port);
 //
 
 
-http.createServer(function(req, res) {
+http.createServer(function(req, res , next) {
+   	res.setHeader("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+    
     res.writeHead(200, {
         'Content-Type': 'text/plain'
     });
