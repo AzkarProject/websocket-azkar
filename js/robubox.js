@@ -9,34 +9,43 @@
 // Envoi d'une commande de type "Drive" au robot avec une "promize"
 exports.sendDrive = function (enable, aSpeed,lSpeed){
     
-    // var url = 'http://localhost:50000/api/drive';
-    var url = "http://127.0.0.1:8080/?url=http://localhost:50000/api/drive" ;
-
-    // function sendDrive(url, enable, aSpeed,lSpeed) {
-    var btnA = (enable == 'true' ? true : false); //  
-    //return Q.Promise(function(resolve, reject, notify) {
-    var data = JSON.stringify({
-            "Enable": btnA,
-            "TargetAngularSpeed": aSpeed,
-            "TargetLinearSpeed": lSpeed
-        });
         
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', url);
-    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    //xhr.send(data);
-    xhr.send(JSON.stringify({
-            "Enable": btnA,
-            "TargetAngularSpeed": aSpeed,
-            "TargetLinearSpeed": lSpeed
-        }));
-    xhr.closed;
+        var btnA = (enable == 'true' ? true : false); 
+        var url = 'http://localhost:50000/api/drive';
+        var data = JSON.stringify({
+                "Enable": btnA,
+                "TargetAngularSpeed": aSpeed,
+                "TargetLinearSpeed": lSpeed
+            })
+        
+        $.get( url, data )
+                .done(function( data ) {
+                    console.log( "Data Loaded: " + data );
+        });
 
 
 
 
 
 
+        /*// var url = 'http://localhost:50000/api/drive';
+        var url = "http://127.0.0.1:8080/?url=http://localhost:50000/api/drive" ;
+
+        // function sendDrive(url, enable, aSpeed,lSpeed) {
+        var btnA = (enable == 'true' ? true : false); //  
+        //return Q.Promise(function(resolve, reject, notify) {
+            
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', url);
+        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        //xhr.send(data);
+        xhr.send(JSON.stringify({
+                "Enable": btnA,
+                "TargetAngularSpeed": aSpeed,
+                "TargetLinearSpeed": lSpeed
+            }));
+        xhr.closed;
+        /**/
 
 
 
@@ -89,8 +98,8 @@ exports.sendDrive = function (enable, aSpeed,lSpeed){
 exports.getBattery = function (){
         console.log ("robubox.getBattery()");
 
-        var url = "http://127.0.0.1:8080/?url=http://127.0.0.1:50000/robulab/battery/battery" ;
-        //var url = "http://127.0.0.1:50000/robulab/battery/battery"; // url est passé en paramètre , elle sera interpretée par le 
+        //var url = "http://127.0.0.1:8080/?url=http://127.0.0.1:50000/robulab/battery/battery" ;
+        var url = "http://127.0.0.1:50000/robulab/battery/battery"; // url est passé en paramètre , elle sera interpretée par le 
         var delay = 1000; // l'interval de temps au bout du quel on envoi une autre requete pour rafraichir les information
         var dataJson, remaining, percentage, dataString, thenum, progressBar;
 

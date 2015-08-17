@@ -40,6 +40,7 @@ app.get('/', function (b_req , b_res) {
 
 
   var b_url = url.parse(b_req.url, true);
+    
     if (!b_url.query || !b_url.query.url) return notFound(b_res);
 
     //read and parse the url parameter ( ?url=p_url )
@@ -57,9 +58,9 @@ app.get('/', function (b_req , b_res) {
     /**/
 
 
-        /*
+        
         var xmlhttp = new XMLHttpRequest();
-        var url = "http://127.0.0.1:8080/?url=http://localhost:50000/api/drive" ;
+        var url = "http://localhost:50000/api/drive" ;
         xmlhttp.open("POST", url);
         xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
