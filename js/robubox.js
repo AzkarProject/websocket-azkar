@@ -1,37 +1,11 @@
 (function(exports){
 
-// Ajouts Michael
-// XMLHttpRequest = require('xhr2'); // pour faire des requêtes XMLHttpRequest
-// Q = require('q');
-
-
 
 // Envoi d'une commande de type "Drive" au robot avec une "promize"
 exports.sendDrive = function (enable, aSpeed,lSpeed){
+        
         // console.log ("robubox.sendDrive()");
         
-        /*
-        var btnA = (enable == 'true' ? true : false); 
-        //var url = 'http://127.0.0.1:50000/api/drive';
-        //var url = "http://127.0.0.1:8080/?url=http://127.0.0.1:50000/api/drive" ;
-        var url = "http://127.0.0.1:8080/127.0.0.1:50000/api/drive" ; // Tests CORS-ANYWHERE
-        var data = JSON.stringify({
-                "Enable": btnA,
-                "TargetAngularSpeed": aSpeed,
-                "TargetLinearSpeed": lSpeed
-            })
-        
-        $.post( url, data )
-                .done(function( data ) {
-                    console.log( "Data Loaded: " + data );
-        });
-        /**/
-
-
-
-
-
-
         // var url = 'http://localhost:50000/api/drive';
         var url = "http://127.0.0.1:8080/127.0.0.1:50000/api/drive" ; // Tests CORS-ANYWHERE
 
@@ -49,50 +23,6 @@ exports.sendDrive = function (enable, aSpeed,lSpeed){
                 "TargetLinearSpeed": lSpeed
             }));
         xhr.closed;
-        /**/
-
-
-
-        /*
-        var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance 
-
-        xmlhttp.open("POST", url);
-        xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-
-        xmlhttp.onload = onload;
-        //xmlhttp.onerror = onerror;
-        //xmlhttp.onprogress = onprogress;
-
-        xmlhttp.send(JSON.stringify({
-            "Enable": btnA,
-            "TargetAngularSpeed": aSpeed,
-            "TargetLinearSpeed": lSpeed
-        }));
-
-        function onload() {
-            if (xmlhttp.status === 200) {
-                resolve(xmlhttp.responseText);
-            } else {
-                reject(new Error("Status code was " + xmlhttp.status));
-            }
-        }
-
-        /**/
-
-        /*
-        function onerror() {
-            reject(new Error("Can't XHR " + JSON.stringify(url)));
-        }
-        /**/
-
-        /*
-        function onprogress(event) {
-            notify(event.loaded / event.total);
-        }
-        /**/
-
-    //})
-    /**/
 }
 
 
@@ -100,7 +30,8 @@ exports.sendDrive = function (enable, aSpeed,lSpeed){
 // Fonction qui permet de recupérer le niveau de la  la batterie et de l'afficher dans le progress bar
 // elle interroge chaque 1000ms le robot via url et retourne le niveau de la batterie en pourcentage
 exports.getBattery = function (){
-        console.log ("robubox.getBattery()");
+        
+        // console.log ("robubox.getBattery()");
 
         //var url = "http://127.0.0.1:8080/?url=http://127.0.0.1:50000/robulab/battery/battery" ;
         var url = "http://127.0.0.1:8080/127.0.0.1:50000/robulab/battery/battery" ; // Tests CORS-ANYWHERE
