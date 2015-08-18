@@ -1,7 +1,7 @@
 (function(exports){
 
 
-// Envoi d'une commande de type "Drive" au robot avec une "promize"
+// Envoi d'une commande de type "Drive" au robot
 exports.sendDrive = function (enable, aSpeed,lSpeed){
         
         // console.log ("robubox.sendDrive()");

@@ -452,19 +452,17 @@ if (type == "robot-appelé") {
 
 
     // Reception d'une commande pilote
-    socket.on("moveOrder", function(data) {
-        // onDrive(data.enable, data.aSpeed, data.lSpeed) //
-    
-        // var url = 'http://localhost:50000/api/drive';
-        //robubox.sendDrive(url, enable, aSpeed, lSpeed)
-        console.log('@onMoveOrder >> angular speed :' + data.aSpeed + '  et linear speed :' + data.lSpeed);
-        robubox.sendDrive(data.enable, data.aSpeed, data.lSpeed) //
-            /*
-            .then(function() {
-                console.log('@onMoveOrder >> angular speed :' + aSpeed + '  et linear speed :' + lSpeed);
-        }) 
-        /**/  
-
+    // On la renvoie au client robot qui exécuté sur la même machine que la Robubox.
+    // Il pourra ainsi faire un GET ou un POST de la commande à l'aide d'un proxy et éviter le Cross Origin 
+    socket.on("piloteOrder", function(data) {
+        console.log('@onPiloteOrder >> command:' + data.command);
+        if (data.command == "onDrive") robubox.sendDrive(data.enable, data.aSpeed, data.lSpeed);
+        /*
+        if (data.command == "onStop") {};
+        if (data.command == "onStep") {};
+        if (data.command == "onGoto") {};
+        if (data.command == "onClicAndGo") {};
+        /**/
     });
 
 }

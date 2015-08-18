@@ -77,14 +77,14 @@
              aSpeed = (Math.abs(aSpeed) < deadzoneX ? 0 : aSpeed); // test d'ajustement pour la dead zone 
              aSpeed = (lSpeed > 0 ? -aSpeed : aSpeed); // changement de sens dans l'orientation en cas de marche avant
 
-             /*  if (lSpeed > 0) {
-                   aSpeed = aSpeed * (-1); // changement de sens dans l'orientation en cas de marche avant
-               }*/
 
-             // console.log('@onMoveOrder >> angular speed :' + aSpeed + '  et linear speed :' + lSpeed);
+             // TODO: Switcher entre webSockets et WebRTCdatachannel selon paramètrages du pilote
+             // TODO: Inverser les Axes
+             // TODO: Ajouter une pente pour l'accélération ou limiter la vitesse du linear speed... 
+
 
              // envoi des valeurs au serveur
-             socket.emit("moveOrder", {
+             socket.emit("piloteOrder", {
                  command: 'onDrive',
                  aSpeed: aSpeed,
                  lSpeed: lSpeed,

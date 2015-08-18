@@ -1,7 +1,7 @@
 (function(exports){
 
 exports.appBranch = function(){
-    return 'Master';
+    return '1to1-thierry';
 };
 
 
