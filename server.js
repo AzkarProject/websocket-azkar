@@ -15,7 +15,7 @@ hostName = os.hostname();
 dyDns = 'azkar.ddns.net'; // Adresse no-Ip pointant sur Livebox domicile
 
 ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP || "127.0.0.1"; // défaut
-port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 8080; // défaut
+port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 80; // défaut
 
 // Machines windows
 if (hostName == "azkary") ipaddress = "127.0.0.1"; // Machine HP bureau
