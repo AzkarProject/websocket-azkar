@@ -6,7 +6,7 @@ var robubox = require('./js/robubox'); // Fonctions de communication avec la Rob
 
 
 deathManTimeStamp = new Date().getTime(); // TimeStamp en variable globale pour implémenter une sécurité homme/mort...
-console.log (lastDriveCommand);
+console.log (deathManTimeStamp);
 
 // ------ Variables d'environnement & paramètrages serveurs ------------------
 // Récupération du Nom de la machine 
