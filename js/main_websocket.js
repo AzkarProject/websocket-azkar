@@ -42,13 +42,16 @@ var localObjUser;
 // ------------------------------------------------------
 // Pour contrôle hosting
 // Affichage des variables d'environnement serveur ds la partie cliente
+/*
 socket.on('infoServer', function(nomMachine) {
   if (!isServerInfoReceived) {
       isServerInfoReceived = true; 
       $('#zone_info_server').replaceWith(settings.appName() + " V " + settings.appVersion()+ " ("+nomMachine+")");
   }
 })
-
+/**/
+// NB > Obsolète.. >< Remplacé par une récupération directe 
+// depuis le client IHM en ajax par un $.get( "/getvar", function( data ) ) {}
 
 // ----------------------------------------------------------
 
@@ -76,7 +79,7 @@ socket.on('position_liste2', function(objUser) {
 
 // Quand un nouveau client se connecte, on affiche l'information
 socket.on('nouveau_client2', function(objUser) {
-    var dateR = common.dateER('R');
+    var dateR = tools.dateER('R');
     console.log(dateR+">> socket.on('nouveau_client2', objUser");
     var message = dateR + " à rejoint le Tchat";
     insereMessage3(objUser,message);
@@ -89,13 +92,13 @@ socket.on('nouveau_client2', function(objUser) {
 socket.on("disconnected", function(data) { 
   console.log(">> socket.on('disconnected',...");
 
-  var dateR = common.dateER('R');
+  var dateR = tools.dateER('R');
   var msg = dateR+' '+data.message;
   insereMessage3(data.objUser,msg); // Plante puisque no data.objUser  !!!
 
   // On met à jour la liste des cliens connectés
   var users = data;
-  var debug = common.stringObjectDump(users,"users");
+  var debug = tools.stringObjectDump(users,"users");
   console.log(debug); 
   
   // On lance la méthode de préparatoire à la renégo WebRTC
@@ -110,21 +113,21 @@ socket.on("disconnected", function(data) {
 
 // Quand on reçoit un message, on l'insère dans la page
 socket.on('message2', function(data) {
-    var dateR = common.dateER('R');
+    var dateR = tools.dateER('R');
     var msg = dateR+' '+data.message;
     insereMessage3(data.objUser,msg);
 })
 
 // Quand on reçoit une nouvelle commande de déplacement, on l'insère dans la page
 socket.on('moveOrder', function(data) {
-    var dateR = common.dateER('R');
+    var dateR = tools.dateER('R');
     var msg = dateR+' '+data.message;
     insereMessage3(data.objUser, msg);
 })
 
 // Quand on reçoit un message de service
 socket.on('service2', function(data) {
-    var dateR = common.dateER('R');
+    var dateR = tools.dateER('R');
     var msg = dateR+' '+data.message;
     insereMessage3(data.objUser,msg);
 })
@@ -138,7 +141,7 @@ $('#formulaire_chat_websoket').submit(function () {
     //console.log ("WWWWWWWWWWWWW");
     var message = $('#message').val();
     // On ajoute la dateE au message
-    var dateE = '[E-'+common.dateNowInMs()+']';
+    var dateE = '[E-'+tools.dateNowInMs()+']';
     message = dateE + ' '+message;
     socket.emit('message2', {objUser:localObjUser,message:message}); // Transmet le message aux autres
     insereMessage3(localObjUser, message); // Affiche le message aussi sur notre page

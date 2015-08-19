@@ -3,7 +3,7 @@
   
 // Contrôle de fonction commune client/serveur
 exports.test = function(){
-    return 'common.js'
+    return 'tools.js'
 };
 
 
@@ -350,4 +350,4 @@ exports.toObject = function  (arr) {
           return j;
     }
 
-})(typeof exports === 'undefined'? this['common']={}: exports);
+})(typeof exports === 'undefined'? this['tools']={}: exports);

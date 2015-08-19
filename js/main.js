@@ -224,7 +224,7 @@ function gotSources(sourceInfos) {
         // vers Chrome impossible d'accéder à ses attributs une foi transmit... 
         // Ce qui est bizarre, c'est que l'objet natif semble tout à fait normal avant transmission.
         // Par contre, R.A.S quand on le transmet de Chrome à Chrome ou de Chromium à chromium.
-        var sourceDevice = new common.sourceDevice();
+        var sourceDevice = new tools.sourceDevice();
         sourceDevice.id = sourceInfo.id;
         sourceDevice.label = sourceInfo.label;
         sourceDevice.kind = sourceInfo.kind;
@@ -346,13 +346,13 @@ function localManageDevices() {
         var selectList = {
             selectAudio, selectVideo
         };
-        var settings = parameters;
+        var appSettings = parameters;
         // socket.emit("selectedRemoteDevices", selectList); Ancienne version
         // Coté serveur >> socket.broadcast.emit('selectedRemoteDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
         socket.emit('selectedRemoteDevices', {
             objUser: localObjUser,
             listeDevices: selectList,
-            settings: settings
+            appSettings: appSettings
         }); // Version Objet
 
         // Animation CSS de désactivation du formulaire devices pilote...
@@ -414,10 +414,10 @@ if (type == "robot-appelé") {
         document.getElementById(data.listeDevices.selectVideo).selected = "selected";
 
         // On affecte les paramètres de settings
-        parameters = data.settings;
+        parameters = data.appSettings;
 
         //console.log(data); 
-        //var debugg = common.stringObjectDump(data,"selectedRemoteDevice")
+        //var debugg = tools.stringObjectDump(data,"selectedRemoteDevice")
         // console.log(debugg);
         console.log(data);
 
@@ -476,7 +476,7 @@ socket.on('updateUsers', function(data) {
     // On met à jour la liste locale des connectés...
     // console.log(data);
     users = data;
-    //var debug = common.stringObjectDump(users,"users");
+    //var debug = tools.stringObjectDump(users,"users");
     //console.log(debug);
 
     // si on est l'apellé  (Robot)
@@ -650,8 +650,8 @@ function connect() {
     // Permet de déterminer si le pair distant s'est déconnecté.
     pc.oniceconnectionstatechange = function(e) {
 
-        //var newDate = common.dateNowInMs();
-        var dateE = common.dateER('E');
+        //var newDate = tools.dateNowInMs();
+        var dateE = tools.dateER('E');
         console.log("@ pc.oniceconnectionstatechange > " + dateE);
 
 
@@ -744,7 +744,7 @@ function connect() {
         console.log(">> socket.on('disconnected',...");
         // On met à jour la liste des cliens connectés
         var users = data;
-        var debug = common.stringObjectDump(users,"users");
+        var debug = tools.stringObjectDump(users,"users");
         console.log(debug); 
 
         // On lance la méthode de préparatoire a la renégo
@@ -895,14 +895,14 @@ function bindEvents() {
     // écouteur de reception message
     channel.onmessage = function(e) {
         // add the message to the chat log
-        var dateR = common.dateER('R');
+        var dateR = tools.dateER('R');
         $(chatlog).prepend(dateR + ' ' + e.data + "\n");
     };
 }
 
 // envoi message par WebRTC
 function sendMessage() {
-    var dateE = common.dateER('E');
+    var dateE = tools.dateER('E');
     var msgToSend = dateE + ' [' + localObjUser.typeClient + '] ' + message.value;
     channel.send(msgToSend);
     message.value = "";

@@ -264,16 +264,32 @@
     <script src='/js/lib/adapter.js'></script>
     <script src="/js/lib/gamepad.js"></script>
     <script src="/js/lib/FileSaver.js"></script>
-    <script src="/js/common.js"></script>
-    <script src="/js/settings.js"></script>
-    <script src='/js/mapviewer.js'></script>
-    <script src="/js/logs.js"></script>
-    <script src='/js/ws_manager.js'></script>
-    <script src='/js/commands.js'></script>
+    
+    <script src="/js/common_tools.js"></script>
+    <script src="/js/common_settings.js"></script>    
+    
+    <script src='/js/main_websocket.js'></script>
     <script src='/js/main.js'></script>
-    <script>
-        //$('#zone_info_server').replaceWith(settings.appName() + " V " + settings.appVersion() + " - IHM Pilote");
-    </script>
+    
+    
+    <script src='/js/module_commands.js'></script>
+    <script src='/js/module_navigation.js'></script>
+    <script src="/js/module_logs.js"></script>
+    
+    
+    
+    
+    <script>                    
+            // On récupère depuis nodejs le nom de la machine serveur
+            // en passant par de l'AJAX plutôt que par websocket....
+            hostName = "???";    
+            $.get( "/getvar", function( data ) {
+              hostName = data.hostName;
+              //if (hostName != "???" ) $('#zone_info_server').replaceWith(settings.appName() + " V " + settings.appVersion()+ " ("+hostName+")");
+              infoServerTxt = settings.appBranch() + ' - ' + settings.appName() + " V " + settings.appVersion()+ " ("+hostName+")";
+              if (hostName != "???" ) $('#zone_info_server').replaceWith(infoServerTxt);
+            });
+    </script>   
 </body>
 
 </html>

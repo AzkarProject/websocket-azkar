@@ -1,8 +1,8 @@
 // ------------------------ Elements communs client/serveur
-var common = require('./js/common'); // méthodes génériques & objets
-var settings = require('./js/settings'); // paramètres de configuration
-var devSettings = require('./js/devSettings'); // Nom de la branche gitHub
-var robubox = require('./js/robubox'); // Fonctions de communication avec la Robubox
+var tools = require('./js/common_tools'); // méthodes génériques & objets
+var settings = require('./js/common_settings'); // paramètres de configuration
+var devSettings = require('./js/common_devSettings'); // Nom de la branche gitHub
+var robubox = require('./js/common_robubox'); // Fonctions de communication avec la Robubox
 
 
 deathManTimeStamp = new Date().getTime(); // TimeStamp en variable globale pour implémenter une sécurité homme/mort...
@@ -18,7 +18,10 @@ ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP || "127.0.0.1"; //
 port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 80; // défaut
 
 // Machines windows
-if (hostName == "azkary") ipaddress = "127.0.0.1"; // Machine HP bureau
+if (hostName == "azcary") {
+	ipaddress = "localhost"; // Machine HP bureau >> localhost pour les scripts autoIt
+	port = 2000 ; // idem, pour ne pas réecrire tous les scripts autoIt basés sur ce port et cette IP...
+}
 else if (hostName == "thaby") ipaddress = "192.168.173.1"; // Tablette HP sur Robulab: ip du réseau virtuel robulab_wifi
 else if (hostName == "lapto_Asus") ipaddress = "0.0.0.0"; // Pc perso - (IP interne, Livebox domicile)
 
@@ -32,7 +35,6 @@ else if (hostName == "VM-AZKAR-Ubuntu") ipaddress = "134.59.130.141"; // IP stat
 // if (hostName == "azkar-Latitude-E4200") port = 80;
 // TODO > Trouver bon réglage livebox pour faire cohabiter port 2000(nodejs) et 80(apache) en même temps.
 
-
 console.log("***********************************");
 console.log('');
 console.log('(' + devSettings.appBranch() + ') ' + settings.appName() + " V " + settings.appVersion());
@@ -42,7 +44,6 @@ console.log("Serveur sur machine: " + hostName);
 
 
 var app = require('express')(),
-    // server = require('http').createServer(app),
     server = require('http').createServer(app),
     //server = require('https').createServer(app),
     io = require('socket.io').listen(server),
@@ -51,18 +52,6 @@ var app = require('express')(),
 
 var express = require('express');
 
-/*// Ajouts Michael
-bodyParser = require("body-parser"); // pour recuperer le contenu de requêtes POST 
-HttpStatus = require('http-status-codes'); // le module qui recupère les status des requêtes HTTP
-XMLHttpRequest = require('xhr2'); // pour faire des requêtes XMLHttpRequest
-Q = require('q');
-/***/
-
-
-
-
-
-
 // affectation du port
 app.set('port', port);
 
@@ -70,17 +59,7 @@ app.set('port', port);
 // les dépendances css du document html
 app.use(express.static(__dirname));
 
-/*// Appel à body-parser pour la gestion de requêtes POST
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
-app.use(bodyParser.json()); // support json encoded bodies
-/**/
-
 // ------------ routing ------------
-
-
-
 
 // Chargement de la page index.html
 app.get('/', function(req, res) {
@@ -106,11 +85,11 @@ app.get('/cartographie/', function(req, res) {
 
 // On passe la variable hostName en ajax à l'ihm d'accueil
 // puisqu'on ne peux pas passer par websocket...
-// nb: On pourrai faire pareil avec Pilote et Robot...
+// TODO >> Faire pareil avec Pilote et Robot pour économiser une requête ws...
+// NB : Fait le 19/08
 app.get("/getvar", function(req, res){
     res.json({ hostName: hostName });
 });
-
 
 
 // Lancement du serveur
@@ -178,7 +157,7 @@ io.on('connection', function(socket, pseudo) {
 
             // Teste la présence d'un robot dans la liste des clients connectés
             // Paramètres: (hashTable,attribute,value,typeReturn) typeReturn >> boolean ou count...
-            var isOtherBot = common.searchInObjects(users2, "typeClient", "Robot", "boolean");
+            var isOtherBot = tools.searchInObjects(users2, "typeClient", "Robot", "boolean");
             if (isOtherBot == true) {
                 isAuthorized = false;
                 authMessage = "Client Robot non disponible...\n Veuillez patienter.";
@@ -186,14 +165,14 @@ io.on('connection', function(socket, pseudo) {
             }
 
         } else if (data.typeUser == "Pilote") {
-            var isOneBot = common.searchInObjects(users2, "typeClient", "Robot", "boolean");
+            var isOneBot = tools.searchInObjects(users2, "typeClient", "Robot", "boolean");
             if (isOneBot == false) {
                 isAuthorized = false;
                 authMessage = "Client Robot non connecté... \n Ressayez plus tard.";
                 rReason = " > Because no robot";
             } else if (isOtherPilot == true) {
                 // Teste la présence d'un pilote dans la liste des clients connectés
-                var isOtherPilot = common.searchInObjects(users2, "typeClient", "Pilote", "boolean");
+                var isOtherPilot = tools.searchInObjects(users2, "typeClient", "Pilote", "boolean");
                 isAuthorized = false;
                 authMessage = "Client Pilote non disponible...\n Veuillez patienter.";
                 rReason = " > Because 2 Pilotes";
@@ -230,8 +209,8 @@ io.on('connection', function(socket, pseudo) {
         // depuis le début de la session (comme une sorte de log, d'historique..)
         // et on comptera simplement le nombre de propriétés de l'objet.
         histoUsers2[socket.id] = data.pseudo + " timestamp:" + Date.now();
-        var userPlacelist = common.lenghtObject(histoUsers2);
-        // On crée un User - Fonction de référence ds la librairie common:
+        var userPlacelist = tools.lenghtObject(histoUsers2);
+        // On crée un User - Fonction de référence ds la librairie tools:
         // exports.client = function client (id,pseudo,placeliste,typeClient,connectionDate,disConnectionDate){
         var p1 = socket.id;
         var p2 = ent.encode(data.pseudo);
@@ -239,7 +218,7 @@ io.on('connection', function(socket, pseudo) {
         var p4 = data.typeUser;
         var p5 = Date.now();
         var p6 = null;
-        var objUser = new common.client(p1, p2, p3, p4, p5, p6);
+        var objUser = new tools.client(p1, p2, p3, p4, p5, p6);
 
         // On ajoute l'User à la liste des connectés
         users2[socket.id] = objUser;
@@ -247,15 +226,19 @@ io.on('connection', function(socket, pseudo) {
         // On renvoie l'User crée au nouveau connecté
         // pour l'informer entre autre de son ordre d'arrivée ds la session
         io.to(socket.id).emit('position_liste2', objUser);
+        
         // On lui envoie aussi des infos concerant le serveur (pour débug)
-		io.to(socket.id).emit('infoServer', hostName);
+		// io.to(socket.id).emit('infoServer', hostName);
+		// NB > Obsolète.. >< Remplacé par une récupération directe 
+		// depuis le client IHM en ajax par un $.get( "/getvar", function( data ) ) {}
+		
 
         // 2 - on signale à tout le monde l'arrivée de l'User
         socket.broadcast.emit('nouveau_client2', objUser);
 
 
         // 3 - on met a jour le nombre de connectés coté client"
-        nbUsers2 = common.lenghtObject(users2);
+        nbUsers2 = tools.lenghtObject(users2);
         io.sockets.emit('updateUsers', {
             listUsers: users2
         });
@@ -291,7 +274,7 @@ io.on('connection', function(socket, pseudo) {
             message: message
         });
         // On actualise le nombre de connectés  
-        nbUsers = common.lenghtObject(users2)
+        nbUsers = tools.lenghtObject(users2)
 
         // contrôle liste connectés coté serveur
         // console.log (users2);
