@@ -847,7 +847,7 @@ function bindEvents() {
     channel.onmessage = function(e) {
         // add the message to the chat log
         var dateR = tools.dateER('R');
-        
+        console.log(e);
         if (e.command) {
             $(chatlog).prepend(e.dateE +' ' +dateR + ' ' + e.command + "\n");
             if (type == "robot-appelé") {
