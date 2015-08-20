@@ -891,7 +891,7 @@ function sendMessage() {
 
 // envoi commande par WebRTC
 function sendCommand(commandToSend) {
-    channel.send(objectToSend);
+    channel.send(commandToSend);
     $(chatlog).prepend(commandToSend + "\n");
 }
 
