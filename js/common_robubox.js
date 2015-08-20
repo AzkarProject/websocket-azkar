@@ -56,7 +56,7 @@ exports.getBattery = function (){
         // Si on est sur un serveur relié a la Robubox
         // TODO : Externaliser affichage batterie dans module.infos.js
         // Seulement Si on est sur un serveur relié a la Robubox, on fait:
-        if (hostName == "ubuntu64azkar" && hostName == "azkar-Latitude-E4200" && hostName == "thaby") {
+        // if (hostName == "ubuntu64azkar" && hostName == "azkar-Latitude-E4200" && hostName == "thaby") {
             setInterval(function() {
                 $.get(url, function(data) { // 1 -  et 2- 
                     dataString = new XMLSerializer().serializeToString(data.documentElement); // 3- 
@@ -67,7 +67,7 @@ exports.getBattery = function (){
                 progressBar = document.getElementById('battery_level'); // 7- 
                 progressBar.value = parseFloat(Math.round(percentage)); // 8- 
             }, delay);
-        }
+        // }
   
 }
 

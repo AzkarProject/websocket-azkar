@@ -1,5 +1,5 @@
 
-# 1to1 V 0.7.4.1
+# 1to1 V 0.7.4.2
 ------------------------------------------------------------
 
 ### TODO's
@@ -17,10 +17,8 @@
     - [ ] Switch WebSocket/WebRTC
     - [ ] >> Commandes Drive
         - [!] GamePad
-        - [ ] Sécurité Homme/mort coté serveur
-            - >>> ex boucle 100ms>cmd/350ms sans recept cmd >> Stop...
-            - >>> ou boucle 50ms Bouton Homme mort GamePad >
-            - [ ] Implémentation Bas niveau > Robot (voir Robosoft)
+        - [X] Sécurité Homme/mort coté serveur
+        - [X] Inversion Axes
     - [ ] Cartographie
         - [x] Chargement & mise à l'échelle 
         - [!] Affichage Pos Robot en Tps Réel
@@ -41,7 +39,6 @@
         - [ ] Bloc robot controls 
         - [ ] Bloc robot informations
             - [ ] Charge Batterie
-            - [ ] Vitesse en temps réel
         - [x] Bloc tchat websocket
         - [X] Bloc logs webRTC
         - [X] Bloc Settings 
@@ -63,7 +60,7 @@
         - [ ] traitement des données de la carte
         - [ ] récupération de la position du robot sur la carte
         - [ ] affichage de la position du robot 
-    - [x] information de la baterry
+    - [x] information de la baterrie
         - [x] récupération des informations via proxy 
         - [x] traitement des informations
         - [x] Affichage dans IHM pilote 
