@@ -140,7 +140,7 @@ function gamePadController() {
 
                  // envoi des valeurs au serveur par websocket
                  if (parameters.navCh == 'webSocket') {
-                     /*
+                     
                      socket.emit("piloteOrder", {
                          command: 'onDrive',
                          aSpeed: aSpeed,
@@ -148,7 +148,7 @@ function gamePadController() {
                          enable: 'true'
                      });
                      /**/
-                     socket.emit("piloteOrder", driveCommand);
+                     //socket.emit("piloteOrder", driveCommand);
 
 
 
