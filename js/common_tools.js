@@ -64,15 +64,17 @@ exports.client = function client (id,pseudo,placeliste,typeClient,connectionDate
   // Retourne une date now préformatée formatée [E-12:30:00:00:00]
   // Paramètre: flag pour la première lettre...
   exports.dateER = function (flag){
+    /*
     var theDate = new Date();
     //return '['+flag+'-'+theDate+']';
-    
     var h = theDate.getHours();
     var m = theDate.getMinutes();
     var s = theDate.getSeconds();
     var ms = theDate.getMilliseconds();
     return '['+flag+'-'+h+":"+m+":"+s+":"+ms+']';
     /**/
+    //var theDate = Date.now();
+    return '['+flag+'-'+ Date.now() +']';
     
     }
 

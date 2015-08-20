@@ -96,7 +96,6 @@ function gamePadController() {
                          lSpeed: lSpeed,
                          enable: 'true'
                      }
-
                  // envoi des valeurs au serveur par websocket
                  if (parameters.navCh == 'webSocket') {
                      socket.emit("piloteOrder", driveCommand);
@@ -107,7 +106,6 @@ function gamePadController() {
                  }
              } else {
                  if (btHommeMort) {
-                     // console.log(' >>>>> STOP gamepad');
                      var driveStop = {
                              command: 'onStop',
                              aSpeed: 0,
@@ -116,14 +114,6 @@ function gamePadController() {
                      }
                      // envoi des valeurs au serveur par websocket
                      if (parameters.navCh== 'webSocket') {
-                         /*
-                         socket.emit("piloteOrder", {
-                             command: 'onStop',
-                             aSpeed: 0,
-                             lSpeed: 0,
-                             enable: 'false'
-                         });
-                         /**/
                          socket.emit("piloteOrder", driveStop);
                      // envoi des valeurs au serveur par webRtc
                      } else if (parameters.navCh == 'webRTC') {

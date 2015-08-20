@@ -891,8 +891,10 @@ function sendMessage() {
 
 // envoi commande par WebRTC
 function sendCommand(commandToSend) {
+    var dateE = tools.dateER('E');
     channel.send(commandToSend);
-    $(chatlog).prepend(commandToSend + "\n");
+    
+    $(chatlog).prepend(dateE + " "+commandToSend.command + "\n");
 }
 
 
