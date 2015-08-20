@@ -81,7 +81,7 @@ function gamePadController() {
                  var deadzoneX = 0.16; // zone +/- en dessous de laquelle la commande angulaire vaut 0 
 
                  aSpeed = (Math.abs(aSpeed) < deadzoneX ? 0 : aSpeed); // test d'ajustement pour la dead zone 
-                 //aSpeed = (lSpeed > 0 ? -aSpeed : aSpeed); // changement de sens dans l'orientation en cas de marche avant
+                 aSpeed = (lSpeed >= 0 ? -aSpeed : aSpeed); // changement de sens dans l'orientation en cas de marche avant
 
 
                  // TODO: Switcher entre webSockets et WebRTCdatachannel selon paramètrages du pilote
