@@ -34,7 +34,7 @@ exports.sendDrive = function (enable, aSpeed,lSpeed){
 // elle interroge chaque 1000ms le robot via url et retourne le niveau de la batterie en pourcentage
 exports.getBattery = function (){
         
-        // console.log ("robubox.getBattery()");
+        console.log ("robubox.getBattery()");
 
         //var url = "http://127.0.0.1:8080/?url=http://127.0.0.1:50000/robulab/battery/battery" ;
         var url = "http://127.0.0.1:8080/127.0.0.1:50000/robulab/battery/battery" ; // Tests CORS-ANYWHERE

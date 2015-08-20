@@ -460,13 +460,14 @@ if (type == "robot-appelé") {
     // Il pourra ainsi faire un GET ou un POST de la commande à l'aide d'un proxy et éviter le Cross Origin 
     socket.on("piloteOrder", function(data) {
         console.log('@onPiloteOrder >> command:' + data.command);
-        if (data.command == "onDrive" && data.command == "onStop") sendCommandDriveInterface(data.command,data.enable, data.aSpeed, data.lSpeed);
+        //if (data.command == "onDrive" && data.command == "onStop") sendCommandDriveInterface(data.command,data.enable, data.aSpeed, data.lSpeed);
         /*
         if (data.command == "onStop") {};
         if (data.command == "onStep") {};
         if (data.command == "onGoto") {};
         if (data.command == "onClicAndGo") {};
         /**/
+        sendCommandDriveInterface(data.command,data.enable, data.aSpeed, data.lSpeed);
     });
 
 }
@@ -911,7 +912,7 @@ function deathMan(){
         var now = Date.now();
         var test = now - lastMoveTimeStamp;
         if (test >= 1000 ) {
-           sendDriveCommandInterface('onStop',false,0,0) 
+           sendCommandDriveInterface('onStop',false,0,0) 
         }
     
     }
@@ -920,7 +921,7 @@ function deathMan(){
 deathMan();
 
 
-function sendDriveCommandInterface(command,enable,aSpeed,lSpeed) {
+function sendCommandDriveInterface(command,enable,aSpeed,lSpeed) {
         // onMove = false; // Flag > Si un mouvement est en cours
     
         // lastMoveTimeStamp =  Date.now(); // on met a jour le timestamp du dernier ordre de mouvement...
