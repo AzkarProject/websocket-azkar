@@ -124,7 +124,7 @@ function gamePadController() {
                              enable: 'false'
                          });
                          /**/
-                         socket.emit("piloteOrder", driveStop;
+                         socket.emit("piloteOrder", driveStop);
                      // envoi des valeurs au serveur par webRtc
                      } else if (parameters.navCh == 'webRTC') {
                         console.log(' >>>>> STOP gamepad (WebRTC)');
