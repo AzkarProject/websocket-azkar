@@ -53,31 +53,6 @@
                     <input type="radio" name="PRVidSetting" value="hide" id="PRVhide" onclick="setRemotePiloteView('hide')"/> <label for="PRVhide">Hide</label>
                 </span>
             <hr/>
-            <script>
-            function setNavChannel(navChSet) {
-                parameters.navCh = navChSet;
-            }
-
-            function setLocalPilotView(lPVSet) {
-                parameters.lPview = lPVSet;
-            }
-
-            function setLocalRobotView(lRVSet) {
-                parameters.lRview = lRVSet;
-            }
-
-            function setRemotePiloteView(rPVSet) {
-                parameters.rPview = rPVSet;
-            }
-
-            function setRemoteRobotView(rRVSet) {
-                parameters.rRView = rRVSet;
-            }
-
-            function setPilotStreamToRobot(pRStream) {
-                parameters.pStoR = pRStream;
-            }
-            </script>
         </div>
     </section>
     <section id="controlArea" class="fullSizeContainerBox">
@@ -271,7 +246,7 @@
     <script src='/js/main_websocket.js'></script>
     <script src='/js/main.js'></script>
     
-    
+    <script src='/js/module_settings.js'></script>
     <script src='/js/module_commands.js'></script>
     <script src='/js/module_navigation.js'></script>
     <script src="/js/module_logs.js"></script>

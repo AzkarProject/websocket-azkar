@@ -64,8 +64,52 @@ function gamePadController() {
          if (gamepad) {
 
              if (gamepad.state["FACE_1"] === 1) {
-                 console.log(' >>>>> START gamepad');
+                 console.log(' >>>>> INPUT gamepad');
                  btHommeMort = true;
+
+                 
+
+                /*// Benchmarks Settings
+                navCh = 'webSocket';
+                lPview = 'show';
+                lRview = 'show';
+                rPview = 'high';
+                rRView = 'show';
+                pStoR = 'open';
+
+                //parameters = {};
+
+                parameters = {
+                    navCh: navCh,
+                    lPview: lPview,
+                    lRview: lRview,
+                    rPview: rPview,
+                    rRView: rRView,
+                    pStoR: pStoR
+                };
+                /**/
+
+
+                console.log ("navCh: "+navCh);
+                console.log ("parameters.navCh: "+ parameters.navCh);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                  var TargetLinearSpeedPos = gamepad.state["RIGHT_BOTTOM_SHOULDER"]; // vitesse marche avant
                  var TargetLinearSpeedNeg = gamepad.state["LEFT_BOTTOM_SHOULDER"]; // vitesse marche arrière
@@ -86,23 +130,48 @@ function gamePadController() {
                  // TODO: Ajouter une pente pour l'accélération ou limiter la vitesse du linear speed... 
 
 
-                 // envoi des valeurs au serveur
-                 socket.emit("piloteOrder", {
-                     command: 'onDrive',
-                     aSpeed: aSpeed,
-                     lSpeed: lSpeed,
-                     enable: 'true'
-                 });
+                 //navCh = 'webSocket'; // webRTC
+                 var driveCommand = {
+                         command: 'onDrive',
+                         aSpeed: aSpeed,
+                         lSpeed: lSpeed,
+                         enable: 'true'
+                     }
+
+                 // envoi des valeurs au serveur par websocket
+                 if (parameters.navCh == 'webSocket') {
+                     /*
+                     socket.emit("piloteOrder", {
+                         command: 'onDrive',
+                         aSpeed: aSpeed,
+                         lSpeed: lSpeed,
+                         enable: 'true'
+                     });
+                     /**/
+                     socket.emit("piloteOrder", driveCommand);
+
+
+
+                 // envoi des valeurs au serveur par webRtc
+                 } else if (parameters.navCh == 'webRTC') {
+                    console.log(' >>>>> START gamepad (WebRTC)');
+                    sendObject(objectToSend)
+                 }
              } else {
                  if (btHommeMort) {
-                     console.log(' >>>>> STOP gamepad');
-                     socket.emit("moveOrder", {
-                         command: 'onStop',
-                         aSpeed: 0,
-                         lSpeed: 0,
-                         enable: 'false'
-                     });
-
+                     // console.log(' >>>>> STOP gamepad');
+                     // envoi des valeurs au serveur par websocket
+                     if (parameters.navCh== 'webSocket') {
+                         socket.emit("piloteOrder", {
+                             command: 'onStop',
+                             aSpeed: 0,
+                             lSpeed: 0,
+                             enable: 'false'
+                         });
+                     // envoi des valeurs au serveur par webRtc
+                     } else if (parameters.navCh == 'webRTC') {
+                        console.log(' >>>>> STOP gamepad (WebRTC)');
+                     }
                      btHommeMort = false;
                  }
 

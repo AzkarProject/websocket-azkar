@@ -7,7 +7,7 @@
 function mainSettings() {
     console.log("@mainSettings()");
 
-    // Banchmarks Settings
+    // Benchmarks Settings Default
     navCh = 'webSocket';
     lPview = 'show';
     lRview = 'show';
@@ -15,8 +15,7 @@ function mainSettings() {
     rRView = 'show';
     pStoR = 'open';
 
-    //parameters = {};
-
+    // Objet paramètres
     parameters = {
         navCh: navCh,
         lPview: lPview,
@@ -25,7 +24,7 @@ function mainSettings() {
         rRView: rRView,
         pStoR: pStoR
     };
-    //console.log(parameters);
+    
 
     // pré-signaling -------------------------------------------------
 
@@ -415,11 +414,12 @@ if (type == "robot-appelé") {
 
         // On affecte les paramètres de settings
         parameters = data.appSettings;
+        // alert("Parameters: " +data.appSettings.lRview);
 
-        //console.log(data); 
+        console.log(data); 
         //var debugg = tools.stringObjectDump(data,"selectedRemoteDevice")
-        // console.log(debugg);
-        console.log(data);
+        //console.log(debugg);
+        //console.log(data);
 
         // On lance l'initlocalmedia
         initLocalMedia();
@@ -525,35 +525,14 @@ function initLocalMedia() {
 
     // Initialisation du localStream et lancement connexion
     navigator.getUserMedia(constraint, function(stream) {
-        /*
-        localStream = stream;
-        var showLocalVideo = true;
-        if (type == "pilote-appelant") {
-            if (localPilotView != 'show') showLocalVideo = false;
-        
-        } else if (type == "robot-appellé"){
-            if (localRobotView != 'show') showLocalVideo = false;
-        } 
-        if (showLocalVideo == true) video1.src = URL.createObjectURL(localStream);
-        pc.addStream(localStream);
-        connect();
-        /**/
 
-        /*
-        navCh = = 'webSocket';
-        lPview = 'show';
-        lRview = 'show';
-        rPview = 'show';
-        rRView = 'high';
-        pStoR = 'open';
-        /**/
-
+        //console.log(parameters.lRview);
         localStream = stream;
         var showLocalVideo = true;
         if (type == "pilote-appelant") {
             if (parameters.lPview != 'show') showLocalVideo = false;
         } else if (type == "robot-appelé") {
-            //alert("local view: " +parameters.lRview);
+            // alert("local view: " +parameters.lRview);
             if (parameters.lRview != 'show') showLocalVideo = false;
         }
         if (showLocalVideo == true) video1.src = URL.createObjectURL(localStream);
@@ -908,6 +887,12 @@ function sendMessage() {
     message.value = "";
     // Affiche le message dans le chatlog websocket
     $(chatlog).prepend(msgToSend + "\n");
+}
+
+// envoi commande par WebRTC
+function sendCommand(commandToSend) {
+    channel.send(objectToSend);
+    $(chatlog).prepend(commandToSend + "\n");
 }
 
 

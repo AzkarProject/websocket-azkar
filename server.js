@@ -1,7 +1,7 @@
 // ------------------------ Elements communs client/serveur
 var tools = require('./js/common_tools'); // méthodes génériques & objets
 var settings = require('./js/common_settings'); // paramètres de configuration
-var devSettings = require('./js/common_devSettings'); // Nom de la branche gitHub
+//var devSettings = require('./js/common_devSettings'); // Nom de la branche gitHub
 var robubox = require('./js/common_robubox'); // Fonctions de communication avec la Robubox
 
 
@@ -37,7 +37,7 @@ else if (hostName == "VM-AZKAR-Ubuntu") ipaddress = "134.59.130.141"; // IP stat
 
 console.log("***********************************");
 console.log('');
-console.log('(' + devSettings.appBranch() + ') ' + settings.appName() + " V " + settings.appVersion());
+console.log('(' + settings.appBranch() + ') ' + settings.appName() + " V " + settings.appVersion());
 console.log('');
 console.log("***********************************");
 console.log("Serveur sur machine: " + hostName);
@@ -371,10 +371,12 @@ io.on('connection', function(socket, pseudo) {
 
     // Pilote >> Robot: cams/micros sélectionnés par le Pilote
     socket.on('selectedRemoteDevices', function(data) {
+        console.log("@ selectedRemoteDevices >>>> ");
+        console.log (data);
         socket.broadcast.emit('selectedRemoteDevices', {
             objUser: data.objUser,
             listeDevices: data.listeDevices,
-            settings: data.settings
+            appSettings: data.appSettings
         });
     });
 
