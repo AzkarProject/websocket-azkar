@@ -581,28 +581,6 @@ function connect() {
 
     // Ecouteur déclenché a la reception d'un remoteStream
     pc.onaddstream = function(e) {
-        /*// getStats(pc);
-        console.log("@ pc.onaddstream > timestamp:" + Date.now());
-        remoteStream = e.stream;
-        //video2.src = URL.createObjectURL(remoteStream);
-        var showRemoteVideo = true;
-        if (type == "pilote-appelant") {
-            if (remotePiloteView == 'hide') showRemoteVideo = false;
-             // showRemoteVideo = false;
-        } else if (type == "robot-appellé"){
-            if (remotePiloteView != 'show') showRemoteVideo = false;
-        } 
-        if (showRemoteVideo == true) video2.src = URL.createObjectURL(remoteStream);
-        /**/
-
-        /*
-        navCh = = 'webSocket';
-        lPview = 'show';
-        lRview = 'show';
-        rPview = 'show';
-        rRView = 'high';
-        pStoR = 'open';
-        /**/
 
         console.log("@ pc.onaddstream > timestamp:" + Date.now());
         remoteStream = e.stream;
@@ -616,12 +594,6 @@ function connect() {
         }
         if (showRemoteVideo == true) video2.src = URL.createObjectURL(remoteStream);
 
-
-
-
-
-        // video2.src = URL.createObjectURL(remoteStream);
-        /**/
     };
 
 
@@ -875,7 +847,17 @@ function bindEvents() {
     channel.onmessage = function(e) {
         // add the message to the chat log
         var dateR = tools.dateER('R');
-        $(chatlog).prepend(dateR + ' ' + e.data + "\n");
+        
+        if (e.data.command) {
+            $(chatlog).prepend(e.data.dateE +' ' +dateR + ' ' + e.data.command + "\n");
+            if (type == "robot-appelé") {
+                if (e.data.command == "onDrive") robubox.sendDrive(e.data.enable, e.data.aSpeed, e.data.lSpeed);
+                else if (e.data.command == "onStop") robubox.sendDrive(e.data.enable, e.data.aSpeed, e.data.lSpeed);
+                // ...
+            }
+        }
+
+        else $(chatlog).prepend(dateR + ' ' + e.data + "\n");
     };
 }
 
@@ -893,7 +875,7 @@ function sendMessage() {
 function sendCommand(commandToSend) {
     var dateE = tools.dateER('E');
     channel.send(commandToSend);
-    
+    commandToSend.dateE = dateE;
     $(chatlog).prepend(dateE + " "+commandToSend.command + "\n");
 }
 
