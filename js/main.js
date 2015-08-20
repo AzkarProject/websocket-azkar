@@ -848,16 +848,17 @@ function bindEvents() {
         // add the message to the chat log
         var dateR = tools.dateER('R');
         
-        if (e.data.command) {
-            $(chatlog).prepend(e.data.dateE +' ' +dateR + ' ' + e.data.command + "\n");
+        if (e.command) {
+            $(chatlog).prepend(e.dateE +' ' +dateR + ' ' + e.command + "\n");
             if (type == "robot-appelé") {
-                if (e.data.command == "onDrive") robubox.sendDrive(e.data.enable, e.data.aSpeed, e.data.lSpeed);
-                else if (e.data.command == "onStop") robubox.sendDrive(e.data.enable, e.data.aSpeed, e.data.lSpeed);
+                if (e.command == "onDrive") //robubox.sendDrive(e.data.enable, e.data.aSpeed, e.data.lSpeed);
+                else if (e.command == "onStop") //robubox.sendDrive(e.data.enable, e.data.aSpeed, e.data.lSpeed);
                 // ...
             }
         }
-
-        else $(chatlog).prepend(dateR + ' ' + e.data + "\n");
+        else {
+             $(chatlog).prepend(dateR + ' ' + e.data + "\n");
+        }
     };
 }
 
