@@ -80,7 +80,7 @@ function gamePadController() {
                  var lSpeed = TargetLinearSpeedPos + TargetLinearSpeedNeg; // Mixage des 2 variables linearspeed pour marche avant et neglinearspeed pour marche arrière...
 
 
-                 var deadzoneX = 0.16; // zone +/- en dessous de laquelle la commande angulaire vaut 0 
+                 var deadzoneX = 0.20; // zone +/- en dessous de laquelle la commande angulaire vaut 0 
 
                  aSpeed = (Math.abs(aSpeed) < deadzoneX ? 0 : aSpeed); // test d'ajustement pour la dead zone 
                  aSpeed = (lSpeed >= 0 ? -aSpeed : aSpeed); // changement de sens dans l'orientation en cas de marche avant
