@@ -6,7 +6,11 @@
 // NB toutes les variables sont déclarées en global...
 function mainSettings() {
     console.log("@mainSettings()");
-
+    
+    onMove = false; // Flag > Si un mouvement est en cours
+    //lastMoveTimeStamp =  Date.now(); // Variable globale pour la détection du dernier mouvement (homme mort)...
+    lastMoveTimeStamp = 0;
+    
     // Benchmarks Settings Default
     navCh = 'webSocket';
     lPview = 'show';
@@ -456,7 +460,7 @@ if (type == "robot-appelé") {
     // Il pourra ainsi faire un GET ou un POST de la commande à l'aide d'un proxy et éviter le Cross Origin 
     socket.on("piloteOrder", function(data) {
         console.log('@onPiloteOrder >> command:' + data.command);
-        if (data.command == "onDrive") robubox.sendDrive(data.enable, data.aSpeed, data.lSpeed);
+        if (data.command == "onDrive" && data.command == "onStop") sendCommandDriveInterface(data.command,data.enable, data.aSpeed, data.lSpeed);
         /*
         if (data.command == "onStop") {};
         if (data.command == "onStep") {};
@@ -898,6 +902,50 @@ $('#formulaire_chat_webRTC').submit(function() {
     $('#send_chat_WebRTC').val('').focus(); // Vide la zone de Chat et remet le focus dessus
     return false; // Permet de bloquer l'envoi "classique" du formulaire
 });
+
+// --------------------- Gestion des commandes du robot -------------------
+
+// fonction homme mort...
+function deathMan(){
+    if (onMove == true || lastMoveTimeStamp != 0) {
+        var now = Date.now();
+        var test = now - lastMoveTimeStamp;
+        if (test >= 1000 ) {
+           sendDriveCommandInterface('onStop',false,0,0) 
+        }
+    
+    }
+    setTimeout(deathMan,1000); /* rappel après 100 millisecondes */
+}
+deathMan();
+
+
+function sendDriveCommandInterface(command,enable,aSpeed,lSpeed) {
+        // onMove = false; // Flag > Si un mouvement est en cours
+    
+        // lastMoveTimeStamp =  Date.now(); // on met a jour le timestamp du dernier ordre de mouvement...
+        if (command == "onDrive") {
+            onMove = true;
+            lastMoveTimeStamp = Date.now(); // on met a jour le timestamp du dernier ordre de mouvement...
+            robubox.sendDrive(enable, aSpeed, lSpeed); // Et on envoie le mouvement
+        }
+        if (command == "onStop") {
+            onMove = false;
+            lastMoveTimeStamp = 0;
+            robubox.sendDrive(enable, aSpeed, lSpeed); // Et on envoie le mouvement
+        };
+        /*
+        if (command == "onStep") {};
+        if (command == "onGoto") {};
+        if (command == "onClicAndGo") {};
+        /**/
+    
+  
+
+}
+
+
+
 
 // --------------------- Gestion des messages d'erreur ------------------
 

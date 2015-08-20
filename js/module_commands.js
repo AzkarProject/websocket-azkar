@@ -1,5 +1,5 @@
- var gamepad = new Gamepad();
- var btHommeMort = 'false';
+var gamepad = new Gamepad();
+var btHommeMort = 'false';
 
  
 function gamePadController() {
@@ -65,10 +65,12 @@ function gamePadController() {
 
              if (gamepad.state["FACE_1"] === 1) {
                  console.log(' >>>>> INPUT gamepad');
+                 //onMove = true;
                  btHommeMort = true;
 
-                console.log ("navCh: "+navCh);
-                console.log ("parameters.navCh: "+ parameters.navCh);
+                
+                 console.log ("navCh: "+navCh);
+                 console.log ("parameters.navCh: "+ parameters.navCh);
 
                  var TargetLinearSpeedPos = gamepad.state["RIGHT_BOTTOM_SHOULDER"]; // vitesse marche avant
                  var TargetLinearSpeedNeg = gamepad.state["LEFT_BOTTOM_SHOULDER"]; // vitesse marche arrière
@@ -84,8 +86,8 @@ function gamePadController() {
                  aSpeed = (lSpeed >= 0 ? -aSpeed : aSpeed); // changement de sens dans l'orientation en cas de marche avant
 
 
-                 // TODO: Switcher entre webSockets et WebRTCdatachannel selon paramètrages du pilote
-                 // TODO: Inverser les Axes
+                 // TODO: Switcher entre webSockets et WebRTCdatachannel selon paramètrages du pilote - OK
+                 // TODO: Inverser les Axes - OK
                  // TODO: Ajouter une pente pour l'accélération ou limiter la vitesse du linear speed... 
 
 
@@ -102,10 +104,11 @@ function gamePadController() {
                  // envoi des valeurs au serveur par webRtc
                  } else if (parameters.navCh == 'webRTC') {
                     console.log(' >>>>> START gamepad (WebRTC)');
-                    sendCommand(driveCommand);
+                    //sendCommand(driveCommand);
                  }
              } else {
                  if (btHommeMort) {
+                     //onMove = false;
                      var driveStop = {
                              command: 'onStop',
                              aSpeed: 0,
@@ -118,7 +121,7 @@ function gamePadController() {
                      // envoi des valeurs au serveur par webRtc
                      } else if (parameters.navCh == 'webRTC') {
                         console.log(' >>>>> STOP gamepad (WebRTC)');
-                        sendCommand(driveStop);
+                        //sendCommand(driveStop);
                      }
                      btHommeMort = false;
                  }
