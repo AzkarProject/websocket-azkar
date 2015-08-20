@@ -851,8 +851,8 @@ function bindEvents() {
         if (e.command) {
             $(chatlog).prepend(e.dateE +' ' +dateR + ' ' + e.command + "\n");
             if (type == "robot-appelé") {
-                if (e.command == "onDrive") //robubox.sendDrive(e.data.enable, e.data.aSpeed, e.data.lSpeed);
-                else if (e.command == "onStop") //robubox.sendDrive(e.data.enable, e.data.aSpeed, e.data.lSpeed);
+                //if (e.command == "onDrive") //robubox.sendDrive(e.data.enable, e.data.aSpeed, e.data.lSpeed);
+                //else if (e.command == "onStop") //robubox.sendDrive(e.data.enable, e.data.aSpeed, e.data.lSpeed);
                 // ...
             }
         }
