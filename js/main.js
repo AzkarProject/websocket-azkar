@@ -847,17 +847,23 @@ function bindEvents() {
     channel.onmessage = function(e) {
         // add the message to the chat log
         var dateR = tools.dateER('R');
-        console.log(e);
-        if (e.command) {
-            $(chatlog).prepend(e.dateE +' ' +dateR + ' ' + e.command + "\n");
-            if (type == "robot-appelé") {
-                //if (e.command == "onDrive") //robubox.sendDrive(e.data.enable, e.data.aSpeed, e.data.lSpeed);
-                //else if (e.command == "onStop") //robubox.sendDrive(e.data.enable, e.data.aSpeed, e.data.lSpeed);
-                // ...
-            }
+        console.log("@ channel.onmessage");
+        // si c'est u message string
+        if (tools.isJson(e.data) == false) {
+            $(chatlog).prepend(dateR + ' ' + e.data + "\n");
         }
-        else {
-             $(chatlog).prepend(dateR + ' ' + e.data + "\n");
+        // sinon si c'est un objet Json
+        else if (tools.isJson(e.data) == true){
+            var cmd = e.data;
+            cmd = JSON.parse(cmd);
+            if (cmd.command) {
+                $(chatlog).prepend(cmd.dateE +' ' +dateR + ' ' + cmd.command + "\n");
+                if (type == "robot-appelé") {
+                    if (e.command == "onDrive") robubox.sendDrive(cmd.enable, cmd.aSpeed, cmd.lSpeed);
+                    else if (e.command == "onStop") robubox.sendDrive(cmd.enable, cmd.aSpeed, cmd.lSpeed);
+                    // ...
+                }
+            }
         }
     };
 }
@@ -875,9 +881,12 @@ function sendMessage() {
 // envoi commande par WebRTC
 function sendCommand(commandToSend) {
     var dateE = tools.dateER('E');
-    channel.send(commandToSend);
     commandToSend.dateE = dateE;
+    tools.traceObjectDump(commandToSend,'commandToSend');
     $(chatlog).prepend(dateE + " "+commandToSend.command + "\n");
+    commandToSend = JSON.stringify(commandToSend);
+    channel.send(commandToSend);
+    
 }
 
 

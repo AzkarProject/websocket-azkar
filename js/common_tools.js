@@ -352,4 +352,17 @@ exports.toObject = function  (arr) {
           return j;
     }
 
+    // Vérivie qu'un String est un JSON 
+    exports.isJson = function (str) {
+      try {
+          JSON.parse(str);
+      } catch (e) {
+          return false;
+      }
+      return true;
+}
+
+
+
+
 })(typeof exports === 'undefined'? this['tools']={}: exports);

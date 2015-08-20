@@ -371,8 +371,8 @@ io.on('connection', function(socket, pseudo) {
 
     // Pilote >> Robot: cams/micros sélectionnés par le Pilote
     socket.on('selectedRemoteDevices', function(data) {
-        console.log("@ selectedRemoteDevices >>>> ");
-        console.log (data);
+        // console.log("@ selectedRemoteDevices >>>> ");
+        // console.log (data);
         socket.broadcast.emit('selectedRemoteDevices', {
             objUser: data.objUser,
             listeDevices: data.listeDevices,
