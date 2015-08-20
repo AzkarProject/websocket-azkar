@@ -7,7 +7,7 @@ exports.sendDrive = function (enable, aSpeed,lSpeed){
         // console.log ("robubox.sendDrive()");
         
         // Seulement Si on est sur un serveur relié a la Robubox, on fait:
-        if (hostName == "ubuntu64azkar" && hostName == "azkar-Latitude-E4200" && hostName == "thaby") {
+        //if (hostName == "ubuntu64azkar" && hostName == "azkar-Latitude-E4200" && hostName == "thaby") {
         // var url = 'http://localhost:50000/api/drive';
             var url = "http://127.0.0.1:8080/127.0.0.1:50000/api/drive" ; // Tests CORS-ANYWHERE
 
@@ -25,7 +25,7 @@ exports.sendDrive = function (enable, aSpeed,lSpeed){
                     "TargetLinearSpeed": lSpeed
                 }));
             xhr.closed;
-        }
+        //}
 }
 
 
