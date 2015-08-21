@@ -66,13 +66,13 @@ function gamePadController() {
          if (gamepad) {
 
              if (gamepad.state["FACE_1"] === 1) {
-                 console.log(' >>>>> INPUT gamepad');
+                 //console.log(' >>>>> INPUT gamepad');
                  //onMove = true;
                  btHommeMort = true;
 
                 
-                 console.log ("navCh: "+navCh);
-                 console.log ("parameters.navCh: "+ parameters.navCh);
+                 //console.log ("navCh: "+navCh);
+                 //console.log ("parameters.navCh: "+ parameters.navCh);
 
                  var TargetLinearSpeedPos = gamepad.state["RIGHT_BOTTOM_SHOULDER"]; // vitesse marche avant
                  var TargetLinearSpeedNeg = gamepad.state["LEFT_BOTTOM_SHOULDER"]; // vitesse marche arrière
