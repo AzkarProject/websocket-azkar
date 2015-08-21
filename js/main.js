@@ -858,16 +858,16 @@ function bindEvents() {
             $(chatlog).prepend(dateR + ' ' + e.data + "\n");
         }
         // sinon si c'est un objet Json
-        else if (tools.isJson(e.data) == true){
+        else if (tools.isJson(e.data) == true || type == "robot-appelé"){
             var cmd = e.data;
             cmd = JSON.parse(cmd);
             if (cmd.command) {
                 $(chatlog).prepend(cmd.dateE +' ' +dateR + ' ' + cmd.command + "\n");
-                if (type == "robot-appelé") {
-                    if (e.command == "onDrive") robubox.sendDrive(cmd.enable, cmd.aSpeed, cmd.lSpeed);
-                    else if (e.command == "onStop") robubox.sendDrive(cmd.enable, cmd.aSpeed, cmd.lSpeed);
+                //if (type == "robot-appelé") {
+                    if (cmd.command == "onDrive") robubox.sendDrive(cmd.enable, cmd.aSpeed, cmd.lSpeed);
+                    else if (cmd.command == "onStop") robubox.sendDrive(cmd.enable, cmd.aSpeed, cmd.lSpeed);
                     // ...
-                }
+                //}
             }
         }
         /**/
@@ -887,9 +887,9 @@ function sendMessage() {
 // envoi commande par WebRTC
 function sendCommand(commandToSend) {
     var dateE = tools.dateER('E');
-    //commandToSend.dateE = dateE;
+    commandToSend.dateE = dateE;
     //tools.traceObjectDump(commandToSend,'commandToSend');
-    // $(chatlog).prepend(dateE + " "+commandToSend.command + "\n");
+     $(chatlog).prepend(dateE + " "+commandToSend.command + "\n");
     commandToSend = JSON.stringify(commandToSend);
     //console.log('toto');
     channel.send(commandToSend);
