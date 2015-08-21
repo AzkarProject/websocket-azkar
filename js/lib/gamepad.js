@@ -66,7 +66,7 @@
 		 * @method tickFunction
 		 */
 		this.tickFunction = function() {
-			console.log ('AnimFrame.tickFunction()');
+			//console.log ('AnimFrame.tickFunction()');
 			that.update();
 			that.startTicker();
 		};
