@@ -851,7 +851,8 @@ function bindEvents() {
     // écouteur de reception message
     channel.onmessage = function(e) {
         // add the message to the chat log
-        var dateR = tools.dateER('R');
+        //var dateR = tools.dateER('R');
+        var dateR = Date.now();
         //console.log("@ channel.onmessage");
         // si c'est u message string
         if (tools.isJson(e.data) == false) {
@@ -862,7 +863,9 @@ function bindEvents() {
             var cmd = e.data;
             cmd = JSON.parse(cmd);
             if (cmd.command) {
-                $(chatlog).prepend(cmd.dateE +' ' +dateR + ' ' + cmd.command + "\n");
+                var delta = dateR-cmd.dateE;
+                //$(chatlog).prepend(cmd.dateE +' ' +dateR + ' ' + cmd.command + "\n");
+                $(chatlog).prepend('[ ' +delta+' ms ] ' + cmd.command + "\n");
                 //if (type == "robot-appelé") {
                     if (cmd.command == "onDrive") robubox.sendDrive(cmd.enable, cmd.aSpeed, cmd.lSpeed);
                     else if (cmd.command == "onStop") robubox.sendDrive(cmd.enable, cmd.aSpeed, cmd.lSpeed);
@@ -886,7 +889,8 @@ function sendMessage() {
 
 // envoi commande par WebRTC
 function sendCommand(commandToSend) {
-    var dateE = tools.dateER('E');
+    //var dateE = tools.dateER('E');
+    var dateE = Date.now()
     commandToSend.dateE = dateE;
     //tools.traceObjectDump(commandToSend,'commandToSend');
      $(chatlog).prepend(dateE + " "+commandToSend.command + "\n");
