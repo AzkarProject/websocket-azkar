@@ -852,12 +852,12 @@ function bindEvents() {
     channel.onmessage = function(e) {
         // add the message to the chat log
         var dateR = tools.dateER('R');
-        console.log("@ channel.onmessage");
+        //console.log("@ channel.onmessage");
         // si c'est u message string
         if (tools.isJson(e.data) == false) {
             $(chatlog).prepend(dateR + ' ' + e.data + "\n");
         }
-        /*// sinon si c'est un objet Json
+        // sinon si c'est un objet Json
         else if (tools.isJson(e.data) == true){
             var cmd = e.data;
             cmd = JSON.parse(cmd);
