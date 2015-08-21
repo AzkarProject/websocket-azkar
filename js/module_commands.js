@@ -106,7 +106,7 @@ function gamePadController() {
                  // envoi des valeurs au serveur par webRtc
                  } else if (parameters.navCh == 'webRTC') {
                     // console.log(' >>>>> START gamepad (WebRTC)');
-                    // sendCommand(driveCommand);
+                    sendCommand(driveCommand);
                  }
              } else {
                  if (btHommeMort) {
@@ -123,7 +123,7 @@ function gamePadController() {
                      // envoi des valeurs au serveur par webRtc
                      } else if (parameters.navCh == 'webRTC') {
                         // console.log(' >>>>> STOP gamepad (WebRTC)');
-                        // sendCommand(driveStop);
+                        sendCommand(driveStop);
                      }
                      btHommeMort = false;
                  }

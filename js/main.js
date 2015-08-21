@@ -857,7 +857,7 @@ function bindEvents() {
         if (tools.isJson(e.data) == false) {
             $(chatlog).prepend(dateR + ' ' + e.data + "\n");
         }
-        // sinon si c'est un objet Json
+        /*// sinon si c'est un objet Json
         else if (tools.isJson(e.data) == true){
             var cmd = e.data;
             cmd = JSON.parse(cmd);
@@ -870,6 +870,7 @@ function bindEvents() {
                 }
             }
         }
+        /**/
     };
 }
 
@@ -888,7 +889,7 @@ function sendCommand(commandToSend) {
     var dateE = tools.dateER('E');
     commandToSend.dateE = dateE;
     tools.traceObjectDump(commandToSend,'commandToSend');
-    $(chatlog).prepend(dateE + " "+commandToSend.command + "\n");
+    // $(chatlog).prepend(dateE + " "+commandToSend.command + "\n");
     commandToSend = JSON.stringify(commandToSend);
     //console.log('toto');
     channel.send(commandToSend);
