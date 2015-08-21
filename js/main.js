@@ -890,7 +890,7 @@ function sendCommand(commandToSend) {
     tools.traceObjectDump(commandToSend,'commandToSend');
     $(chatlog).prepend(dateE + " "+commandToSend.command + "\n");
     commandToSend = JSON.stringify(commandToSend);
-    console.log('toto');
+    //console.log('toto');
     channel.send(commandToSend);
     
 }
@@ -908,23 +908,24 @@ $('#formulaire_chat_webRTC').submit(function() {
 // --------------------- Gestion des commandes du robot -------------------
 
 // fonction homme mort...
-function deathMan(){
-    if (onMove == true || lastMoveTimeStamp != 0) {
-        var now = Date.now();
-        var test = now - lastMoveTimeStamp;
-        if (test >= 1000 ) {
-           sendCommandDriveInterface('onStop',false,0,0) 
+if (type == "robot-appelé") {
+    function deathMan(){
+        if (onMove == true || lastMoveTimeStamp != 0) {
+            var now = Date.now();
+            var test = now - lastMoveTimeStamp;
+            if (test >= 1000 ) {
+               sendCommandDriveInterface('onStop',false,0,0) 
+            }
+        
         }
-    
+        setTimeout(deathMan,1000); /* rappel après 100 millisecondes */
     }
-    setTimeout(deathMan,1000); /* rappel après 100 millisecondes */
+    deathMan();
 }
-deathMan();
 
 
 function sendCommandDriveInterface(command,enable,aSpeed,lSpeed) {
         // onMove = false; // Flag > Si un mouvement est en cours
-    
         // lastMoveTimeStamp =  Date.now(); // on met a jour le timestamp du dernier ordre de mouvement...
         if (command == "onDrive") {
             onMove = true;

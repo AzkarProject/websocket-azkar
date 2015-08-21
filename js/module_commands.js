@@ -67,7 +67,7 @@ function gamePadController() {
 
              if (gamepad.state["FACE_1"] === 1) {
                  //console.log(' >>>>> INPUT gamepad');
-                 //onMove = true;
+                 onMove = true;
                  btHommeMort = true;
 
                 
@@ -102,11 +102,11 @@ function gamePadController() {
                      }
                  // envoi des valeurs au serveur par websocket
                  if (parameters.navCh == 'webSocket') {
-                     // socket.emit("piloteOrder", driveCommand);
+                      socket.emit("piloteOrder", driveCommand);
                  // envoi des valeurs au serveur par webRtc
                  } else if (parameters.navCh == 'webRTC') {
                     // console.log(' >>>>> START gamepad (WebRTC)');
-                    //sendCommand(driveCommand);
+                    // sendCommand(driveCommand);
                  }
              } else {
                  if (btHommeMort) {
@@ -119,11 +119,11 @@ function gamePadController() {
                      }
                      // envoi des valeurs au serveur par websocket
                      if (parameters.navCh== 'webSocket') {
-                         // socket.emit("piloteOrder", driveStop);
+                         socket.emit("piloteOrder", driveStop);
                      // envoi des valeurs au serveur par webRtc
                      } else if (parameters.navCh == 'webRTC') {
                         // console.log(' >>>>> STOP gamepad (WebRTC)');
-                        //sendCommand(driveStop);
+                        // sendCommand(driveStop);
                      }
                      btHommeMort = false;
                  }
