@@ -1,4 +1,6 @@
+
 var gamepad = new Gamepad();
+
 var btHommeMort = 'false';
 
  
@@ -150,6 +152,10 @@ function gamePadController() {
     if (!gamepad.init()) alert('Your browser does not support gamepads, get the latest Google Chrome or Firefox.');
 } // function gamePadController() {...
 
+gamePadController();
+
+
+
 function keyBoardController() {
     var Input = {
 
@@ -274,7 +280,4 @@ function keyBoardController() {
 
     }
 } // function keyboardController() {...
-
-
-gamePadController();
 // keyboardController();
