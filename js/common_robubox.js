@@ -4,7 +4,7 @@
 // Envoi d'une commande de type "Drive" au robot
 exports.sendDrive = function (enable, aSpeed,lSpeed){
         
-        // console.log ("robubox.sendDrive()");
+        console.log ("robubox.sendDrive()");
         
         // var url = 'http://localhost:50000/api/drive';
         var url = "http://127.0.0.1:8080/127.0.0.1:50000/api/drive" ; // Tests CORS-ANYWHERE

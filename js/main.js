@@ -890,6 +890,7 @@ function sendCommand(commandToSend) {
     tools.traceObjectDump(commandToSend,'commandToSend');
     $(chatlog).prepend(dateE + " "+commandToSend.command + "\n");
     commandToSend = JSON.stringify(commandToSend);
+    console.log('toto');
     channel.send(commandToSend);
     
 }
