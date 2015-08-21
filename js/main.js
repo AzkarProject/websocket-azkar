@@ -459,7 +459,7 @@ if (type == "robot-appelé") {
     // On la renvoie au client robot qui exécuté sur la même machine que la Robubox.
     // Il pourra ainsi faire un GET ou un POST de la commande à l'aide d'un proxy et éviter le Cross Origin 
     socket.on("piloteOrder", function(data) {
-        console.log('@onPiloteOrder >> command:' + data.command);
+        //console.log('@onPiloteOrder >> command:' + data.command);
         //if (data.command == "onDrive" && data.command == "onStop") sendCommandDriveInterface(data.command,data.enable, data.aSpeed, data.lSpeed);
         /*
         if (data.command == "onStop") {};
