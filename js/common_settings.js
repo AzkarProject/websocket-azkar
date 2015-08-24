@@ -5,7 +5,7 @@ exports.appName = function(){
 };
 
 exports.appVersion = function(){
-    return '0.7.4.2';
+    return '0.7.4.3';
 };
 
 exports.appHostName = function(){
@@ -13,7 +13,7 @@ exports.appHostName = function(){
 };
 
 exports.appBranch = function(){
-    return '1to1-thierry';
+    return 'master';
 };
 
 })(typeof exports === 'undefined'? this['settings']={}: exports);
