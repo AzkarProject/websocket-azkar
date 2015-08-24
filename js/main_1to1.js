@@ -6,8 +6,12 @@
 // NB toutes les variables sont déclarées en global...
 function mainSettings() {
     console.log("@mainSettings()");
-
-    // Banchmarks Settings
+    
+    onMove = false; // Flag > Si un mouvement est en cours
+    //lastMoveTimeStamp =  Date.now(); // Variable globale pour la détection du dernier mouvement (homme mort)...
+    lastMoveTimeStamp = 0;
+    
+    // Benchmarks Settings Default
     navCh = 'webSocket';
     lPview = 'show';
     lRview = 'show';
@@ -15,8 +19,7 @@ function mainSettings() {
     rRView = 'show';
     pStoR = 'open';
 
-    //parameters = {};
-
+    // Objet paramètres
     parameters = {
         navCh: navCh,
         lPview: lPview,
@@ -25,7 +28,7 @@ function mainSettings() {
         rRView: rRView,
         pStoR: pStoR
     };
-    //console.log(parameters);
+    
 
     // pré-signaling -------------------------------------------------
 
@@ -224,7 +227,7 @@ function gotSources(sourceInfos) {
         // vers Chrome impossible d'accéder à ses attributs une foi transmit... 
         // Ce qui est bizarre, c'est que l'objet natif semble tout à fait normal avant transmission.
         // Par contre, R.A.S quand on le transmet de Chrome à Chrome ou de Chromium à chromium.
-        var sourceDevice = new common.sourceDevice();
+        var sourceDevice = new tools.sourceDevice();
         sourceDevice.id = sourceInfo.id;
         sourceDevice.label = sourceInfo.label;
         sourceDevice.kind = sourceInfo.kind;
@@ -346,13 +349,13 @@ function localManageDevices() {
         var selectList = {
             selectAudio, selectVideo
         };
-        var settings = parameters;
+        var appSettings = parameters;
         // socket.emit("selectedRemoteDevices", selectList); Ancienne version
         // Coté serveur >> socket.broadcast.emit('selectedRemoteDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
         socket.emit('selectedRemoteDevices', {
             objUser: localObjUser,
             listeDevices: selectList,
-            settings: settings
+            appSettings: appSettings
         }); // Version Objet
 
         // Animation CSS de désactivation du formulaire devices pilote...
@@ -414,12 +417,13 @@ if (type == "robot-appelé") {
         document.getElementById(data.listeDevices.selectVideo).selected = "selected";
 
         // On affecte les paramètres de settings
-        parameters = data.settings;
+        parameters = data.appSettings;
+        // alert("Parameters: " +data.appSettings.lRview);
 
-        //console.log(data); 
-        //var debugg = common.stringObjectDump(data,"selectedRemoteDevice")
-        // console.log(debugg);
-        console.log(data);
+        console.log(data); 
+        //var debugg = tools.stringObjectDump(data,"selectedRemoteDevice")
+        //console.log(debugg);
+        //console.log(data);
 
         // On lance l'initlocalmedia
         initLocalMedia();
@@ -452,19 +456,18 @@ if (type == "robot-appelé") {
 
 
     // Reception d'une commande pilote
-    socket.on("moveOrder", function(data) {
-        // onDrive(data.enable, data.aSpeed, data.lSpeed) //
-    
-        // var url = 'http://localhost:50000/api/drive';
-        //robubox.sendDrive(url, enable, aSpeed, lSpeed)
-        console.log('@onMoveOrder >> angular speed :' + data.aSpeed + '  et linear speed :' + data.lSpeed);
-        robubox.sendDrive(data.enable, data.aSpeed, data.lSpeed) //
-            /*
-            .then(function() {
-                console.log('@onMoveOrder >> angular speed :' + aSpeed + '  et linear speed :' + lSpeed);
-        }) 
-        /**/  
-
+    // On la renvoie au client robot qui exécuté sur la même machine que la Robubox.
+    // Il pourra ainsi faire un GET ou un POST de la commande à l'aide d'un proxy et éviter le Cross Origin 
+    socket.on("piloteOrder", function(data) {
+        //console.log('@onPiloteOrder >> command:' + data.command);
+        //if (data.command == "onDrive" && data.command == "onStop") sendCommandDriveInterface(data.command,data.enable, data.aSpeed, data.lSpeed);
+        /*
+        if (data.command == "onStop") {};
+        if (data.command == "onStep") {};
+        if (data.command == "onGoto") {};
+        if (data.command == "onClicAndGo") {};
+        /**/
+        sendCommandDriveInterface(data.command,data.enable, data.aSpeed, data.lSpeed);
     });
 
 }
@@ -478,7 +481,7 @@ socket.on('updateUsers', function(data) {
     // On met à jour la liste locale des connectés...
     // console.log(data);
     users = data;
-    //var debug = common.stringObjectDump(users,"users");
+    //var debug = tools.stringObjectDump(users,"users");
     //console.log(debug);
 
     // si on est l'apellé  (Robot)
@@ -527,35 +530,14 @@ function initLocalMedia() {
 
     // Initialisation du localStream et lancement connexion
     navigator.getUserMedia(constraint, function(stream) {
-        /*
-        localStream = stream;
-        var showLocalVideo = true;
-        if (type == "pilote-appelant") {
-            if (localPilotView != 'show') showLocalVideo = false;
-        
-        } else if (type == "robot-appellé"){
-            if (localRobotView != 'show') showLocalVideo = false;
-        } 
-        if (showLocalVideo == true) video1.src = URL.createObjectURL(localStream);
-        pc.addStream(localStream);
-        connect();
-        /**/
 
-        /*
-        navCh = = 'webSocket';
-        lPview = 'show';
-        lRview = 'show';
-        rPview = 'show';
-        rRView = 'high';
-        pStoR = 'open';
-        /**/
-
+        //console.log(parameters.lRview);
         localStream = stream;
         var showLocalVideo = true;
         if (type == "pilote-appelant") {
             if (parameters.lPview != 'show') showLocalVideo = false;
         } else if (type == "robot-appelé") {
-            //alert("local view: " +parameters.lRview);
+            // alert("local view: " +parameters.lRview);
             if (parameters.lRview != 'show') showLocalVideo = false;
         }
         if (showLocalVideo == true) video1.src = URL.createObjectURL(localStream);
@@ -604,28 +586,6 @@ function connect() {
 
     // Ecouteur déclenché a la reception d'un remoteStream
     pc.onaddstream = function(e) {
-        /*// getStats(pc);
-        console.log("@ pc.onaddstream > timestamp:" + Date.now());
-        remoteStream = e.stream;
-        //video2.src = URL.createObjectURL(remoteStream);
-        var showRemoteVideo = true;
-        if (type == "pilote-appelant") {
-            if (remotePiloteView == 'hide') showRemoteVideo = false;
-             // showRemoteVideo = false;
-        } else if (type == "robot-appellé"){
-            if (remotePiloteView != 'show') showRemoteVideo = false;
-        } 
-        if (showRemoteVideo == true) video2.src = URL.createObjectURL(remoteStream);
-        /**/
-
-        /*
-        navCh = = 'webSocket';
-        lPview = 'show';
-        lRview = 'show';
-        rPview = 'show';
-        rRView = 'high';
-        pStoR = 'open';
-        /**/
 
         console.log("@ pc.onaddstream > timestamp:" + Date.now());
         remoteStream = e.stream;
@@ -639,12 +599,6 @@ function connect() {
         }
         if (showRemoteVideo == true) video2.src = URL.createObjectURL(remoteStream);
 
-
-
-
-
-        // video2.src = URL.createObjectURL(remoteStream);
-        /**/
     };
 
 
@@ -652,8 +606,8 @@ function connect() {
     // Permet de déterminer si le pair distant s'est déconnecté.
     pc.oniceconnectionstatechange = function(e) {
 
-        //var newDate = common.dateNowInMs();
-        var dateE = common.dateER('E');
+        //var newDate = tools.dateNowInMs();
+        var dateE = tools.dateER('E');
         console.log("@ pc.oniceconnectionstatechange > " + dateE);
 
 
@@ -746,7 +700,7 @@ function connect() {
         console.log(">> socket.on('disconnected',...");
         // On met à jour la liste des cliens connectés
         var users = data;
-        var debug = common.stringObjectDump(users,"users");
+        var debug = tools.stringObjectDump(users,"users");
         console.log(debug); 
 
         // On lance la méthode de préparatoire a la renégo
@@ -897,19 +851,53 @@ function bindEvents() {
     // écouteur de reception message
     channel.onmessage = function(e) {
         // add the message to the chat log
-        var dateR = common.dateER('R');
-        $(chatlog).prepend(dateR + ' ' + e.data + "\n");
+        //var dateR = tools.dateER('R');
+        var dateR = Date.now();
+        //console.log("@ channel.onmessage");
+        // si c'est u message string
+        if (tools.isJson(e.data) == false) {
+            $(chatlog).prepend(dateR + ' ' + e.data + "\n");
+        }
+        // sinon si c'est un objet Json
+        else if (tools.isJson(e.data) == true || type == "robot-appelé"){
+            var cmd = e.data;
+            cmd = JSON.parse(cmd);
+            if (cmd.command) {
+                var delta = dateR-cmd.dateE;
+                //$(chatlog).prepend(cmd.dateE +' ' +dateR + ' ' + cmd.command + "\n");
+                $(chatlog).prepend('[ ' +delta+' ms ] ' + cmd.command + "\n");
+                //if (type == "robot-appelé") {
+                    if (cmd.command == "onDrive") robubox.sendDrive(cmd.enable, cmd.aSpeed, cmd.lSpeed);
+                    else if (cmd.command == "onStop") robubox.sendDrive(cmd.enable, cmd.aSpeed, cmd.lSpeed);
+                    // ...
+                //}
+            }
+        }
+        /**/
     };
 }
 
 // envoi message par WebRTC
 function sendMessage() {
-    var dateE = common.dateER('E');
+    var dateE = tools.dateER('E');
     var msgToSend = dateE + ' [' + localObjUser.typeClient + '] ' + message.value;
     channel.send(msgToSend);
     message.value = "";
     // Affiche le message dans le chatlog websocket
     $(chatlog).prepend(msgToSend + "\n");
+}
+
+// envoi commande par WebRTC
+function sendCommand(commandToSend) {
+    //var dateE = tools.dateER('E');
+    var dateE = Date.now()
+    commandToSend.dateE = dateE;
+    //tools.traceObjectDump(commandToSend,'commandToSend');
+     $(chatlog).prepend(dateE + " "+commandToSend.command + "\n");
+    commandToSend = JSON.stringify(commandToSend);
+    //console.log('toto');
+    channel.send(commandToSend);
+    
 }
 
 
@@ -921,6 +909,51 @@ $('#formulaire_chat_webRTC').submit(function() {
     $('#send_chat_WebRTC').val('').focus(); // Vide la zone de Chat et remet le focus dessus
     return false; // Permet de bloquer l'envoi "classique" du formulaire
 });
+
+// --------------------- Gestion des commandes du robot -------------------
+
+// fonction homme mort...
+if (type == "robot-appelé") {
+    function deathMan(){
+        if (onMove == true || lastMoveTimeStamp != 0) {
+            var now = Date.now();
+            var test = now - lastMoveTimeStamp;
+            if (test >= 1000 ) {
+               sendCommandDriveInterface('onStop',false,0,0) 
+            }
+        
+        }
+        setTimeout(deathMan,1000); /* rappel après 100 millisecondes */
+    }
+    deathMan();
+}
+
+
+function sendCommandDriveInterface(command,enable,aSpeed,lSpeed) {
+        // onMove = false; // Flag > Si un mouvement est en cours
+        // lastMoveTimeStamp =  Date.now(); // on met a jour le timestamp du dernier ordre de mouvement...
+        if (command == "onDrive") {
+            onMove = true;
+            lastMoveTimeStamp = Date.now(); // on met a jour le timestamp du dernier ordre de mouvement...
+            robubox.sendDrive(enable, aSpeed, lSpeed); // Et on envoie le mouvement
+        }
+        if (command == "onStop") {
+            onMove = false;
+            lastMoveTimeStamp = 0;
+            robubox.sendDrive(enable, aSpeed, lSpeed); // Et on envoie le mouvement
+        };
+        /*
+        if (command == "onStep") {};
+        if (command == "onGoto") {};
+        if (command == "onClicAndGo") {};
+        /**/
+    
+  
+
+}
+
+
+
 
 // --------------------- Gestion des messages d'erreur ------------------
 

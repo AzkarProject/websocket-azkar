@@ -1,39 +1,49 @@
 // ------------------------ Elements communs client/serveur
-var common = require('./js/common'); // méthodes génériques & objets
-var settings = require('./js/settings'); // paramètres de configuration
-var devSettings = require('./js/devSettings'); // Nom de la branche gitHub
+var tools = require('./js/common_tools'); // méthodes génériques & objets
+var settings = require('./js/common_settings'); // paramètres de configuration
+//var devSettings = require('./js/common_devSettings'); // Nom de la branche gitHub
+var robubox = require('./js/common_robubox'); // Fonctions de communication avec la Robubox
+
+
+deathManTimeStamp = new Date().getTime(); // TimeStamp en variable globale pour implémenter une sécurité homme/mort...
+console.log (deathManTimeStamp);
 
 // ------ Variables d'environnement & paramètrages serveurs ------------------
 // Récupération du Nom de la machine 
 var os = require("os");
 hostName = os.hostname();
-dyDns = 'azkar.ddns.net'; // Adresse no-Ip pour la liveBox perso
+dyDns = 'azkar.ddns.net'; // Adresse no-Ip pointant sur Livebox domicile
 
 ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP || "127.0.0.1"; // défaut
-if (hostName == "azkary") ipaddress = "127.0.0.1"; // machine bureau
-else if (hostName == "ubuntu64azkar") ipaddress = "192.168.1.10"; // Vm Ubuntu - Pc perso - Domicile
-else if (hostName == "VM-AZKAR-Ubuntu") ipaddress = "134.59.130.141"; // IP statique de la Vm sparks
-else if (hostName == "thaby") ipaddress = "192.168.173.1"; // Tablette HP - ip du réseau virtuel robulab_wifi
-else if (hostName == "lapto_Asus") ipaddress = "0.0.0.0"; // Pc perso - Livebox domicile - noip > azkar.ddns.net
-else if (hostName == "azkar-Latitude-E4200") ipaddress = "0.0.0.0"; // Pc perso - Livebox domicile - noip > azkar.ddns.net
-// just a coment for a commit WTF GITHUB
- 
-port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 2000; // pour laisser le 80 dispo sur le serveur
-// Seul le port 80 passe malgrès les règles appropriées dans le NAT et le Firewall de la livebox ...
-if (hostName == "azkar-Latitude-E4200") port = 80;
-// TODO > Trouver bon réglage livebox pour fire cohabiter port 2000(nodejs) et 80(apache) en même temps.
+port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 80; // défaut
 
+// Machines windows
+if (hostName == "azcary") {
+	ipaddress = "localhost"; // Machine HP bureau >> localhost pour les scripts autoIt
+	port = 2000 ; // idem, pour ne pas réecrire tous les scripts autoIt basés sur ce port et cette IP...
+}
+else if (hostName == "thaby") ipaddress = "192.168.173.1"; // Tablette HP sur Robulab: ip du réseau virtuel robulab_wifi
+else if (hostName == "lapto_Asus") ipaddress = "0.0.0.0"; // Pc perso - (IP interne, Livebox domicile)
+
+// Machines Ubuntu
+else if (hostName == "ubuntu64azkar") ipaddress = "192.168.1.10"; // Vm Ubuntu sur Pc perso (Domicile)
+else if (hostName == "azkar-Latitude-E4200") ipaddress = "0.0.0.0"; // Pc Dell Latitude - Livebox domicile - noip > azkar.ddns.net
+else if (hostName == "VM-AZKAR-Ubuntu") ipaddress = "134.59.130.141"; // IP statique de la Vm sparks
+ 
+
+// Seul le port 80 passe malgrès les règles appropriées dans le NAT et le Firewall de la livebox ...
+// if (hostName == "azkar-Latitude-E4200") port = 80;
+// TODO > Trouver bon réglage livebox pour faire cohabiter port 2000(nodejs) et 80(apache) en même temps.
 
 console.log("***********************************");
 console.log('');
-console.log('(' + devSettings.appBranch() + ') ' + settings.appName() + " V " + settings.appVersion());
+console.log('(' + settings.appBranch() + ') ' + settings.appName() + " V " + settings.appVersion());
 console.log('');
 console.log("***********************************");
 console.log("Serveur sur machine: " + hostName);
 
 
 var app = require('express')(),
-    // server = require('http').createServer(app),
     server = require('http').createServer(app),
     //server = require('https').createServer(app),
     io = require('socket.io').listen(server),
@@ -42,15 +52,6 @@ var app = require('express')(),
 
 var express = require('express');
 
-/*// Ajouts Michael
-bodyParser = require("body-parser"); // pour recuperer le contenu de requêtes POST 
-HttpStatus = require('http-status-codes'); // le module qui recupère les status des requêtes HTTP
-XMLHttpRequest = require('xhr2'); // pour faire des requêtes XMLHttpRequest
-Q = require('q');
-/***/
-// Ajouts Thierry
-var robubox = require('./js/robubox'); // Fonctions de communication avec la Robubox
-
 // affectation du port
 app.set('port', port);
 
@@ -58,17 +59,7 @@ app.set('port', port);
 // les dépendances css du document html
 app.use(express.static(__dirname));
 
-/*// Appel à body-parser pour la gestion de requêtes POST
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
-app.use(bodyParser.json()); // support json encoded bodies
-/**/
-
 // ------------ routing ------------
-
-
-
 
 // Chargement de la page index.html
 app.get('/', function(req, res) {
@@ -94,11 +85,11 @@ app.get('/cartographie/', function(req, res) {
 
 // On passe la variable hostName en ajax à l'ihm d'accueil
 // puisqu'on ne peux pas passer par websocket...
-// nb: On pourrai faire pareil avec Pilote et Robot...
+// TODO >> Faire pareil avec Pilote et Robot pour économiser une requête ws...
+// NB : Fait le 19/08
 app.get("/getvar", function(req, res){
     res.json({ hostName: hostName });
 });
-
 
 
 // Lancement du serveur
@@ -109,9 +100,8 @@ server.listen(app.get('port'), ipaddress);
 
 // Adresse de redirection pour les connexions refusées
 var indexUrl;
-if (process.env.OPENSHIFT_NODEJS_IP) indexUrl = "http://websocket-azkar.rhcloud.com"; // Si hébergement openshift
-if (hostName == "lapto_Asus") indexUrl = "http://" + dyDns; // Si machine derrière liveBox
-else indexUrl = "http://" + ipaddress + ":" + port; // Sinon par défaut...
+indexUrl = "http://" + ipaddress + ":" + port; // Par défaut...
+if (hostName == "azkar-Latitude-E4200") indexUrl = "http://" + dyDns; // Si machine derrière liveBox && noip
 
 
 // liste des clients connectés
@@ -167,24 +157,24 @@ io.on('connection', function(socket, pseudo) {
 
             // Teste la présence d'un robot dans la liste des clients connectés
             // Paramètres: (hashTable,attribute,value,typeReturn) typeReturn >> boolean ou count...
-            var isOtherBot = common.searchInObjects(users2, "typeClient", "Robot", "boolean");
+            var isOtherBot = tools.searchInObjects(users2, "typeClient", "Robot", "boolean");
             if (isOtherBot == true) {
                 isAuthorized = false;
-                authMessage = "Robot déjà connecté...\n Veuillez attendre votre tour.";
+                authMessage = "Client Robot non disponible...\n Veuillez patienter.";
                 rReason = " > Because 2 Robots";
             }
 
         } else if (data.typeUser == "Pilote") {
-            var isOneBot = common.searchInObjects(users2, "typeClient", "Robot", "boolean");
+            var isOneBot = tools.searchInObjects(users2, "typeClient", "Robot", "boolean");
             if (isOneBot == false) {
                 isAuthorized = false;
-                authMessage = "Robot non connecté... \n Ressayez plus tard.";
+                authMessage = "Client Robot non connecté... \n Ressayez plus tard.";
                 rReason = " > Because no robot";
             } else if (isOtherPilot == true) {
                 // Teste la présence d'un pilote dans la liste des clients connectés
-                var isOtherPilot = common.searchInObjects(users2, "typeClient", "Pilote", "boolean");
+                var isOtherPilot = tools.searchInObjects(users2, "typeClient", "Pilote", "boolean");
                 isAuthorized = false;
-                authMessage = "Pilote déjà connecté... \n Veuillez attendre votre tour.";
+                authMessage = "Client Pilote non disponible...\n Veuillez patienter.";
                 rReason = " > Because 2 Pilotes";
             }
         } else if (data.typeUser == "Visiteur") {
@@ -219,8 +209,8 @@ io.on('connection', function(socket, pseudo) {
         // depuis le début de la session (comme une sorte de log, d'historique..)
         // et on comptera simplement le nombre de propriétés de l'objet.
         histoUsers2[socket.id] = data.pseudo + " timestamp:" + Date.now();
-        var userPlacelist = common.lenghtObject(histoUsers2);
-        // On crée un User - Fonction de référence ds la librairie common:
+        var userPlacelist = tools.lenghtObject(histoUsers2);
+        // On crée un User - Fonction de référence ds la librairie tools:
         // exports.client = function client (id,pseudo,placeliste,typeClient,connectionDate,disConnectionDate){
         var p1 = socket.id;
         var p2 = ent.encode(data.pseudo);
@@ -228,7 +218,7 @@ io.on('connection', function(socket, pseudo) {
         var p4 = data.typeUser;
         var p5 = Date.now();
         var p6 = null;
-        var objUser = new common.client(p1, p2, p3, p4, p5, p6);
+        var objUser = new tools.client(p1, p2, p3, p4, p5, p6);
 
         // On ajoute l'User à la liste des connectés
         users2[socket.id] = objUser;
@@ -236,15 +226,19 @@ io.on('connection', function(socket, pseudo) {
         // On renvoie l'User crée au nouveau connecté
         // pour l'informer entre autre de son ordre d'arrivée ds la session
         io.to(socket.id).emit('position_liste2', objUser);
+        
         // On lui envoie aussi des infos concerant le serveur (pour débug)
-		io.to(socket.id).emit('infoServer', hostName);
+		// io.to(socket.id).emit('infoServer', hostName);
+		// NB > Obsolète.. >< Remplacé par une récupération directe 
+		// depuis le client IHM en ajax par un $.get( "/getvar", function( data ) ) {}
+		
 
         // 2 - on signale à tout le monde l'arrivée de l'User
         socket.broadcast.emit('nouveau_client2', objUser);
 
 
         // 3 - on met a jour le nombre de connectés coté client"
-        nbUsers2 = common.lenghtObject(users2);
+        nbUsers2 = tools.lenghtObject(users2);
         io.sockets.emit('updateUsers', {
             listUsers: users2
         });
@@ -280,7 +274,7 @@ io.on('connection', function(socket, pseudo) {
             message: message
         });
         // On actualise le nombre de connectés  
-        nbUsers = common.lenghtObject(users2)
+        nbUsers = tools.lenghtObject(users2)
 
         // contrôle liste connectés coté serveur
         // console.log (users2);
@@ -315,12 +309,15 @@ io.on('connection', function(socket, pseudo) {
     // Partie commandes du robot par websocket (stop, moveDrive, moveSteps, goto & clicAndGo)
 
     // A la réception d'un ordre de commande en provenance du pilote
-    socket.on('moveOrder', function(data) {
+    // On le renvoie au client robot qui exécuté sur la même machine que la Robubox.
+    // Il pourra ainsi faire un GET ou un POST de la commande à l'aide d'un proxy et éviter le Cross Origin 
+    socket.on('piloteOrder', function(data) {
         // TODO >>> implémenter tests sur data.command pour apeller le traitement isoine ( onDrive, onStop, onStep, onGoto, onClicAndGo, etc...)
-        console.log("@ moveOrder >>>> " + data.command);
+        console.log("@ piloteOrder >>>> " + data.command);
         // ex: >> socket.emit("moveOrder",{ command:'Move', aSpeed:aSpeed, lSpeed:lSpeed, Enable:btHommeMort });
         // onDrive(data.enable, data.aSpeed, data.lSpeed) //
-        io.to(wsIdRobot).emit('moveOrder', data);
+        //io.to(wsIdRobot).emit('moveOrder', data);
+        io.to(wsIdRobot).emit('piloteOrder', data);
     });
 
     // ----------------------------------------------------------------------------------
@@ -374,10 +371,12 @@ io.on('connection', function(socket, pseudo) {
 
     // Pilote >> Robot: cams/micros sélectionnés par le Pilote
     socket.on('selectedRemoteDevices', function(data) {
+        // console.log("@ selectedRemoteDevices >>>> ");
+        // console.log (data);
         socket.broadcast.emit('selectedRemoteDevices', {
             objUser: data.objUser,
             listeDevices: data.listeDevices,
-            settings: data.settings
+            appSettings: data.appSettings
         });
     });
 
@@ -390,97 +389,6 @@ io.on('connection', function(socket, pseudo) {
     });
 
 });
-
-// ------------ Fonctions Commande de déplacement par websocket ( Partie Michael)------------
-
-// interfaces de lancement des fonctions d'envoi de commandes
-function onStop(parameters) {
-    console.log('todo...');
-};
-
-function onStep(parameters) {
-    console.log('todo...');
-};
-
-function onGoto(parameters) {
-    console.log('todo...');
-};
-
-function onClicAndGo(parameters) {
-    console.log('todo...');
-};
-
-/**/
-/*// Interfaces de lancement de la commande senDriveOrder 
-function onDrive(enable, aSpeed, lSpeed) {
-    var url = 'http://localhost:50000/api/drive';
-    sendDrive(url, enable, aSpeed, lSpeed)
-        .then(function() {
-            console.log('@onMoveOrder >> angular speed :' + aSpeed + '  et linear speed :' + lSpeed);
-        })
-}
-/**/
-
-
-// fonctions d'envois de commandes
-function sendStop(url) {
-    console.log('todo...');
-};
-
-function sendStep(url) {
-    console.log('todo...');
-};
-
-function sendGoto(url) {
-    console.log('todo...');
-};
-
-function sendClicAndGo(url) {
-    console.log('todo...');
-};
-/**/
-
-
-/*// Envoi d'une commande de type "Drive" au robot avec une "promize"
-function sendDrive(url, enable, aSpeed,lSpeed) {
-    var btnA = (enable == 'true' ? true : false); //  
-    return Q.Promise(function(resolve, reject, notify) {
-
-        var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance 
-
-        xmlhttp.open("POST", url);
-        xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-
-        xmlhttp.onload = onload;
-        xmlhttp.onerror = onerror;
-        xmlhttp.onprogress = onprogress;
-
-        xmlhttp.send(JSON.stringify({
-            "Enable": btnA,
-            "TargetAngularSpeed": aSpeed,
-            "TargetLinearSpeed": lSpeed
-        }));
-
-        function onload() {
-            if (xmlhttp.status === 200) {
-                resolve(xmlhttp.responseText);
-            } else {
-                reject(new Error("Status code was " + xmlhttp.status));
-            }
-        }
-
-        function onerror() {
-            reject(new Error("Can't XHR " + JSON.stringify(url)));
-        }
-
-        function onprogress(event) {
-            notify(event.loaded / event.total);
-        }
-
-    })
-}
-/**/
-
 
 // ------------ fonctions Diverses ------------
 

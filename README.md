@@ -1,10 +1,5 @@
 
-# AZKAR WebRTC V 0.7.4.0
-------------------------------------------------------------
-
-Test en ligne du script base 1to1:
-http://websocket-azkar.rhcloud.com/
-
+# 1to1 V 0.7.4.2
 ------------------------------------------------------------
 
 ### TODO's
@@ -17,26 +12,16 @@ http://websocket-azkar.rhcloud.com/
 - [x] Paths Pilotes/Robots
 - [X] Websocket
 - [X] RTCdataChannel
-- [ ] Gest° Déco/Reco
-    - [X] Implémenta° pré-signaling
-    - [X] FiX: Désacoupler déco WebSocket/WebRTC 
-    - [ ] BUGS OpenShift:
-        - [ ] Tracer TOUS les messages transitants sur le server....
-            - [ ] Implémenter Backup Logs coté serveur 
-        - [ ] BUG: OpenShift > 1 Robot déjà connecté
-        - [ ] BUG: OpenShift > Persistance msg fantômes après déco...           
+- [x] Gest° Déco/Reco           
 - [ ] Intégra° Commandes & Carto (Michael)
     - [ ] Switch WebSocket/WebRTC
     - [ ] >> Commandes Drive
-        - [X] GamePad
-        - [ ] Clavier
-        - [ ] Sécurité Homme/mort coté serveur
-            - >>> ex boucle 100ms>cmd/350ms sans recept cmd >> Stop...
-            - >>> ou boucle 50ms Bouton Homme mort GamePad >
-            - [ ] Implémentation Bas niveau > Robot (voir Robosoft)
+        - [!] GamePad
+        - [X] Sécurité Homme/mort coté serveur
+        - [X] Inversion Axes
     - [ ] Cartographie
         - [x] Chargement & mise à l'échelle 
-        - [ ] Affichage Pos Robot en Tps Réel
+        - [!] Affichage Pos Robot en Tps Réel
         - [ ] Affichage télémétrie en tps réel (optionnel)
     - [ ] Navigation 
         - [ ] Go > liste Points d'intérêts (Goto)
@@ -54,7 +39,6 @@ http://websocket-azkar.rhcloud.com/
         - [ ] Bloc robot controls 
         - [ ] Bloc robot informations
             - [ ] Charge Batterie
-            - [ ] Vitesse en temps réel
         - [x] Bloc tchat websocket
         - [X] Bloc logs webRTC
         - [X] Bloc Settings 
@@ -76,7 +60,7 @@ http://websocket-azkar.rhcloud.com/
         - [ ] traitement des données de la carte
         - [ ] récupération de la position du robot sur la carte
         - [ ] affichage de la position du robot 
-    - [x] information de la baterry
+    - [x] information de la baterrie
         - [x] récupération des informations via proxy 
         - [x] traitement des informations
         - [x] Affichage dans IHM pilote 

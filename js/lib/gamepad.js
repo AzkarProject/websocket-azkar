@@ -66,6 +66,7 @@
 		 * @method tickFunction
 		 */
 		this.tickFunction = function() {
+			//console.log ('AnimFrame.tickFunction()');
 			that.update();
 			that.startTicker();
 		};
@@ -75,7 +76,8 @@
 		 * @method startTicker
 		 */
 		this.startTicker = function() {
-			that.requestAnimationFrame.apply(win, [that.tickFunction]);
+			//that.requestAnimationFrame.apply(win, [that.tickFunction]);
+			setTimeout(that.tickFunction,100); /* rappel après 100 millisecondes */
 		};
 	};
 
@@ -101,8 +103,10 @@
 	 * @module Gamepad
 	 */
 	var ManualUpdateStrategy = function() {
-
+		
 	};
+
+
 
 	/**
 	 * Calls the update function in the started state. Does nothing otherwise.
@@ -301,6 +305,7 @@
 	 */
 	var Gamepad = function(updateStrategy) {
 		this.updateStrategy = updateStrategy || new AnimFrameUpdateStrategy();
+		//this.updateStrategy = new ManualUpdateStrategy(updateStrategy) || new AnimFrameUpdateStrategy();
 		this.gamepads = [];
 		this.listeners = {};
 		this.platform = nullPlatform;

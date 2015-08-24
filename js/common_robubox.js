@@ -1,10 +1,10 @@
 (function(exports){
 
 
-// Envoi d'une commande de type "Drive" au robot avec une "promize"
+// Envoi d'une commande de type "Drive" au robot
 exports.sendDrive = function (enable, aSpeed,lSpeed){
         
-        // console.log ("robubox.sendDrive()");
+        console.log ("robubox.sendDrive()");
         
         // var url = 'http://localhost:50000/api/drive';
         var url = "http://127.0.0.1:8080/127.0.0.1:50000/api/drive" ; // Tests CORS-ANYWHERE
@@ -23,6 +23,8 @@ exports.sendDrive = function (enable, aSpeed,lSpeed){
                 "TargetLinearSpeed": lSpeed
             }));
         xhr.closed;
+        /**/
+      
 }
 
 
@@ -31,26 +33,26 @@ exports.sendDrive = function (enable, aSpeed,lSpeed){
 // elle interroge chaque 1000ms le robot via url et retourne le niveau de la batterie en pourcentage
 exports.getBattery = function (){
         
-        // console.log ("robubox.getBattery()");
+        console.log ("robubox.getBattery()");
 
-        //var url = "http://127.0.0.1:8080/?url=http://127.0.0.1:50000/robulab/battery/battery" ;
+        //
         var url = "http://127.0.0.1:8080/127.0.0.1:50000/robulab/battery/battery" ; // Tests CORS-ANYWHERE
-        //var url = "http://127.0.0.1:50000/robulab/battery/battery"; // url est passé en paramètre , elle sera interpretée par le 
         var delay = 1000; // l'interval de temps au bout du quel on envoi une autre requete pour rafraichir les information
         var dataJson, remaining, percentage, dataString, thenum, progressBar;
 
-        /*
-            1- envoyer toutes les "delay"  ms  une requete get sur "url" 
-            2- le resultat  data  est en application/XML 
-            3- on serialise data en string 
-            4- on recupère la balise remaining 
-            5- on recupère le nombre qui est dans la balise remaining
-            6- on la converti en %
-            7- on recupère id du progressBar 
-            8- on attribue la value du pourcentage à la propriété value du progress bar  , avec un arondi
-         */
         
+            // 1- envoyer toutes les "delay"  ms  une requete get sur "url" 
+            // 2- le resultat  data  est en application/XML 
+            // 3- on serialise data en string 
+            // 4- on recupère la balise remaining 
+            // 5- on recupère le nombre qui est dans la balise remaining
+            // 6- on la converti en %
+            // 7- on recupère id du progressBar 
+            // 8- on attribue la value du pourcentage à la propriété value du progress bar  , avec un arondi
+         
         
+        // Si on est sur un serveur relié a la Robubox
+        // TODO : Externaliser affichage batterie dans module.infos.js
         setInterval(function() {
             $.get(url, function(data) { // 1 -  et 2- 
                 dataString = new XMLSerializer().serializeToString(data.documentElement); // 3- 
