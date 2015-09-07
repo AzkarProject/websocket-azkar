@@ -6,7 +6,7 @@ exports.sendDrive = function (enable, aSpeed,lSpeed){
         
         console.log ("robubox.sendDrive()");
         
-        // var url = 'http://localhost:50000/api/drive';
+        /*// var url = 'http://localhost:50000/api/drive';
         var url = "http://127.0.0.1:8080/127.0.0.1:50000/api/drive" ; // Tests CORS-ANYWHERE
 
         // function sendDrive(url, enable, aSpeed,lSpeed) {
@@ -35,7 +35,7 @@ exports.getBattery = function (){
         
         console.log ("robubox.getBattery()");
 
-        //
+        /*//
         var url = "http://127.0.0.1:8080/127.0.0.1:50000/robulab/battery/battery" ; // Tests CORS-ANYWHERE
         var delay = 1000; // l'interval de temps au bout du quel on envoi une autre requete pour rafraichir les information
         var dataJson, remaining, percentage, dataString, thenum, progressBar;

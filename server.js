@@ -331,16 +331,62 @@ io.on('connection', function(socket, pseudo) {
         });
     });
 
+    /*
     socket.on('offer', function(message) {
         socket.broadcast.emit('offer', {
             message: message
         });
     });
 
+
+
     socket.on('answer', function(message) {
         socket.broadcast.emit('answer', {
             message: message
         });
+    });
+    /**/
+
+
+    socket.on('offer2', function(data) {
+        console.log("----+offer+----");
+        console.log(">>>>> Offer From: " + data.from.pseudo +"("+data.from.id+")");
+        console.log(">>>>> Cible: " + data.cible.pseudo +"("+data.cible.id+")");
+        console.log(">>>>> peerConnectionID: " + data.peerCnxId);
+        //console.log("- message.Type: " + data.message.type);
+        //console.log("- message.sdp: " + data.message.sdp);
+        console.log(data.message);
+        console.log("----/offer/----");
+        //socket.broadcast.emit('offer', data);
+        io.to(data.cible.id).emit('offer', data);
+    });
+
+    socket.on('answer2', function(data) {
+        console.log("----+answer+----");
+        console.log(">>>>> Answer From: " + data.from.pseudo +"("+data.from.id+")");
+        console.log(">>>>> Cible: " + data.cible.pseudo +"("+data.cible.id+")");
+        console.log(">>>>> peerConnectionID: " + data.peerCnxId);
+        //console.log("- message.Type: " + data.message.type);
+        //console.log("- message.sdp: " + data.message.sdp);
+        console.log(data.message);
+        console.log("----/answer/----");
+        //socket.broadcast.emit('answer',data);
+        io.to(data.cible.id).emit('answer', data);
+    });
+
+    socket.on('candidate2', function(data) {
+        //console.log("----+candidate+----");
+        console.log(">>>>> candidate From: " + data.from.pseudo +"("+data.from.id+") to: " + data.cible.pseudo +"("+data.cible.id+")  / peerConnectionID: "+ data.peerCnxId);
+        /*
+        console.log(">>>>> Cible: " + data.cible.pseudo +"("+data.cible.id+")");
+        console.log(">>>>> peerConnectionID: " + data.peerCnxId);
+        console.log("- message.Type: " + data.message.type);
+        console.log("- message.sdp: " + data.message.sdp);
+        /**/
+        //console.log(data.message);
+        //console.log("----/candidate/----");
+        // socket.broadcast.emit('candidate',data);
+        io.to(data.cible.id).emit('candidate', data);
     });
 
 

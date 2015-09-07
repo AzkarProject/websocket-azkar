@@ -141,8 +141,20 @@ function mainSettings() {
     }
 
 
+    // 1toN > Liste de clients de type 'Visiteurs'
+    visitorsList = {};
+
+    // 1toN > Tableau des connexions WebRTC
+    peerCnxCollection = {};
+    peerCnxId = "default"; // Nom par défaut
+
+
+
     // Création de l'objet PeerConnection (CAD la session de connexion WebRTC)
-    pc = new PeerConnection(server, options);
+    //pc = new PeerConnection(server, options);
+    // peerCnxCollection[peerCnxId] =new PeerConnection(server, options);
+    // console.log(peerCnxCollection); 
+
     localStream = null;
     remoteStream = null;
     // var ws_remoteStream = null; // Stream transmit par websocket...
@@ -164,9 +176,6 @@ function mainSettings() {
     // >> pour éviter de réinitialiser +sieurs fois le même écouteur
     isRenegociate = false;
 
-    // Etat des clients pour le signaling
-    piloteCnxStatus = pc.iceConnectionState;
-    robotCnxStatus = pc.iceConnectionState;
 
 
 
@@ -389,7 +398,10 @@ if (type == "pilote-appelant") {
         console.log(">> socket.on('readyForSignaling',...");
 
         if (data.message == "ready") {
-            initLocalMedia();
+            initLocalMedia(peerCnxId);
+        
+
+
         }
     })
 
@@ -426,7 +438,7 @@ if (type == "robot-appelé") {
         //console.log(data);
 
         // On lance l'initlocalmedia
-        initLocalMedia();
+        initLocalMedia(peerCnxId);
 
         // var infoMessage = "<strong> Micro/Camera -- Activés</strong>"
         // document.getElementById("messageDevicesState").innerHTML = infoMessage;
@@ -492,14 +504,18 @@ socket.on('updateUsers', function(data) {
             listeDevices: listeLocalSources
         });
         // On lui envoie ensuite son etat de connexion
-        robotCnxStatus = pc.iceConnectionState;
+        // robotCnxStatus = pc.iceConnectionState;
+        // robotCnxStatus = peerCnxCollection[peerCnxId].iceConnectionState;
+        if ( ! peerCnxCollection["Pilote-to-Robot"] ) robotCnxStatus = 'new'; 
+        else robotCnxStatus = peerCnxCollection["Pilote-to-Robot"].iceConnectionState; 
         socket.emit("robotCnxStatus", robotCnxStatus);
     }
 
     // si on est l'apellant (Pilote)
     // ... En cas de besoin...
     if (type == "pilote-appelant") {
-        // 1 on vérifie l'état de sa propre connexion
+        if ( ! peerCnxCollection["Pilote-to-Robot"] ) piloteCnxStatus = 'new'; 
+        else piloteCnxStatus = peerCnxCollection["Pilote-to-Robot"].iceConnectionState; 
     }
 })
 
@@ -507,9 +523,10 @@ socket.on('updateUsers', function(data) {
 // ---- Phase 2 Signaling --------------------------------------------------
 
 // initialisation du localStream et appel connexion
-function initLocalMedia() {
+function initLocalMedia(peerCnxId) {
 
-    console.log("@ initLocalMedia()");
+    console.log("@ initLocalMedia("+peerCnxId+")");
+
     // Récupération des caméras et micros selectionnés  
     var audioSource = local_AudioSelect.value;
     var videoSource = local_VideoSelect.value;
@@ -528,6 +545,19 @@ function initLocalMedia() {
         }
     }
 
+    if (type == "robot-appelé" || type == "pilote-appelant") {
+         peerCnxId = "Pilote-to-Robot"; // Nom par défaut de la connexion
+    }
+   
+
+    peerCnxCollection[peerCnxId] =new PeerConnection(server, options);
+    console.log("new peerCnxCollection["+peerCnxId+"]"); 
+    console.log(peerCnxCollection); 
+
+    // Etat des clients pour le signaling
+    piloteCnxStatus = peerCnxCollection[peerCnxId].iceConnectionState; 
+    robotCnxStatus = peerCnxCollection[peerCnxId].iceConnectionState;
+
     // Initialisation du localStream et lancement connexion
     navigator.getUserMedia(constraint, function(stream) {
 
@@ -541,8 +571,11 @@ function initLocalMedia() {
             if (parameters.lRview != 'show') showLocalVideo = false;
         }
         if (showLocalVideo == true) video1.src = URL.createObjectURL(localStream);
-        pc.addStream(localStream);
-        connect();
+        //pc.addStream(localStream);
+        //connect();
+        
+        peerCnxCollection[peerCnxId].addStream(localStream);
+        connect(peerCnxId);
 
 
 
@@ -551,11 +584,11 @@ function initLocalMedia() {
 };
 
 // initialisation de la connexion
-function connect() {
+function connect(peerCnxId) {
 
     //console.log ("@ connect()");
     debugNbConnect += 1;
-    console.log("@ connect(" + debugNbConnect + ") > rôle: " + type);
+    console.log("@ connect("+peerCnxId+") > rôle: " + type);
     isStarted = true;
 
     // Ecouteurs communs apellant/apellé
@@ -564,7 +597,7 @@ function connect() {
     // Ecouteurs de l'API WebRTC -----------------
 
     // Ecouteur déclenché à la génération d'un candidate 
-    pc.onicecandidate = function(e) {
+    peerCnxCollection[peerCnxId].onicecandidate = function(e) {
         //console.log("@ pc.onicecandidate > timestamp:" + Date.now());
         // vérifie que le candidat ne soit pas nul
         if (!e.candidate) {
@@ -580,12 +613,21 @@ function connect() {
         // que pour réduire les délais de signaling des tests locaux
         // -----------------------------------------
         // Envoi du candidate généré à l'autre pair
-        socket.emit("candidate", e.candidate);
+        // socket.emit("candidate", e.candidate);
+    
+        var cible = ""; // TODO: choisir la cible en fonction de l'ID PeerConnexion....
+        if (type === "pilote-appelant" ) cible = getClientBy('typeClient','Robot');
+        else if ( type === "robot-appelé") cible = getClientBy('typeClient','Pilote');
+        console.log ("------------ candidate >>> ----------");
+        var data = {from: localObjUser, message: e.candidate, cible: cible, peerCnxId: peerCnxId}
+        // console.log (data);
+        socket.emit("candidate2", data);
+    
     };
 
 
     // Ecouteur déclenché a la reception d'un remoteStream
-    pc.onaddstream = function(e) {
+    peerCnxCollection[peerCnxId].onaddstream = function(e) {
 
         console.log("@ pc.onaddstream > timestamp:" + Date.now());
         remoteStream = e.stream;
@@ -603,20 +645,24 @@ function connect() {
 
 
     // Ecouteurs de changement de statut de connexion
-    // Permet de déterminer si le pair distant s'est déconnecté.
-    pc.oniceconnectionstatechange = function(e) {
+    // Permet de déterminer si le pair distant s'est déconnecté. (Version 1to1)
+    peerCnxCollection[peerCnxId].oniceconnectionstatechange = function(e) {
 
         //var newDate = tools.dateNowInMs();
         var dateE = tools.dateER('E');
         console.log("@ pc.oniceconnectionstatechange > " + dateE);
 
+        console.log(">>> stateConnection Event > " + peerCnxCollection[peerCnxId].iceConnectionState);
+        $(chatlog).prepend(dateE + ' [stateConnection Event] ' + peerCnxCollection[peerCnxId].iceConnectionState + '\n');
 
-        console.log(">>> stateConnection Event > " + pc.iceConnectionState);
-        $(chatlog).prepend(dateE + ' [stateConnection Event] ' + pc.iceConnectionState + '\n');
+        // Si la connexion est neuve, on remet le flag de renégo à sa position par défaut...
+        if ( peerCnxCollection[peerCnxId].iceConnectionState == 'new') isRenegociate = false; 
 
+        
         // On informe l'autre pair de son statut de connexion   
         if (type == 'pilote-appelant') {
-            piloteCnxStatus = pc.iceConnectionState;
+            piloteCnxStatus = peerCnxCollection[peerCnxId].iceConnectionState;
+
             socket.emit("piloteCnxStatus", piloteCnxStatus);
             // Si on change de status suite à une déco du robot
             // On redéclenche l'ouverture des formulaires de connexion 
@@ -626,168 +672,139 @@ function connect() {
             }
 
         } else if (type == 'robot-appelé') {
-            robotCnxStatus = pc.iceConnectionState;
+            robotCnxStatus = peerCnxCollection[peerCnxId].iceConnectionState;
             socket.emit("robotCnxStatus", robotCnxStatus);
         }
-        /**/
-
-        // On lance le processus de décoonnexion pour préparer une reconnexion
-        if (pc.iceConnectionState == 'disconnected') {
-            onDisconnect();
+ 
+        // si le pair distant est déconnecté, on lance le processus préparatoire a une reconnexion
+        if (peerCnxCollection[peerCnxId].iceConnectionState == 'disconnected') {   
+            onDisconnect(peerCnxId);
         }
-
-        // Si 
-
-        // Fix Bug renégociation > Coté Robot on attend d'avoir 
-        // l'état du statut pc.iceConnectionState à "new"
-        /*// pour lancer le message de fin de pré-signaling. 
-        if ( pc.iceConnectionState == 'new' && type == "robot-appelé") {
-            alert (">> Send Msg WS readyForSignaling")
-            socket.emit('readyForSignaling', {objUser:localObjUser,message:"ready"});
-        }
-        /**/
-
-
-        // console.log(">>> isStarted = "+ isStarted);
-        /**/
-        // Statut connected: env 1 seconde de latence
-        // Statut completed: env 13 secondes de latence
-        // Statut deconnected: env 7 secondes de latence
-        // Par contre, coté websocket, on est informé immédiatement d'une décco...
-        // En utilisant l'ecouteur coté serveur. DONC : 
-        // PLAN B > Utiliser Websocket +tôt que l'écouteur webRTC
-        // Because c'est nettement plus rapide et réactif...
-
-        // TEST: A la reception d'un statut "completed"
-        // On vide les IceCandidates...
-
 
     };
 
     // Ecouteur ... // OK instancié...
-    pc.onremovestream = function(e) {
+    peerCnxCollection[peerCnxId].onremovestream = function(e) {
         console.log("@ pc.onremovestream(e) > timestamp:" + Date.now());
         console.log(e);
     }
 
-    // Ecouteurs de l'API websocket -----------------
-
-    // Réception d'un ICE Candidate
-    socket.on("candidate", function(data) {
-        console.log(">> socket.on('candidate',...");
-        // TODO : ici intercepter et filter le candidate
-        // >> ex >>> if (candidate == stun) {addIceCandidate} else {return;}
-        //console.log( ">>> candidate from ("+data.placeListe+")"+data.pseudo);    
-        // console.log(data);
-        pc.addIceCandidate(new IceCandidate(data.message)); // OK
-    });
-
-    // Réception d'une réponse à une offre
-    socket.on("answer", function(data) {
-        // console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-        console.log(">> socket.on('answer',...");
-        //console.log( ">>> answer from ("+data.placeListe+")"+data.pseudo); 
-        //console.log(data.message);
-        pc.setRemoteDescription(new SessionDescription(data.message));
-    });
-
-
-    /*// BUG Qd le client n'as pas encore connecté...
-    // On déplace vers ws_manager...
-    // Réception d'une info de deconnexion 
-    // >>> plus réactif que l'écouteur de l'API WebRTC
-    socket.on("disconnected", function(data) { 
-        console.log(">> socket.on('disconnected',...");
-        // On met à jour la liste des cliens connectés
-        var users = data;
-        var debug = tools.stringObjectDump(users,"users");
-        console.log(debug); 
-
-        // On lance la méthode de préparatoire a la renégo
-        onDisconnect();
-    });
-    /**/
-
-    // Fonctions communes apellant/apellé
-
-    function doAnswer(sessionDescription) {
-
-        // Hack > correction Bub de renégo
-        // objet MediaStream du sdp est vide si renégo
-        // Plan B >> passer par websocket +tôt que par l'API WebRTC
-        // Pour faire passer le localStram de l'apellé à l'apellant
-        // socket.emit("stream", localStream);
-        // ------------
-        // 
-        pc.setLocalDescription(sessionDescription);
-        socket.emit("answer", sessionDescription);
-    }
-
-
-    function doOffer(sessionDescription) {
-        pc.setLocalDescription(sessionDescription);
-        socket.emit("offer", sessionDescription);
-    }
-
-
+    
     // Si on est l'apellant
     if (type === "pilote-appelant") {
         //console.log("+++++++++ apellant ++++++++++++++ ");
 
         // l'apellant crée un dataChannel
-        channel = pc.createDataChannel("mychannel", {});
-        // can bind events right away
+        channel = peerCnxCollection[peerCnxId].createDataChannel("mychannel", {});
+        // et peut maintenant lancer l'écouteur d'évènement sur le datachannel
         bindEvents();
 
-        // création de l'offre SDP
-        pc.createOffer(doOffer, errorHandler, constraints);
-
+        // création et envoi de l'offre SDP
+        var cible = getClientBy('typeClient','Robot');
+        peerCnxCollection[peerCnxId].createOffer(function(sdp){
+                    peerCnxCollection[peerCnxId].setLocalDescription(sdp);
+                    console.log ("------------ offer >>> ----------");
+                    var data = {from: localObjUser, message: sdp, cible: cible, peerCnxId: peerCnxId}
+                    // console.log (data);
+                    socket.emit("offer2", data);
+                }
+                , errorHandler, 
+                constraints
+            );
 
         // Sinon si on est l'apellé (Robot)
     } else if (type === "robot-appelé") {
-        //console.log("+++++++++ appelé ++++++++++++++ ");
-        // dataChannel
-        // answerer must wait for the data channel
-
-        //console.log("channel: "+channel);
+        
+        // l'appelé doit attendre l'ouverture d'un dataChannel pour lancer son écouteur d'èvènement data...
         // Ecouteur d'ouverture d'un data channel
-        pc.ondatachannel = function(e) {
+        peerCnxCollection[peerCnxId].ondatachannel = function(e) {
             channel = e.channel;
             console.log("pc.ondatachannel(e)... ");
-            //console.log("channel: "+channel);
             bindEvents(); //now bind the events
         };
-        /**/
-
-        // L'apellé doit attendre de recevoir une offre SDP
-        // avant de générer une réponse SDP
-        // ---------------------------------
-        // Ok au premier passage
-        // BUG a la renégo > ne déclenches plus le onAddStream... 
-        // FIX: réinstancier onAddStream après reinstanciation PeerConnection
-        // BUG a la renégo > Envoie 2 answers...
-        // Cause: L'écouteur de reception "offer"est instancié 2 fois...
-        // FIX: ajout d'un flag "isRenegociate = false;" 
-        if (isRenegociate == false) {
-            socket.on("offer", function(data) {
-                //console.log("(apellé)>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-                console.log(">>> offer from (" + data.placeListe + ")" + data.pseudo);
-                //console.log (data.message);
-                pc.setRemoteDescription(new SessionDescription(data.message));
-                // Une foi l'offre reçue et celle-ci enregistrée
-                // dans un setRemoteDescription, on peu enfin générer
-                // une réponse SDP
-                pc.createAnswer(doAnswer, errorHandler, constraints);
-            });
-        }
 
     }
 }
 
+
+// Ecouteurs Signaling de l'API websocket -----------------
+
+
+// L'apellé doit attendre de recevoir une offre SDP
+// avant de générer une réponse SDP
+// ---------------------------------
+// Ok au premier passage
+// BUG a la renégo > ne déclenches plus le onAddStream... 
+// FIX: réinstancier onAddStream après reinstanciation PeerConnection
+// BUG a la renégo > Envoie 2 answers...
+// Cause: L'écouteur de reception "offer"est instancié 2 fois...
+// FIX: ajout d'un flag "isRenegociate = false;" 
+socket.on("offer", function(data) {
+    console.log ("------------ >>> offer ----------");
+    console.log ("isRenegociate:"+isRenegociate);
+    if (isRenegociate == false) {            
+
+        //console.log("(apellé)>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        //peerCnxCollection[peerCnxId].setRemoteDescription(new SessionDescription(data.message));
+        //peerCnxCollection[peerCnxId].createAnswer(doAnswer, errorHandler, constraints);           
+
+        // ------------- Version 1toN
+        var offer = new SessionDescription(data.message);
+        
+        //console.log("- Offer From: " + data.from.pseudo +"("+data.from.id+")");
+        //console.log("- Cible: " + data.cible.pseudo +"("+data.cible.id+")");
+        //console.log("- peerconnection: " + data.peerCnxId);
+        //console.log (offer);
+        peerCnxCollection[data.peerCnxId].setRemoteDescription(offer); 
+        
+        // Une foi l'offre reçue et celle-ci enregistrée dans un setRemoteDescription,
+        // on peu enfin générer une réponse SDP 
+        var cible = getClientBy('id', data.from.id);
+        var idPeerConnection = data.peerCnxId;
+
+        // création de l'offre SDP
+        peerCnxCollection[idPeerConnection].createAnswer(function(sdp){
+                peerCnxCollection[idPeerConnection].setLocalDescription(sdp);
+                console.log ("------------ Answer >>> ----------");
+                var data = {from: localObjUser, message: sdp, cible: cible, peerCnxId: idPeerConnection}
+                //console.log (data);
+                socket.emit("answer2", data);
+            }
+            , errorHandler, 
+            constraints
+        );
+    }
+});
+/**/
+
+
+// Réception d'une réponse à une offre
+socket.on("answer", function(data) {
+    console.log ("------------ >>>> Answer ----------");
+    //console.log("- Answer From: " + data.from.pseudo +"("+data.from.id+")");
+    //console.log("- Cible: " + data.cible.pseudo +"("+data.cible.id+")");
+    //console.log("- peerconnection: " + data.peerCnxId);
+    //console.log (data.message);
+    peerCnxCollection[data.peerCnxId].setRemoteDescription(new SessionDescription(data.message));
+
+});
+
+// Réception d'un ICE Candidate
+socket.on("candidate", function(data) {
+    console.log ("------------ >>>> Candidate ----------");
+    //console.log("- candidate From: " + data.from.pseudo +"("+data.from.id+")");
+    //console.log("- Cible: " + data.cible.pseudo +"("+data.cible.id+")");
+    //console.log("- peerconnection: " + data.peerCnxId);
+    //console.log (data.message);
+    // TODO : ici intercepter et filter le candidate
+    peerCnxCollection[data.peerCnxId].addIceCandidate(new IceCandidate(data.message)); // OK
+});
+
+
 // ----- Phase 3 Post-Signaling --------------------------------------------
 
 // A la déconnection du pair distant:
-function onDisconnect() {
+function onDisconnect(peerCnxId) {
 
     console.log("@ onDisconnect()");
 
@@ -807,29 +824,28 @@ function onDisconnect() {
 
     // On vide et on ferme la connexion courante
     // pc.onicecandidate = null;
-    pc.close();
-    pc = null;
+    //pc.close();
+    //pc = null;
 
-    stopAndStart();
+    peerCnxCollection[peerCnxId].close();
+    peerCnxCollection[peerCnxId] = null;
+    stopAndStart(peerCnxId);
 }
 
 // Fermeture et relance de la connexion p2p par l'apellé (Robot)
-function stopAndStart() {
+function stopAndStart(peerCnxId) {
 
     console.log("@stopAndStart()");
     input_chat_WebRTC.disabled = true;
     input_chat_WebRTC.placeholder = "RTCDataChannel close";
     env_msg_WebRTC.disabled = true;
 
-    pc = new PeerConnection(server, options);
+    peerCnxCollection[peerCnxId] = new PeerConnection(server, options);
+
     // console.log("------pc = new PeerConnection(server, options);-----");
 
     // On informe la machine à état que c'est une renégociation
     isRenegociate = true;
-
-    // On relance le processus
-    // initLocalMedia();
-    // connect();
 };
 
 // -------------------- Méthodes RTCDataChannel ----------------------
@@ -967,3 +983,16 @@ function alertAndRedirect(message, url) {
     window.alert(message)
     window.location.href = url;
 }
+
+
+// ------ fonctions diverses ---------------
+
+
+function getClientBy(key,value) {
+    for (i in users.listUsers) {
+        if (users.listUsers[i][key] == value) {
+                return users.listUsers[i];
+                break;
+        }
+    }
+};

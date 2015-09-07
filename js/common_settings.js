@@ -1,11 +1,11 @@
 (function(exports){
 
 exports.appName = function(){
-    return 'AZKAR 1to1';
+    return 'AZKAR 1toN';
 };
 
 exports.appVersion = function(){
-    return '0.7.4.3';
+    return '0.8.3.1';
 };
 
 exports.appHostName = function(){
@@ -13,7 +13,7 @@ exports.appHostName = function(){
 };
 
 exports.appBranch = function(){
-    return 'master';
+    return '1to1-refacto';
 };
 
 })(typeof exports === 'undefined'? this['settings']={}: exports);

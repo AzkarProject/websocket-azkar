@@ -99,7 +99,7 @@ socket.on("disconnected", function(data) {
   // On met à jour la liste des cliens connectés
   var users = data;
   var debug = tools.stringObjectDump(users,"users");
-  console.log(debug); 
+  // console.log(debug); 
   
   // On lance la méthode de préparatoire à la renégo WebRTC
   // Todo >>>> Tester déclenchement a la detection WebRTC...
