@@ -5,7 +5,7 @@
 // Initialisation des variables, objets et paramètres du script
 // NB toutes les variables sont déclarées en global...
 function mainSettings() {
-    console.log("@mainSettings()");
+    console.log("@ mainSettings()");
     
     onMove = false; // Flag > Si un mouvement est en cours
     //lastMoveTimeStamp =  Date.now(); // Variable globale pour la détection du dernier mouvement (homme mort)...
@@ -56,6 +56,14 @@ function mainSettings() {
         local_VideoSelect.disabled = true;
     }
 
+    // (Visiteur-Appelé) > Activation/Désactivation préalable 
+    // Du formulaire de sélection des devices locaux
+    if (type == "visiteur-appelé") {
+        local_ButtonDevices.disabled = true;
+        local_AudioSelect.disabled = true;
+        local_VideoSelect.disabled = true;
+    }
+    
     // Liste des sources cam/micro
     listeLocalSources = {};
     listeRemoteSources = {};
@@ -146,9 +154,8 @@ function mainSettings() {
 
     // 1toN > Tableau des connexions WebRTC
     peerCnxCollection = {};
+    peerCnx1to1 = "Pilote-to-Robot"; // connexion principale Pilote/Robot
     peerCnxId = "default"; // Nom par défaut
-
-
 
     // Création de l'objet PeerConnection (CAD la session de connexion WebRTC)
     //pc = new PeerConnection(server, options);
@@ -196,7 +203,7 @@ socket.on('rejectConnexion', function(data) {
 // disponibles localement et a distance
 function gotSources(sourceInfos) {
 
-    console.log("@gotSources(sourceInfos)");
+    console.log("@ gotSources()");
     //console.log(sourceInfos);
 
     // Si sources locales (pilote)
@@ -372,7 +379,116 @@ function localManageDevices() {
     }
 }
 
+
+// ------------ Adds 1toN -------------------------
+// Action exclusive au visiteur qui vient de se connecter:
+// le visiteur vérifie que le Pilote(ou le robot) est prêt à accepter la connexion
+// Cette fonction est appelée après que le connecté à reçu ses identifiants
+function requestClearance(cible) {  
+    // console.log ("@ requestClearance");
+    console.log (">> socket.emit('requestClearance', cible:"+cible.pseudo+")");
+    //socket.emit("isPilotReadyForVisitor", localObjUser);
+    socket.emit("requestClearance", {from:localObjUser , cible:cible});
+}
+
+
+// IHM visiteur:
+// A la reception du GO du pilote
+// Ouverture du formulaire de selection des devices du visiteur 
+// Avec animation CSS d'invite du formulaire
+function openVisitorDevices() {
+
+    console.log("@ openVisitorDevices()");
+    // Activation
+
+    local_ButtonDevices.disabled = false;
+    local_AudioSelect.disabled = false;
+    local_VideoSelect.disabled = false;
+
+    // Invite de formulaire...
+    document.getElementById("visitorDevices").className = "insideFlex oneQuarterbox visiteur shadowGreen devicesInvite";
+}
+
+
+// IHM visiteur: A la reception d'une déconnexion du pilote
+// Fermeture du formulaire de selection des devices
+function closeVisitorDevices() {
+
+    console.log("@ closeVisitorDevices()");
+    // Activation
+
+    local_ButtonDevices.disabled = true;
+    local_AudioSelect.disabled = true;
+    local_VideoSelect.disabled = true;
+
+    // Invite de formulaire...
+    document.getElementById("visitorDevices").className = "insideFlex oneQuarterbox visiteur shadowBlack devicesDisabled ";
+}
+
+
+
+
+// IHM visiteur: a la soumission du formulaire de demande de connexion avec le pilote :
+function onSubmitVisitordevices() {
+
+    console.log("@ onSubmitVisitordevices()");
+    local_ButtonDevices.disabled = true;
+    local_AudioSelect.disabled = true;
+    local_VideoSelect.disabled = true;
+
+    // Animation CSS de désactivation du formulaire de connexion visiteur...
+    document.getElementById("visitorDevices").className = "insideFlex oneQuarterbox  visiteur shadowBlack devices  ";
+
+    
+    // 1 On récupère l'objet client du pilote et son ID:
+    var pilote = getClientBy("typeClient","Pilote");
+    var peerID = 'pilote-Visiteur-' + myPlaceListe +"-"+myPeerID;
+    console.log("peerID de la connexion Pilote/Visiteur : "+peerID);
+
+    /*// 1 On balance au pilote une demande de connexion
+    socket.emit('requestConnect', {
+                from: localObjUser,
+                cible: pilote,
+                peerID:peerID
+            }); 
+    /**/
+
+    // 2 On récupère le peerID du pilote dans la liste des connectés
+    // Et on lance l'initLocalMedia avec l'ID du pair a connecter
+    // var peerID = null;
+    // for (i in users.listUsers) {
+        // if (users.listUsers[i]['typeClient'] == "Pilote") {
+                // console.log(">>>>>>>>>> " + users.listUsers[i]['typeClient']  + " " +users.listUsers[i]['peerID'] );
+                //break;
+        //}
+    //}
+    
+
+    initLocalMedia(peerID);
+}
+/**/// ------------ / Adds 1toN / -------------------------
+
+
+
 // -- > ecouteurs webSocket de pré-signaling
+
+// ------------ Adds 1toN -------------------------
+
+// Reception d'une demande de clearance
+socket.on('requestClearance', function(data) {
+    console.log (">> socket.on('requestClearance',...");
+    //console.log (visitor);
+    // Si la connexion avec le Robot est déja initialisée
+    if (isStarted == true) { // False pour tests...
+        socket.emit('responseClearance', {
+            from: localObjUser,
+            cible: data.from,
+            message: "ready"
+        }); 
+    }
+});
+
+/**/// ------------ / Adds 1toN / -------------------------
 
 // Ecouteurs Websockets exclusifs au Pilote (appelant)
 if (type == "pilote-appelant") {
@@ -381,13 +497,8 @@ if (type == "pilote-appelant") {
     // coté serveur >> socket.broadcast.emit('remoteListDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
     socket.on('remoteListDevices', function(data) {
         console.log(">> socket.on('remoteListDevices',...");
-
-        // console.log(data.listeDevices);
-        // console.log("--------------------------------------");
-
         // On renseigne  le flag d'ogigine
         origin = "remote";
-
         // On alimente les listes de micro/caméra distantes
         gotSources(data.listeDevices);
 
@@ -396,24 +507,23 @@ if (type == "pilote-appelant") {
     // Reception du signal de fin pré-signaling
     socket.on("readyForSignaling", function(data) {
         console.log(">> socket.on('readyForSignaling',...");
-
         if (data.message == "ready") {
-            initLocalMedia(peerCnxId);
-        
-
-
-        }
+            // initLocalMedia(peerCnxId); 
+            initLocalMedia(peerCnx1to1);
+         }
     })
 
 
-    // Reception du statut de connexion du robot
+    /*// Reception du statut de connexion du robot
     socket.on("robotCnxStatus", function(data) {
         robotCnxStatus = data.message;
+        // Version 1to1
         // On vérifie l'état de sa propre connexion et de celle du robot
         if (piloteCnxStatus == 'new' && robotCnxStatus == 'new') {
             activeManageDevices(); // On acive les formulaires permettant de relancer la connexion
         }
     });
+    /**/
 }
 
 // Ecouteurs Websockets exclusifs au Robot (appelé)
@@ -438,10 +548,7 @@ if (type == "robot-appelé") {
         //console.log(data);
 
         // On lance l'initlocalmedia
-        initLocalMedia(peerCnxId);
-
-        // var infoMessage = "<strong> Micro/Camera -- Activés</strong>"
-        // document.getElementById("messageDevicesState").innerHTML = infoMessage;
+        initLocalMedia(peerCnx1to1);
 
         var infoMicro = "<strong> Micro Activé </strong>"
         var infoCam = "<strong> Caméra Activée </strong>"
@@ -461,10 +568,11 @@ if (type == "robot-appelé") {
         }); // Version objet
     })
 
-    // Reception du statut de connexion du pilote
-    socket.on("pilotetCnxStatus", function(data) {
+    /*// Reception du statut de connexion du pilote
+    socket.on("piloteCnxStatus", function(data) {
         piloteCnxStatus = data.message;
     });
+    /**/
 
 
     // Reception d'une commande pilote
@@ -484,14 +592,90 @@ if (type == "robot-appelé") {
 
 }
 
-// Quand on reçoit une mise à jour de la liste 
-// des connectés de cette session websocket
-// C.A.D un nouvel arrivant...
+// ---------------- + Version 1toN + ---------------
+// Ecouteurs Websockets exclusifs au visiteur
+if (type == "visiteur-appelé") {
+    
+    // Reception d'une réponse de clearance de présignaling 
+    socket.on('responseClearance', function(data) {
+        console.log(">> socket.on('responseClearance',...");
+        // si le visiteur est en attente de sa connexion principale avec le pilote
+        if (isStarted == false && data.message == "ready") openVisitorDevices();
+     });
+
+    
+    // Reception d'une déclaration de clearance de présignaling 
+    socket.on('signaleClearance', function(data) {
+        console.log(">> socket.on('signaleClearance',...");
+        // si le visiteur est en attente de sa connexion principale avec le pilote
+        if (isStarted == false && data.message == "ready") openVisitorDevices();
+     });
+
+    // Reception d'un signal de déconection du pilote
+    socket.on('closeMasterConnection', function(data) {
+        console.log(">> socket.on('closeMasterConnection',...");
+        closeVisitorDevices();
+        //if (data == "disconnected") closeVisitorDevices();
+     });
+
+
+  
+}
+/**/ //------------- / Version 1toN /------------
+
+// Reception du statut de connexion du pilote
+socket.on("piloteCnxStatus", function(data) {
+    console.log('>> socket.on("piloteCnxStatus" , '+data.message);
+    piloteCnxStatus = data.message;
+});
+/**/
+
+// Reception du statut de connexion du robot
+socket.on("robotCnxStatus", function(data) {
+    console.log('socket.on("robotCnxStatus" , '+data.message);
+    robotCnxStatus = data.message;
+
+    // Version 1to1
+    // Si on est le pilote, on vérifie sa propre connexion et celle du robot
+    // si tout est propre, on active le formulaire de lancement (Selection des caméras du robot à activer...)
+    if (type == "pilote-appelant") {
+        if (piloteCnxStatus == 'new' && robotCnxStatus == 'new') {
+            if (type == "pilote-appelant") activeManageDevices(); 
+        }
+    }
+    
+    /**/// ---- / Version 1to1
+
+    /*// Version 1toN:
+    // On teste si la connexion avec le robot et déjà existante a l'aide du peerID du robot,
+    // Si ce n'est pas le cas, on peut générer un statut "new" par défaut pour sa propre connexion
+    var robotPeerID = null;
+    for (i in users.listUsers) {
+        if (users.listUsers[i]['typeClient'] == "Robot") {
+                console.log(">>>>>>>>>> " + users.listUsers[i]['typeClient']  + " " +users.listUsers[i]['peerID'] );
+                robotPeerID = users.listUsers[i]['peerID'];
+                break;
+        }
+    }
+
+    if ( ! peerCnx[robotPeerID] ) piloteCnxStatus = 'new'; 
+    else piloteCnxStatus = peerCnx[robotPeerID].iceConnectionState; 
+    if (piloteCnxStatus == 'new' && robotCnxStatus == 'new') {
+        activeManageDevices(); // On acive les formulaires permettant de relancer la connexion
+    }
+    /**/// ---- / Version 1toN
+
+});
+
+
+
+
+// Quand on reçoit un update de la liste des clietns websockets 
+// C.A.D à chaque nouveln arrivant... 
 socket.on('updateUsers', function(data) {
 
     console.log(">> socket.on('updateUsers',...");
     // On met à jour la liste locale des connectés...
-    // console.log(data);
     users = data;
     //var debug = tools.stringObjectDump(users,"users");
     //console.log(debug);
@@ -499,25 +683,85 @@ socket.on('updateUsers', function(data) {
     // si on est l'apellé  (Robot)
     // On renvoie à l'autre pair la liste de ses devices
     if (type == "robot-appelé") {
+        
         socket.emit('remoteListDevices', {
             objUser: localObjUser,
             listeDevices: listeLocalSources
         });
-        // On lui envoie ensuite son etat de connexion
-        // robotCnxStatus = pc.iceConnectionState;
-        // robotCnxStatus = peerCnxCollection[peerCnxId].iceConnectionState;
-        if ( ! peerCnxCollection["Pilote-to-Robot"] ) robotCnxStatus = 'new'; 
-        else robotCnxStatus = peerCnxCollection["Pilote-to-Robot"].iceConnectionState; 
+        
+        // On envoie ensuite son etat de connexion - Version 1to1
+        if ( ! peerCnxCollection[peerCnx1to1] ) robotCnxStatus = 'new'; 
+        else robotCnxStatus = peerCnxCollection[peerCnx1to1].iceConnectionState; 
         socket.emit("robotCnxStatus", robotCnxStatus);
+        
+        /**/// -- /Version 1to1
+
+        /*// Version 1toN:
+        // On teste si la connexion avec le pilote et déjà existante a l'aide du peerID du pilote,
+        // Si ce n'est pas le cas, on peut envoyer envoyer un statut "new" par défaut
+        // utile dans le cas d'une renégociation par exemple, pour les délais de temporisation...
+        var pilotePeerID = null;
+        for (i in users.listUsers) {
+            if (users.listUsers[i]['typeClient'] == "Pilote") {
+                    console.log(">>>>>>>>>> " + users.listUsers[i]['typeClient']  + " " +users.listUsers[i]['peerID'] );
+                    pilotePeerID = users.listUsers[i]['peerID'];
+                    break;
+            }
+        }
+        
+        if ( ! peerCnx[pilotePeerID] ) robotCnxStatus = 'new'; 
+        else robotCnxStatus = peerCnx[pilotePeerID].iceConnectionState; 
+        // -----------------
+        //robotCnxStatus = 'new'; // Provisoire. A virer après débuggage...
+        console.log ("robotCnxStatus = " +robotCnxStatus);
+        socket.emit("robotCnxStatus", robotCnxStatus);
+        /**/// -- /Version 1toN
     }
 
-    // si on est l'apellant (Pilote)
+    // si on est le pilote, 
     // ... En cas de besoin...
     if (type == "pilote-appelant") {
-        if ( ! peerCnxCollection["Pilote-to-Robot"] ) piloteCnxStatus = 'new'; 
-        else piloteCnxStatus = peerCnxCollection["Pilote-to-Robot"].iceConnectionState; 
+        // on met à jour son status de connexion
+        if ( ! peerCnxCollection[peerCnx1to1] ) piloteCnxStatus = 'new'; 
+        else piloteCnxStatus = peerCnxCollection[peerCnx1to1].iceConnectionState; 
+        socket.emit("piloteCnxStatus", piloteCnxStatus);
+    }
+    
+
+    // Si on est un visiteur
+    if (type == "visiteur-appelé") {
+      // Si le Visiteur n'est pas encore connecté....
+      // Il fait une demande de clearance au Pilote
+      if (isStarted == false) {
+        var cibleRequest = getClientBy('typeClient','Pilote');
+        requestClearance(cibleRequest);
+        }
     }
 })
+
+/*// Version 1toN
+// Seul le pilote est concerné par cet écouteur... 
+socket.on('requestConnect', function(data) {
+
+    console.log(">> socket.on('requestConnect',...");
+    // Object {from: Object, cible: Object, peerID: "QYcwmZw4Dv5wRCbFAAABVH2trymv2wmk_RoqAAAC"}
+    console.log(data);
+    // 1 On contrôle le nombre de connexions dans le tableau de connexions
+    // 2 Provisoire (pour tests): Si aucune connexion, on lance l'initLocalmedia(peerID)
+    // 3 Sinon on instancie la connexion ici, on lui ajoute le localStream et on lance la méthode connect(peerID)
+    //console.log(peerCnx);
+    var countConnections = tools.countObjects(peerCnx);
+    if (countConnections === 0) {
+        initLocalMedia(data.peerID);
+    } else {
+       peerCnx[peerID] = new PeerConnection(server, options);
+       peerCnx[peerID].addStream(localStream);
+       // Lancement du signaling 
+       connect(peerID);   
+    } 
+});
+/**/ // ------------ / Version 1toN
+
 
 
 // ---- Phase 2 Signaling --------------------------------------------------
@@ -545,9 +789,11 @@ function initLocalMedia(peerCnxId) {
         }
     }
 
+    /*
     if (type == "robot-appelé" || type == "pilote-appelant") {
          peerCnxId = "Pilote-to-Robot"; // Nom par défaut de la connexion
     }
+    /**/
    
 
     peerCnxCollection[peerCnxId] =new PeerConnection(server, options);
@@ -555,8 +801,8 @@ function initLocalMedia(peerCnxId) {
     console.log(peerCnxCollection); 
 
     // Etat des clients pour le signaling
-    piloteCnxStatus = peerCnxCollection[peerCnxId].iceConnectionState; 
-    robotCnxStatus = peerCnxCollection[peerCnxId].iceConnectionState;
+    piloteCnxStatus = peerCnxCollection[peerCnx1to1].iceConnectionState; 
+    robotCnxStatus = peerCnxCollection[peerCnx1to1].iceConnectionState;
 
     // Initialisation du localStream et lancement connexion
     navigator.getUserMedia(constraint, function(stream) {
@@ -588,7 +834,7 @@ function connect(peerCnxId) {
 
     //console.log ("@ connect()");
     debugNbConnect += 1;
-    console.log("@ connect("+peerCnxId+") > rôle: " + type);
+    console.log("@ connect("+peerCnxId+") n°"+debugNbConnect+"> rôle: " + type);
     isStarted = true;
 
     // Ecouteurs communs apellant/apellé
@@ -648,42 +894,76 @@ function connect(peerCnxId) {
     // Permet de déterminer si le pair distant s'est déconnecté. (Version 1to1)
     peerCnxCollection[peerCnxId].oniceconnectionstatechange = function(e) {
 
-        //var newDate = tools.dateNowInMs();
         var dateE = tools.dateER('E');
         console.log("@ pc.oniceconnectionstatechange > " + dateE);
 
         console.log(">>> stateConnection Event > " + peerCnxCollection[peerCnxId].iceConnectionState);
         $(chatlog).prepend(dateE + ' [stateConnection Event] ' + peerCnxCollection[peerCnxId].iceConnectionState + '\n');
 
+
         // Si la connexion est neuve, on remet le flag de renégo à sa position par défaut...
         if ( peerCnxCollection[peerCnxId].iceConnectionState == 'new') isRenegociate = false; 
 
-        
-        // On informe l'autre pair de son statut de connexion   
-        if (type == 'pilote-appelant') {
-            piloteCnxStatus = peerCnxCollection[peerCnxId].iceConnectionState;
 
-            socket.emit("piloteCnxStatus", piloteCnxStatus);
-            // Si on change de status suite à une déco du robot
-            // On redéclenche l'ouverture des formulaires de connexion 
-            // a la condition que le robot soit lui aussi prêt a se reconnecter... (new...)
-            if (piloteCnxStatus == 'new' && robotCnxStatus == 'new') {
-                activeManageDevices(); // On active les formulaires permettant de relancer la connexion
+        /*// si on est un Visiteur 
+        if (type == 'robot-appelé') {
+            // Si on est déconnecté de sa liaison principale avec le pilote
+            if (...) {
+               // Todo
+            } else if (...) { // Si on est déconnecté de sa liaison secondaire avec le Robot
+               // Todo
+            }  
+        }
+        /**/
+        
+
+
+        // Si on est dans la peerConnection principale (Pilote <> Robot)
+        if (peerCnxId == peerCnx1to1) {
+
+            // On informe l'autre pair de son statut de connexion   
+            if (type == 'pilote-appelant') {
+                piloteCnxStatus = peerCnxCollection[peerCnxId].iceConnectionState;
+
+                socket.emit("piloteCnxStatus", piloteCnxStatus);
+                // Si on change de status suite à une déco du robot
+                // On redéclenche l'ouverture des formulaires de connexion 
+                // a la condition que le robot soit lui aussi prêt a se reconnecter... (new...)
+                if (piloteCnxStatus == 'new' && robotCnxStatus == 'new') {
+                    activeManageDevices(); // On active les formulaires permettant de relancer la connexion
+                }
+
+
+                // ---- Add 1toN -------------------
+                // On envoie aussi le GO broadcasté pour tout nouveau Visiteur connecté en attente de clearance
+                if ( piloteCnxStatus == "connected" || piloteCnxStatus == "completed") { 
+                    socket.emit('signaleClearance', {
+                        from: localObjUser,
+                        message: "ready"
+                    }); 
+                } 
+
+
+            } else if (type == 'robot-appelé') {
+                robotCnxStatus = peerCnxCollection[peerCnxId].iceConnectionState;
+                socket.emit("robotCnxStatus", robotCnxStatus);
+            }
+     
+            // si le pair distant (Robot ou Pilote) est déconnecté en WebRTC,
+            if (peerCnxCollection[peerCnxId].iceConnectionState == 'disconnected') {   
+                
+                // A tous les Visiteurs: Signal de perte de la connexion WebRTC principale (Pilote <> Robot)
+                socket.emit('closeMasterConnection','disconnected')
+                
+                // on lance le processus préparatoire a une reconnexion
+                onDisconnect(peerCnxId);
             }
 
-        } else if (type == 'robot-appelé') {
-            robotCnxStatus = peerCnxCollection[peerCnxId].iceConnectionState;
-            socket.emit("robotCnxStatus", robotCnxStatus);
-        }
- 
-        // si le pair distant est déconnecté, on lance le processus préparatoire a une reconnexion
-        if (peerCnxCollection[peerCnxId].iceConnectionState == 'disconnected') {   
-            onDisconnect(peerCnxId);
-        }
+        } // endif connexion principale (Pilote <> Robot)
 
     };
 
-    // Ecouteur ... // OK instancié...
+    // Ecouteur ... Todo...
     peerCnxCollection[peerCnxId].onremovestream = function(e) {
         console.log("@ pc.onremovestream(e) > timestamp:" + Date.now());
         console.log(e);
@@ -692,36 +972,44 @@ function connect(peerCnxId) {
     
     // Si on est l'apellant
     if (type === "pilote-appelant") {
-        //console.log("+++++++++ apellant ++++++++++++++ ");
+        
+        // Si on est dans la peerConnection principale (Pilote <> Robot)
+        if (peerCnxId == peerCnx1to1) {
 
-        // l'apellant crée un dataChannel
-        channel = peerCnxCollection[peerCnxId].createDataChannel("mychannel", {});
-        // et peut maintenant lancer l'écouteur d'évènement sur le datachannel
-        bindEvents();
+            // l'apellant crée un dataChannel
+            channel = peerCnxCollection[peerCnxId].createDataChannel("mychannel", {});
+            // et peut maintenant lancer l'écouteur d'évènement sur le datachannel
+            bindEvents();
 
-        // création et envoi de l'offre SDP
-        var cible = getClientBy('typeClient','Robot');
-        peerCnxCollection[peerCnxId].createOffer(function(sdp){
-                    peerCnxCollection[peerCnxId].setLocalDescription(sdp);
-                    console.log ("------------ offer >>> ----------");
-                    var data = {from: localObjUser, message: sdp, cible: cible, peerCnxId: peerCnxId}
-                    // console.log (data);
-                    socket.emit("offer2", data);
-                }
-                , errorHandler, 
-                constraints
-            );
+            // création et envoi de l'offre SDP
+            var cible = getClientBy('typeClient','Robot');
+            peerCnxCollection[peerCnxId].createOffer(function(sdp){
+                        peerCnxCollection[peerCnxId].setLocalDescription(sdp);
+                        console.log ("------------ offer >>> ----------");
+                        var data = {from: localObjUser, message: sdp, cible: cible, peerCnxId: peerCnxId}
+                        // console.log (data);
+                        socket.emit("offer2", data);
+                    }
+                    , errorHandler, 
+                    constraints
+                );
 
-        // Sinon si on est l'apellé (Robot)
+        } // endif connexion principale (Pilote <> Robot)
+
+    // Sinon si on est l'apellé (Robot)
     } else if (type === "robot-appelé") {
         
-        // l'appelé doit attendre l'ouverture d'un dataChannel pour lancer son écouteur d'èvènement data...
-        // Ecouteur d'ouverture d'un data channel
-        peerCnxCollection[peerCnxId].ondatachannel = function(e) {
-            channel = e.channel;
-            console.log("pc.ondatachannel(e)... ");
-            bindEvents(); //now bind the events
-        };
+        // Si on est dans la peerConnection principale (Pilote <> Robot)
+        if (peerCnxId == peerCnx1to1) {
+
+            // l'appelé doit attendre l'ouverture d'un dataChannel pour lancer son écouteur d'èvènement data...
+            // Ecouteur d'ouverture d'un data channel
+            peerCnxCollection[peerCnxId].ondatachannel = function(e) {
+                channel = e.channel;
+                console.log("pc.ondatachannel(e)... ");
+                bindEvents(); //now bind the events
+            };
+        } // endif connexion principale (Pilote <> Robot)
 
     }
 }
@@ -835,7 +1123,7 @@ function onDisconnect(peerCnxId) {
 // Fermeture et relance de la connexion p2p par l'apellé (Robot)
 function stopAndStart(peerCnxId) {
 
-    console.log("@stopAndStart()");
+    console.log("@ stopAndStart()");
     input_chat_WebRTC.disabled = true;
     input_chat_WebRTC.placeholder = "RTCDataChannel close";
     env_msg_WebRTC.disabled = true;

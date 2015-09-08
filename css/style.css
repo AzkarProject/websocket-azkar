@@ -19,9 +19,11 @@ form {margin-bottom: 9px;}
 .alignCenter{text-align:center}
 .alignRight{text-align:right}
 
+/* couleurs IHM */
 .robot { background: #8CB094;}
 .pilote { background: #C9C68D;}
 .visiteur { background: #9C9BB0;}
+.colorSettings { background: #cccccc}
 
 
 /* Size Box deprecated -- A virer IHM Robot */
@@ -69,8 +71,8 @@ form {margin-bottom: 9px;}
 }
 
 .doubleQuarterBox {
-  width:622px;
-  min-width: 622px;
+  width:623px;
+  min-width: 623px;
   float:left;
 }
 
@@ -115,33 +117,49 @@ form {margin-bottom: 9px;}
 .ihmPilote .oneQuarterBox video { width:300px; height:150px;}
 .ihmPilote .tripleQuarterBox video { width:940px; height:600px}
 
+.ihmVisiteur .oneQuarterBox video { width:300px; height:150px;}
+.ihmVisiteur .tripleQuarterBox video { width:940px; height:450px}
+
 .ihmRobot video { width:300px; height:150px;}
 
 
 
 /* hauteur des blocs */
+/* Partie 1to1 */
 .ihmPilote #robotDevices {}
 .ihmPilote #piloteDevices {}
 .ihmPilote #robotCommands {height: 202px;}
 .ihmPilote #robotInfos {}
-.ihmPilote #websocketChat {height:290px}
+.ihmPilote #websocketChat {height:310px}
 .ihmPilote #remoteVideoArea {height:640px;}
-.ihmPilote #remoteCanvasArea {}
+.ihmPilote #navigation {}
 .ihmPilote #dataChannelArea {}
-
 
 .ihmRobot #robotSettings {height:61px}
 .ihmRobot #selectionMicros {height:61px}
 .ihmRobot #selectionCams {height:61px}
 .ihmRobot #piloteCam {height:190px}
 .ihmRobot #robotCam {height:190px}
+
+/* partie 1toN */
+.ihmPilote #OneToNChat {height:400px}
+.ihmPilote #remoteVisitorsCameras {height:400px;}
+.ihmPilote #manageVisitors {height:400px}
+.ihmPilote #manageFiles {height:400px;}
+
+.ihmVisiteur #remoteVideoAreaVisitor {height:490px;}
+.ihmVisiteur #OneToNChat_visitor {height:280px;}
+.ihmVisiteur #uploadedFiles {height:280px;}
+
+
+
 .ihmRobot #visitorsList {height:190px}
 
 
 /* Zones de tchat */
 
 /* ---- Chat Websocket */
-#zone_chat_websocket, #zone_chat_WebRTC {
+#zone_chat_websocket, #zone_chat_WebRTC , #zone_chat_1toN{
   font-size:12px; 
   border:1px solid #ffffff;
   background-color:#ffffff;
@@ -151,6 +169,9 @@ form {margin-bottom: 9px;}
 
 .ihmPilote #zone_chat_websocket {height: 200px;width:100%} 
 .ihmPilote #zone_chat_WebRTC {height:200px;width:100%}
+.ihmPilote #zone_chat_1toN {height: 300px;width:100%}
+.ihmVisiteur #zone_chat_1toN_visitor {height: 180px;width:100%}
+
 .ihmRobot #zone_chat_websocket {height: 50px;}  
 .ihmRobot #zone_chat_WebRTC {height: 50px;}
 
@@ -196,11 +217,21 @@ form {margin-bottom: 9px;}
 
 
 /* Formulaires devices désactivés */
-.devicesDisabled {}
+.devicesDisabled {
+
+    background-color: grey;
+    
+    -webkit-transition: height 0.3s ease-in-out, background-color 0.3s;
+    -o-transition: height 0.3s ease-in-out, background-color 0.3s;
+    -moz-transition: height 0.3s ease-in-out, background-color 0.3s;
+    transition: height 0.3s ease-in-out, background-color 0.3s;
+
+}
 
 /* Positionnement Boutons de formulaires */
 #remote_buttondevices {float:right;}
 #local_ButtonDevices {float:right;}
+#visitor_ButtonDevices {float:right;}
 
 /* Positionnement boutons de commande Robot */
 #divBtUp {float:left; width:100%; text-align:center}

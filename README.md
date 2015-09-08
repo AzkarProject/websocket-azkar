@@ -18,10 +18,10 @@
         - [X] Signaling 1to1 Pilote<>Robot
         - [X] Post-Signaling 1to1 Pilote<>Robot
     - [ ] 1toN Pilote<>Visiteurs(S)
-        - [ ] Pré-signaling 1to1 Pilote<>Visiteur
+        - [X] Pré-signaling 1to1 Pilote<>Visiteur
         - [ ] Signaling 1to1 Pilote<>Visiteur
         - [ ] Post-Signaling 1to1 Pilote<>Visiteur
-        - [ ] Factorisation 1to1 > 1toN Pilote<>Visiteur(S)
+        - [X] Factorisation 1to1 > 1toN Pilote<>Visiteur(S)
     - [ ] 1toN 1-Robot > 1-Pilote > N-Visiteurs(S) - (option1)
     - [ ] 1toN 1-Robot > N-Visiteurs(S) - (option2)
     - [ ] Transfert fichiers Pilote > Visiteurs

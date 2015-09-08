@@ -17,28 +17,29 @@ var socket = io.connect(pIoConnect);
 
 
 
-var typeUser = null;
-if (type == "pilote-appelant") {typeUser = "Pilote";
-} else if (type == "robot-appelé") { typeUser = "Robot";}
-
+var typeClient = null;
+if (type == "pilote-appelant") {typeClient = "Pilote";
+} else if (type == "robot-appelé") { typeClient = "Robot";
+} else if (type == "visiteur-appelé") { typeClient = "Visiteur";}
 
 // On demande le pseudo, on l'envoie au serveur et on l'affiche dans le titre
 var pseudo = null;
-// pseudo = prompt('Votre pseudo? (par défaut ce sera "'+typeUser+'")');
+// pseudo = prompt('Votre pseudo? (par défaut ce sera "'+typeClient+'")');
 
 
-if (!pseudo) { pseudo = typeUser;}
+if (!pseudo) { pseudo = typeClient;}
 // document.title = pseudo + ' - ' + document.title;
 
 // socket.emit('nouveau_client', pseudo); // Version 1
-socket.emit('nouveau_client2', {pseudo: pseudo, typeUser: typeUser}); // Version objet
+socket.emit('nouveau_client2', {pseudo: pseudo, typeClient: typeClient}); // Version objet
 
 // liste des users connectés
 var users = {};
 
 // Objet User courant.
 var localObjUser;
-
+var myPlaceListe;
+var myPeerID;
 // ------------------------------------------------------
 // Pour contrôle hosting
 // Affichage des variables d'environnement serveur ds la partie cliente
@@ -56,12 +57,12 @@ socket.on('infoServer', function(nomMachine) {
 // ----------------------------------------------------------
 
 // Updater le titre de la page (pour le fun...)
-// Version Objet...
+/*// Version Objet...
 socket.on('position_liste2', function(objUser) {
      // On copie l'objet pour un usage local
      localObjUser = objUser;
 
-     console.log("socket.on(position_liste2,objUser) >>>");
+     console.log(">> socket.on(position_liste2,objUser) >>>");
      console.log(objUser);
      // document.title = objUser.placeliste+"-" + objUser.pseudo +"("+objUser.typeClient+") - "+document.title;
      // >>> Même chose sans le numéro d'arrivée pour éviter que AutoIt ne se mélange les pédales dans la détection de la fenêtre du navigateur
@@ -71,8 +72,27 @@ socket.on('position_liste2', function(objUser) {
      //console.log ("Ordre d'arrivée dans la session websocket: "+placeListe);
      //document.title = "("+myPlaceListe+") " + document.title;
 })
+/**/
 
+// Updater le titre de la page (pour le fun...)
+// Version Objet...
+socket.on('position_liste2', function(objUser) {
+    // On copie l'objet pour un usage local
+    localObjUser = objUser;
 
+    console.log(">> socket.on(position_liste2,objUser) >>>");
+    console.log(objUser);
+    // document.title = objUser.placeliste+"-" + objUser.pseudo +"("+objUser.typeClient+") - "+document.title;
+    // >>> Même chose sans le numéro d'arrivée pour éviter que AutoIt ne se mélange les pédales dans la détection de la fenêtre du navigateur
+    document.title = objUser.typeClient +"("+objUser.typeClient+") - "+document.title;
+
+    myPlaceListe = objUser.placeliste;
+    myPeerID = objUser.id;
+    console.log ('myPeerID: '+myPeerID)
+
+    //console.log ("Ordre d'arrivée dans la session websocket: "+placeListe);
+    //document.title = "("+myPlaceListe+") " + document.title;
+})
 
 // Fonctions websocket dédiées au tchat ---------------------------
 
@@ -81,7 +101,8 @@ socket.on('position_liste2', function(objUser) {
 socket.on('nouveau_client2', function(objUser) {
     var dateR = tools.dateER('R');
     console.log(dateR+">> socket.on('nouveau_client2', objUser");
-    var message = dateR + " à rejoint le Tchat";
+    //var message = dateR + " à rejoint le Tchat";
+    var message = dateR + " > Connexion entrante";
     insereMessage3(objUser,message);
 })
 
@@ -137,8 +158,8 @@ socket.on('service2', function(data) {
 // ----------- Méthodes jquery d'affichage du tchat ------------------------------
 
 // Lorsqu'on envoie le formulaire, on transmet le message et on l'affiche sur la page
+// Bloc de tchat principal des IHM Pilote et Robot
 $('#formulaire_chat_websoket').submit(function () {
-    //console.log ("WWWWWWWWWWWWW");
     var message = $('#message').val();
     // On ajoute la dateE au message
     var dateE = '[E-'+tools.dateNowInMs()+']';
@@ -148,6 +169,37 @@ $('#formulaire_chat_websoket').submit(function () {
     $('#message').val('').focus(); // Vide la zone de Chat et remet le focus dessus
     return false; // Permet de bloquer l'envoi "classique" du formulaire
 });
+
+// ------------ ADD version 1toN
+// Bloc de tchatt secondaire de l'IHM pilote (s'affiche dans le bloc 1toN) 
+$('#formulaire_chat_1toN').submit(function () {
+    //console.log ("WWWWWWWWWWWWW");
+    var message = $('#message3').val();
+    // On ajoute la dateE au message
+    var dateE = '[E-'+tools.dateNowInMs()+']';
+    message = dateE + ' '+message;
+    socket.emit('message2', {objUser:localObjUser,message:message}); // Transmet le message aux autres
+    insereMessage3(localObjUser, message); // Affiche le message aussi sur notre page
+    $('#message3').val('').focus(); // Vide la zone de Chat et remet le focus dessus
+    return false; // Permet de bloquer l'envoi "classique" du formulaire
+});
+
+// Bloc de tchat principal de l'IHM Visiteur
+$('#formulaire_chat_1toN_visitor').submit(function () {
+    //console.log ("WWWWWWWWWWWWW");
+    var message = $('#message4').val();
+    // On ajoute la dateE au message
+    var dateE = '[E-'+tools.dateNowInMs()+']';
+    message = dateE + ' '+message;
+    socket.emit('message2', {objUser:localObjUser,message:message}); // Transmet le message aux autres
+    insereMessage3(localObjUser, message); // Affiche le message aussi sur notre page
+    $('#message4').val('').focus(); // Vide la zone de Chat et remet le focus dessus
+    return false; // Permet de bloquer l'envoi "classique" du formulaire
+});
+/**/ // ------------- / Version 1toN
+
+
+
 
 // Affiche le message ds le tchat
 function insereMessage3(objUser, message) {
@@ -163,4 +215,6 @@ function insereMessage3(objUser, message) {
     text += '\n';
     
     $('#zone_chat_websocket').prepend(text);
+    if ( $('#zone_chat_1toN') )  $('#zone_chat_1toN').prepend(text);
+    if ( $('#zone_chat_1toN_visitor') )  $('#zone_chat_1toN_visitor').prepend(text);
 }

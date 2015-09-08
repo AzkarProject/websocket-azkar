@@ -14,11 +14,14 @@
 </head>
 
 <body class="ihmPilote">
+    
     <strong><span id="zone_info_server">WebRTC AZKAR</span></strong>
     <hr/>
+    
     <section id="settingsArea" class="fullSizeContainerBox">
-        <div id="top" class="insideFlex pilote shadowBlack floatLeft fourQuarterBox">
-            <strong> Benchmarks Settings </strong>
+        
+        <div id="colFullTopSettingsArea" class="insideFlex colorSettings shadowBlack floatLeft fourQuarterBox">
+            <strong> Settings </strong>
             <hr/>
             <span id="dataChannelSetting" class="">
                     Navigation channel: 
@@ -54,9 +57,13 @@
                 </span>
             <hr/>
         </div>
+
     </section>
+    
     <section id="controlArea" class="fullSizeContainerBox">
-        <div id="colGaucheHaut" class="floatLeft oneQuarterContainerBox">
+
+        <div id="colGaucheUpControlArea" class="floatLeft oneQuarterContainerBox">
+            
             <div id="robotDevices" class="insideFlex oneQuarterbox robot shadowBlack device">
                 <strong>Robot Devices</strong>
                 <hr/>
@@ -71,6 +78,7 @@
                 <hr/>
                 <button id="remote_ButtonDevices" onclick="remoteManageDevices()">Sélectionner</button>
             </div>
+
             <div id="piloteDevices" class="insideFlex oneQuarterbox pilote shadowBlack device">
                 <strong> Pilote Devices</strong>
                 <hr/>
@@ -87,6 +95,7 @@
                 <hr/>
                 <button class="shadowBlack" id="local_ButtonDevices" onclick="localManageDevices()">Ouvrir la connexion</button>
             </div>
+
             <div id="robotCommands" class="insideFlex oneQuarterbox robot shadowBlack device">
                 <strong>Robot controls</strong> <span id="connect-notice"></span>
                 <hr/>
@@ -135,18 +144,20 @@
                 <div id="drive-commands" style="display:none; overflow: scroll; height:150px">
                     <ul id="gamepads"></ul>
                 </div>
-            </div>
-            <!-- id="robotCommands" -->
+            </div> <!-- id="robotCommands" -->
         </div>
-        <!-- id="colGaucheHaut" -->
-        <div id="colDroiteHaut" class="floatRight tripleQuarterBox">
+
+        <div id="colDroiteUpControlArea" class="floatRight tripleQuarterBox">
+            
             <div id="remoteVideoArea" class="insideFlex robot tripleQuarterBox shadowBlack floatRight">
                 <strong> Robot Camera View</strong>
                 <hr/>
                 <video id='otherPeer' class="" autoplay muted controls="controls"></video>
             </div>
         </div>
-        <div id="colDroiteMiddle" class="floatLeft oneThirdContainerBox">
+        
+        <div id="colDroiteMiddleControlArea" class="floatLeft oneThirdContainerBox">
+            
             <div id="robotInfos" class="insideFlex pilote oneThirdBox shadowBlack device floatLeft">
                 <strong> Robot Informations</strong>
                 <hr/>
@@ -154,13 +165,8 @@
                     <label for="battery_level">Battery Level:</label>
                     <progress id="battery_level" class="floatRight" max="200"></progress>
                 </div>
-                <!--
-                <div class="jauge">
-                    <label for="speed_robot">Real Speed:</label>
-                    <progress id="speed_robot" class="floatRight" value="50" max="100"></progress>
-                </div>
-                -->
             </div>
+            
             <div id="websocketChat" class="insideFlex pilote oneThirdBox shadowBlack floatLeft">
                 <strong> Websocket Messages & Chat</strong>
                 <hr/>
@@ -175,10 +181,11 @@
                         <input type="text1" class="filename" id="text-filename1" placeholder="Pilote_WS_LOGS" />.txt</label>
                     <button id="saveLogs_webSocket" type="submit" value="Save" />Save</button>
                 </form>
-            </div>
-        </div>
-        <div id="colgaucheMiddle" class="floatRight doubleThirdContainerBox">
-            <div id="remoteCanvasArea" class="insideFlex robot DoubleThirdBox shadowBlack floatRight">
+            </div> 
+        </div>      
+
+        <div id="colGaucheMiddleControlArea" class="floatRight doubleThirdContainerBox">
+            <div id="navigation" class="insideFlex robot DoubleThirdBox shadowBlack floatRight">
                 <strong> Navigation</strong>
                 <hr/>
                 <canvas id="mapviewer_canvas" width="620" height="350" class="floatright">
@@ -208,7 +215,8 @@
                 </div>
             </div>
         </div>
-        <div id="bottom" class="floatRight fullSizeContainerBox">
+        
+        <div id="colFullBottomControlArea" class="floatRight fullSizeContainerBox">
             <div id="dataChannelArea" class="insideFlex pilote shadowBlack floatLeft fourQuarterBox">
                 <strong> WebRTC dataChannel Log </strong>
                 <hr/>
@@ -225,15 +233,62 @@
                 </form>
             </div>
         </div>
+   
     </section>
+
+    <section id="Visitors_Area" class="fullSizeContainerBox">
+
+        <div id="colDroiteUpVisitorsArea" class="floatLeft oneThirdContainerBox">
+
+            <div id="OneToNChat" class="insideFlex visiteur oneThirdBox shadowBlack floatLeft">
+                <strong> 1toN Messages & Chat</strong>
+                <hr/>
+                <form action="/" method="post" id="formulaire_chat_1toN">
+                    <input type="text3" name="message3" id="message3" placeholder="Votre message..." size="28" autofocus />
+                    <button id="envoi_message3" type="submit">Envoyer</button>
+                </form>
+                <hr class="hrForm">
+                <textarea class="input" id="zone_chat_1toN" placeholder="Once upon a time..."></textarea>
+                <form id="text-options3">
+                    <label>Filename:
+                        <input type="text3" class="filename" id="text-filename3" placeholder="1toN_chat" />.txt</label>
+                    <button id="saveLogs_1toN" type="submit" value="Save" />Save</button>
+                </form>
+            </div>        
+        </div>
+
+        <div id="colGaucheUpVisitorsArea" class="floatRight doubleThirdContainerBox">
+            <div id="remoteVisitorsCameras" class="insideFlex visiteur DoubleThirdBox shadowBlack floatRight">
+                <strong> Visitors Views</strong>
+                <hr/>
+                TODO... otherPeer2
+            </div>
+        </div>
+    
+        <div id="colDroiteBottomVisitorsArea" class="floatLeft oneThirdContainerBox">
+            <div id="manageVisitors" class="insideFlex visiteur oneThirdBox shadowBlack floatLeft">
+                <strong> Manage visitors </strong>
+                <hr/>
+                TODO... eject visitor, open/close robotView on visitor's clients, ect...
+            </div>
+        </div>
+
+        <div id="colGaucheBottomVisitorsArea" class="floatRight doubleThirdContainerBox">
+            <div id="manageFiles" class="insideFlex visiteur DoubleThirdBox shadowBlack floatRight">
+                <strong> Manage Files </strong>
+                <hr/>
+                TODO... upload, delete files, etc...
+            </div>       
+        </div>
+
+    </section>
+
+
     <script>
-    //var type = "appelant";
     var type = "pilote-appelant";
     var otherType = "robot-appelé";
     </script>
-    <!--
-    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-    -->
+    
     <script src="/socket.io/socket.io.js"></script>
     <script src='/js/lib/jquery-1.10.1.min.js'></script>
     <script src='/js/lib/adapter.js'></script>
@@ -251,9 +306,6 @@
     <script src='/js/module_navigation.js'></script>
     <script src="/js/module_logs.js"></script>
     
-    
-    
-    
     <script>                    
             // On récupère depuis nodejs le nom de la machine serveur
             // en passant par de l'AJAX plutôt que par websocket....
@@ -265,6 +317,7 @@
               if (hostName != "???" ) $('#zone_info_server').replaceWith(infoServerTxt);
             });
     </script>   
+
 </body>
 
 </html>

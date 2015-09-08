@@ -84,7 +84,7 @@ app.get('/cartographie/', function(req, res) {
 });
 
 // On passe la variable hostName en ajax à l'ihm d'accueil
-// puisqu'on ne peux pas passer par websocket...
+// puisqu'on ne peux plus passer par websocket...
 // TODO >> Faire pareil avec Pilote et Robot pour économiser une requête ws...
 // NB : Fait le 19/08
 app.get("/getvar", function(req, res){
@@ -126,10 +126,12 @@ io.on('connection', function(socket, pseudo) {
     // on le stocke en variable de session et on informe les autres Users
     socket.on('nouveau_client2', function(data) {
 
-        // Contrôle d'accès minimal (pour éviter les bugs...)
-        // Si Pilote >> Si 0 Robot ou 1 Pilote déjà présents: Accès refusé
-        // Si Robot >> Si 1 Robot déjà présent: Accès refusé
-        // Si Visiteur >> Si 0 Robot ou 0 Pilote présents: Accès refusé
+        console.log(tools.humanDateER('R') + " @ nouveau_client2 >>>> (???)");
+
+        // Contrôle d'accès minimal (pour éviter les conflits de rôles et les bugs de signaling...)
+        // Cas Pilote >> Si 0 Robot ou 1 Pilote déjà présents: Accès refusé
+        // Cas Robot >> Si 1 Robot déjà présent: Accès refusé
+        // Cas Visiteur >> Si 0 Robot ou 0 Pilote présents: Accès refusé
         // Comportement attendu du client après un refus d'accès:
         // >>> Redirection vers la page d'accueil de l'application
         // Contrainte: L'URL de la page d'accueil doit être dynamique 
@@ -137,10 +139,10 @@ io.on('connection', function(socket, pseudo) {
         // pour forcer sa redirection.
 
         // 2 possibilités:
-        // Soit contrôler la connexion en amont par un io.use(function...
-        // et après traitement générer une erreur avec un message.
-        // Mais dans ce cas de figure, ce serai trop compliqué 
-        // de transmettre au client l'url de redirection en plus du message d'erreur
+        // Soit contrôler la connexion en amont par un io.use(function... 
+        // et, après traitement, générer une erreur avec un message.
+        // Mais dans ce cas de figure, ce serai trop compliqué de transmettre 
+        // au client l'url de redirection en plus du message d'erreur.
         // Autre solution, plus simple et plus bourrine:
         // Accepter la connexion, faire le traitement et renvoyer
         // au client un simple message websocket avec en paramètre l'ip de redirection. 
@@ -148,12 +150,13 @@ io.on('connection', function(socket, pseudo) {
 
         // TODO: A régler Bug sur OpenShift:
         // >>>> Si déco/reco du robot, celui-ci n'est toujours compté parmis les connectés...
-
+        // >> FIX: ne plus utiliser OpenShift !!!!!
+        
         var isAuthorized = true;
         var authMessage;
         var rMsg = "> Connexion Rejetée: ";
         var rReason;
-        if (data.typeUser == "Robot") {
+        if (data.typeClient == "Robot") {
 
             // Teste la présence d'un robot dans la liste des clients connectés
             // Paramètres: (hashTable,attribute,value,typeReturn) typeReturn >> boolean ou count...
@@ -164,7 +167,7 @@ io.on('connection', function(socket, pseudo) {
                 rReason = " > Because 2 Robots";
             }
 
-        } else if (data.typeUser == "Pilote") {
+        } else if (data.typeClient == "Pilote") {
             var isOneBot = tools.searchInObjects(users2, "typeClient", "Robot", "boolean");
             if (isOneBot == false) {
                 isAuthorized = false;
@@ -177,8 +180,13 @@ io.on('connection', function(socket, pseudo) {
                 authMessage = "Client Pilote non disponible...\n Veuillez patienter.";
                 rReason = " > Because 2 Pilotes";
             }
-        } else if (data.typeUser == "Visiteur") {
-            // console.log ("++++++++++++REJECT++++++++++++ >> Is Visitor");
+        } else if (data.typeClient == "Visiteur") {
+            var isOnePilot = tools.searchInObjects(users2, "typeClient", "Pilote", "boolean");
+            if (isOnePilot == false) {
+                isAuthorized = false;
+                authMessage = "Client Pilote non connecté... \n Ressayez plus tard.";
+                rReason = " > Because no pilote";
+            }
         }
 
         if (isAuthorized == false) {
@@ -192,8 +200,8 @@ io.on('connection', function(socket, pseudo) {
             // Si tt est ok pour enregistrement ds la liste des connectés,
             // On renseigne la variable d'identité du pilote et du robot
             // pour les transferts de messages non broadcastés.
-            if (data.typeUser == "Pilote") wsIdPilote = socket.id;
-            if (data.typeUser == "Robot") wsIdRobot = socket.id;
+            if (data.typeClient == "Pilote") wsIdPilote = socket.id;
+            if (data.typeClient == "Robot") wsIdRobot = socket.id;
         }
 
 
@@ -215,7 +223,7 @@ io.on('connection', function(socket, pseudo) {
         var p1 = socket.id;
         var p2 = ent.encode(data.pseudo);
         var p3 = userPlacelist;
-        var p4 = data.typeUser;
+        var p4 = data.typeClient;
         var p5 = Date.now();
         var p6 = null;
         var objUser = new tools.client(p1, p2, p3, p4, p5, p6);
@@ -233,11 +241,17 @@ io.on('connection', function(socket, pseudo) {
 		// depuis le client IHM en ajax par un $.get( "/getvar", function( data ) ) {}
 		
 
-        // 2 - on signale à tout le monde l'arrivée de l'User
+        // On signale à tout le monde l'arrivée de l'User
         socket.broadcast.emit('nouveau_client2', objUser);
 
+        // Si c'st un "Visiteur", on informe Pilote et Robot
+        if (objUser.typeClient == "Visiteur") {
+            io.to(wsIdPilote).emit('newVisitor', objUser);
+            //io.to(wsIdRobot).emit('newVisitor', objUser);
+        }
+        
 
-        // 3 - on met a jour le nombre de connectés coté client"
+        // On met a jour le nombre de connectés coté client"
         nbUsers2 = tools.lenghtObject(users2);
         io.sockets.emit('updateUsers', {
             listUsers: users2
@@ -257,11 +271,10 @@ io.on('connection', function(socket, pseudo) {
 
     // Quand un user se déconnecte
     socket.on('disconnect', function() {
+        console.log(tools.humanDateER('R') + " @ disconnect >>>> (from "+socket.id+")");
         var dUser = users2[socket.id];
 
-        //console.log ("-------------------------------");
-        var message = "> Connexion sortante: ";
-        console.log(message + "(ID: " + socket.id + ")");
+        var message = "> Connexion sortante";
 
         // on retire le connecté de la liste des utilisateurs
         delete users2[socket.id];
@@ -280,20 +293,13 @@ io.on('connection', function(socket, pseudo) {
         // console.log (users2);
 
         console.log("> Il reste " + nbUsers + " connectés");
-        // TODO: Mise à jour de la liste coté client...
 
-        // io.sockets.emit('users', users);           
-        // socket.leave(socket.room);  /: On quitte la Room
-
-        // envoi d'un second message destiné au signaling WebRTC
-        // socket.broadcast.emit('disconnected', { pseudo:"SERVER", message: message, placeListe: "-"});
-        // socket.broadcast.emit('disconnected', {listUsers: users2});
     });
     /**/
 
     // Transmission de messages génériques 
     socket.on('message2', function(data) {
-        console.log(data);
+        console.log(tools.humanDateER('R') + " @ message2 >>>> (from "+data.objUser.typeClient+" id:"+data.objUser.peerID+")");
         if (data.message) {
             message = ent.encode(data.message); // On vire les caractères html...
             socket.broadcast.emit('message2', {
@@ -301,7 +307,9 @@ io.on('connection', function(socket, pseudo) {
                 message: message
             });
         }
-        console.log("@ message2 from " + data.objUser.placeliste + "-" + data.objUser.pseudo + ": " + message);
+        console.log("------------------");
+        console.log(message);
+        console.log("------------------");
     });
 
 
@@ -312,11 +320,7 @@ io.on('connection', function(socket, pseudo) {
     // On le renvoie au client robot qui exécuté sur la même machine que la Robubox.
     // Il pourra ainsi faire un GET ou un POST de la commande à l'aide d'un proxy et éviter le Cross Origin 
     socket.on('piloteOrder', function(data) {
-        // TODO >>> implémenter tests sur data.command pour apeller le traitement isoine ( onDrive, onStop, onStep, onGoto, onClicAndGo, etc...)
-        console.log("@ piloteOrder >>>> " + data.command);
-        // ex: >> socket.emit("moveOrder",{ command:'Move', aSpeed:aSpeed, lSpeed:lSpeed, Enable:btHommeMort });
-        // onDrive(data.enable, data.aSpeed, data.lSpeed) //
-        //io.to(wsIdRobot).emit('moveOrder', data);
+        console.log(tools.humanDateER('R') + " @ piloteOrder >>>> " + data.command + " (from "+data.objUser.pseudo+" id:"+data.objUser.id+")");
         io.to(wsIdRobot).emit('piloteOrder', data);
     });
 
@@ -325,11 +329,13 @@ io.on('connection', function(socket, pseudo) {
     // mais n'ont pas vocation à s'afficher dans le tchat client...
     // Cezs messages sont relayés à tous les autres connectés (sauf à celui qui l'a envoyé)
 
+    /*
     socket.on('candidate', function(message) {
         socket.broadcast.emit('candidate', {
             message: message
         });
     });
+    /**/
 
     /*
     socket.on('offer', function(message) {
@@ -349,43 +355,45 @@ io.on('connection', function(socket, pseudo) {
 
 
     socket.on('offer2', function(data) {
+        /*
         console.log("----+offer+----");
         console.log(">>>>> Offer From: " + data.from.pseudo +"("+data.from.id+")");
         console.log(">>>>> Cible: " + data.cible.pseudo +"("+data.cible.id+")");
         console.log(">>>>> peerConnectionID: " + data.peerCnxId);
-        //console.log("- message.Type: " + data.message.type);
-        //console.log("- message.sdp: " + data.message.sdp);
         console.log(data.message);
         console.log("----/offer/----");
+        /**/
+        var consoleTxt = tools.humanDateER('R') + " @ offer >>>> (SDP from "+ data.from.pseudo +"("+data.from.id+")"
+        consoleTxt += " to " + data.cible.pseudo +"("+data.cible.id+") / peerConnectionID: "+ data.peerCnxId;
+        console.log(consoleTxt);
+
         //socket.broadcast.emit('offer', data);
         io.to(data.cible.id).emit('offer', data);
     });
 
     socket.on('answer2', function(data) {
+        /*
         console.log("----+answer+----");
         console.log(">>>>> Answer From: " + data.from.pseudo +"("+data.from.id+")");
         console.log(">>>>> Cible: " + data.cible.pseudo +"("+data.cible.id+")");
         console.log(">>>>> peerConnectionID: " + data.peerCnxId);
-        //console.log("- message.Type: " + data.message.type);
-        //console.log("- message.sdp: " + data.message.sdp);
         console.log(data.message);
         console.log("----/answer/----");
+        /**/
+        var consoleTxt = tools.humanDateER('R') + " @ answer >>>> (SDP from "+ data.from.pseudo +"("+data.from.id+")"
+        consoleTxt += " to " + data.cible.pseudo +"("+data.cible.id+") / peerConnectionID: "+ data.peerCnxId;
+        console.log(consoleTxt);
         //socket.broadcast.emit('answer',data);
         io.to(data.cible.id).emit('answer', data);
     });
 
     socket.on('candidate2', function(data) {
         //console.log("----+candidate+----");
-        console.log(">>>>> candidate From: " + data.from.pseudo +"("+data.from.id+") to: " + data.cible.pseudo +"("+data.cible.id+")  / peerConnectionID: "+ data.peerCnxId);
-        /*
-        console.log(">>>>> Cible: " + data.cible.pseudo +"("+data.cible.id+")");
-        console.log(">>>>> peerConnectionID: " + data.peerCnxId);
-        console.log("- message.Type: " + data.message.type);
-        console.log("- message.sdp: " + data.message.sdp);
-        /**/
-        //console.log(data.message);
-        //console.log("----/candidate/----");
-        // socket.broadcast.emit('candidate',data);
+        //console.log(">>>>> candidate From: " + data.from.pseudo +"("+data.from.id+") to: " + data.cible.pseudo +"("+data.cible.id+")  / peerConnectionID: "+ data.peerCnxId);
+        
+       var consoleTxt = tools.humanDateER('R') + " @ candidate >>>> (from "+data.from.pseudo + " ("+data.from.id+")" ;
+        consoleTxt += "to "+data.cible.pseudo +" ("+data.cible.id+") / peerConnectionID: "+ data.peerCnxId;
+        console.log(consoleTxt);
         io.to(data.cible.id).emit('candidate', data);
     });
 
@@ -395,6 +403,7 @@ io.on('connection', function(socket, pseudo) {
 
     // Retransmission du statut de connexion WebRTC du pilote
     socket.on('piloteCnxStatus', function(message) {
+        console.log(tools.humanDateER('R') + " @ piloteCnxStatus >>>> "+message);
         socket.broadcast.emit('piloteCnxStatus', {
             message: message
         });
@@ -402,6 +411,7 @@ io.on('connection', function(socket, pseudo) {
 
     // Retransmission du statut de connexion WebRTC du robot
     socket.on('robotCnxStatus', function(message) {
+       console.log(tools.humanDateER('R') + " @ robotCnxStatus >>>> "+message);
         socket.broadcast.emit('robotCnxStatus', {
             message: message
         });
@@ -409,6 +419,7 @@ io.on('connection', function(socket, pseudo) {
 
     // Robot >> Pilote: Offre des cams/micros disponibles coté robot
     socket.on('remoteListDevices', function(data) {
+        console.log(tools.humanDateER('R') + " @ remoteListDevices >>>> (from "+data.objUser.pseudo+" id:"+data.objUser.id+")");
         socket.broadcast.emit('remoteListDevices', {
             objUser: data.objUser,
             listeDevices: data.listeDevices
@@ -417,8 +428,7 @@ io.on('connection', function(socket, pseudo) {
 
     // Pilote >> Robot: cams/micros sélectionnés par le Pilote
     socket.on('selectedRemoteDevices', function(data) {
-        // console.log("@ selectedRemoteDevices >>>> ");
-        // console.log (data);
+        console.log(tools.humanDateER('R') + " @ selectedRemoteDevices >>>> (from "+data.objUser.pseudo+" id:"+data.objUser.id+")");
         socket.broadcast.emit('selectedRemoteDevices', {
             objUser: data.objUser,
             listeDevices: data.listeDevices,
@@ -428,13 +438,65 @@ io.on('connection', function(socket, pseudo) {
 
     // Robot >> Pilote: Signal de fin pré-signaling...
     socket.on('readyForSignaling', function(data) {
+        console.log(tools.humanDateER('R') + " @ readyForSignaling >>>> (from "+data.objUser.pseudo+" id:"+data.objUser.id+")");
         socket.broadcast.emit('readyForSignaling', {
             objUser: data.objUser,
             message: data.message
         });
     });
 
+
+    // ----------------------------------------------------------------------------------
+    // elements pré-Signaling adaptée au 1toN & NtoN
+    // A la différence du 1to1 de base, ces messages ne sont pas broadcastés à tous les connectés
+    // mais sont relayés à une cible spécifique 'io.to(destinataire.id)...' 
+
+    // Visiteur >> demande de clairance pré-signaling
+    socket.on('requestClearance', function(data) { 
+        var consoleTxt = tools.humanDateER('R') + " @ requestClearance >>>> from "+data.from.pseudo+" ("+data.from.id+") ";
+        consoleTxt += "to: "+data.cible.pseudo+"("+data.cible.id+")";
+        console.log(consoleTxt); 
+        //if (data.cible == "pilote") io.to(wsIdPilote).emit('requestClearance', data);
+        //else if (data.cible == "robot") io.to(wsIdRobot).emit('requestClearance', data);
+        //else socket.broadcast.emit('requestClearance', data);
+        io.to(data.cible.id).emit('requestClearance', data);
+    }); 
+
+    // Pilote ou robot >> Réponse à une demande de clearance
+    socket.on('responseClearance', function(data) { 
+        var consoleTxt = tools.humanDateER('R') + " @ responseClearance >>>> from "+data.from.pseudo+" ("+data.from.id+") ";
+        consoleTxt += "to: "+data.cible.pseudo+"("+data.cible.id+")"; 
+        console.log(consoleTxt); 
+        io.to(data.cible.id).emit('responseClearance', data);
+    }); 
+
+    // Pilote >> signalement d'un changement de statut aux visiteurs en attente de clearance
+    socket.on('signaleClearance', function(data) { 
+        var consoleTxt = tools.humanDateER('R') + " @ declareClearance >>>> from "+data.from.pseudo+" ("+data.from.id+") to all connecteds";    
+        socket.broadcast.emit('signaleClearance', data);
+    });
+
+    // Visiteur >> initialisation d'une connexion WebRTC
+    // Pour mémo >> socket.emit('requestConnect', { objUser: localObjUser, cible: "pilote" }); 
+    socket.on('requestConnect', function(data) { 
+        var consoleTxt = tools.humanDateER('R') + " @ requestConnect >>>> from "+data.from.pseudo+" ("+data.from.id+") ";
+        consoleTxt += "to: "+data.cible.pseudo+"("+data.cible.id+")"; 
+        console.log(consoleTxt); 
+        io.to(data.cible.peerID).emit('requestConnect', data);
+    }); 
+
+    // Pilote/Robot >>> Visiteurs > Signal de perte de la connexion WebRTC principale (Pilote <> Robot)
+    socket.on('closeMasterConnection', function(data) { 
+        var consoleTxt = tools.humanDateER('R') + " @ closeMasterConnection >>>> to ALL Clients"; 
+        console.log(consoleTxt); 
+        socket.broadcast.emit('closeMasterConnection', data);
+    }); 
+
 });
+
+
+
+
 
 // ------------ fonctions Diverses ------------
 
