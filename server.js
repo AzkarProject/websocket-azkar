@@ -482,7 +482,7 @@ io.on('connection', function(socket, pseudo) {
         var consoleTxt = tools.humanDateER('R') + " @ requestConnect >>>> from "+data.from.pseudo+" ("+data.from.id+") ";
         consoleTxt += "to: "+data.cible.pseudo+"("+data.cible.id+")"; 
         console.log(consoleTxt); 
-        io.to(data.cible.peerID).emit('requestConnect', data);
+        io.to(data.cible.id).emit('requestConnect', data);
     }); 
 
     // Pilote/Robot >>> Visiteurs > Signal de perte de la connexion WebRTC principale (Pilote <> Robot)

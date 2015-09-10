@@ -186,7 +186,7 @@ function mainSettings() {
 
 
 
-    // console.log ("!!! pc.iceConnectionState >>>>>> " + pc.iceConnectionState);
+    // console.log ("!!! pc["+peerCnxId+"].iceConnectionState >>>>>> " + pc["+peerCnxId+"].iceConnectionState);
 
 }
 mainSettings();
@@ -442,10 +442,10 @@ function onSubmitVisitordevices() {
     
     // 1 On récupère l'objet client du pilote et son ID:
     var pilote = getClientBy("typeClient","Pilote");
-    var peerID = 'pilote-Visiteur-' + myPlaceListe +"-"+myPeerID;
+    var peerID = 'pilote-Visiteur-'+myPeerID;
     console.log("peerID de la connexion Pilote/Visiteur : "+peerID);
 
-    /*// 1 On balance au pilote une demande de connexion
+    // 1 On balance au pilote une demande de connexion
     socket.emit('requestConnect', {
                 from: localObjUser,
                 cible: pilote,
@@ -739,7 +739,7 @@ socket.on('updateUsers', function(data) {
     }
 })
 
-/*// Version 1toN
+// Version 1toN
 // Seul le pilote est concerné par cet écouteur... 
 socket.on('requestConnect', function(data) {
 
@@ -750,15 +750,16 @@ socket.on('requestConnect', function(data) {
     // 2 Provisoire (pour tests): Si aucune connexion, on lance l'initLocalmedia(peerID)
     // 3 Sinon on instancie la connexion ici, on lui ajoute le localStream et on lance la méthode connect(peerID)
     //console.log(peerCnx);
-    var countConnections = tools.countObjects(peerCnx);
+   var countConnections = tools.lenghtObject(peerCnxCollection);
     if (countConnections === 0) {
         initLocalMedia(data.peerID);
     } else {
-       peerCnx[peerID] = new PeerConnection(server, options);
-       peerCnx[peerID].addStream(localStream);
+       peerCnxCollection[data.peerID] = new PeerConnection(server, options);
+       peerCnxCollection[data.peerID].addStream(localStream);
        // Lancement du signaling 
-       connect(peerID);   
+       connect(data.peerID);   
     } 
+    /**/
 });
 /**/ // ------------ / Version 1toN
 
@@ -801,8 +802,8 @@ function initLocalMedia(peerCnxId) {
     console.log(peerCnxCollection); 
 
     // Etat des clients pour le signaling
-    piloteCnxStatus = peerCnxCollection[peerCnx1to1].iceConnectionState; 
-    robotCnxStatus = peerCnxCollection[peerCnx1to1].iceConnectionState;
+    // piloteCnxStatus = peerCnxCollection[peerCnx1to1].iceConnectionState; 
+    // robotCnxStatus = peerCnxCollection[peerCnx1to1].iceConnectionState;
 
     // Initialisation du localStream et lancement connexion
     navigator.getUserMedia(constraint, function(stream) {
@@ -817,7 +818,7 @@ function initLocalMedia(peerCnxId) {
             if (parameters.lRview != 'show') showLocalVideo = false;
         }
         if (showLocalVideo == true) video1.src = URL.createObjectURL(localStream);
-        //pc.addStream(localStream);
+        //pc["+peerCnxId+"].addStream(localStream);
         //connect();
         
         peerCnxCollection[peerCnxId].addStream(localStream);
@@ -844,14 +845,14 @@ function connect(peerCnxId) {
 
     // Ecouteur déclenché à la génération d'un candidate 
     peerCnxCollection[peerCnxId].onicecandidate = function(e) {
-        //console.log("@ pc.onicecandidate > timestamp:" + Date.now());
+        //console.log("@ pc["+peerCnxId+"].onicecandidate > timestamp:" + Date.now());
         // vérifie que le candidat ne soit pas nul
         if (!e.candidate) {
             // console.log("  > !e.candidate): return ");
             return;
         }
         // Réinitialise l'écouteur "candidate" de la connexion courante
-        // pc.onicecandidate = null; // Provoque un BUG sur Openshift ! 
+        // pc["+peerCnxId+"].onicecandidate = null; // Provoque un BUG sur Openshift ! 
         // >>>>>> Et si on teste sans ???
         // >>>>>> en local > OK, c'est juste plus long... 
         // >>>>>> en ligne > OK en filaire... 
@@ -862,9 +863,21 @@ function connect(peerCnxId) {
         // socket.emit("candidate", e.candidate);
     
         var cible = ""; // TODO: choisir la cible en fonction de l'ID PeerConnexion....
-        if (type === "pilote-appelant" ) cible = getClientBy('typeClient','Robot');
-        else if ( type === "robot-appelé") cible = getClientBy('typeClient','Pilote');
-        console.log ("------------ candidate >>> ----------");
+        // Si on est dans la peerConnection principale (Pilote <> Robot)
+        if (peerCnxId == peerCnx1to1) {
+            if (type === "pilote-appelant" ) cible = getClientBy('typeClient','Robot');
+            else if ( type === "robot-appelé") cible = getClientBy('typeClient','Pilote');
+        
+        } else {
+                // sinon On peux retrouver l'ID du pair distant en analysant l'ID de la connexion:
+                // Le peerID de la connexion est constitué d'une concaténation
+                // d'un préfixe et de l'id client du visiteur
+                // Il suffit donc d'oter le préfixe pour retrouver l'id du pair distant... 
+                var cibleID = peerCnxId;
+                cibleID = cibleID.replace('pilote-Visiteur-', "");
+                cible = getClientBy('id',cibleID); 
+        }
+        console.log ("------------ Candidate to >>> "+cible.typeClient+"----------");
         var data = {from: localObjUser, message: e.candidate, cible: cible, peerCnxId: peerCnxId}
         // console.log (data);
         socket.emit("candidate2", data);
@@ -875,7 +888,7 @@ function connect(peerCnxId) {
     // Ecouteur déclenché a la reception d'un remoteStream
     peerCnxCollection[peerCnxId].onaddstream = function(e) {
 
-        console.log("@ pc.onaddstream > timestamp:" + Date.now());
+        console.log("@ pc["+peerCnxId+"].onaddstream > timestamp:" + Date.now());
         remoteStream = e.stream;
         //video2.src = URL.createObjectURL(remoteStream);
         var showRemoteVideo = true;
@@ -895,10 +908,13 @@ function connect(peerCnxId) {
     peerCnxCollection[peerCnxId].oniceconnectionstatechange = function(e) {
 
         var dateE = tools.dateER('E');
-        console.log("@ pc.oniceconnectionstatechange > " + dateE);
+        console.log("@ pc["+peerCnxId+"].oniceconnectionstatechange > " + dateE);
 
-        console.log(">>> stateConnection Event > " + peerCnxCollection[peerCnxId].iceConnectionState);
-        $(chatlog).prepend(dateE + ' [stateConnection Event] ' + peerCnxCollection[peerCnxId].iceConnectionState + '\n');
+        //console.log(">>> stateConnection Event > " + peerCnxCollection[peerCnxId].iceConnectionState);
+        //$(chatlog).prepend(dateE + ' [stateConnection Event] ' + peerCnxCollection[peerCnxId].iceConnectionState + '\n');
+
+        console.log(">>> pc["+peerCnxId+"] stateConnection Event > " + peerCnxCollection[peerCnxId].iceConnectionState);
+        $(chatlog).prepend(dateE + ' pc['+peerCnxId+'] stateConnection Event: ' + peerCnxCollection[peerCnxId].iceConnectionState + '\n');
 
 
         // Si la connexion est neuve, on remet le flag de renégo à sa position par défaut...
@@ -965,7 +981,7 @@ function connect(peerCnxId) {
 
     // Ecouteur ... Todo...
     peerCnxCollection[peerCnxId].onremovestream = function(e) {
-        console.log("@ pc.onremovestream(e) > timestamp:" + Date.now());
+        console.log("@ pc["+peerCnxId+"].onremovestream(e) > timestamp:" + Date.now());
         console.log(e);
     }
 
@@ -985,7 +1001,7 @@ function connect(peerCnxId) {
             var cible = getClientBy('typeClient','Robot');
             peerCnxCollection[peerCnxId].createOffer(function(sdp){
                         peerCnxCollection[peerCnxId].setLocalDescription(sdp);
-                        console.log ("------------ offer >>> ----------");
+                        console.log ("------------ offer >>> to "+cible.typeClient+"----------");
                         var data = {from: localObjUser, message: sdp, cible: cible, peerCnxId: peerCnxId}
                         // console.log (data);
                         socket.emit("offer2", data);
@@ -994,7 +1010,28 @@ function connect(peerCnxId) {
                     constraints
                 );
 
-        } // endif connexion principale (Pilote <> Robot)
+        } else {// endif connexion principale (Pilote <> Robot)
+                // On peux retrouver l'ID du pair distant en analysant l'ID de la connexion:
+                // Le peerID de la connexion est constitué d'une concaténation
+                // d'un préfixe et de l'id client du visiteur
+                // Il suffit donc d'oter le préfixe pour retrouver l'id du pair distant... 
+                var cibleID = peerCnxId;
+                cibleID = cibleID.replace('pilote-Visiteur-', ""); 
+                // var cibleID = 'pilote-Visiteur-' peerCnxId
+                // 2 On récupère l'objet Visiteur (cible)
+                var cible = getClientBy('id',cibleID);
+                peerCnxCollection[peerCnxId].createOffer(function(sdp){
+                        peerCnxCollection[peerCnxId].setLocalDescription(sdp);
+                        console.log ("------------ offer >>> to "+cible.typeClient+"----------");
+                        var data = {from: localObjUser, message: sdp, cible: cible, peerCnxId: peerCnxId}
+                        // console.log (data);
+                        socket.emit("offer2", data);
+                    }
+                    , errorHandler, 
+                    constraints
+                );
+                /**/
+        }
 
     // Sinon si on est l'apellé (Robot)
     } else if (type === "robot-appelé") {
@@ -1006,7 +1043,7 @@ function connect(peerCnxId) {
             // Ecouteur d'ouverture d'un data channel
             peerCnxCollection[peerCnxId].ondatachannel = function(e) {
                 channel = e.channel;
-                console.log("pc.ondatachannel(e)... ");
+                console.log("pc["+peerCnxId+"].ondatachannel(e)... ");
                 bindEvents(); //now bind the events
             };
         } // endif connexion principale (Pilote <> Robot)
@@ -1028,7 +1065,9 @@ function connect(peerCnxId) {
 // Cause: L'écouteur de reception "offer"est instancié 2 fois...
 // FIX: ajout d'un flag "isRenegociate = false;" 
 socket.on("offer", function(data) {
-    console.log ("------------ >>> offer ----------");
+    
+
+    console.log ("------------ >>> offer from "+data.from.typeClient+"----------");
     console.log ("isRenegociate:"+isRenegociate);
     if (isRenegociate == false) {            
 
@@ -1053,7 +1092,7 @@ socket.on("offer", function(data) {
         // création de l'offre SDP
         peerCnxCollection[idPeerConnection].createAnswer(function(sdp){
                 peerCnxCollection[idPeerConnection].setLocalDescription(sdp);
-                console.log ("------------ Answer >>> ----------");
+                console.log ("------------ Answer to >>> "+cible.typeClient+"----------");
                 var data = {from: localObjUser, message: sdp, cible: cible, peerCnxId: idPeerConnection}
                 //console.log (data);
                 socket.emit("answer2", data);
@@ -1068,7 +1107,7 @@ socket.on("offer", function(data) {
 
 // Réception d'une réponse à une offre
 socket.on("answer", function(data) {
-    console.log ("------------ >>>> Answer ----------");
+    console.log ("------------ >>> answer from "+data.from.typeClient+"----------");
     //console.log("- Answer From: " + data.from.pseudo +"("+data.from.id+")");
     //console.log("- Cible: " + data.cible.pseudo +"("+data.cible.id+")");
     //console.log("- peerconnection: " + data.peerCnxId);
@@ -1079,7 +1118,7 @@ socket.on("answer", function(data) {
 
 // Réception d'un ICE Candidate
 socket.on("candidate", function(data) {
-    console.log ("------------ >>>> Candidate ----------");
+    console.log ("------------ >>>> Candidate from "+data.from.typeClient+"----------");
     //console.log("- candidate From: " + data.from.pseudo +"("+data.from.id+")");
     //console.log("- Cible: " + data.cible.pseudo +"("+data.cible.id+")");
     //console.log("- peerconnection: " + data.peerCnxId);
@@ -1111,8 +1150,8 @@ function onDisconnect(peerCnxId) {
     channel = null;
 
     // On vide et on ferme la connexion courante
-    // pc.onicecandidate = null;
-    //pc.close();
+    // pc["+peerCnxId+"].onicecandidate = null;
+    //pc["+peerCnxId+"].close();
     //pc = null;
 
     peerCnxCollection[peerCnxId].close();
