@@ -25,14 +25,20 @@
             <div id="piloteCamera" class="insideFlex oneQuarterbox pilote shadowBlack device">
                 <strong> Pilote view</strong>
                 <hr/>
-                <video id='otherPeer' autoplay muted controls="controls"></video>
+                <div class = "videosContainer">
+                    <!--<video id='otherPeer' autoplay muted controls="controls"></video>-->
+                    <video id='1to1_remoteVideo' class="" autoplay muted controls="controls"></video>
+                </div>
             </div>
 
 
             <div id="visitorDevices" class="insideFlex oneQuarterbox visiteur shadowBlack devicesDisabled ">
                 <strong> Visitor view</strong>
                 <hr/>
-                <video id='video' autoplay muted controls="controls"></video>
+                <div class = "videosContainer">
+                    <!-- <video id='video' autoplay muted controls="controls"></video> -->
+                    <video id='1to1_localVideo' autoplay muted controls="controls"></video>
+                </div>
                 <hr/>
                 <div class="select">
                     <label for="local_audioSource">Audio: </label>
@@ -54,7 +60,14 @@
             <div id="remoteVideoAreaVisitor" class="insideFlex robot tripleQuarterBox shadowBlack floatRight">
                 <strong> Robot View</strong>
                 <hr/>
-                <video id='otherPeer2' class="" autoplay muted controls="controls"></video>
+                <div class = "videosContainer">
+                    <!--<video id='otherPeer2' class="" autoplay muted controls="controls"></video>-->
+                    <video id='1toN_remoteVideoRobot' class="" autoplay muted controls="controls"></video>
+                    
+
+
+
+                </div>
             </div>
         </div>
 

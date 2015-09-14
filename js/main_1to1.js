@@ -83,9 +83,17 @@ function mainSettings() {
     navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || navigator.webkitGetUserMedia;
 
 
-    // Eléments videos du document html
+    /*// Eléments videos du document html
     video1 = document.getElementById("video");
     video2 = document.getElementById("otherPeer");
+    video3 = document.getElementById("videosVisitors");
+    /**/
+
+    video1 = document.getElementById("1to1_localVideo"); // Sur IHM Robot, pilote, visiteur
+    video2 = document.getElementById("1to1_remoteVideo"); // Sur IHM Robot, pilote, visiteur
+    video3 = document.getElementById("1toN_remoteVideos"); // Vue des visiteurs sur IHM Pilote
+    video4 = document.getElementById("1toN_remoteVideoRobot"); // Vue du Robot sur IHM Visiteur
+    
 
 
     // RTC DataChannel
@@ -187,11 +195,10 @@ function mainSettings() {
 
 
     // console.log ("!!! pc["+peerCnxId+"].iceConnectionState >>>>>> " + pc["+peerCnxId+"].iceConnectionState);
-
 }
 mainSettings();
 
-//------ Phase 1 Pé-signaling ----------------------------------------------------------
+//------ PHASE 1 : Pré-signaling ----------------------------------------------------------
 
 // rejectConnexion', message:message, url:indexUrl);
 socket.on('error', errorHandler);
@@ -380,7 +387,9 @@ function localManageDevices() {
 }
 
 
-// ------------ Adds 1toN -------------------------
+// ------------ Ajouts 1toN -------------------------
+
+// IHM visiteur:
 // Action exclusive au visiteur qui vient de se connecter:
 // le visiteur vérifie que le Pilote(ou le robot) est prêt à accepter la connexion
 // Cette fonction est appelée après que le connecté à reçu ses identifiants
@@ -388,7 +397,7 @@ function requestClearance(cible) {
     // console.log ("@ requestClearance");
     console.log (">> socket.emit('requestClearance', cible:"+cible.pseudo+")");
     //socket.emit("isPilotReadyForVisitor", localObjUser);
-    socket.emit("requestClearance", {from:localObjUser , cible:cible});
+    socket.emit("requestClearance", {from:localObjUser , cible:cible}); 
 }
 
 
@@ -424,8 +433,6 @@ function closeVisitorDevices() {
     // Invite de formulaire...
     document.getElementById("visitorDevices").className = "insideFlex oneQuarterbox visiteur shadowBlack devicesDisabled ";
 }
-
-
 
 
 // IHM visiteur: a la soumission du formulaire de demande de connexion avec le pilote :
@@ -466,74 +473,44 @@ function onSubmitVisitordevices() {
 
     initLocalMedia(peerID);
 }
-/**/// ------------ / Adds 1toN / -------------------------
 
+/// ------------ Fin Ajouts 1toN -------------------------
 
+// ---- > Ecouteurs webSocket de pré-signaling
+// --- Ecouteurs Websockets exclusifs au Pilote (appelant)
 
-// -- > ecouteurs webSocket de pré-signaling
-
-// ------------ Adds 1toN -------------------------
-
-// Reception d'une demande de clearance
-socket.on('requestClearance', function(data) {
-    console.log (">> socket.on('requestClearance',...");
-    //console.log (visitor);
-    // Si la connexion avec le Robot est déja initialisée
-    if (isStarted == true) { // False pour tests...
-        socket.emit('responseClearance', {
-            from: localObjUser,
-            cible: data.from,
-            message: "ready"
-        }); 
-    }
-});
-
-/**/// ------------ / Adds 1toN / -------------------------
-
-// Ecouteurs Websockets exclusifs au Pilote (appelant)
-if (type == "pilote-appelant") {
-
-    // Reception de la liste des Devices du Robot V2 (version objet)
-    // coté serveur >> socket.broadcast.emit('remoteListDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
-    socket.on('remoteListDevices', function(data) {
-        console.log(">> socket.on('remoteListDevices',...");
-        // On renseigne  le flag d'ogigine
+// Reception de la liste des Devices du Robot V2 (version objet)
+// coté serveur >> socket.broadcast.emit('remoteListDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
+socket.on('remoteListDevices', function(data) {
+    console.log(">> socket.on('remoteListDevices',...");
+    // On renseigne  le flag d'ogigine
+    if (type == "pilote-appelant") {
         origin = "remote";
         // On alimente les listes de micro/caméra distantes
         gotSources(data.listeDevices);
+    }
+})
 
-    })
-
-    // Reception du signal de fin pré-signaling
-    socket.on("readyForSignaling", function(data) {
-        console.log(">> socket.on('readyForSignaling',...");
+// Reception du signal de fin pré-signaling
+socket.on("readyForSignaling", function(data) {
+    console.log(">> socket.on('readyForSignaling',...");
+    if (type == "pilote-appelant") {
         if (data.message == "ready") {
             // initLocalMedia(peerCnxId); 
             initLocalMedia(peerCnx1to1);
-         }
-    })
-
-
-    /*// Reception du statut de connexion du robot
-    socket.on("robotCnxStatus", function(data) {
-        robotCnxStatus = data.message;
-        // Version 1to1
-        // On vérifie l'état de sa propre connexion et de celle du robot
-        if (piloteCnxStatus == 'new' && robotCnxStatus == 'new') {
-            activeManageDevices(); // On acive les formulaires permettant de relancer la connexion
         }
-    });
-    /**/
-}
+    }
+})
 
-// Ecouteurs Websockets exclusifs au Robot (appelé)
-if (type == "robot-appelé") {
 
-    // Reception cam et micro selectionnés par le pilote (apellant) V2 Objet
-    // Coté serveur >> socket.broadcast.emit('selectedRemoteDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
-    socket.on('selectedRemoteDevices', function(data) {
-        console.log(">> socket.on('selectedRemoteDevices',...");
+// ---- Ecouteurs Websockets exclusifs au Robot (appelé)
 
+// Reception cam et micro selectionnés par le pilote (apellant) V2 Objet
+// Coté serveur >> socket.broadcast.emit('selectedRemoteDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
+socket.on('selectedRemoteDevices', function(data) {
+    console.log(">> socket.on('selectedRemoteDevices',...");
+
+    if (type == "robot-appelé") {
         // On rebalance au formulaire les caméras/micros choisies par le pilote
         document.getElementById(data.listeDevices.selectAudio).selected = "selected";
         document.getElementById(data.listeDevices.selectVideo).selected = "selected";
@@ -566,62 +543,11 @@ if (type == "robot-appelé") {
             objUser: localObjUser,
             message: "ready"
         }); // Version objet
-    })
-
-    /*// Reception du statut de connexion du pilote
-    socket.on("piloteCnxStatus", function(data) {
-        piloteCnxStatus = data.message;
-    });
-    /**/
+    }
+})
 
 
-    // Reception d'une commande pilote
-    // On la renvoie au client robot qui exécuté sur la même machine que la Robubox.
-    // Il pourra ainsi faire un GET ou un POST de la commande à l'aide d'un proxy et éviter le Cross Origin 
-    socket.on("piloteOrder", function(data) {
-        //console.log('@onPiloteOrder >> command:' + data.command);
-        //if (data.command == "onDrive" && data.command == "onStop") sendCommandDriveInterface(data.command,data.enable, data.aSpeed, data.lSpeed);
-        /*
-        if (data.command == "onStop") {};
-        if (data.command == "onStep") {};
-        if (data.command == "onGoto") {};
-        if (data.command == "onClicAndGo") {};
-        /**/
-        sendCommandDriveInterface(data.command,data.enable, data.aSpeed, data.lSpeed);
-    });
-
-}
-
-// ---------------- + Version 1toN + ---------------
-// Ecouteurs Websockets exclusifs au visiteur
-if (type == "visiteur-appelé") {
-    
-    // Reception d'une réponse de clearance de présignaling 
-    socket.on('responseClearance', function(data) {
-        console.log(">> socket.on('responseClearance',...");
-        // si le visiteur est en attente de sa connexion principale avec le pilote
-        if (isStarted == false && data.message == "ready") openVisitorDevices();
-     });
-
-    
-    // Reception d'une déclaration de clearance de présignaling 
-    socket.on('signaleClearance', function(data) {
-        console.log(">> socket.on('signaleClearance',...");
-        // si le visiteur est en attente de sa connexion principale avec le pilote
-        if (isStarted == false && data.message == "ready") openVisitorDevices();
-     });
-
-    // Reception d'un signal de déconection du pilote
-    socket.on('closeMasterConnection', function(data) {
-        console.log(">> socket.on('closeMasterConnection',...");
-        closeVisitorDevices();
-        //if (data == "disconnected") closeVisitorDevices();
-     });
-
-
-  
-}
-/**/ //------------- / Version 1toN /------------
+// ---- Ecouteurs Websockets communs
 
 // Reception du statut de connexion du pilote
 socket.on("piloteCnxStatus", function(data) {
@@ -664,13 +590,9 @@ socket.on("robotCnxStatus", function(data) {
         activeManageDevices(); // On acive les formulaires permettant de relancer la connexion
     }
     /**/// ---- / Version 1toN
-
 });
 
-
-
-
-// Quand on reçoit un update de la liste des clietns websockets 
+// Quand on reçoit un update de la liste des clients websockets 
 // C.A.D à chaque nouveln arrivant... 
 socket.on('updateUsers', function(data) {
 
@@ -735,12 +657,65 @@ socket.on('updateUsers', function(data) {
       if (isStarted == false) {
         var cibleRequest = getClientBy('typeClient','Pilote');
         requestClearance(cibleRequest);
+        // Mode débugg: on force l'ouverture pour eviter de poireauter des plombes...
+        console.log ('DEBUG : On force le requestClearance !!! A désactiver en prod !!!!');
+        if (isStarted == false) openVisitorDevices();
+        /**/ // End débugg
         }
+
+      
+        
     }
 })
 
-// Version 1toN
-// Seul le pilote est concerné par cet écouteur... 
+// ------------ Ajouts 1toN -------------------------
+
+
+// Reception d'une demande de clearance
+socket.on('requestClearance', function(data) {
+    console.log (">> socket.on('requestClearance',...");
+    //console.log (visitor);
+    // Si la connexion avec le Robot est déja initialisée
+    if (isStarted == true) { // False pour tests...
+        socket.emit('responseClearance', {
+            from: localObjUser,
+            cible: data.from,
+            message: "ready"
+        }); 
+    }
+});
+
+// ---- Ecouteurs exclusifs au visiteur
+
+// Reception d'une réponse de clearance de présignaling 
+socket.on('responseClearance', function(data) {
+    console.log(">> socket.on('responseClearance',...");
+    if (type == "visiteur-appelé") {
+        // si le visiteur est en attente de sa connexion principale avec le pilote
+        if (isStarted == false && data.message == "ready") openVisitorDevices();
+    }
+ });
+
+
+// Reception d'une déclaration de clearance de présignaling 
+socket.on('signaleClearance', function(data) {
+    console.log(">> socket.on('signaleClearance',...");
+    if (type == "visiteur-appelé") {
+        // si le visiteur est en attente de sa connexion principale avec le pilote
+        if (isStarted == false && data.message == "ready") openVisitorDevices();
+    }
+ });
+
+
+// Reception d'un signal de déconection du pilote
+socket.on('closeMasterConnection', function(data) {
+    console.log(">> socket.on('closeMasterConnection',...");
+    if (type == "visiteur-appelé") {    
+        closeVisitorDevices();
+    }
+ });
+
+// ---- Ecouteurs exclusif au pilote. 
 socket.on('requestConnect', function(data) {
 
     console.log(">> socket.on('requestConnect',...");
@@ -761,11 +736,8 @@ socket.on('requestConnect', function(data) {
     } 
     /**/
 });
-/**/ // ------------ / Version 1toN
 
-
-
-// ---- Phase 2 Signaling --------------------------------------------------
+// ---- PHASE 2 : Signaling --------------------------------------------------
 
 // initialisation du localStream et appel connexion
 function initLocalMedia(peerCnxId) {
@@ -887,19 +859,23 @@ function connect(peerCnxId) {
 
     // Ecouteur déclenché a la reception d'un remoteStream
     peerCnxCollection[peerCnxId].onaddstream = function(e) {
-
+        console.log("@ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
         console.log("@ pc["+peerCnxId+"].onaddstream > timestamp:" + Date.now());
         remoteStream = e.stream;
         //video2.src = URL.createObjectURL(remoteStream);
         var showRemoteVideo = true;
+        var originStream = "";
         if (type == "pilote-appelant") {
             if (parameters.rPview == 'hide') showRemoteVideo = false;
             // showRemoteVideo = false;
+            originStream = peerCnxId.indexOf('pilote-Visiteur-'); //Retourne -1
+            if (originStream != -1) originStream = "Visiteur";
         } else if (type == "robot-appelé") {
             if (parameters.rRView == 'hide') showRemoteVideo = false;
         }
         if (showRemoteVideo == true) video2.src = URL.createObjectURL(remoteStream);
-
+        // if (originStream == "Visiteur") video3.src = URL.createObjectURL(remoteStream);
+        if (originStream == "Visiteur") addRemoteMultiVideo(remoteStream)
     };
 
 
@@ -1113,7 +1089,6 @@ socket.on("answer", function(data) {
     //console.log("- peerconnection: " + data.peerCnxId);
     //console.log (data.message);
     peerCnxCollection[data.peerCnxId].setRemoteDescription(new SessionDescription(data.message));
-
 });
 
 // Réception d'un ICE Candidate
@@ -1290,13 +1265,25 @@ function sendCommandDriveInterface(command,enable,aSpeed,lSpeed) {
         if (command == "onGoto") {};
         if (command == "onClicAndGo") {};
         /**/
-    
-  
-
 }
 
-
-
+// Reception d'une commande pilote
+// On la renvoie au client robot qui exécuté sur la même machine que la Robubox.
+// Il pourra ainsi faire un GET ou un POST de la commande à l'aide d'un proxy et éviter le Cross Origin 
+socket.on("piloteOrder", function(data) {
+    console.log('@onPiloteOrder >> command:' + data.command);
+    if (type == "robot-appelé") {
+        
+        //if (data.command == "onDrive" && data.command == "onStop") sendCommandDriveInterface(data.command,data.enable, data.aSpeed, data.lSpeed);
+        /*
+        if (data.command == "onStop") {};
+        if (data.command == "onStep") {};
+        if (data.command == "onGoto") {};
+        if (data.command == "onClicAndGo") {};
+        /**/
+        sendCommandDriveInterface(data.command,data.enable, data.aSpeed, data.lSpeed);
+    }
+});
 
 // --------------------- Gestion des messages d'erreur ------------------
 
@@ -1323,3 +1310,178 @@ function getClientBy(key,value) {
         }
     }
 };
+
+
+// ------------   multiview Michel
+
+if (type == "pilote-appelant") {
+
+    var buttonAdd, buttonChangePos, videoSection;
+    var nbVideos = 0;
+    var width, height;
+    var tabVideos = [];
+
+    window.onload = function(evt) {
+      
+      videoSection = document.querySelector("#videos");
+      
+      buttonAdd = document.querySelector("#addVideoButton");
+      buttonAdd.addEventListener("click", addVideo);
+      buttonAdd = document.querySelector("#removeVideoButton");
+      buttonAdd.addEventListener("click", removeVideoCallback);
+      buttonAdd = document.querySelector("#layout2videos");
+      buttonAdd.addEventListener("click", setLayoutForTwoVideos); 
+      
+      var rect = videoSection.getBoundingClientRect();
+      
+      videoSection.style.height="340px";
+      
+      width= rect.width;
+      height = rect.height;
+      
+      window.onresize = function() {
+        setLayoutForTwoVideos();
+      };
+    };
+
+    
+    
+
+    function addRemoteMultiVideo(remoteStream) {  
+      
+        // create a video element  
+        var v = document.createElement("video");
+        var largeurVideo=150;
+        var hauteurVideo=150;
+         
+        var xVideo = Math.round((width-largeurVideo)/2);
+        var yVideo = Math.round((height+hauteurVideo)/2);
+
+        v.style.width=largeurVideo + "px";
+        v.style.height=hauteurVideo + "px";
+
+        v.style.left=xVideo + "px";
+        //v.style.top=yVideo + "px";
+
+        v.id = 'vid'+ tabVideos.length;
+        v.setAttribute("controls", "true");
+        //v.innerHTML="<source src='http://html5doctor.com/demos/video-canvas-magic/video.webm' type='video/webm'/>";
+        v.src = URL.createObjectURL(remoteStream);
+          
+        tabVideos.push(v);
+        videoSection.appendChild(v);
+        indexVideo = tabVideos.length-1;
+        console.log("Add video Visiteur - on ajoute la video id=" + indexVideo);
+        setLayoutForTwoVideos();
+    }
+
+    function removeVideoCallback(evt) {
+      removeVideo();
+    }
+
+
+    function addVideo() {  
+      
+      // create a video element  
+      var v = document.createElement("video");
+      var largeurVideo=150;
+      var hauteurVideo=150;
+      
+      var xVideo = Math.round((width-largeurVideo)/2);
+      var yVideo = Math.round((height+hauteurVideo)/2);
+
+      v.style.width=largeurVideo + "px";
+      v.style.height=hauteurVideo + "px";
+
+      v.style.left=xVideo + "px";
+      //v.style.top=yVideo + "px";
+
+      v.id = 'vid'+ tabVideos.length;
+      v.setAttribute("controls", "true");
+      //v.innerHTML="<source src='http://html5doctor.com/demos/video-canvas-magic/video.webm' type='video/webm'/>";
+      v.src="http://html5doctor.com/demos/video-canvas-magic/video.webm";
+      tabVideos.push(v);
+
+      videoSection.appendChild(v);
+      setLayoutForTwoVideos();
+    }
+
+    function removeVideoCallback(evt) {
+      removeVideo();
+    }
+
+    function removeVideo(indexVideo) {
+      if(! indexVideo) indexVideo = tabVideos.length-1;
+      
+      console.log("on supprime video id=" + indexVideo);
+      
+      // On supprime du tableau
+      tabVideos.splice(indexVideo, 1);
+      
+      // Et du DOM
+      var id = "vid"+indexVideo;
+      //console.log("removing #"+id);
+      
+      var v = document.querySelector("#"+id);
+      //console.log(v);
+      videoSection.removeChild(v);
+      
+      // et on repositionne les videos restantes
+      setLayoutForTwoVideos();
+    }
+
+
+    function setLayoutForTwoVideos() {
+      var nbVideos = tabVideos.length;
+      var nbHorizontalMargins = nbVideos+1;
+        
+      var rect = videoSection.getBoundingClientRect();
+        
+      width= rect.width;
+      height = rect.height;
+      
+      // width and height = size of the container
+      // 5% pour chaque marge horizontale, pour deux vidéos il y en a 3
+      var horizontalPercentageForMargin = 0.05;
+      var horizontalMargin = width*horizontalPercentageForMargin;
+      
+      // Percentage of total width for the sum of video width
+      var percentageWidthForVideos = 1 - horizontalPercentageForMargin;
+      var percentageHeightForVideos = 0.9;
+      
+      // size of each video
+      var videoWidth = (width - (nbHorizontalMargins * horizontalMargin))  / nbVideos;
+      var videoHeight = height * percentageHeightForVideos;
+     
+      
+      var x= rect.left, y, oldx=0;
+      
+      for(var i=0; i < nbVideos; i++) {
+        var v = tabVideos[i];
+        
+        x += horizontalMargin;
+        y = height - rect.top - videoHeight;
+        
+        v.style.width=videoWidth + "px";
+        v.style.height=videoHeight + "px";
+
+        v.style.left = x + "px";
+        //v.style.top  = y + "px";
+      
+        x+=videoWidth;
+      }
+    }
+
+    function changePos(id, x, y, width, height) {
+        v = document.querySelector("#"+id);
+        v.style.width=width+"px";
+        v.style.height=height+"px";
+        v.style.left=x+"px";
+        v.style.y="px";
+    }
+   
+}
+
+
+
+/**/

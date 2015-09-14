@@ -32,7 +32,7 @@
     - [ ] IHM Pilote 
         - [X] CSS Mookups
         - [x] bloc Cam Pilote
-        - [ ] bloc Cam Visiteurs
+        - [i] bloc Cam Visiteurs
         - [x] bloc Tchat
         - [ ] bloc Manage Visiteurs
         - [ ] bloc Manage Files
@@ -42,7 +42,7 @@
         - [ ] bloc Liste visiteurs
     - [ ] IHM Visiteur 
         - [x] CSS
-        - [ ] Cam Pilote
+        - [x] Cam Pilote
         - [x] Cam Visiteur
         - [ ] Cam Robot
         - [X] Tchat

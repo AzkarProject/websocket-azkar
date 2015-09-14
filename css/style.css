@@ -122,12 +122,25 @@ form {margin-bottom: 9px;}
 
 .ihmRobot video { width:300px; height:150px;}
 
+/* Add multiView Michel */
+#videos {
+  border:1px solid black;
+  margin: 0 auto;
+  transition: all 2s;
+}
 
+video {
+  transform:rotate(0deg);
+  position:absolute;
+  border:1px solid black;
+  transition: all 1s;
+}
+/*----*/
 
 /* hauteur des blocs */
 /* Partie 1to1 */
 .ihmPilote #robotDevices {}
-.ihmPilote #piloteDevices {}
+.ihmPilote #piloteDevices .videosContainer{height:151px}
 .ihmPilote #robotCommands {height: 202px;}
 .ihmPilote #robotInfos {}
 .ihmPilote #websocketChat {height:310px}
@@ -151,6 +164,8 @@ form {margin-bottom: 9px;}
 .ihmVisiteur #OneToNChat_visitor {height:280px;}
 .ihmVisiteur #uploadedFiles {height:280px;}
 
+.ihmVisiteur #piloteCamera .videosContainer{height:150px}
+.ihmVisiteur #visitorDevices .videosContainer{height:150px}
 
 
 .ihmRobot #visitorsList {height:190px}

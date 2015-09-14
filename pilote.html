@@ -82,7 +82,10 @@
             <div id="piloteDevices" class="insideFlex oneQuarterbox pilote shadowBlack device">
                 <strong> Pilote Devices</strong>
                 <hr/>
-                <video id='video' autoplay muted controls="controls"></video>
+                <div class = "videosContainer">
+                    <!-- <video id='video' autoplay muted controls="controls"></video>-->
+                    <video id='1to1_localVideo' autoplay muted controls="controls"></video>
+                </div>
                 <hr/>
                 <div class="select">
                     <label for="local_audioSource">Audio: </label>
@@ -152,7 +155,10 @@
             <div id="remoteVideoArea" class="insideFlex robot tripleQuarterBox shadowBlack floatRight">
                 <strong> Robot Camera View</strong>
                 <hr/>
-                <video id='otherPeer' class="" autoplay muted controls="controls"></video>
+                <div class = "videosContainer">
+                    <!--<video id='otherPeer' class="" autoplay muted controls="controls"></video>-->
+                    <video id='1to1_remoteVideo' class="" autoplay muted controls="controls"></video>
+                </div>
             </div>
         </div>
         
@@ -261,10 +267,49 @@
             <div id="remoteVisitorsCameras" class="insideFlex visiteur DoubleThirdBox shadowBlack floatRight">
                 <strong> Visitors Views</strong>
                 <hr/>
-                TODO... otherPeer2
+                <div class = "videosContainer">
+                    <!--<video id='videosVisitors' class="" autoplay muted controls="controls"></video>-->
+                    <!--<video id='1toN_remoteVideos' class="" autoplay muted controls="controls"></video>-->
+
+
+                    <div id="videos"></div>
+
+                   
+<!--                     <div id="videos" style="height:340px">
+                       <video id='XXXXXXXXXX' class="" autoplay muted controls="controls" style="width:759px;height:307px;left:485px;top-45px;">
+                           <source src="http://html5doctor.com/demos/video-canvas-magic/video.webm" type="video/webm">
+                       </video>
+                    </div> -->
+                
+                    
+
+                        <button id="addVideoButton">Ajouter une vidéo</video>
+                        <button id="removeVideoButton">Supprimer une vidéo</video>
+                        <button id="layout2videos">Positionne les  videos</video>
+
+
+
+
+
+
+                </div>
             </div>
         </div>
     
+       
+
+
+
+
+
+
+
+
+
+
+
+
+
         <div id="colDroiteBottomVisitorsArea" class="floatLeft oneThirdContainerBox">
             <div id="manageVisitors" class="insideFlex visiteur oneThirdBox shadowBlack floatLeft">
                 <strong> Manage visitors </strong>

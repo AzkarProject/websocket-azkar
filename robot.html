@@ -68,7 +68,10 @@
 				<div id="piloteCam" class="insideFlex pilote shadowBlack">
 				    <strong> Pilot Camera</strong>
 				    <hr/>
-				    <video id='otherPeer' autoplay muted controls="controls" ></video>
+				    <div class = "videosContainer">
+				    	<!-- <video id='otherPeer' autoplay muted controls="controls" ></video> -->
+				    	<video id='1to1_remoteVideo' class="" autoplay muted controls="controls"></video>
+				    </div>
 		  	 	</div>
 			</div>
 		
@@ -77,7 +80,10 @@
 				<div id="robotCam" class="insideFlex robot shadowBlack">
 				    <strong> Robot Camera</strong>
 				    <hr/>
-				    <video id='video' autoplay muted controls="controls"></video>
+				    <div class = "videosContainer">
+				    	<!-- <video id='video' autoplay muted controls="controls"></video>-->
+                		<video id='1to1_localVideo' autoplay muted controls="controls"></video>
+                	</div>
 		  	 	</div>
 			</div>
 
