@@ -171,9 +171,9 @@ function mainSettings() {
     // console.log(peerCnxCollection); 
 
     localStream = null;
-    remoteStream = null;
-    // var ws_remoteStream = null; // Stream transmit par websocket...
-
+    remoteStream = null; // remoteStream 1to
+    remoteStreamCollection = {}; // 1toN > Tableau des remoteStreams visiteurs
+    
     // Constraints de l'offre SDP. 
     // TODO: Tester d'autres résolutions pour voir l'impact sur les délais de transmission
     constraints = {
@@ -861,21 +861,37 @@ function connect(peerCnxId) {
     peerCnxCollection[peerCnxId].onaddstream = function(e) {
         console.log("@ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
         console.log("@ pc["+peerCnxId+"].onaddstream > timestamp:" + Date.now());
-        remoteStream = e.stream;
-        //video2.src = URL.createObjectURL(remoteStream);
+        
         var showRemoteVideo = true;
-        var originStream = "";
+        // Add 1toN
+        var originStream = ""; 
+        originStream = peerCnxId.indexOf('pilote-Visiteur-'); //Retourne -1 si faux
+        if (originStream != -1) originStream = "Visiteur";
+        
+
+        // Bug refacto 1to1 > 1toN : Le remoteStream doit rester dédié au 1to1 Pilote/Robot ou Robot/visiteur 
+        // Les remoteStream en provenance des visiteurs doivent être mis dans une collection.
+        // remoteStream = e.stream;
+        if (originStream != "Visiteur") remoteStream = e.stream; // Uniquement si c'est le pilote ou le robot qui s'affiche
+        else remoteStreamCollection[peerCnxId] = e.stream; // sinon on met le stream dans un tableau  
+
+
+
         if (type == "pilote-appelant") {
             if (parameters.rPview == 'hide') showRemoteVideo = false;
             // showRemoteVideo = false;
-            originStream = peerCnxId.indexOf('pilote-Visiteur-'); //Retourne -1
-            if (originStream != -1) originStream = "Visiteur";
+
+            if (originStream != "Visiteur") remoteStream = e.stream;
+        
         } else if (type == "robot-appelé") {
             if (parameters.rRView == 'hide') showRemoteVideo = false;
         }
-        if (showRemoteVideo == true) video2.src = URL.createObjectURL(remoteStream);
-        // if (originStream == "Visiteur") video3.src = URL.createObjectURL(remoteStream);
-        if (originStream == "Visiteur") addRemoteMultiVideo(remoteStream)
+        
+
+
+        if (originStream != "Visiteur" && showRemoteVideo == true) video2.src = URL.createObjectURL(remoteStream);
+        
+        if (originStream == "Visiteur") addRemoteMultiVideo(remoteStreamCollection[peerCnxId])
     };
 
 
