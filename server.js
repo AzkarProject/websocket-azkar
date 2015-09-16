@@ -170,13 +170,13 @@ io.on('connection', function(socket, pseudo) {
 
         } else if (data.typeClient == "Pilote") {
             var isOneBot = tools.searchInObjects(users2, "typeClient", "Robot", "boolean");
+            var isOtherPilot = tools.searchInObjects(users2, "typeClient", "Pilote", "boolean");
             if (isOneBot == false) {
                 isAuthorized = false;
                 authMessage = "Client Robot non connecté... \n Ressayez plus tard.";
                 rReason = " > Because no robot";
             } else if (isOtherPilot == true) {
                 // Teste la présence d'un pilote dans la liste des clients connectés
-                var isOtherPilot = tools.searchInObjects(users2, "typeClient", "Pilote", "boolean");
                 isAuthorized = false;
                 authMessage = "Client Pilote non disponible...\n Veuillez patienter.";
                 rReason = " > Because 2 Pilotes";
