@@ -28,8 +28,9 @@ else if (hostName == "lapto_Asus") ipaddress = "0.0.0.0"; // Pc perso - (IP inte
 // Machines Ubuntu
 else if (hostName == "ubuntu64azkar") ipaddress = "192.168.1.10"; // Vm Ubuntu sur Pc perso (Domicile)
 else if (hostName == "azkar-Latitude-E4200") ipaddress = "0.0.0.0"; // Pc Dell Latitude - Livebox domicile - noip > azkar.ddns.net
-else if (hostName == "VM-AZKAR-Ubuntu") ipaddress = "134.59.130.141"; // IP statique de la Vm sparks
- 
+else if (hostName == "Mainline") ipaddress = "134.59.130.141"; // IP statique de la Vm sparks
+else if (hostName == "AZKAR-1") ipaddress = "134.59.130.143"; // IP statique de la Vm sparks 
+else if (hostName == "AZKAR-2") ipaddress = "134.59.130.142"; // IP statique de la Vm sparks
 
 // Seul le port 80 passe malgrès les règles appropriées dans le NAT et le Firewall de la livebox ...
 // if (hostName == "azkar-Latitude-E4200") port = 80;

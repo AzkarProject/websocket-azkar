@@ -1379,7 +1379,7 @@ if (type == "pilote-appelant") {
       removeVideo();
     }
 
-
+    /*
     function addVideo() {  
       
       // create a video element  
@@ -1405,6 +1405,7 @@ if (type == "pilote-appelant") {
       videoSection.appendChild(v);
       setLayoutForTwoVideos();
     }
+    /**/
 
     function removeVideoCallback(evt) {
       removeVideo();

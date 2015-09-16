@@ -16,4 +16,9 @@ exports.appBranch = function(){
     return '1to1-refacto';
 };
 
+exports.isRobubox = function(){
+    return false;
+};
+
+
 })(typeof exports === 'undefined'? this['settings']={}: exports);
