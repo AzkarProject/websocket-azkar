@@ -157,6 +157,9 @@ video {
 /* partie 1toN */
 .ihmPilote #OneToNChat {height:400px}
 .ihmPilote #remoteVisitorsCameras {height:400px;}
+.ihmPilote #remoteVisitorsCameras .videosContainer{height:340px}
+.ihmPilote #remoteVisitorsCameras .videosContainer .videos{height:340px}
+
 .ihmPilote #manageVisitors {height:400px}
 .ihmPilote #manageFiles {height:400px;}
 

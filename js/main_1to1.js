@@ -1325,8 +1325,8 @@ if (type == "pilote-appelant") {
       
       videoSection = document.querySelector("#videos");
       
-      buttonAdd = document.querySelector("#addVideoButton");
-      buttonAdd.addEventListener("click", addVideo);
+      //buttonAdd = document.querySelector("#addVideoButton");
+      //buttonAdd.addEventListener("click", addVideo);
       buttonAdd = document.querySelector("#removeVideoButton");
       buttonAdd.addEventListener("click", removeVideoCallback);
       buttonAdd = document.querySelector("#layout2videos");
