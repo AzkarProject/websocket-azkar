@@ -5,7 +5,7 @@ exports.appName = function(){
 };
 
 exports.appVersion = function(){
-    return '0.8.3.3';
+    return '0.8.4.1';
 };
 
 exports.appHostName = function(){

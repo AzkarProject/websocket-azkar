@@ -1,5 +1,5 @@
 
-# 1toN (1to1 Refactorisé)
+# 1to1-refacto (1to1 Refactorisé > 1toN)
 ------------------------------------------------------------
 
 ### TODO's
@@ -25,7 +25,7 @@
     - [ ] 1toN 1-Robot > 1-Pilote > N-Visiteurs(S) - (option1)
     - [ ] 1toN 1-Robot > N-Visiteurs(S) - (option2)
     - [ ] Transfert fichiers Pilote > Visiteurs
-    - [ ] Implémentation gestion des Visiteurs (droits, etc...)
+    - [i] Implémentation gestion des Visiteurs (droits, etc...)
 - [ ] (option 2 Lib) 1toN lib RTCMulticonnection.js
     - [ ] Refactorisa° >>> All .js
 - [ ] IHMs (Pilote/Robot/Visiteur)
@@ -34,18 +34,18 @@
         - [x] bloc Cam Pilote
         - [i] bloc Cam Visiteurs
         - [x] bloc Tchat
-        - [ ] bloc Manage Visiteurs
+        - [i] bloc Manage Visiteurs
         - [ ] bloc Manage Files
     - [ ] IHM Robot 
         - [x] CSS
         - [x] bloc pilot camera
-        - [ ] bloc Liste visiteurs
+        - [i] bloc Liste visiteurs
     - [ ] IHM Visiteur 
         - [x] CSS
         - [x] Cam Pilote
         - [x] Cam Visiteur
         - [ ] Cam Robot
-        - [X] Tchat
+        - [i] Tchat
         - [ ] Bloc Uploaded Files
 - [ ] Tests Fonctionnels
 
