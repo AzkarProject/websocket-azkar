@@ -70,10 +70,6 @@ if (type == "pilote-appelant" || type == "robot-appelé") {
     listeRemoteSources = {};
     // flag d'origine des listes (local/remote)
     origin = null;
-} // 1to1 Pilote+Robot
-
-// 1to1 Pilote+Robot
-if (type == "pilote-appelant" || type == "robot-appelé") {
 
 
     // 1to1 Pilote+Robot
@@ -113,6 +109,10 @@ if (type == "pilote-appelant" || type == "robot-appelé") {
     // Si une renégociation à déjas eu lieu
     // >> pour éviter de réinitialiser +sieurs fois le même écouteur
     isRenegociate = false; // 1to1 Pilote & robot
+
+    robotCnxStatus = 'new';
+    piloteCnxStatus = 'new';
+
 } // 1to1 Pilote+Robot
 
 // 1toN Pilote+Visiteur
@@ -145,6 +145,8 @@ if (type == "pilote-appelant" || type == "visiteur-appelé") {
     // Si une renégociation à déja eu lieu
     // >> pour éviter de réinitialiser +sieurs fois le même écouteur
     isRenegociate_1toN_VtoP = false;
+
+
 } // 1toN Pilote+Visiteur   
     
 

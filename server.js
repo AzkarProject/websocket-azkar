@@ -522,6 +522,23 @@ io.on('connection', function(socket, pseudo) {
         io.to(data.cible.id).emit('readyForSignaling_1toN_VtoP', data);
     }); 
 
+    // Pilote > Robot >> ordre de déconnexion WebRTC
+    /*console.log ('socket.emit("closeConnectionOrder", ...) >>> ['+cible.typeClient+'] - ');
+    var data = {from: localObjUser, cible: cible}
+    // console.log (data);
+    socket.emit("closeConnectionOrder", data);
+    /**/
+
+    socket.on('closeConnectionOrder', function(data) { 
+        var consoleTxt = tools.humanDateER('R') + " @ closeConnectionOrder >>>> from "+data.from.pseudo+" ("+data.from.id+") ";
+        consoleTxt += "to: "+data.cible.pseudo+"("+data.cible.id+")"; 
+        console.log(consoleTxt); 
+        io.to(data.cible.id).emit('closeConnectionOrder', data);
+    }); 
+
+
+
+
 
 
 

@@ -455,6 +455,15 @@ socket.on("robotCnxStatus", function(data) {
     // Si on est le pilote, on vérifie sa propre connexion et celle du robot
     // si tout est propre, on active le formulaire de lancement (Selection des caméras du robot à activer...)
     if (type == "pilote-appelant") {
+        
+        // On force la mise à jour de la liste utilisateurs coté Pilote
+        updateListUsers ();
+
+        // Si le robot à une nouvelle connexion principale
+        // on lance le processus préparatoire à une reconnexion
+        if (robotCnxStatus == 'new') onDisconnect(peerCnx1to1);
+
+        // Si les 2 pairs principales sont claires de toute connexion
         if (piloteCnxStatus == 'new' && robotCnxStatus == 'new') {
             if (type == "pilote-appelant") activeManageDevices(); 
         }
@@ -817,6 +826,20 @@ socket.on("candidate", function(data) {
 
 
 // ----- Phase 3 Post-Signaling --------------------------------------------
+
+
+// Réception d'un ordre de déconnexion
+socket.on("closeConnectionOrder", function(data) {
+    if (data.cible.id == myPeerID) {
+        // A priori on est dans la peerConnection principale (Pilote <> Robot) >> peerCnx1to1
+        console.log ("------------ >>> closeConnectionOrder "+data.from.typeClient+"----------");
+        // on lance le processus préparatoire a une reconnexion
+        onDisconnect(peerCnx1to1);
+
+    }
+});
+
+
 
 // A la déconnection du pair distant:
 function onDisconnect(peerCnxId) {

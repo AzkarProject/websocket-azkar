@@ -85,7 +85,7 @@ function initLocalMedia_1toN_VtoP(peerCnxId) {
         if (type == "visiteur-appelé") video1_1toN_VtoP.src = URL.createObjectURL( localStream_1toN_VtoP);
         else if (type == "pilote-appelant") {
         	// On vérifie que la connexion avec le robot n'est pas en route...
-        	if (piloteCnxStatus == "new") video1.src = URL.createObjectURL( localStream_1toN_VtoP);
+        	// if (piloteCnxStatus == "new") video1.src = URL.createObjectURL( localStream_1toN_VtoP);
         }
         
         peerCnxCollection[peerCnxId].addStream( localStream_1toN_VtoP);
