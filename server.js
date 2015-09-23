@@ -18,10 +18,16 @@ ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP || "127.0.0.1"; //
 port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 80; // défaut
 
 // Machines windows
+/*
 if (hostName == "azcary") {
 	ipaddress = "localhost"; // Machine HP bureau >> localhost pour les scripts autoIt
 	port = 2000 ; // idem, pour ne pas réecrire tous les scripts autoIt basés sur ce port et cette IP...
 }
+/**/
+
+if (hostName == "azcary") ipaddress = "192.168.173.1"; // Ip du réseau virtuel robulab2_wifi
+
+
 else if (hostName == "thaby") ipaddress = "192.168.173.1"; // Tablette HP sur Robulab: ip du réseau virtuel robulab_wifi
 else if (hostName == "lapto_Asus") ipaddress = "0.0.0.0"; // Pc perso - (IP interne, Livebox domicile)
 
@@ -127,9 +133,10 @@ io.on('connection', function(socket, pseudo) {
     // on le stocke en variable de session et on informe les autres Users
     socket.on('nouveau_client2', function(data) {
 
-        console.log(tools.humanDateER('R') + " @ nouveau_client2 >>>> (???)");
+        // console.log(tools.humanDateER('R') + " @ nouveau_client2 >>>> (???)");
+        console.log(tools.humanDateER('R') + " @ nouveau_client >>>> (socket.id: "+socket.id+") - ["+data.typeClient+"]"+data.pseudo+")");
 
-        // Contrôle d'accès minimal (pour éviter les conflits de rôles et les bugs de signaling...)
+	    // Contrôle d'accès minimal (pour éviter les conflits de rôles et les bugs de signaling...)
         // Cas Pilote >> Si 0 Robot ou 1 Pilote déjà présents: Accès refusé
         // Cas Robot >> Si 1 Robot déjà présent: Accès refusé
         // Cas Visiteur >> Si 0 Robot ou 0 Pilote présents: Accès refusé
@@ -290,6 +297,11 @@ io.on('connection', function(socket, pseudo) {
         // On actualise le nombre de connectés  
         nbUsers = tools.lenghtObject(users2)
 
+        // On met a jour la liste des connectés coté client"
+        io.sockets.emit('updateUsers', {
+            listUsers: users2
+        });
+
         // contrôle liste connectés coté serveur
         // console.log (users2);
 
@@ -368,8 +380,8 @@ io.on('connection', function(socket, pseudo) {
         consoleTxt += " to " + data.cible.pseudo +"("+data.cible.id+") / peerConnectionID: "+ data.peerCnxId;
         console.log(consoleTxt);
 
-        //socket.broadcast.emit('offer', data);
-        io.to(data.cible.id).emit('offer', data);
+        socket.broadcast.emit('offer', data);
+        //io.to(data.cible.id).emit('offer', data);
     });
 
     socket.on('answer2', function(data) {
@@ -384,8 +396,12 @@ io.on('connection', function(socket, pseudo) {
         var consoleTxt = tools.humanDateER('R') + " @ answer >>>> (SDP from "+ data.from.pseudo +"("+data.from.id+")"
         consoleTxt += " to " + data.cible.pseudo +"("+data.cible.id+") / peerConnectionID: "+ data.peerCnxId;
         console.log(consoleTxt);
-        //socket.broadcast.emit('answer',data);
-        io.to(data.cible.id).emit('answer', data);
+        // 1toN pilote/Visiteur
+        if (data.from.typeClient == "Visiteur") socket.broadcast.emit('answerFromVisitor',data);
+        // 1to1 pilote/Robot 
+        else socket.broadcast.emit('answer',data);
+        
+        //io.to(data.cible.id).emit('answer', data);
     });
 
     socket.on('candidate2', function(data) {
@@ -395,8 +411,18 @@ io.on('connection', function(socket, pseudo) {
        var consoleTxt = tools.humanDateER('R') + " @ candidate >>>> (from "+data.from.pseudo + " ("+data.from.id+")" ;
         consoleTxt += "to "+data.cible.pseudo +" ("+data.cible.id+") / peerConnectionID: "+ data.peerCnxId;
         console.log(consoleTxt);
-        io.to(data.cible.id).emit('candidate', data);
+        // 1toN pilote/Visiteur
+        if (data.from.typeClient == "Visiteur") socket.broadcast.emit('candidateFromVisitor',data);
+        // 1to1 pilote/Robot
+        else socket.broadcast.emit('candidate', data);
+        
+
+        //io.to(data.cible.id).emit('candidate', data);
     });
+
+
+
+
 
 
     // ----------------------------------------------------------------------------------
@@ -452,7 +478,7 @@ io.on('connection', function(socket, pseudo) {
     // A la différence du 1to1 de base, ces messages ne sont pas broadcastés à tous les connectés
     // mais sont relayés à une cible spécifique 'io.to(destinataire.id)...' 
 
-    // Visiteur >> demande de clairance pré-signaling
+    /*// Visiteur >> demande de clairance pré-signaling
     socket.on('requestClearance', function(data) { 
         var consoleTxt = tools.humanDateER('R') + " @ requestClearance >>>> from "+data.from.pseudo+" ("+data.from.id+") ";
         consoleTxt += "to: "+data.cible.pseudo+"("+data.cible.id+")";
@@ -476,8 +502,9 @@ io.on('connection', function(socket, pseudo) {
         var consoleTxt = tools.humanDateER('R') + " @ declareClearance >>>> from "+data.from.pseudo+" ("+data.from.id+") to all connecteds";    
         socket.broadcast.emit('signaleClearance', data);
     });
+    /**/
 
-    // Visiteur >> initialisation d'une connexion WebRTC
+    // Pilote > Visiteur >> initialisation d'une connexion WebRTC
     // Pour mémo >> socket.emit('requestConnect', { objUser: localObjUser, cible: "pilote" }); 
     socket.on('requestConnect', function(data) { 
         var consoleTxt = tools.humanDateER('R') + " @ requestConnect >>>> from "+data.from.pseudo+" ("+data.from.id+") ";
@@ -485,6 +512,19 @@ io.on('connection', function(socket, pseudo) {
         console.log(consoleTxt); 
         io.to(data.cible.id).emit('requestConnect', data);
     }); 
+
+    // Visiteur > pilote >> acceptation de la connexion WebRTC
+    // Pour mémo >> socket.emit('requestConnect', { objUser: localObjUser, cible: "pilote" }); 
+    socket.on('readyForSignaling_1toN_VtoP', function(data) { 
+        var consoleTxt = tools.humanDateER('R') + " @ readyForSignaling_1toN_VtoP >>>> from "+data.from.pseudo+" ("+data.from.id+") ";
+        consoleTxt += "to: "+data.cible.pseudo+"("+data.cible.id+")"; 
+        console.log(consoleTxt); 
+        io.to(data.cible.id).emit('readyForSignaling_1toN_VtoP', data);
+    }); 
+
+
+
+
 
     // Pilote/Robot >>> Visiteurs > Signal de perte de la connexion WebRTC principale (Pilote <> Robot)
     socket.on('closeMasterConnection', function(data) { 

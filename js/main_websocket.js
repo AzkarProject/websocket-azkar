@@ -22,15 +22,54 @@ if (type == "pilote-appelant") {typeClient = "Pilote";
 } else if (type == "robot-appelé") { typeClient = "Robot";
 } else if (type == "visiteur-appelé") { typeClient = "Visiteur";}
 
+
+
 // On demande le pseudo, on l'envoie au serveur et on l'affiche dans le titre
-var pseudo = null;
+pseudo = null;
 // pseudo = prompt('Votre pseudo? (par défaut ce sera "'+typeClient+'")');
 
+pseudo = checkCookie(pseudo);
 
-if (!pseudo) { pseudo = typeClient;}
+// cookies
+function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+d.toUTCString();
+    document.cookie = cname + "=" + cvalue + "; " + expires;
+}
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0; i<ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1);
+        if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+    }
+    return "";
+}
+
+function checkCookie(pseudo) {
+    var user = getCookie("username");
+    if (user != "") {
+        alert("Welcome again " + user);
+        pseudo = user;
+    } else {
+        user = prompt("Please enter your name:", "");
+        if (user != "" && user != null) {
+            setCookie("username", user, 365);
+            pseudo = user;
+        }
+    }
+    return pseudo;
+}
+
+
+// if (!pseudo) { pseudo = typeClient;}
 // document.title = pseudo + ' - ' + document.title;
 
 // socket.emit('nouveau_client', pseudo); // Version 1
+//console.log ("socket.emit('nouveau_client2', {pseudo: "+pseudo+", typeClient: "+typeClient+"t});")
 socket.emit('nouveau_client2', {pseudo: pseudo, typeClient: typeClient}); // Version objet
 
 // liste des users connectés
@@ -73,6 +112,12 @@ socket.on('position_liste2', function(objUser) {
      //document.title = "("+myPlaceListe+") " + document.title;
 })
 /**/
+
+
+
+
+
+
 
 // Updater le titre de la page (pour le fun...)
 // Version Objet...

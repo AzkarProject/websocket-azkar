@@ -5,6 +5,7 @@
 // >> fonctions de clic and go sur la cartographie
 // >> Affichage de la télémétrie
 
+/*
 var canvasPilote  = document.querySelector('#mapviewer_canvas');
 var ctxPilote = canvasPilote.getContext('2d');
 

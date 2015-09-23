@@ -43,6 +43,7 @@
                 <strong> Pilote Devices</strong>
                 <hr/>
                 <div class = "videosContainer">
+                    <!-- <video id='video' autoplay muted controls="controls"></video>-->
                     <video id='1to1_localVideo' autoplay muted controls="controls"></video>
                 </div>
                 <hr/>
@@ -58,21 +59,7 @@
                 <button class="shadowBlack" id="local_ButtonDevices" onclick="localManageDevices()">Ouvrir la connexion</button>
             </div>
 
-
-        </div>
-
-        <div id="colDroiteUpControlArea" class="floatRight tripleQuarterBox" style="height:440px;width:960px">
-            
-            <div id="remoteVideoArea" class="insideFlex robot tripleQuarterBox shadowBlack floatRight" style="height:415px; width:600px;min-width:600px">
-                <strong> Robot Camera View</strong>
-                <hr/>
-                <div class = "videosContainer" style="height:300px; width:300px;min-width:300px">
-                    <video id='1to1_remoteVideo' class="" autoplay muted controls="controls" style="height:380px; width:600px;min-width:600px"></video>
-                </div>
-            </div>
-        
-
-            <div id="robotCommands" class="insideFlex oneQuarterbox robot shadowBlack device" style="height:333px;width:316px">
+            <div id="robotCommands" class="insideFlex oneQuarterbox robot shadowBlack device">
                 <strong>Robot controls</strong> <span id="connect-notice"></span>
                 <hr/>
                 <div id="step-commands">
@@ -89,7 +76,11 @@
                         <button id="btnDown" class="btnCommandsPad" onclick="cmdDown()">&darr;</button>
                     </div>
                     <div id="divBtSpeed">
-
+                        <!--
+                                <button id="btnIncrease" class="btnCommandsPad" onclick="cmdIncrease()">+</button>
+                                alert(" enable  : " + enable   + " | targetLinearSpeedPos  : " +  targetLinearSpeedPos + " | targetLinearSpeedNeg :" targetLinearSpeedNeg + " | targetAngularSpeed : " + targetAngularSpeed );
+                                <button id="btnDecrease" class="btnCommandsPad" onclick="cmdDecrease()">-</button>
+                                -->
                         <button id="btnIncrease" class="btnCommandsPad" onclick="cmdSpeed(-0.1)">-</button>
                         <progress id="jaugeSpeedSetting" value="0.5" max="1"></progress>
                         <button id="btnDecrease" class="btnCommandsPad" onclick="cmdSpeed(0.1)">+</button>
@@ -117,24 +108,32 @@
                     <ul id="gamepads"></ul>
                 </div>
             </div> <!-- id="robotCommands" -->
+        </div>
 
-
-            <div id="robotInfos" class="insideFlex robot oneThirdBox shadowBlack device floatLeft" style="height:60px;width:316px;min-width:316px">
-                <strong> Robot Informations</strong>
+        <div id="colDroiteUpControlArea" class="floatRight tripleQuarterBox">
+            
+            <div id="remoteVideoArea" class="insideFlex robot tripleQuarterBox shadowBlack floatRight">
+                <strong> Robot Camera View</strong>
                 <hr/>
-                <div class="jauge"style="width:300px">
-                    <label for="battery_level">Battery Level:</label>
-                    <progress id="battery_level" class="floatRight" max="200" style="width:200px"></progress>
+                <div class = "videosContainer">
+                    <!--<video id='otherPeer' class="" autoplay muted controls="controls"></video>-->
+                    <video id='1to1_remoteVideo' class="" autoplay muted controls="controls"></video>
                 </div>
             </div>
-
         </div>
         
         <div id="colDroiteMiddleControlArea" class="floatLeft oneThirdContainerBox">
             
-
+            <div id="robotInfos" class="insideFlex pilote oneThirdBox shadowBlack device floatLeft">
+                <strong> Robot Informations</strong>
+                <hr/>
+                <div class="jauge">
+                    <label for="battery_level">Battery Level:</label>
+                    <progress id="battery_level" class="floatRight" max="200"></progress>
+                </div>
+            </div>
             
-            <div id="websocketChat" class="insideFlex pilote oneThirdBox shadowBlack floatLeft" style="height:200px">
+            <div id="websocketChat" class="insideFlex pilote oneThirdBox shadowBlack floatLeft">
                 <strong> Websocket Messages & Chat</strong>
                 <hr/>
                 <form action="/" method="post" id="formulaire_chat_websoket">
@@ -142,29 +141,13 @@
                     <button id="envoi_message" type="submit">Envoyer</button>
                 </form>
                 <hr class="hrForm">
-                <textarea class="input" id="zone_chat_websocket" placeholder="Once upon a time..." style="height:100px"></textarea>
+                <textarea class="input" id="zone_chat_websocket" placeholder="Once upon a time..."></textarea>
                 <form id="text-options1">
                     <label>Filename:
                         <input type="text1" class="filename" id="text-filename1" placeholder="Pilote_WS_LOGS" />.txt</label>
                     <button id="saveLogs_webSocket" type="submit" value="Save" />Save</button>
                 </form>
-            </div>
-
-
-                    <div id="colDroiteBottomVisitorsArea" class="floatLeft oneThirdContainerBox">
-            <div id="manageVisitors" class="insideFlex visiteur oneThirdBox shadowBlack floatLeft" style="height:180px">
-                <strong> Manage visitors </strong>
-                <hr/>
-                <div id="listConnected">Nobody's here...</div>
-
-            </div>
-        </div>
-
-
-
-
-
-
+            </div> 
         </div>      
 
         <div id="colGaucheUpVisitorsArea" class="floatRight doubleThirdContainerBox">
@@ -173,25 +156,47 @@
                 <hr/>
                 <div class = "videosContainer">
                     <!--<video id='videosVisitors' class="" autoplay muted controls="controls"></video>-->
-               
-                    <video id='1toN_remoteVideos' class="multiple" autoplay muted controls="controls" style='position:relative; width: 275px'></video>
-                    <video id='1toN_remoteVideos2' class="multiple" autoplay muted controls="controls" style='position:relative; width: 275px'></video>
-                    <video id='1toN_remoteVideos3' class="multiple" autoplay muted controls="controls" style='position:relative; width: 275px'></video>
-                    <video id='1toN_remoteVideos4' class="multiple" autoplay muted controls="controls" style='position:relative; width: 275px'></video>
-                    <video id='1toN_remoteVideos5' class="multiple" autoplay muted controls="controls" style='position:relative; width: 275px'></video>
-                    <video id='1toN_remoteVideos6' class="multiple" autoplay muted controls="controls" style='position:relative; width: 275px'></video>
-               
-<!--                     <div id="videos"></div>
+                    <video id='1toN_remoteVideos' class="" autoplay muted controls="controls"></video>
+                    
+                    <div id="videos"></div>
                         <button id="removeVideoButton">Supprimer une vidéo</video>
                         <button id="layout2videos">Positionne les  videos</video>
-                    </div> -->
-                
-
+                    </div>
                 </div>
             </div>
         </div>
 
-
+<!--         <div id="colGaucheMiddleControlArea" class="floatRight doubleThirdContainerBox">
+            <div id="navigation" class="insideFlex robot DoubleThirdBox shadowBlack floatRight">
+                <strong> Navigation</strong>
+                <hr/>
+                <canvas id="mapviewer_canvas" width="620" height="350" class="floatright">
+                    Votre navigateur ne supporte pas les canvas.
+                </canvas>
+                <div id="points_interets_area" class="floatLeft">
+                    <form action="/" method="post" id="formulaire_points_interets">
+                        <p>
+                            <input type="radio" name="goto" value="x,y" id="salon" />
+                            <label for="salon">Salon</label>
+                            <br />
+                            <input type="radio" name="goto" value="x,y" id="cuisine" />
+                            <label for="cuisine">Cuisine</label>
+                            <br />
+                            <input type="radio" name="goto" value="x,y" id="chambre" />
+                            <label for="chambre">Chambre</label>
+                            <br />
+                            <input type="radio" name="goto" value="x,y" id="sdb" />
+                            <label for="sdb">Salle de bain</label>
+                            <br />
+                            <input type="radio" name="goto" value="x,y" id="entree" />
+                            <label for="entree">Entrée</label>
+                            <br />
+                            <button id="envoi_goto" type="submit">Go</button>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div> -->
         
         <div id="colFullBottomControlArea" class="floatRight fullSizeContainerBox">
             <div id="dataChannelArea" class="insideFlex pilote shadowBlack floatLeft fourQuarterBox">
@@ -234,11 +239,25 @@
             </div>        
         </div>
 
-
+<!--         <div id="colGaucheUpVisitorsArea" class="floatRight doubleThirdContainerBox">
+            <div id="remoteVisitorsCameras" class="insideFlex visiteur DoubleThirdBox shadowBlack floatRight">
+                <strong> Visitors Views</strong>
+                <hr/>
+                <div class = "videosContainer">
+                    <video id='1toN_remoteVideos' class="" autoplay muted controls="controls"></video>
+                </div>
+            </div>
+        </div> -->
     
        
 
-
+        <div id="colDroiteBottomVisitorsArea" class="floatLeft oneThirdContainerBox">
+            <div id="manageVisitors" class="insideFlex visiteur oneThirdBox shadowBlack floatLeft">
+                <strong> Manage visitors </strong>
+                <hr/>
+                TODO... eject visitor, open/close robotView on visitor's clients, ect...
+            </div>
+        </div>
 
         <div id="colGaucheBottomVisitorsArea" class="floatRight doubleThirdContainerBox">
             <div id="manageFiles" class="insideFlex visiteur DoubleThirdBox shadowBlack floatRight">
@@ -291,57 +310,6 @@
         </div>
 
     </section>
-    
-    <section id="temporaire">
-    
-
-<!--         <div id="colGaucheMiddleControlArea" class="floatRight doubleThirdContainerBox">
-            <div id="navigation" class="insideFlex robot DoubleThirdBox shadowBlack floatRight">
-                <strong> Navigation</strong>
-                <hr/>
-                <canvas id="mapviewer_canvas" width="620" height="350" class="floatright">
-                    Votre navigateur ne supporte pas les canvas.
-                </canvas>
-                <div id="points_interets_area" class="floatLeft">
-                    <form action="/" method="post" id="formulaire_points_interets">
-                        <p>
-                            <input type="radio" name="goto" value="x,y" id="salon" />
-                            <label for="salon">Salon</label>
-                            <br />
-                            <input type="radio" name="goto" value="x,y" id="cuisine" />
-                            <label for="cuisine">Cuisine</label>
-                            <br />
-                            <input type="radio" name="goto" value="x,y" id="chambre" />
-                            <label for="chambre">Chambre</label>
-                            <br />
-                            <input type="radio" name="goto" value="x,y" id="sdb" />
-                            <label for="sdb">Salle de bain</label>
-                            <br />
-                            <input type="radio" name="goto" value="x,y" id="entree" />
-                            <label for="entree">Entrée</label>
-                            <br />
-                            <button id="envoi_goto" type="submit">Go</button>
-                        </p>
-                    </form>
-                </div>
-            </div>
-        </div> -->
-
-<!--         <div id="colGaucheUpVisitorsArea" class="floatRight doubleThirdContainerBox">
-            <div id="remoteVisitorsCameras" class="insideFlex visiteur DoubleThirdBox shadowBlack floatRight">
-                <strong> Visitors Views</strong>
-                <hr/>
-                <div class = "videosContainer">
-                    <video id='1toN_remoteVideos' class="" autoplay muted controls="controls"></video>
-                </div>
-            </div>
-        </div> -->
-
-    </section>
-
-
-
-
     <script>
     var type = "pilote-appelant";
     var otherType = "robot-appelé";
@@ -358,10 +326,8 @@
     
     <script src='/js/main_websocket.js'></script>
     <script src='/js/main_1to1.js'></script>
-    <script src='/js/main_1toN_Visiteur.js'></script>
     
     <script src='/js/module_settings.js'></script>
-    <script src='/js/module_managevisitors.js'></script>
     <script src='/js/module_commands.js'></script>
     <script src='/js/module_navigation.js'></script>
     <script src="/js/module_logs.js"></script>
@@ -375,12 +341,8 @@
               //if (hostName != "???" ) $('#zone_info_server').replaceWith(settings.appName() + " V " + settings.appVersion()+ " ("+hostName+")");
               infoServerTxt = settings.appBranch() + ' - ' + settings.appName() + " V " + settings.appVersion()+ " ("+hostName+")";
               if (hostName != "???" ) $('#zone_info_server').replaceWith(infoServerTxt);
-            
-
-
-
             });
-    </script> 
+    </script>   
 
 </body>
 

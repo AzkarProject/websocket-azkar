@@ -272,97 +272,95 @@ exports.toObject = function  (arr) {
    
     this.dumpLayer(obj);
     this.showResult();
-  }
-
-
-    // variante AlertObjectDump mais en console.log avec un timestamp 
-   exports.traceObjectDump = function  (obj, name) {
-      this.result = "[ " + name + " ]\n";
-      this.indent = 0;
-      this.dumpLayer = function(obj) {
-        this.indent += 2;
-        for (var i in obj) {
-          if(typeof(obj[i]) == "object") {
-            // alert ('typeof(obj[i]) == "object"'));
-            this.result += "\n" +
-              "              ".substring(0,this.indent) + i +
-              ": " + "\n";
-            this.dumpLayer(obj[i]);
-          
-          } else {
-            this.result +=
-              "              ".substring(0,this.indent) + i +
-              ": " + obj[i] + "\n";
-          }
-        }
-        this.indent -= 2;
-      }
-      this.dumpLayer(obj);
-      console.log((performance.now() / 1000).toFixed(3) + ": " + this.result);
-      // this.showResult();
-      // return this.result;
-    }
-
-    // 2eme variante AlertObjectDump mais retourne un string
-    exports.stringObjectDump = function  (obj, name) {
-      this.result = "[ " + name + " ]\n";
-      this.indent = 0;
-      
-      this.dumpLayer = function(obj) {
-        this.indent += 2;
-        
-        for (var i in obj) {
-          if(typeof(obj[i]) == "object") {
-            // alert ('typeof(obj[i]) == "object"'));
-            this.result += "\n" +
-              "              ".substring(0,this.indent) + i +
-              ": " + "\n";
-            this.dumpLayer(obj[i]);
-          
-          } else {
-            this.result +=
-              "              ".substring(0,this.indent) + i +
-              ": " + obj[i] + "\n";
-          }
-        }
-        this.indent -= 2;
-      }
-      
-      this.dumpLayer(obj);
-      return this.result;
-    
-    }
-
-
-    // Affiche les objets sous format json
-    exports.testObject = function (obj){
-      // var toto = JSON.stringify(obj, null, 4);
-      var toto = JSON.stringify(obj);
-      console.log(toto);
-      return toto;
-    }
-
-   
-    // retourne le nombre de propriétés d'un objet
-    exports.lenghtObject = function (obj){
-          var j = 0;
-          for (var i in obj) {
-              j += 1;
-            }
-          return j;
-    }
-
-    // Vérivie qu'un String est un JSON 
-    exports.isJson = function (str) {
-      try {
-          JSON.parse(str);
-      } catch (e) {
-          return false;
-      }
-      return true;
 }
 
 
+// variante AlertObjectDump mais en console.log avec un timestamp 
+exports.traceObjectDump = function  (obj, name) {
+  this.result = "[ " + name + " ]\n";
+  this.indent = 0;
+  this.dumpLayer = function(obj) {
+    this.indent += 2;
+    for (var i in obj) {
+      if(typeof(obj[i]) == "object") {
+        // alert ('typeof(obj[i]) == "object"'));
+        this.result += "\n" +
+          "              ".substring(0,this.indent) + i +
+          ": " + "\n";
+        this.dumpLayer(obj[i]);
+      
+      } else {
+        this.result +=
+          "              ".substring(0,this.indent) + i +
+          ": " + obj[i] + "\n";
+      }
+    }
+    this.indent -= 2;
+  }
+  this.dumpLayer(obj);
+  console.log((performance.now() / 1000).toFixed(3) + ": " + this.result);
+  // this.showResult();
+  // return this.result;
+}
+
+// 2eme variante AlertObjectDump mais retourne un string
+exports.stringObjectDump = function  (obj, name) {
+  this.result = "[ " + name + " ]\n";
+  this.indent = 0;
+  
+  this.dumpLayer = function(obj) {
+    this.indent += 2;
+    
+    for (var i in obj) {
+      if(typeof(obj[i]) == "object") {
+        // alert ('typeof(obj[i]) == "object"'));
+        this.result += "\n" +
+          "              ".substring(0,this.indent) + i +
+          ": " + "\n";
+        this.dumpLayer(obj[i]);
+      
+      } else {
+        this.result +=
+          "              ".substring(0,this.indent) + i +
+          ": " + obj[i] + "\n";
+      }
+    }
+    this.indent -= 2;
+  }
+  
+  this.dumpLayer(obj);
+  return this.result;
+
+}
+
+
+// Affiche les objets sous format json
+exports.testObject = function (obj){
+  // var toto = JSON.stringify(obj, null, 4);
+  var toto = JSON.stringify(obj);
+  console.log(toto);
+  return toto;
+}
+
+   
+// retourne le nombre de propriétés d'un objet
+exports.lenghtObject = function (obj){
+      var j = 0;
+      for (var i in obj) {
+          j += 1;
+        }
+      return j;
+}
+
+// Vérivie qu'un String est un JSON 
+exports.isJson = function (str) {
+  try {
+      JSON.parse(str);
+  } catch (e) {
+      return false;
+  }
+  return true;
+}
 
 
 })(typeof exports === 'undefined'? this['tools']={}: exports);
