@@ -2,151 +2,10 @@
 // https://developer.mozilla.org/fr/docs/Web/Guide/API/WebRTC/WebRTC_basics
 // Source github : https://github.com/louisstow/WebRTC/blob/master/media.html
 
-// Initialisation des variables, objets et paramètres du script
-// NB toutes les variables sont déclarées en global...
-function mainSettings_1toN_VtoP() {
-    console.log("@ mainSettings()");
-    
-
-    
-
-    // pré-signaling -------------------------------------------------
-
-    // webRTC -------------------------------
-
-    // flag de connexion
-    isStarted_1toN_VtoP = false;
-    // console.log("isStarted = "+ isStarted);
-
-    // shims!
-    PeerConnection_1toN_VtoP = window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
-    SessionDescription_1toN_VtoP = window.mozRTCSessionDescription || window.RTCSessionDescription;
-    IceCandidate_1toN_VtoP = window.mozRTCIceCandidate || window.RTCIceCandidate;
-    navigator.getUserMedia_1toN_VtoP = navigator.getUserMedia || navigator.mozGetUserMedia || navigator.webkitGetUserMedia;
-
-
-    video1_1toN_VtoP = document.getElementById("1to1_localVideo"); // Sur IHM Robot, pilote, visiteur
-    video2_1toN_VtoP = document.getElementById("1to1_remoteVideo"); // Sur IHM Robot, pilote, visiteur
-    if (type == "pilote-appelant") {
-    videoVisitor1 = document.getElementById("1toN_remoteVideos"); // Vue des visiteurs sur IHM Pilote
-	videoVisitor2 = document.getElementById("1toN_remoteVideos2"); // Vue des visiteurs sur IHM Pilote
-	videoVisitor3 = document.getElementById("1toN_remoteVideos3"); // Vue des visiteurs sur IHM Pilote
-	videoVisitor4 = document.getElementById("1toN_remoteVideos4"); // Vue des visiteurs sur IHM Pilote
-	videoVisitor5 = document.getElementById("1toN_remoteVideos3"); // Vue des visiteurs sur IHM Pilote
-	videoVisitor6 = document.getElementById("1toN_remoteVideos4"); // Vue des visiteurs sur IHM Pilote
-
-    //video3 = document.getElementById("1toN_remoteVideos"); // Vue des visiteurs sur IHM Pilote
-    //video4 = document.getElementById("1toN_remoteVideoRobot"); // Vue du Robot sur IHM Visiteur
-    }
-
-    // RTC DataChannel
-    // Zone d'affichage (textarea)
-    // chatlog = document.getElementById("zone_chat_WebRTC");
-    // Zone de saisie (input)
-    // message = document.getElementById("input_chat_WebRTC");
-
-    // options pour l'objet PeerConnection
-    server_1toN_VtoP = {
-        'iceServers': [{
-            'url': 'stun:23.21.150.121'
-        }]
-    };
-    server_1toN_VtoP.iceServers.push({
-        url: 'stun:stun.l.google.com:19302'
-    });
-    server_1toN_VtoP.iceServers.push({
-        url: 'stun:stun.anyfirewall.com:3478'
-    });
-    server_1toN_VtoP.iceServers.push({
-        url: 'stun:turn1.xirsys.com'
-    });
-    // Ajout de serveurs TURN
-    server_1toN_VtoP.iceServers.push({
-        url: "turn:turn.bistri.com:80",
-        credential: "homeo",
-        username: "homeo"
-    });
-    server_1toN_VtoP.iceServers.push({
-        url: 'turn:turn.anyfirewall.com:443?transport=tcp',
-        credential: 'webrtc',
-        username: 'azkarproject'
-    });
-    server_1toN_VtoP.iceServers.push({
-        url: "turn:numb.viagenie.ca",
-        credential: "webrtcdemo",
-        username: "temp20fev2015@gmail.com"
-    });
-    server_1toN_VtoP.iceServers.push({
-        url: "turn:turn.anyfirewall.com:443?transport=tcp",
-        credential: "webrtc",
-        username: "webrtc"
-    });
-    server_1toN_VtoP.iceServers.push({
-        url: "turn:turn1.xirsys.com:443?transport=tcp",
-        credential: "b8631283-b642-4bfc-9222-352d79e2d793",
-        username: "e0f4e2b6-005f-440b-87e7-76df63421d6f"
-    });
-    /**/// 
-
-
-    // TODO:
-    options_1toN_VtoP = {
-        optional: [{
-                DtlsSrtpKeyAgreement: true
-            }, {
-                RtpDataChannels: true
-            } //required for Firefox
-        ]
-    }
-
-
-    // 1toN > Tableau des connexions WebRTC
-    peerCnxCollection_1toN_VtoP = {};
-    prefix_peerCnx_1toN_VtoP = "Pilote-to-Visiteur-"; // connexion principale Pilote/Robot
-    peerCnxId_1toN_VtoP = "default"; // Nom par défaut
-
-    // Création de l'objet PeerConnection (CAD la session de connexion WebRTC)
-    // pc = new PeerConnection(server, options);
-    // peerCnxCollection_1toN_VtoP[peerCnxId] =new PeerConnection(server, options);
-    // console.log(peerCnxCollection); 
-
-    localStream_1toN_VtoP = null;
-    remoteStream_1toN_VtoP = null; // remoteStream 1to
-    remoteStreamCollection_1toN_VtoP = {}; // 1toN > Tableau des remoteStreams visiteurs
-    
-    // Constraints de l'offre SDP. 
-    constraints_1toN_VtoP = {
-        mandatory: {
-            OfferToReceiveAudio: true,
-            OfferToReceiveVideo: true
-        }
-    };
-
-    // définition de la variable channel
-    //channel = null;
-    //debugNbConnect = 0;
-    debugNbConnect_1toN_VtoP = 0;
-    // Si une renégociation à déja eu lieu
-    // >> pour éviter de réinitialiser +sieurs fois le même écouteur
-    isRenegociate_1toN_VtoP = false;
-}
-mainSettings_1toN_VtoP();
-
-// Ecouteurs message d'erreur et contrôle d'accès
-// if (type == "visiteur-appelé") pour éviter 
-// double instanciation coté pilote & Robot
-if (type == "visiteur-appelé") {
-	socket.on('error', errorHandler_1toN_VtoP);
-	socket.on('rejectConnexion', function(data) {
-	    alertAndRedirect_1toN_VtoP(data.message, data.url)
-	})
-}
-
-
 //------ PHASE 1 : Pré-signaling ----------------------------------------------------------
 
 
-
+// socket.on('updateUsers', function(data) {
 // Quand on reçoit un update de la liste des clients websockets 
 // C.A.D à chaque nouveln arrivant... 
 if (type == "visiteur-appelé") {
@@ -159,7 +18,7 @@ if (type == "visiteur-appelé") {
 	})
 }
 
-
+// socket.on("requestConnect", function(data) {
 // (Visiteur) à la reception de la demande de connexion du pilote
 // >>> socket.emit("isVisitorReady", data)... on lance aussi l'initlocalmedia
 // Et on prévient le pilote qui fera de même...
@@ -177,6 +36,7 @@ if (type == "visiteur-appelé") {
 	})
 }
 
+// socket.on("readyForSignaling_1toN_VtoP", function(data) {
 // (Pilote) à la reception du signal de fin pré-signaling du visiteur
 // Le pilote lance son initLocalMedia 
 if (type == "pilote-appelant") {
@@ -205,9 +65,9 @@ function initLocalMedia_1toN_VtoP(peerCnxId) {
         audio: true,
         video: true
     }
-    peerCnxCollection_1toN_VtoP[peerCnxId] =new PeerConnection_1toN_VtoP(server_1toN_VtoP, options_1toN_VtoP);
+    peerCnxCollection[peerCnxId] =new PeerConnection(server, options);
     console.log("new peerCnxCollection_1toN_VtoP["+peerCnxId+"]"); 
-    console.log(peerCnxCollection_1toN_VtoP); 
+    console.log(peerCnxCollection); 
 
    
     /*// ----- mémo -------
@@ -217,7 +77,7 @@ function initLocalMedia_1toN_VtoP(peerCnxId) {
     /**/
     
     // Initialisation du localStream et lancement connexion
-    navigator.getUserMedia_1toN_VtoP(videoConstraint_1toN_VtoP, function(stream) {
+    navigator.getUserMedia(videoConstraint_1toN_VtoP, function(stream) {
 
         localStream_1toN_VtoP = stream;
         
@@ -228,10 +88,10 @@ function initLocalMedia_1toN_VtoP(peerCnxId) {
         	if (piloteCnxStatus == "new") video1.src = URL.createObjectURL( localStream_1toN_VtoP);
         }
         
-        peerCnxCollection_1toN_VtoP[peerCnxId].addStream( localStream_1toN_VtoP);
+        peerCnxCollection[peerCnxId].addStream( localStream_1toN_VtoP);
         connect_1toN_VtoP(peerCnxId);
 
-    }, errorHandler_1toN_VtoP);
+    }, errorHandler);
 };
 
 // connexion
@@ -248,8 +108,7 @@ function connect_1toN_VtoP(peerCnxId) {
     // Ecouteurs de l'API WebRTC -----------------
 
     // Ecouteur déclenché à la génération d'un candidate 
-    peerCnxCollection_1toN_VtoP[peerCnxId].onicecandidate = function(e) {
-        //console.log("@ pc["+peerCnxId+"].onicecandidate_1toN_VtoP > timestamp:" + Date.now());
+    peerCnxCollection[peerCnxId].onicecandidate = function(e) {
         // vérifie que le candidat ne soit pas nul
         if (!e.candidate) {
             // console.log("  > !e.candidate): return ");
@@ -257,7 +116,7 @@ function connect_1toN_VtoP(peerCnxId) {
         }
         
         var cible = ""; // TODO: choisir la cible en fonction de l'ID PeerConnexion....
-        if (type == "visiteur-appelé") cible = getClientBy_1toN_VtoP('typeClient','Pilote'); // Si c'est le Visiteur > client = pilote
+        if (type == "visiteur-appelé") cible = getClientBy('typeClient','Pilote'); // Si c'est le Visiteur > client = pilote
         else { // Sinon si c'est le Pilote >> Client visiteur
         	    // On peux retrouver l'ID du pair distant en analysant l'ID de la connexion:
                 // Le peerID de la connexion est constitué d'une concaténation
@@ -268,7 +127,7 @@ function connect_1toN_VtoP(peerCnxId) {
                 cibleID = cibleID.replace(prefix_peerCnx_1toN_VtoP, "");
                 cible = getClientBy('id',cibleID); 
                 /**///-----------
-                var cible = getCibleFromPeerConnectionID_1toN_VtoP(peerCnxId, prefix_peerCnx_1toN_VtoP);
+                var cible = getCibleFromPeerConnectionID(peerCnxId, prefix_peerCnx_1toN_VtoP);
 
         } 
        
@@ -282,7 +141,7 @@ function connect_1toN_VtoP(peerCnxId) {
 
 
     // Ecouteur déclenché a la reception d'un remoteStream
-    peerCnxCollection_1toN_VtoP[peerCnxId].onaddstream = function(e) {
+    peerCnxCollection[peerCnxId].onaddstream = function(e) {
         console.log("@ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@_1toN_VtoP");
         console.log("@ pc["+peerCnxId+"].onaddstream_1toN_VtoP");
         console.log(e);
@@ -306,7 +165,7 @@ function connect_1toN_VtoP(peerCnxId) {
 
     // Ecouteurs de changement de statut de connexion
     // Permet de déterminer si le pair distant s'est déconnecté. (Version 1to1)
-    peerCnxCollection_1toN_VtoP[peerCnxId].oniceconnectionstatechange = function(e) {
+    peerCnxCollection[peerCnxId].oniceconnectionstatechange = function(e) {
 
         var dateE = tools.dateER('E');
         console.log("@ pc["+peerCnxId+"].oniceconnectionstatechange_1toN_VtoP > " + dateE);
@@ -314,12 +173,12 @@ function connect_1toN_VtoP(peerCnxId) {
         //console.log(">>> stateConnection Event > " + peerCnxCollection_1toN_VtoP[peerCnxId].iceConnectionState);
         //$(chatlog).prepend(dateE + ' [stateConnection Event] ' + peerCnxCollection_1toN_VtoP[peerCnxId].iceConnectionState + '\n');
 
-        console.log(">>> pc["+peerCnxId+"] stateConnection Event > " + peerCnxCollection_1toN_VtoP[peerCnxId].iceConnectionState);
+        console.log(">>> pc["+peerCnxId+"] stateConnection Event > " + peerCnxCollection[peerCnxId].iceConnectionState);
         //$(chatlog).prepend(dateE + ' pc['+peerCnxId+'] stateConnection Event: ' + peerCnxCollection_1toN_VtoP[peerCnxId].iceConnectionState + '\n');
 
 
         // Si la connexion est neuve, on remet le flag de renégo à sa position par défaut...
-        if ( peerCnxCollection_1toN_VtoP[peerCnxId].iceConnectionState == 'new') isRenegociate_1toN_VtoP = false; 
+        if ( peerCnxCollection[peerCnxId].iceConnectionState == 'new') isRenegociate_1toN_VtoP = false; 
 
 
 
@@ -327,8 +186,9 @@ function connect_1toN_VtoP(peerCnxId) {
 
             // On informe l'autre pair de son statut de connexion   
             if (type == 'pilote-appelant') {
-                piloteCnxStatus = peerCnxCollection_1toN_VtoP[peerCnxId].iceConnectionState;
+                // piloteCnxStatus = peerCnxCollection[peerCnxId].iceConnectionState;
 
+                /*
                 socket.emit("piloteCnxStatus", piloteCnxStatus);
                 // Si on change de status suite à une déco du robot
                 // On redéclenche l'ouverture des formulaires de connexion 
@@ -336,16 +196,9 @@ function connect_1toN_VtoP(peerCnxId) {
                 if (piloteCnxStatus == 'new' && robotCnxStatus == 'new') {
                     activeManageDevices(); // On active les formulaires permettant de relancer la connexion
                 }
+                /**/
 
 
-                // ---- Add 1toN -------------------
-                /*// On envoie aussi le GO broadcasté pour tout nouveau Visiteur connecté en attente de clearance
-                if ( piloteCnxStatus == "connected" || piloteCnxStatus == "completed") { 
-                    socket.emit('signaleClearance', {
-                        from: localObjUser,
-                        message: "ready"
-                    }); 
-                } */
 
 
             } else if (type == 'visiteur-appelé') {
@@ -354,7 +207,7 @@ function connect_1toN_VtoP(peerCnxId) {
             }
      
             // si le pair distant  est déconnecté en WebRTC,
-            if (peerCnxCollection_1toN_VtoP[peerCnxId].iceConnectionState == 'disconnected') {   
+            if (peerCnxCollection[peerCnxId].iceConnectionState == 'disconnected') {   
                 
                 // A tous les Visiteurs: Signal de perte de la connexion WebRTC principale (Pilote <> Robot)
                 // socket.emit('closeMasterConnection','disconnected')
@@ -368,7 +221,7 @@ function connect_1toN_VtoP(peerCnxId) {
     };
 
     // Ecouteur ... Todo...
-    peerCnxCollection_1toN_VtoP[peerCnxId].onremovestream = function(e) {
+    peerCnxCollection[peerCnxId].onremovestream = function(e) {
         console.log("@ pc["+peerCnxId+"].onremovestream(e) _1toN_VtoP> timestamp:" + Date.now());
         console.log(e);
     }
@@ -390,19 +243,19 @@ function connect_1toN_VtoP(peerCnxId) {
 			// Le peerID de la connexion est constitué d'une concaténation
 			// d'un préfixe et de l'id client du visiteur
 			// Il suffit donc d'oter le préfixe pour retrouver l'id du pair distant...
-			var cible = getCibleFromPeerConnectionID_1toN_VtoP(peerCnxId, prefix_peerCnx_1toN_VtoP);
+			var cible = getCibleFromPeerConnectionID(peerCnxId, prefix_peerCnx_1toN_VtoP);
 
 
 
-            peerCnxCollection_1toN_VtoP[peerCnxId].createOffer(function(sdp){
-                        peerCnxCollection_1toN_VtoP[peerCnxId].setLocalDescription(sdp);
+            peerCnxCollection[peerCnxId].createOffer(function(sdp){
+                        peerCnxCollection[peerCnxId].setLocalDescription(sdp);
                         console.log ("------------ _1toN_VtoP offer >>> to "+cible.typeClient+"----------");
                         var data = {from: localObjUser, message: sdp, cible: cible, peerCnxId: peerCnxId}
                         // console.log (data);
                         socket.emit("offer2", data);
                     }
-                    , errorHandler_1toN_VtoP, 
-                    constraints_1toN_VtoP
+                    , errorHandler, 
+                    constraints
                 );
 
 
@@ -413,7 +266,7 @@ function connect_1toN_VtoP(peerCnxId) {
 
             // l'appelé doit attendre l'ouverture d'un dataChannel pour lancer son écouteur d'èvènement data...
             // Ecouteur d'ouverture d'un data channel
-            peerCnxCollection_1toN_VtoP[peerCnxId].ondatachannel = function(e) {
+            peerCnxCollection[peerCnxId].ondatachannel = function(e) {
                 //channel = e.channel;
                 console.log("pc["+peerCnxId+"].ondatachannel(e) _1toN_VtoP ... ");
                 //bindEvents(); //now bind the events
@@ -442,31 +295,31 @@ if (type == "visiteur-appelé") {
 	            //peerCnxCollection_1toN_VtoP[peerCnxId].createAnswer(doAnswer, errorHandler, constraints);           
 
 	            // ------------- Version 1toN
-	            var offer = new SessionDescription_1toN_VtoP(data.message);
+	            var offer = new SessionDescription(data.message);
 	            
 	            //console.log("- Offer From: " + data.from.pseudo +"("+data.from.id+")");
 	            //console.log("- Cible: " + data.cible.pseudo +"("+data.cible.id+")");
 	            //console.log("- peerconnection: " + data.peerCnxId);
 	            //console.log (offer);
-	            peerCnxCollection_1toN_VtoP[data.peerCnxId].setRemoteDescription(offer); 
+	            peerCnxCollection[data.peerCnxId].setRemoteDescription(offer); 
 	            
 	            // Une foi l'offre reçue et celle-ci enregistrée dans un setRemoteDescription,
 	            // on peu enfin générer une réponse SDP 
-	            var cible = getClientBy_1toN_VtoP('id', data.from.id);
+	            var cible = getClientBy('id', data.from.id);
 	            var idPeerConnection = data.peerCnxId;
 
 	            console.log (cible);
 
 	            // création de l'offre SDP
-	            peerCnxCollection_1toN_VtoP[idPeerConnection].createAnswer(function(sdp){
-	                    peerCnxCollection_1toN_VtoP[idPeerConnection].setLocalDescription(sdp);
+	            peerCnxCollection[idPeerConnection].createAnswer(function(sdp){
+	                    peerCnxCollection[idPeerConnection].setLocalDescription(sdp);
 	                    console.log ("------------ _1toN_VtoP Answer to >>> "+cible.typeClient+"----------");
 	                    var data = {from: localObjUser, message: sdp, cible: cible, peerCnxId: idPeerConnection}
 	                    //console.log (data);
 	                    socket.emit("answer2", data);
 	                }
-	                , errorHandler_1toN_VtoP, 
-	                constraints_1toN_VtoP
+	                , errorHandler, 
+	                constraints
 	            );
 	        }
 	    }
@@ -481,7 +334,7 @@ if (type == "visiteur-appelé") {
 	        //console.log("- Cible: " + data.cible.pseudo +"("+data.cible.id+")");
 	        //console.log("- peerconnection: " + data.peerCnxId);
 	        //console.log (data.message);
-	        peerCnxCollection_1toN_VtoP[data.peerCnxId].setRemoteDescription(new SessionDescription_1toN_VtoP(data.message));
+	        peerCnxCollection[data.peerCnxId].setRemoteDescription(new SessionDescription(data.message));
 	    }
 	});
 
@@ -494,7 +347,7 @@ if (type == "visiteur-appelé") {
 	        //console.log("- peerconnection: " + data.peerCnxId);
 	        // console.log (data.message);
 	        // TODO : ici intercepter et filter le candidate
-	        peerCnxCollection_1toN_VtoP[data.peerCnxId].addIceCandidate(new IceCandidate_1toN_VtoP(data.message)); // OK
+	        peerCnxCollection[data.peerCnxId].addIceCandidate(new IceCandidate(data.message)); // OK
 	    }
 	});
 }
@@ -510,7 +363,7 @@ if (type == "pilote-appelant") {
 	        //console.log("- Cible: " + data.cible.pseudo +"("+data.cible.id+")");
 	        //console.log("- peerconnection: " + data.peerCnxId);
 	        //console.log (data.message);
-	        peerCnxCollection_1toN_VtoP[data.peerCnxId].setRemoteDescription(new SessionDescription_1toN_VtoP(data.message));
+	        peerCnxCollection[data.peerCnxId].setRemoteDescription(new SessionDescription(data.message));
 	    }
 	});
 
@@ -523,50 +376,16 @@ if (type == "pilote-appelant") {
 	        //console.log("- peerconnection: " + data.peerCnxId);
 	        // console.log (data.message);
 	        // TODO : ici intercepter et filter le candidate
-	        peerCnxCollection_1toN_VtoP[data.peerCnxId].addIceCandidate(new IceCandidate_1toN_VtoP(data.message)); // OK
+	        peerCnxCollection[data.peerCnxId].addIceCandidate(new IceCandidate(data.message)); // OK
 	    }
 	});
 }
 
 // ----- Phase 3 Post-Signaling --------------------------------------------
 
-// --------------------- Gestion des messages d'erreur ------------------
-
-function errorHandler_1toN_VtoP(err) {
-    console.log("ON-ERROR");
-    console.error(err);
-}
-
-function alertAndRedirect_1toN_VtoP(message, url) {
-    //alert (message);
-    window.alert(message)
-    window.location.href = url;
-}
 
 
-// ------ fonctions diverses ---------------
 
-
-function getClientBy_1toN_VtoP(key,value) {
-    for (i in users.listUsers) {
-        if (users.listUsers[i][key] == value) {
-                return users.listUsers[i];
-                break;
-        }
-    }
-};
-
-
-// On peux retrouver l'ID du pair distant en analysant l'ID de la connexion:
-// Le peerID de la connexion est constitué d'une concaténation
-// d'un préfixe et de l'id client du visiteur
-// Il suffit donc d'oter le préfixe pour retrouver l'id du pair distant...
-function getCibleFromPeerConnectionID_1toN_VtoP(peerCnxId, prefix) {
-    var cibleID = peerCnxId;
-    cibleID = cibleID.replace(prefix, "");
-    cible = getClientBy('id',cibleID); 
-    return cible;
-};
 
 
 

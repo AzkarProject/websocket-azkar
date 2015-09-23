@@ -4,7 +4,7 @@
 
 // Initialisation des variables, objets et paramètres du script
 // NB toutes les variables sont déclarées en global...
-function mainSettings() {
+/*function mainSettings() {
     console.log("@ mainSettings()");
     
     onMove = false; // Flag > Si un mouvement est en cours
@@ -82,12 +82,6 @@ function mainSettings() {
     IceCandidate = window.mozRTCIceCandidate || window.RTCIceCandidate;
     navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || navigator.webkitGetUserMedia;
 
-
-    /*// Eléments videos du document html
-    video1 = document.getElementById("video");
-    video2 = document.getElementById("otherPeer");
-    video3 = document.getElementById("videosVisitors");
-    /**/
 
     video1 = document.getElementById("1to1_localVideo"); // Sur IHM Robot, pilote, visiteur
     video2 = document.getElementById("1to1_remoteVideo"); // Sur IHM Robot, pilote, visiteur
@@ -179,9 +173,9 @@ function mainSettings() {
     // Si une renégociation à déjas eu lieu
     // >> pour éviter de réinitialiser +sieurs fois le même écouteur
     isRenegociate = false;
-
 }
 mainSettings();
+/**/
 
 //------ PHASE 1 : Pré-signaling ----------------------------------------------------------
 
@@ -1004,7 +998,7 @@ socket.on("piloteOrder", function(data) {
     }
 });
 
-// --------------------- Gestion des messages d'erreur ------------------
+/*// --------------------- Gestion des messages d'erreur ------------------
 
 function errorHandler(err) {
     console.log("ON-ERROR");
@@ -1029,6 +1023,7 @@ function getClientBy(key,value) {
         }
     }
 };
+/**/
 
 
 
