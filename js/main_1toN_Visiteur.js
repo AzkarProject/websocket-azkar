@@ -67,9 +67,17 @@ function initLocalMedia_1toN_VtoP(peerCnxId) {
     }
     peerCnxCollection[peerCnxId] =new PeerConnection(server, options);
     console.log("new peerCnxCollection_1toN_VtoP["+peerCnxId+"]"); 
-    console.log(peerCnxCollection); 
+    //console.log(peerCnxCollection); 
 
-   
+    
+    // Un foi l'objet onnexion crée
+    // Le pilote rafraichi le module de liste de visiteurs
+	// qui doit tester la collection d'objets connexion du pilote
+    if (type == "pilote-appelant") 	updateListUsers();		
+			
+
+
+
     /*// ----- mémo -------
     localStream_1toN_VtoP = null;
     remoteStream_1toN_VtoP = null; // remoteStream 1to
@@ -213,7 +221,7 @@ function connect_1toN_VtoP(peerCnxId) {
                 // socket.emit('closeMasterConnection','disconnected')
                 
                 // on lance le processus préparatoire a une reconnexion
-                // onDisconnect(peerCnxId);
+                onDisconnect_1toN_VtoP(peerCnxId);
             }
 
 
@@ -227,11 +235,9 @@ function connect_1toN_VtoP(peerCnxId) {
     }
 
     
-    // Si on est l'apellant
+    // Si on est l'apellant (pilote) - create channel + create Offer 
     if (type === "pilote-appelant") {
         
-
-
             // l'apellant crée un dataChannel
             // channel = peerCnxCollection_1toN_VtoP[peerCnxId].createDataChannel("mychannel", {});
             // et peut maintenant lancer l'écouteur d'évènement sur le datachannel
@@ -259,7 +265,7 @@ function connect_1toN_VtoP(peerCnxId) {
                 );
 
 
-    // Sinon si on est l'apellé (visiteur)
+    //  Si on est l'apellé (visiteur) - écouteur on data channel + bindEvents  - 
     } else if (type === "visiteur-appelé") {
         
 
@@ -384,7 +390,78 @@ if (type == "pilote-appelant") {
 // ----- Phase 3 Post-Signaling --------------------------------------------
 
 
+// Réception d'un ordre de déconnexion
+socket.on("closeConnectionOrder", function(data) {
+    if (data.cible.id == myPeerID) {
+    	// On reconstruit l'Id de connexion en concaténant le préfixe de connexion pilote/visiteur:
+    	// prefix_peerCnx_1toN_VtoP = "Pilote-to-Visiteur-";
+    	var thisPeerCnx = prefix_peerCnx_1toN_VtoP+myPeerID;
+        // A priori on est dans la peerConnection principale (Pilote <> Robot) >> peerCnx1to1
+        console.log ("------------ >>> closeConnectionOrder"+data.from.typeClient+"----------");
+        // on lance le processus préparatoire a une reconnexion
+        onDisconnect_1toN_VtoP(thisPeerCnx);
+    }
+});
 
+
+// A la déconnection du pair distant:
+function onDisconnect_1toN_VtoP(peerCnxId) {
+
+    console.log("@ onDisconnect_1toN_VtoP()");
+
+    // On vérifie le flag de connexion
+    if (isStarted_1toN_VtoP == false) return;
+
+    // on retire le flux remoteStream
+    if (type == 'visiteur-appelé') {
+    	video1_1toN_VtoP.src = ""; //localVideo
+    	video2_1toN_VtoP.src = ""; //RemotevideoPilote
+    } else if (type == "pilote-appelant") {
+    	videoVisitor1.src = ""; // RemoteVideoVisiteur
+    }
+
+
+
+    //videoElement.src = null;
+    //window.stream.stop();
+
+    // on coupe le RTC Data channel
+    // if (channel) channel.close();
+    // channel = null;
+
+    // On vide et on ferme la connexion courante
+    // pc["+peerCnxId+"].onicecandidate = null;
+    //pc["+peerCnxId+"].close();
+    //pc = null;
+
+    peerCnxCollection[peerCnxId].close();
+    peerCnxCollection[peerCnxId] = null;
+    stopAndStart_1toN_VtoP(peerCnxId);
+}
+
+// Fermeture et relance de la connexion p2p par l'apellé (Robot)
+function stopAndStart_1toN_VtoP(peerCnxId) {
+
+    console.log("@ stopAndStart()");
+    //input_chat_WebRTC.disabled = true;
+    //input_chat_WebRTC.placeholder = "RTCDataChannel close";
+    //env_msg_WebRTC.disabled = true;
+   if (type == "pilote-appelant") {
+        updateListUsers();
+    }
+    
+
+    peerCnxCollection[peerCnxId] = new PeerConnection(server, options);
+
+    // console.log("------pc = new PeerConnection(server, options);-----");
+
+    // On informe la machine à état que c'est une renégociation
+    isRenegociate_1toN_VtoP = true;
+
+    /*
+
+    /**/
+};
 
 
 

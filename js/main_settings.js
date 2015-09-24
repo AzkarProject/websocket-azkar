@@ -1,10 +1,7 @@
 // Initialisation des variables, objets et paramètres du script
 // NB toutes les variables sont déclarées en global...
 
-console.log("@ mainSettings()");
-    
-
-    
+  
 // 1to1 Pilote+Robot
 if (type == "pilote-appelant" || type == "robot-appelé") {
 
@@ -281,3 +278,13 @@ function getCibleFromPeerConnectionID(peerCnxId, prefix) {
     cible = getClientBy('id',cibleID); 
     return cible;
 };
+
+
+/*// Idem mais retourne l'ID du client
+function getIdFromPeerConnectionID(peerCnxId, prefix) {
+    var cibleID = peerCnxId;
+    cibleID = cibleID.replace(prefix, "");
+    //cible = getClientBy('id',cibleID); 
+    return cibleID;
+};
+/**/

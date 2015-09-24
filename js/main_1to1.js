@@ -2,181 +2,6 @@
 // https://developer.mozilla.org/fr/docs/Web/Guide/API/WebRTC/WebRTC_basics
 // Source github : https://github.com/louisstow/WebRTC/blob/master/media.html
 
-// Initialisation des variables, objets et paramètres du script
-// NB toutes les variables sont déclarées en global...
-/*function mainSettings() {
-    console.log("@ mainSettings()");
-    
-    onMove = false; // Flag > Si un mouvement est en cours
-    //lastMoveTimeStamp =  Date.now(); // Variable globale pour la détection du dernier mouvement (homme mort)...
-    lastMoveTimeStamp = 0;
-    
-    // Benchmarks Settings Default
-    navCh = 'webSocket';
-    lPview = 'show';
-    lRview = 'show';
-    rPview = 'high';
-    rRView = 'show';
-    pStoR = 'open';
-
-    // Objet paramètres
-    parameters = {
-        navCh: navCh,
-        lPview: lPview,
-        lRview: lRview,
-        rPview: rPview,
-        rRView: rRView,
-        pStoR: pStoR
-    };
-    
-
-    // pré-signaling -------------------------------------------------
-
-    // sélecteurs de micros et caméras
-    local_AudioSelect = document.querySelector('select#local_audioSource');
-    local_VideoSelect = document.querySelector('select#local_videoSource');
-
-    // sélecteurs de micros et caméras (robot) affiché coté pilote 
-    remote_AudioSelect = document.querySelector('select#remote_audioSource');
-    remote_VideoSelect = document.querySelector('select#remote_videoSource');
-
-    // Pour visualiser toutes les cams dispo coté Robot,
-    // on laisse par défaut l'affichage des devices.
-    local_AudioSelect.disabled = false;
-    local_VideoSelect.disabled = false;
-
-    // (pilote-Appelant) > Activation/Désativation préalable 
-    // Du formulaire de sélection des devices locaux et de demande de connexion
-    if (type == "pilote-appelant") {
-        remote_ButtonDevices.disabled = true;
-        local_ButtonDevices.disabled = true;
-        //remote_AudioSelect.disabled = true; 
-        //remote_VideoSelect.disabled = true; 
-        local_AudioSelect.disabled = true;
-        local_VideoSelect.disabled = true;
-    }
-
-    // (Visiteur-Appelé) > Activation/Désactivation préalable 
-    // Du formulaire de sélection des devices locaux
-    if (type == "visiteur-appelé") {
-        local_ButtonDevices.disabled = true;
-        local_AudioSelect.disabled = true;
-        local_VideoSelect.disabled = true;
-    }
-    
-    // Liste des sources cam/micro
-    listeLocalSources = {};
-    listeRemoteSources = {};
-    // flag d'origine des listes (local/remote)
-    origin = null;
-
-    // webRTC -------------------------------
-
-    // flag de connexion
-    isStarted = false;
-    // console.log("isStarted = "+ isStarted);
-
-    // shims!
-    PeerConnection = window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
-    SessionDescription = window.mozRTCSessionDescription || window.RTCSessionDescription;
-    IceCandidate = window.mozRTCIceCandidate || window.RTCIceCandidate;
-    navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || navigator.webkitGetUserMedia;
-
-
-    video1 = document.getElementById("1to1_localVideo"); // Sur IHM Robot, pilote, visiteur
-    video2 = document.getElementById("1to1_remoteVideo"); // Sur IHM Robot, pilote, visiteur
-
-
-
-    // RTC DataChannel
-    // Zone d'affichage (textarea)
-    chatlog = document.getElementById("zone_chat_WebRTC");
-    // Zone de saisie (input)
-    message = document.getElementById("input_chat_WebRTC");
-
-    // options pour l'objet PeerConnection
-    server = {
-        'iceServers': [{
-            'url': 'stun:23.21.150.121'
-        }]
-    };
-    server.iceServers.push({
-        url: 'stun:stun.l.google.com:19302'
-    });
-    server.iceServers.push({
-        url: 'stun:stun.anyfirewall.com:3478'
-    });
-    server.iceServers.push({
-        url: 'stun:turn1.xirsys.com'
-    });
-    // Ajout de serveurs TURN
-    server.iceServers.push({
-        url: "turn:turn.bistri.com:80",
-        credential: "homeo",
-        username: "homeo"
-    });
-    server.iceServers.push({
-        url: 'turn:turn.anyfirewall.com:443?transport=tcp',
-        credential: 'webrtc',
-        username: 'azkarproject'
-    });
-    server.iceServers.push({
-        url: "turn:numb.viagenie.ca",
-        credential: "webrtcdemo",
-        username: "temp20fev2015@gmail.com"
-    });
-    server.iceServers.push({
-        url: "turn:turn.anyfirewall.com:443?transport=tcp",
-        credential: "webrtc",
-        username: "webrtc"
-    });
-    server.iceServers.push({
-        url: "turn:turn1.xirsys.com:443?transport=tcp",
-        credential: "b8631283-b642-4bfc-9222-352d79e2d793",
-        username: "e0f4e2b6-005f-440b-87e7-76df63421d6f"
-    });
-    // TODO: Tester les TURNS individuelements pour déterminer celui qui fonctionne le mieux
-
-
-    // TODO:
-    options = {
-        optional: [{
-                DtlsSrtpKeyAgreement: true
-            }, {
-                RtpDataChannels: true
-            } //required for Firefox
-        ]
-    }
-
-
-    // 1toN > Tableau des connexions WebRTC
-    peerCnxCollection = {};
-    peerCnx1to1 = "Pilote-to-Robot"; // connexion principale Pilote/Robot
-    peerCnxId = "default"; // Nom par défaut
-
-    localStream = null;
-    remoteStream = null; // remoteStream 1to
-    remoteStreamCollection = {}; // 1toN > Tableau des remoteStreams visiteurs
-    
-    // Constraints de l'offre SDP. 
-    constraints = {
-        mandatory: {
-            OfferToReceiveAudio: true,
-            OfferToReceiveVideo: true
-        }
-    };
-
-    // définition de la variable channel
-    channel = null;
-    debugNbConnect = 0;
-
-    // Si une renégociation à déjas eu lieu
-    // >> pour éviter de réinitialiser +sieurs fois le même écouteur
-    isRenegociate = false;
-}
-mainSettings();
-/**/
-
 //------ PHASE 1 : Pré-signaling ----------------------------------------------------------
 
 // rejectConnexion', message:message, url:indexUrl);
@@ -185,6 +10,17 @@ socket.on('rejectConnexion', function(data) {
     alertAndRedirect(data.message, data.url)
 })
 
+
+
+// Lancement de la récupération des Devices disponibles
+if (typeof MediaStreamTrack === 'undefined') {
+    alert('This browser does not support MediaStreamTrack.\n\nTry Chrome.');
+} else {
+    origin = "local"; // On prévient la fonction apellée que la source sera locale
+    MediaStreamTrack.getSources(gotSources);
+}
+
+// IHM Pilote & Robot
 // Génération des listes de sélection sources (cam/micro) 
 // disponibles localement et a distance
 function gotSources(sourceInfos) {
@@ -275,18 +111,9 @@ function gotSources(sourceInfos) {
     origin = null;
 }
 
-// Lancement de la récupération des Devices disponibles
-if (typeof MediaStreamTrack === 'undefined') {
-    alert('This browser does not support MediaStreamTrack.\n\nTry Chrome.');
-} else {
-    origin = "local"; // On prévient la fonction apellée que la source sera locale
-    MediaStreamTrack.getSources(gotSources);
-}
-
-
 // IHM Pilote
-// Ouverture du premier des formulaires de selection des devices
-// Et par conséquence dévérouillage du lancement de la connexion
+// Dévérouillage formulaires selection caméras
+// et processus connexion 1to1 pilote/robot
 function activeManageDevices() {
 
     // On active les sélecteurs de listes
@@ -298,9 +125,8 @@ function activeManageDevices() {
     document.getElementById("robotDevices").className = "insideFlex oneQuarterbox robot shadowGreen devicesInvite";
 }
 
-
 // IHM Pilote:
-// Traitement du formulaire de selection des devices du robot
+// Traitement du formulaire de selection caméras du robot
 // et ouverture du formulaire de selection des devices du pilote 
 // Avec animation CSS d'invite du formulaire
 function remoteManageDevices() {
@@ -829,13 +655,12 @@ socket.on("candidate", function(data) {
 
 
 // Réception d'un ordre de déconnexion
-socket.on("closeConnectionOrder", function(data) {
+socket.on("closeConnectionOrder",function(data) {
     if (data.cible.id == myPeerID) {
         // A priori on est dans la peerConnection principale (Pilote <> Robot) >> peerCnx1to1
         console.log ("------------ >>> closeConnectionOrder "+data.from.typeClient+"----------");
         // on lance le processus préparatoire a une reconnexion
         onDisconnect(peerCnx1to1);
-
     }
 });
 
@@ -884,6 +709,11 @@ function stopAndStart(peerCnxId) {
 
     // On informe la machine à état que c'est une renégociation
     isRenegociate = true;
+    /*
+    if (type == "pilote-appelant") {
+        updateListUsers();
+    }
+    /**/
 };
 
 // -------------------- Méthodes RTCDataChannel ----------------------
