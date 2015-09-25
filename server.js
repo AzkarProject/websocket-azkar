@@ -444,6 +444,16 @@ io.on('connection', function(socket, pseudo) {
         });
     });
 
+    // Retransmission du statut de connexion WebRTC du visiteur ( p2p pilote/visiteur)
+    socket.on('visitorCnxPiloteStatus', function(data) {
+       console.log(tools.humanDateER('R') + " @ visitorCnxPiloteStatus >>>> "+data.iceState);
+       socket.broadcast.emit('visitorCnxPiloteStatus', data);
+    });
+
+
+
+
+
     // Robot >> Pilote: Offre des cams/micros disponibles coté robot
     socket.on('remoteListDevices', function(data) {
         console.log(tools.humanDateER('R') + " @ remoteListDevices >>>> (from "+data.objUser.pseudo+" id:"+data.objUser.id+")");

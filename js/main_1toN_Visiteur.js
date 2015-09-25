@@ -157,7 +157,9 @@ function connect_1toN_VtoP(peerCnxId) {
 
         // var showRemoteVideo = true;
         
-        // Version 1to1
+        // Version 1to1 
+        /*
+
         remoteStream_1toN_VtoP = e.stream;
 
         if (type == "visiteur-appelé") {
@@ -166,7 +168,56 @@ function connect_1toN_VtoP(peerCnxId) {
         } else if (type == "pilote-appelant") {
 			videoVisitor1.src = URL.createObjectURL(remoteStream_1toN_VtoP);
         }
+        /**/
+
+
+
+        if (type == "visiteur-appelé") {
+            // if (parameters.rRView == 'hide') showRemoteVideo = false;
+            video2_1toN_VtoP.src = URL.createObjectURL(e.stream);
+        } else if (type == "pilote-appelant") {
+			videoVisitor1.src = URL.createObjectURL(e.stream);
+        }
         
+        // -------------------------------------------------------------
+        /*// version 1toN multiview
+
+        var originStream = ""; 
+        originStream = peerCnxId.indexOf(prefix_peerCnx_1toN_VtoP); //Retourne -1 si faux
+        if (originStream != -1) {
+            if (type == "pilote-appelant") originStream = "Visiteur";
+            else originStream = "Pilote";
+        }
+        
+        // Les remoteStream en provenance des visiteurs doivent Ãªtre mis dans une collection.
+        // remoteStream = e.stream;
+        if (originStream != "Visiteur") remoteStream = e.stream; // Uniquement si c'est le pilote ou le robot qui s'affiche
+        else remoteStreamCollection[peerCnxId] = e.stream; // sinon on met le stream dans un tableau  
+
+
+
+        if (type == "pilote-appelant") {
+            if (parameters.rPview == 'hide') showRemoteVideo = false;
+            // showRemoteVideo = false;
+
+            if (originStream != "Visiteur") remoteStream = e.stream;
+        
+        } else if (type == "robot-appelÃ©") {
+            if (parameters.rRView == 'hide') showRemoteVideo = false;
+        }
+        
+
+
+        if (originStream != "Visiteur" && showRemoteVideo == true) video2.src = URL.createObjectURL(remoteStream);
+        
+        // if (originStream == "Visiteur") addRemoteMultiVideo(remoteStreamCollection[peerCnxId]);
+        if (originStream == "Visiteur") addSimpleVideo(remoteStreamCollection[peerCnxId]); 
+
+
+        /**/// ----------------------------------------------------------------------------------
+
+
+
 
     };
 
@@ -184,45 +235,36 @@ function connect_1toN_VtoP(peerCnxId) {
         console.log(">>> pc["+peerCnxId+"] stateConnection Event > " + peerCnxCollection[peerCnxId].iceConnectionState);
         //$(chatlog).prepend(dateE + ' pc['+peerCnxId+'] stateConnection Event: ' + peerCnxCollection_1toN_VtoP[peerCnxId].iceConnectionState + '\n');
 
-
         // Si la connexion est neuve, on remet le flag de renégo à sa position par défaut...
         if ( peerCnxCollection[peerCnxId].iceConnectionState == 'new') isRenegociate_1toN_VtoP = false; 
 
-
-
-
-
-            // On informe l'autre pair de son statut de connexion   
-            if (type == 'pilote-appelant') {
-                // piloteCnxStatus = peerCnxCollection[peerCnxId].iceConnectionState;
-
-                /*
-                socket.emit("piloteCnxStatus", piloteCnxStatus);
-                // Si on change de status suite à une déco du robot
-                // On redéclenche l'ouverture des formulaires de connexion 
-                // a la condition que le robot soit lui aussi prêt a se reconnecter... (new...)
-                if (piloteCnxStatus == 'new' && robotCnxStatus == 'new') {
-                    activeManageDevices(); // On active les formulaires permettant de relancer la connexion
-                }
-                /**/
-
-
-
-
-            } else if (type == 'visiteur-appelé') {
-                //robotCnxStatus = peerCnxCollection_1toN_VtoP[peerCnxId].iceConnectionState;
-                //socket.emit("robotCnxStatus", robotCnxStatus);
-            }
+		// On informe l'autre pair de son statut de connexion   
+        if (type == 'pilote-appelant') {
+        	// todo
+        } else if (type == 'visiteur-appelé') {
+            
+        	var myIceState = peerCnxCollection[peerCnxId].iceConnectionState;
+        	var data = {from: localObjUser, iceState: myIceState}
+        	socket.emit("visitorCnxPiloteStatus", data); // ca concerne le p2p pilote/visiteur
+			
+			/*//Si la variable isForPilote reçoit la valeur -1, l'ID de connexion de contient pas le préfixe.
+        	var isForPilote = peerCnxId.indexOf(prefix_peerCnx_1toN_VtoP); 
+	        if (isForPilote != -1 ) { // Si différent de -1
+	        	socket.emit("visitorCnxPiloteStatus", data); // ca concerne le p2p pilote/visiteur
+	        }
+	        else {
+	        	// Todo ????
+	        }
+	        /**/
+            
+        }
      
-            // si le pair distant  est déconnecté en WebRTC,
-            if (peerCnxCollection[peerCnxId].iceConnectionState == 'disconnected') {   
-                
-                // A tous les Visiteurs: Signal de perte de la connexion WebRTC principale (Pilote <> Robot)
-                // socket.emit('closeMasterConnection','disconnected')
-                
-                // on lance le processus préparatoire a une reconnexion
-                onDisconnect_1toN_VtoP(peerCnxId);
-            }
+        // si le pair distant  est déconnecté en WebRTC,
+        if (peerCnxCollection[peerCnxId].iceConnectionState == 'disconnected') {   
+                        
+            // on lance le processus préparatoire a une reconnexion
+            onDisconnect_1toN_VtoP(peerCnxId);
+        }
 
 
 
@@ -359,6 +401,7 @@ if (type == "visiteur-appelé") {
 }
 
 
+// Ecouteurs Answer et Candidate différents du 1to1 pour le pilote
 if (type == "pilote-appelant") {
 
 	// Réception d'une réponse à une offre
@@ -389,6 +432,13 @@ if (type == "pilote-appelant") {
 
 // ----- Phase 3 Post-Signaling --------------------------------------------
 
+// Réception du statut P2P d'un visiteur
+socket.on('visitorCnxPiloteStatus', function(data) {
+	if (type == "pilote-appelant") {
+		console.log('>> socket.on("visitorCnxPiloteStatus", (from '+data.from.id+ ') - Status:'+data.iceState);
+		updateListUsers(); // refresh contrôles de manage Users
+	}
+});
 
 // Réception d'un ordre de déconnexion
 socket.on("closeConnectionOrder", function(data) {
@@ -436,6 +486,9 @@ function onDisconnect_1toN_VtoP(peerCnxId) {
 
     peerCnxCollection[peerCnxId].close();
     peerCnxCollection[peerCnxId] = null;
+    
+    if (type == "pilote-appelant")  updateListUsers();
+
     stopAndStart_1toN_VtoP(peerCnxId);
 }
 
@@ -446,9 +499,6 @@ function stopAndStart_1toN_VtoP(peerCnxId) {
     //input_chat_WebRTC.disabled = true;
     //input_chat_WebRTC.placeholder = "RTCDataChannel close";
     //env_msg_WebRTC.disabled = true;
-   if (type == "pilote-appelant") {
-        updateListUsers();
-    }
     
 
     peerCnxCollection[peerCnxId] = new PeerConnection(server, options);

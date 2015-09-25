@@ -150,7 +150,8 @@ if (type == "pilote-appelant" || type == "visiteur-appelé") {
 // 1toN Pilote seulement
 if (type == "pilote-appelant") {
     
-    remoteStreamCollection = {}; // 1toN > Tableau des remoteStreams visiteurs
+    remoteStreamCollection = {}; // 1toN > liste des remoteStreams visiteurs
+    visitorStatusCollection = {}; // 1toN > Liste des status de connexions des visiteurs
 } // 1toN Pilote seulement  
 
 // 1toN visiteur seulement
@@ -171,46 +172,16 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || 
 
 
 // options pour l'objet PeerConnection
-server = {
-    'iceServers': [{
-        'url': 'stun:23.21.150.121'
-    }]
-};
-server.iceServers.push({
-    url: 'stun:stun.l.google.com:19302'
-});
-server.iceServers.push({
-    url: 'stun:stun.anyfirewall.com:3478'
-});
-server.iceServers.push({
-    url: 'stun:turn1.xirsys.com'
-});
+server = {'iceServers': [{ 'url': 'stun:23.21.150.121'}]};
+server.iceServers.push({ url: 'stun:stun.l.google.com:19302'});
+server.iceServers.push({url: 'stun:stun.anyfirewall.com:3478'});
+server.iceServers.push({url: 'stun:turn1.xirsys.com'});
 // Ajout de serveurs TURN
-server.iceServers.push({
-    url: "turn:turn.bistri.com:80",
-    credential: "homeo",
-    username: "homeo"
-});
-server.iceServers.push({
-    url: 'turn:turn.anyfirewall.com:443?transport=tcp',
-    credential: 'webrtc',
-    username: 'azkarproject'
-});
-server.iceServers.push({
-    url: "turn:numb.viagenie.ca",
-    credential: "webrtcdemo",
-    username: "temp20fev2015@gmail.com"
-});
-server.iceServers.push({
-    url: "turn:turn.anyfirewall.com:443?transport=tcp",
-    credential: "webrtc",
-    username: "webrtc"
-});
-server.iceServers.push({
-    url: "turn:turn1.xirsys.com:443?transport=tcp",
-    credential: "b8631283-b642-4bfc-9222-352d79e2d793",
-    username: "e0f4e2b6-005f-440b-87e7-76df63421d6f"
-});
+server.iceServers.push({url: "turn:turn.bistri.com:80",credential: "homeo",username: "homeo"});
+server.iceServers.push({url: 'turn:turn.anyfirewall.com:443?transport=tcp', credential: 'webrtc',username: 'azkarproject'});
+server.iceServers.push({url: "turn:numb.viagenie.ca",credential: "webrtcdemo",username: "temp20fev2015@gmail.com"});
+server.iceServers.push({url: "turn:turn.anyfirewall.com:443?transport=tcp",credential: "webrtc",username: "webrtc"});
+server.iceServers.push({url: "turn:turn1.xirsys.com:443?transport=tcp",credential: "b8631283-b642-4bfc-9222-352d79e2d793",username: "e0f4e2b6-005f-440b-87e7-76df63421d6f"});
 
 
 options = {

@@ -35,7 +35,7 @@ exports.client = function client (id,pseudo,placeliste,typeClient,connectionDate
   this.disConnectionDate = disConnectionDate;
 }
 
- 
+
 // ---------------------------------
 // Fonctions utiles (génériques)
 // ---------------------------------
