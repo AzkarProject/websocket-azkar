@@ -152,26 +152,9 @@ function connect_1toN_VtoP(peerCnxId) {
     peerCnxCollection[peerCnxId].onaddstream = function(e) {
         console.log("@ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@_1toN_VtoP");
         console.log("@ pc["+peerCnxId+"].onaddstream_1toN_VtoP");
-        console.log(e);
-
-
-        // var showRemoteVideo = true;
-        
-        // Version 1to1 
-        /*
-
-        remoteStream_1toN_VtoP = e.stream;
-
-        if (type == "visiteur-appelé") {
-            // if (parameters.rRView == 'hide') showRemoteVideo = false;
-            video2_1toN_VtoP.src = URL.createObjectURL(remoteStream_1toN_VtoP);
-        } else if (type == "pilote-appelant") {
-			videoVisitor1.src = URL.createObjectURL(remoteStream_1toN_VtoP);
-        }
-        /**/
-
-
-
+        // console.log(e);
+     
+        /*// Version 1to1 
         if (type == "visiteur-appelé") {
             // if (parameters.rRView == 'hide') showRemoteVideo = false;
             video2_1toN_VtoP.src = URL.createObjectURL(e.stream);
@@ -179,8 +162,8 @@ function connect_1toN_VtoP(peerCnxId) {
 			videoVisitor1.src = URL.createObjectURL(e.stream);
         }
         
-        // -------------------------------------------------------------
-        /*// version 1toN multiview
+        /**/// -------------------------------------------------------------
+        // version 1toN multiview
 
         var originStream = ""; 
         originStream = peerCnxId.indexOf(prefix_peerCnx_1toN_VtoP); //Retourne -1 si faux
@@ -191,30 +174,18 @@ function connect_1toN_VtoP(peerCnxId) {
         
         // Les remoteStream en provenance des visiteurs doivent Ãªtre mis dans une collection.
         // remoteStream = e.stream;
-        if (originStream != "Visiteur") remoteStream = e.stream; // Uniquement si c'est le pilote ou le robot qui s'affiche
-        else remoteStreamCollection[peerCnxId] = e.stream; // sinon on met le stream dans un tableau  
+        //if (originStream != "Visiteur") remoteStream = e.stream; // Uniquement si c'est le pilote ou le robot qui s'affiche
+        //else remoteStreamCollection[peerCnxId] = e.stream; // sinon on met le stream dans un tableau  
 
-
-
-        if (type == "pilote-appelant") {
-            if (parameters.rPview == 'hide') showRemoteVideo = false;
-            // showRemoteVideo = false;
-
-            if (originStream != "Visiteur") remoteStream = e.stream;
-        
-        } else if (type == "robot-appelÃ©") {
-            if (parameters.rRView == 'hide') showRemoteVideo = false;
+		if (type == "visiteur-appelé") {
+            video2_1toN_VtoP.src = URL.createObjectURL(e.stream);
+        } else if (type == "pilote-appelant") {
+			if (originStream == "Visiteur") {
+				addRemoteMultiVideo(e.stream);
+			}
         }
         
-
-
-        if (originStream != "Visiteur" && showRemoteVideo == true) video2.src = URL.createObjectURL(remoteStream);
-        
-        // if (originStream == "Visiteur") addRemoteMultiVideo(remoteStreamCollection[peerCnxId]);
-        if (originStream == "Visiteur") addSimpleVideo(remoteStreamCollection[peerCnxId]); 
-
-
-        /**/// ----------------------------------------------------------------------------------
+       	/**/// ----------------------------------------------------------------------------------
 
 
 

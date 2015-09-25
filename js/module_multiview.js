@@ -6,18 +6,24 @@ var width, height;
 var tabVideos = [];
 
 
+videosCollection = [];
+
+
 window.onload = function(evt) {
   
+  
   videoSection = document.querySelector("#videos");
-    //buttonAdd = document.querySelector("#addVideoButton");
+  
+  //buttonAdd = document.querySelector("#addVideoButton");
   //buttonAdd.addEventListener("click", addVideo);
   
-  buttonAdd = document.querySelector("#removeVideoButton");
-  buttonAdd.addEventListener("click", removeVideoCallback);
-  buttonAdd = document.querySelector("#layout2videos");
-  buttonAdd.addEventListener("click", setLayoutForTwoVideos);
+  // buttonAdd = document.querySelector("#removeVideoButton");
+  // buttonAdd.addEventListener("click", removeVideoCallback);
+  // buttonAdd = document.querySelector("#layout2videos");
+  // buttonAdd.addEventListener("click", setLayoutForTwoVideos);
   
-    var rect = videoSection.getBoundingClientRect();
+  
+  var rect = videoSection.getBoundingClientRect();
   
   videoSection.style.height="340px";
   
@@ -32,14 +38,33 @@ window.onload = function(evt) {
 
 
 
-/*function addSimpleVideo(remoteStream) {  
+
+function addSimpleVideo(remoteStream) {  
     console.log("Add video Visiteur");
     video3.src = URL.createObjectURL(remoteStream);
 }
-/**/
 
 function addRemoteMultiVideo(remoteStream) {  
-  
+    
+  /*
+    console.log ('addRemoteMultiVideo(remoteStream)');
+    console.log (remoteStream);
+    // <video id='1toN_remoteVideos' class="multiple" autoplay muted controls="controls" style='position:relative; width: 275px'></video>
+    videoVisitor1 = document.getElementById("1toN_remoteVideos"); // Vue des visiteurs sur IHM Pilote
+    videoVisitor1.src = URL.createObjectURL(remoteStream);
+
+    
+
+    var v2 = document.createElement("video");
+    v2.id = remoteStream.id
+    v.setAttribute("controls", "true");
+    v2.src = URL.createObjectURL(remoteStream);
+    /**/
+
+
+    // Création d'unn élément vidéo
+    //var v = document.createElement("video");
+
     // create a video element  
     var v = document.createElement("video");
     var largeurVideo=150;
@@ -56,13 +81,12 @@ function addRemoteMultiVideo(remoteStream) {
 
     v.id = 'vid'+ tabVideos.length;
     v.setAttribute("controls", "true");
-    //v.innerHTML="<source src='http://html5doctor.com/demos/video-canvas-magic/video.webm' type='video/webm'/>";
+    v.setAttribute("autoplay", "true");
+    v.setAttribute("muted", "true");
     v.src = URL.createObjectURL(remoteStream);
       
     tabVideos.push(v);
     videoSection.appendChild(v);
-    indexVideo = tabVideos.length-1;
-    console.log("Add video Visiteur - on ajoute la video id=" + indexVideo);
     setLayoutForTwoVideos();
 }
 
@@ -70,7 +94,7 @@ function removeVideoCallback(evt) {
   removeVideo();
 }
 
-/*
+
 function addVideo() {  
   
   // create a video element  
@@ -96,7 +120,6 @@ function addVideo() {
   videoSection.appendChild(v);
   setLayoutForTwoVideos();
 }
-/**/
 
 
 function removeVideoCallback(evt) {
@@ -105,13 +128,20 @@ function removeVideoCallback(evt) {
 
 function removeVideo(indexVideo) {
   if(! indexVideo) indexVideo = tabVideos.length-1;
+  
   console.log("on supprime video id=" + indexVideo);
+  
   // On supprime du tableau
   tabVideos.splice(indexVideo, 1);
+  
   // Et du DOM
   var id = "vid"+indexVideo;
+  //console.log("removing #"+id);
+  
   var v = document.querySelector("#"+id);
+  //console.log(v);
   videoSection.removeChild(v);
+  
   // et on repositionne les videos restantes
   setLayoutForTwoVideos();
 }
@@ -119,8 +149,10 @@ function removeVideo(indexVideo) {
 
 function setLayoutForTwoVideos() {
   var nbVideos = tabVideos.length;
-  var nbHorizontalMargins = nbVideos+1;  
+  var nbHorizontalMargins = nbVideos+1;
+    
   var rect = videoSection.getBoundingClientRect();
+    
   width= rect.width;
   height = rect.height;
   
@@ -137,6 +169,7 @@ function setLayoutForTwoVideos() {
   var videoWidth = (width - (nbHorizontalMargins * horizontalMargin))  / nbVideos;
   var videoHeight = height * percentageHeightForVideos;
  
+  
   var x= rect.left, y, oldx=0;
   
   for(var i=0; i < nbVideos; i++) {
@@ -163,4 +196,4 @@ function changePos(id, x, y, width, height) {
     v.style.y="px";
 }
    
-}
+
