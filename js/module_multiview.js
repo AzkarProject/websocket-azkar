@@ -6,7 +6,7 @@ var width, height;
 var tabVideos = [];
 
 
-videosCollection = [];
+// videosCollection = {};
 
 
 window.onload = function(evt) {
@@ -36,35 +36,8 @@ window.onload = function(evt) {
 };
 
 
-
-
-
-function addSimpleVideo(remoteStream) {  
-    console.log("Add video Visiteur");
-    video3.src = URL.createObjectURL(remoteStream);
-}
-
-function addRemoteMultiVideo(remoteStream) {  
+function addRemoteMultiVideo(remoteStream,peerCnxID) {  
     
-  /*
-    console.log ('addRemoteMultiVideo(remoteStream)');
-    console.log (remoteStream);
-    // <video id='1toN_remoteVideos' class="multiple" autoplay muted controls="controls" style='position:relative; width: 275px'></video>
-    videoVisitor1 = document.getElementById("1toN_remoteVideos"); // Vue des visiteurs sur IHM Pilote
-    videoVisitor1.src = URL.createObjectURL(remoteStream);
-
-    
-
-    var v2 = document.createElement("video");
-    v2.id = remoteStream.id
-    v.setAttribute("controls", "true");
-    v2.src = URL.createObjectURL(remoteStream);
-    /**/
-
-
-    // Création d'unn élément vidéo
-    //var v = document.createElement("video");
-
     // create a video element  
     var v = document.createElement("video");
     var largeurVideo=150;
@@ -77,9 +50,10 @@ function addRemoteMultiVideo(remoteStream) {
     v.style.height=hauteurVideo + "px";
 
     v.style.left=xVideo + "px";
-    //v.style.top=yVideo + "px";
+    // v.style.top=yVideo + "px";
 
-    v.id = 'vid'+ tabVideos.length;
+    // v.id = 'vid'+ tabVideos.length;
+    v.id = peerCnxID;
     v.setAttribute("controls", "true");
     v.setAttribute("autoplay", "true");
     v.setAttribute("muted", "true");
@@ -90,61 +64,51 @@ function addRemoteMultiVideo(remoteStream) {
     setLayoutForTwoVideos();
 }
 
+
 function removeVideoCallback(evt) {
   removeVideo();
 }
 
-
-function addVideo() {  
+function removeRemoteVideo(peerCnxId) {
+  // if(! indexVideo) indexVideo = tabVideos.length-1;
+  console.log("on supprime la video id=" + peerCnxId);
   
-  // create a video element  
-  var v = document.createElement("video");
-  var largeurVideo=150;
-  var hauteurVideo=150;
-  
-  var xVideo = Math.round((width-largeurVideo)/2);
-  var yVideo = Math.round((height+hauteurVideo)/2);
-
-  v.style.width=largeurVideo + "px";
-  v.style.height=hauteurVideo + "px";
-
-  v.style.left=xVideo + "px";
-  //v.style.top=yVideo + "px";
-
-  v.id = 'vid'+ tabVideos.length;
-  v.setAttribute("controls", "true");
-  //v.innerHTML="<source src='http://html5doctor.com/demos/video-canvas-magic/video.webm' type='video/webm'/>";
-  v.src="http://html5doctor.com/demos/video-canvas-magic/video.webm";
-  tabVideos.push(v);
-
-  videoSection.appendChild(v);
+  // On supprime du tableau
+  // tabVideos.splice(indexVideo, 1);
+  for(var i = tabVideos.length-1; i--;){
+    if (tabVideos[i].id === peerCnxId) tabVideos.splice(i, 1);
+  }
+  // Et du DOM
+  var id = peerCnxId;
+  //console.log("removing #"+id);
+  var v = document.querySelector("#"+id);
+  //console.log(v);
+  videoSection.removeChild(v);
+    // et on repositionne les videos restantes
   setLayoutForTwoVideos();
+
 }
 
 
-function removeVideoCallback(evt) {
-  removeVideo();
-}
 
-function removeVideo(indexVideo) {
+
+/*function removeVideo(indexVideo) {
+ 
   if(! indexVideo) indexVideo = tabVideos.length-1;
-  
   console.log("on supprime video id=" + indexVideo);
   
   // On supprime du tableau
   tabVideos.splice(indexVideo, 1);
-  
   // Et du DOM
   var id = "vid"+indexVideo;
   //console.log("removing #"+id);
-  
   var v = document.querySelector("#"+id);
   //console.log(v);
   videoSection.removeChild(v);
-  
-  // et on repositionne les videos restantes
+    // et on repositionne les videos restantes
   setLayoutForTwoVideos();
 }
+/**/
 
 
 function setLayoutForTwoVideos() {
@@ -188,6 +152,7 @@ function setLayoutForTwoVideos() {
   }
 }
 
+/*
 function changePos(id, x, y, width, height) {
     v = document.querySelector("#"+id);
     v.style.width=width+"px";
@@ -195,5 +160,6 @@ function changePos(id, x, y, width, height) {
     v.style.left=x+"px";
     v.style.y="px";
 }
+/**/
    
 
