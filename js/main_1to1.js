@@ -817,7 +817,7 @@ if (type == "robot-appelé") {
 function sendCommandDriveInterface(command,enable,aSpeed,lSpeed) {
         // onMove = false; // Flag > Si un mouvement est en cours
         // lastMoveTimeStamp =  Date.now(); // on met a jour le timestamp du dernier ordre de mouvement...
-        console log ("sendCommandDriveInterface(command,enable,aSpeed,lSpeed");
+        console.log ("sendCommandDriveInterface(command,enable,aSpeed,lSpeed");
 
         if (command == "onDrive") {
             onMove = true;
