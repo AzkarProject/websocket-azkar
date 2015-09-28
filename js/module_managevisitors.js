@@ -78,9 +78,11 @@ function updateListUsers() {
 		    	activeCnx = isVisitorConnected (peerCnxCollection,oneUser.id);
 		    	
 			    if (activeCnx == true ) { // Connexion active >> Bouton close
-			    	openform = '<button class="shadowBlack" id="openCnx'+oneUser.id+'" onclick="closeCnxwith(\''+oneUser.id+'\')">Close Stream</button>';
+			    	openform = '<button class="shadowBlack" id="openCnx'+oneUser.id;
+			    	openform += '" onclick="closeCnxwith(\''+oneUser.id+'\')">Close Stream</button>';
 			    } else { // Connexion inactive >> Bouton Open
-					openform = '<button class="shadowBlack" id="openCnx'+oneUser.id+'" onclick="openCnxwith(\''+oneUser.id+'\')">Open Stream</button>';
+					openform = '<button class="shadowBlack" id="openCnx'+oneUser.id;
+					openform +='" onclick="openCnxwith(\''+oneUser.id+'\')">Open Stream</button>';
 			    }
 		    }
 		    

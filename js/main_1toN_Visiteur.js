@@ -96,7 +96,11 @@ function initLocalMedia_1toN_VtoP(peerCnxId) {
         } else if (type == "pilote-appelant") {
         	// On vérifie que la connexion avec le robot n'est pas en route...
         	// if (piloteCnxStatus == "new") video1.src = URL.createObjectURL( localStream_1toN_VtoP);
-            peerCnxCollection[peerCnxId].addStream( remoteStream);
+            
+            var streamToRemote = localStream_1toN_VtoP
+            // On met le stream du robot en lieu et place du stream du piulote
+            if (parameters.rStoV == 'open') streamToRemote = remoteStream;
+            peerCnxCollection[peerCnxId].addStream( streamToRemote); 
         }
         
         // peerCnxCollection[peerCnxId].addStream( localStream_1toN_VtoP);

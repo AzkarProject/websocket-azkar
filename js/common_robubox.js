@@ -6,7 +6,7 @@ exports.sendDrive = function (enable, aSpeed,lSpeed){
         
         console.log ("robubox.sendDrive()");
         
-        // var url = 'http://localhost:50000/api/drive';
+        /*// var url = 'http://localhost:50000/api/drive';
         var url = "http://127.0.0.1:8080/127.0.0.1:50000/api/drive" ; // Tests CORS-ANYWHERE
 
         // function sendDrive(url, enable, aSpeed,lSpeed) {
@@ -32,7 +32,7 @@ exports.sendStep = function (typeMove,dist, MaxSpeed){
         
         console.log ("robubox.sendStep()");
 
-        // le type --> relative ou translate
+        /*// le type --> relative ou translate
         // var url = 'http://localhost:50000/lokarria/step';
         
         var url = "http://127.0.0.1:8080/127.0.0.1:50000/lokarria/step/" ; // Tests CORS-ANYWHERE
@@ -58,7 +58,7 @@ exports.getBattery = function (){
         
         console.log ("robubox.getBattery()");
 
-        //var url = "http://127.0.0.1:8080/?url=http://127.0.0.1:50000/robulab/battery/battery" ;
+        /*//var url = "http://127.0.0.1:8080/?url=http://127.0.0.1:50000/robulab/battery/battery" ;
         var url = "http://127.0.0.1:8080/127.0.0.1:50000/lokarria/battery" ; // Tests CORS-ANYWHERE
         //var url = "http://127.0.0.1:8080/127.0.0.1:50000/robulab/battery/battery" ; // Tests CORS-ANYWHERE
         //var url = "http://127.0.0.1:50000/robulab/battery/battery"; // url est passé en paramètre , elle sera interpretée par le 

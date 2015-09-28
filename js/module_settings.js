@@ -30,6 +30,6 @@ function setRemoteRobotView(rRVSet) {
     parameters.rRView = rRVSet;
 }
 
-function setPilotStreamToRobot(pRStream) {
-    parameters.pStoR = pRStream;
+function setRobotStreamToVisitor(vRStream) {
+    parameters.rStoV = vRStream;
 }

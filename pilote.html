@@ -108,59 +108,10 @@
                 </div>
 
 
-
-
-
-
-
-
-
-
-
-
-<!--                 <div id="step-commands">
-                    <div id="divBtUp">
-                        <button id="btnUp" class="btnCommandsPad" onclick="cmdUp()">&uarr;</button>
-                    </div>
-                    <div id="divBtLeft">
-                        <button id="btnLeft" class="btnCommandsPad" onclick="cmdLeft()">&larr;</button>
-                    </div>
-                    <div id="divBtRight">
-                        <button id="btnRight" class="btnCommandsPad" onclick="cmdRight()">&rarr;</button>
-                    </div>
-                    <div id="divBtDown">
-                        <button id="btnDown" class="btnCommandsPad" onclick="cmdDown()">&darr;</button>
-                    </div>
-                    <div id="divBtSpeed">
-
-                        <button id="btnIncrease" class="btnCommandsPad" onclick="cmdSpeed(-0.1)">-</button>
-                        <progress id="jaugeSpeedSetting" value="0.5" max="1"></progress>
-                        <button id="btnDecrease" class="btnCommandsPad" onclick="cmdSpeed(0.1)">+</button>
-                        <br/> Speed Setting: <span id="speedSetting">m.s</span>
-                        <script>
-                        function jaugeSpeedSetting() {
-                            var ava = document.getElementById("jaugeSpeedSetting");
-                            var prc = document.getElementById("speedSetting");
-                            prc.innerHTML = ava.value + " m.s";
-                        }
-
-                        jaugeSpeedSetting();
-
-                        function cmdSpeed(val) {
-                            var ava = document.getElementById("jaugeSpeedSetting");
-                            if ((ava.value + val) <= ava.max && (ava.value + val) >= 0) {
-                                ava.value += val;
-                            }
-                            jaugeSpeedSetting();
-                        }
-                        </script>
-                    </div>
-                </div> -->
-               
-
                 <div id="drive-commands" style="display:none; overflow: scroll; height:150px">
                     <ul id="gamepads"></ul>
                 </div>
+            
             </div> <!-- id="robotCommands" -->
 
 
@@ -298,9 +249,9 @@
                 </span>
             <br/>
             <span id="streamSetting" class="">
-                    Video Stream Settings - Open & Send Pilote Stream to Robot:
-                    <input type="radio" name="streamVidToRobot" value="open" id="streamOpen" onclick="setPilotStreamToRobot('open')" checked /> <label for="streamOpen">Yes</label>
-                    <input type="radio" name="streamVidToRobot" value="close" id="streamClose" onclick="setPilotStreamToRobot('close')" /> <label for="streamClose">No</label>
+                    Video Stream Settings - Open & Send Robot Stream to Visitor:
+                    <input type="radio" name="streamRobotToVisitor" value="open" id="streamOpen" onclick="setRobotStreamToVisitor('open')" checked /> <label for="streamOpen">Yes</label>
+                    <input type="radio" name="streamRobotToVisitor" value="close" id="streamClose" onclick="setRobotStreamToVisitor('close')" /> <label for="streamClose">No</label>
                 </span>
             <br/>
             <span id="robotVideoSetting" class="">
