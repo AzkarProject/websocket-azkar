@@ -754,6 +754,8 @@ function bindEvents() {
                 //if (type == "robot-appelé") {
                     if (cmd.command == "onDrive") robubox.sendDrive(cmd.enable, cmd.aSpeed, cmd.lSpeed);
                     else if (cmd.command == "onStop") robubox.sendDrive(cmd.enable, cmd.aSpeed, cmd.lSpeed);
+                    else if (cmd.command == "onStep") robubox.sendStep(cmd.typeMove,cmd.distance,cmd.MaxSpeed) ;
+
                     // ...
                 //}
             }
@@ -844,14 +846,11 @@ function sendCommandDriveInterface(command,enable,aSpeed,lSpeed) {
 socket.on("piloteOrder", function(data) {
     console.log('@onPiloteOrder >> command:' + data.command);
     if (type == "robot-appelé") {
-        //sendCommandDriveInterface(data.command,data.enable, data.aSpeed, data.lSpeed);
-        console.log('GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG');
         if (data.command == "onDrive") {
             sendCommandDriveInterface(data.command,data.enable, data.aSpeed, data.lSpeed);
         } else if (data.command == "onStop") {
             sendCommandDriveInterface(data.command,data.enable, data.aSpeed, data.lSpeed);
         } else if (data.command == 'onStep') {
-            console.log('@onPiloteOrder >>  step/'+ data.typeMove +'   :  distance :' + data.distance + '  et max speed :' + data.MaxSpeed);
             robubox.sendStep(data.typeMove,data.distance,data.MaxSpeed) ;
         }
         /*
