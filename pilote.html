@@ -77,10 +77,11 @@
                 <hr/>
 
                 <div id="step-commands">
-                    Dist :
-                    <input type="text" name="distance" id="stepDistance" size="4" value="1" /> metre &  
-                                        Rot :
-                    <input type="text" name="rotation" id="stepRotation" size="4" value="90" /> degre
+                    Distance :
+                    <input type="text" name="distance" id="stepDistance" size="4" value="0.1" /> mètres 
+                    <br/>  
+                    Rotation :
+                    <input type="text" name="rotation" id="stepRotation" size="4" value="22.5" /> degrés
                     
                     <div id="divBtUp">
                         <button id="btnUp" class="btnCommandsPad" onclick="cmdUp()">&uarr;</button>
@@ -100,7 +101,7 @@
                     
                     <div id="divBtSpeed">
                         <button id="btnIncrease" class="btnCommandsPad" onclick="cmdSpeed(-0.1)">-</button>
-                        <progress id="jaugeSpeedSetting" value="0.5" max="1"></progress>
+                        <progress id="jaugeSpeedSetting" value="0.1" max="1"></progress>
                         <button id="btnDecrease" class="btnCommandsPad" onclick="cmdSpeed(0.1)">+</button>
                         <br/> Speed Setting: <span id="speedSetting">m.s</span>
                     </div>
