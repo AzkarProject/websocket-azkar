@@ -774,11 +774,12 @@ function sendMessage() {
 
 // envoi commande par WebRTC
 function sendCommand(commandToSend) {
-    //var dateE = tools.dateER('E');
+    console.log ("@ sendCommand("+commandToSend.command+")");
+    // var dateE = tools.dateER('E');
     var dateE = Date.now()
     commandToSend.dateE = dateE;
     //tools.traceObjectDump(commandToSend,'commandToSend');
-     $(chatlog).prepend(dateE + " "+commandToSend.command + "\n");
+    $(chatlog).prepend(dateE + " "+commandToSend.command + "\n");
     commandToSend = JSON.stringify(commandToSend);
     //console.log('toto');
     channel.send(commandToSend);
@@ -817,7 +818,7 @@ if (type == "robot-appelé") {
 function sendCommandDriveInterface(command,enable,aSpeed,lSpeed) {
         // onMove = false; // Flag > Si un mouvement est en cours
         // lastMoveTimeStamp =  Date.now(); // on met a jour le timestamp du dernier ordre de mouvement...
-        console.log ("sendCommandDriveInterface(command,enable,aSpeed,lSpeed");
+        console.log ("sendCommandDriveInterface(command,enable,aSpeed,lSpeed)");
 
         if (command == "onDrive") {
             onMove = true;
@@ -843,11 +844,14 @@ function sendCommandDriveInterface(command,enable,aSpeed,lSpeed) {
 socket.on("piloteOrder", function(data) {
     console.log('@onPiloteOrder >> command:' + data.command);
     if (type == "robot-appelé") {
-        
-        if (data.command == "onDrive" && data.command == "onStop") {
+        //sendCommandDriveInterface(data.command,data.enable, data.aSpeed, data.lSpeed);
+        console.log('GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG');
+        if (data.command == "onDrive") {
+            sendCommandDriveInterface(data.command,data.enable, data.aSpeed, data.lSpeed);
+        } else if (data.command == "onStop") {
             sendCommandDriveInterface(data.command,data.enable, data.aSpeed, data.lSpeed);
         } else if (data.command == 'onStep') {
-            console.log('@onMoveOrder >>  step/'+ data.typeMove +'   :  distance :' + data.distance + '  et max speed :' + data.MaxSpeed);
+            console.log('@onPiloteOrder >>  step/'+ data.typeMove +'   :  distance :' + data.distance + '  et max speed :' + data.MaxSpeed);
             robubox.sendStep(data.typeMove,data.distance,data.MaxSpeed) ;
         }
         /*
