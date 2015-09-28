@@ -239,13 +239,6 @@ var cmdRight = function() {
     } else if (parameters.navCh == 'webRTC') {
         sendCommand(commandeStep);
     }
-
-
-
-
-
-
-
 }
 
 
@@ -262,7 +255,7 @@ var cmdUp = function() {
 
    var commandeStep = {
        command: 'onStep',
-       distance: -dist,
+       distance: dist,
        MaxSpeed: speed,
        typeMove: "translate"    
     }
