@@ -333,38 +333,27 @@ io.on('connection', function(socket, pseudo) {
     // On le renvoie au client robot qui exécuté sur la même machine que la Robubox.
     // Il pourra ainsi faire un GET ou un POST de la commande à l'aide d'un proxy et éviter le Cross Origin 
     socket.on('piloteOrder', function(data) {
-        console.log(tools.humanDateER('R') + " @ piloteOrder >>>> " + data.command + " (from "+data.objUser.pseudo+" id:"+data.objUser.id+")");
+        //console.log(tools.humanDateER('R') + " @ piloteOrder >>>> " + data.command + " (from "+data.objUser.pseudo+" id:"+data.objUser.id+")");
+        // var consoleTxt = tools.humanDateER('R') + " @ piloteOrder >>>> " + data.command;
+        // consoleTxt += " (from "+data.objUser.pseudo+" id:"+data.objUser.id+")";
+        // console.log(consoleTxt);
         io.to(wsIdRobot).emit('piloteOrder', data);
     });
+
+    
+    // A la reception du niveau de la batterie
+    socket.on('battery_level', function(data) {
+       // console.log("@ battery_level >>>> " + data.percentage);
+       io.to(wsIdPilote).emit('battery_level', data);
+    });
+
+
+
 
     // ----------------------------------------------------------------------------------
     // Partie 'signaling'. Ces messages transitent par websocket 
     // mais n'ont pas vocation à s'afficher dans le tchat client...
     // Cezs messages sont relayés à tous les autres connectés (sauf à celui qui l'a envoyé)
-
-    /*
-    socket.on('candidate', function(message) {
-        socket.broadcast.emit('candidate', {
-            message: message
-        });
-    });
-    /**/
-
-    /*
-    socket.on('offer', function(message) {
-        socket.broadcast.emit('offer', {
-            message: message
-        });
-    });
-
-
-
-    socket.on('answer', function(message) {
-        socket.broadcast.emit('answer', {
-            message: message
-        });
-    });
-    /**/
 
 
     socket.on('offer2', function(data) {
@@ -422,9 +411,6 @@ io.on('connection', function(socket, pseudo) {
 
 
 
-
-
-
     // ----------------------------------------------------------------------------------
     // Phase pré-signaling ( selections caméras et micros du robot par l'IHM pilote et status de la connexion WebRTC de chaque client)
 
@@ -449,8 +435,6 @@ io.on('connection', function(socket, pseudo) {
        console.log(tools.humanDateER('R') + " @ visitorCnxPiloteStatus >>>> "+data.iceState);
        socket.broadcast.emit('visitorCnxPiloteStatus', data);
     });
-
-
 
 
 
@@ -488,31 +472,6 @@ io.on('connection', function(socket, pseudo) {
     // A la différence du 1to1 de base, ces messages ne sont pas broadcastés à tous les connectés
     // mais sont relayés à une cible spécifique 'io.to(destinataire.id)...' 
 
-    /*// Visiteur >> demande de clairance pré-signaling
-    socket.on('requestClearance', function(data) { 
-        var consoleTxt = tools.humanDateER('R') + " @ requestClearance >>>> from "+data.from.pseudo+" ("+data.from.id+") ";
-        consoleTxt += "to: "+data.cible.pseudo+"("+data.cible.id+")";
-        console.log(consoleTxt); 
-        //if (data.cible == "pilote") io.to(wsIdPilote).emit('requestClearance', data);
-        //else if (data.cible == "robot") io.to(wsIdRobot).emit('requestClearance', data);
-        //else socket.broadcast.emit('requestClearance', data);
-        io.to(data.cible.id).emit('requestClearance', data);
-    }); 
-
-    // Pilote ou robot >> Réponse à une demande de clearance
-    socket.on('responseClearance', function(data) { 
-        var consoleTxt = tools.humanDateER('R') + " @ responseClearance >>>> from "+data.from.pseudo+" ("+data.from.id+") ";
-        consoleTxt += "to: "+data.cible.pseudo+"("+data.cible.id+")"; 
-        console.log(consoleTxt); 
-        io.to(data.cible.id).emit('responseClearance', data);
-    }); 
-
-    // Pilote >> signalement d'un changement de statut aux visiteurs en attente de clearance
-    socket.on('signaleClearance', function(data) { 
-        var consoleTxt = tools.humanDateER('R') + " @ declareClearance >>>> from "+data.from.pseudo+" ("+data.from.id+") to all connecteds";    
-        socket.broadcast.emit('signaleClearance', data);
-    });
-    /**/
 
     // Pilote > Visiteur >> initialisation d'une connexion WebRTC
     // Pour mémo >> socket.emit('requestConnect', { objUser: localObjUser, cible: "pilote" }); 
@@ -532,12 +491,9 @@ io.on('connection', function(socket, pseudo) {
         io.to(data.cible.id).emit('readyForSignaling_1toN_VtoP', data);
     }); 
 
-    // Pilote > Robot >> ordre de déconnexion WebRTC
-    /*console.log ('socket.emit("closeConnectionOrder", ...) >>> ['+cible.typeClient+'] - ');
-    var data = {from: localObjUser, cible: cible}
-    // console.log (data);
-    socket.emit("closeConnectionOrder", data);
-    /**/
+
+        // Elements de post-signaling----------------------------------------------------------------------------------
+
 
     socket.on('closeConnectionOrder', function(data) { 
         var consoleTxt = tools.humanDateER('R') + " @ closeConnectionOrder >>>> from "+data.from.pseudo+" ("+data.from.id+") ";
@@ -545,12 +501,6 @@ io.on('connection', function(socket, pseudo) {
         console.log(consoleTxt); 
         io.to(data.cible.id).emit('closeConnectionOrder', data);
     }); 
-
-
-
-
-
-
 
 
     // Pilote/Robot >>> Visiteurs > Signal de perte de la connexion WebRTC principale (Pilote <> Robot)

@@ -1,4 +1,7 @@
 
+// DriveCommands
+// -------------------------------------------------------------------------------------------------------------------
+
 var gamepad = new Gamepad();
 
 var btHommeMort = 'false';
@@ -156,11 +159,169 @@ gamePadController();
 
 
 
+// StepCommands
+// -------------------------------------------------------------------------------------------------------------------
+
+function jaugeSpeedSetting() {
+   var ava = document.getElementById("jaugeSpeedSetting");
+   var prc = document.getElementById("speedSetting");
+   prc.innerHTML = ava.value + " m.s";
+}
+
+
+jaugeSpeedSetting();
+
+function cmdSpeed(val) {
+   var ava = document.getElementById("jaugeSpeedSetting");
+   if ((ava.value + val) <= ava.max && (ava.value + val) >= 0) {
+       ava.value += val;
+   }
+
+   jaugeSpeedSetting();
+}
+
+var cmdLeft = function() {
+   var rot = document.getElementById("stepRotation").value;
+   var speed = document.getElementById("jaugeSpeedSetting").value;
+   var angle;
+  
+   angle = degToRad(rot);
+  
+/*   socket.emit("moveOrder", {
+       command: 'onStep',
+       distance: angle,
+       MaxSpeed: speed,
+       typeMove: "relative"
+   });*/
+
+   
+   var commandeStep = {
+       command: 'onStep',
+       distance: angle,
+       MaxSpeed: speed,
+       typeMove: "relative"  
+    }
+    // envoi des valeurs au serveur par websocket
+    if (parameters.navCh == 'webSocket') {
+        socket.emit("piloteOrder", commandeStep);
+    // envoi des valeurs au serveur par webRtc
+    } else if (parameters.navCh == 'webRTC') {
+        sendCommand(commandeStep);
+    }
+
+}
+
+
+var cmdRight = function() {
+   var rot = document.getElementById("stepRotation").value;
+   var speed = document.getElementById("jaugeSpeedSetting").value;
+   var angle;
+
+   angle = degToRad(rot);
+
+/*   socket.emit("moveOrder", {
+       command: 'onStep',
+       distance: -angle,
+       MaxSpeed: speed,
+       typeMove: "relative"
+   });*/
+
+   var commandeStep = {
+       command: 'onStep',
+       distance: -angle,
+       MaxSpeed: speed,
+       typeMove: "relative"   
+    }
+    // envoi des valeurs au serveur par websocket
+    if (parameters.navCh == 'webSocket') {
+        socket.emit("piloteOrder", commandeStep);
+    // envoi des valeurs au serveur par webRtc
+    } else if (parameters.navCh == 'webRTC') {
+        sendCommand(commandeStep);
+    }
+
+
+
+
+
+
+
+}
+
+
+var cmdUp = function() {
+   var speed = document.getElementById("jaugeSpeedSetting").value;
+   var dist = document.getElementById("stepDistance").value;
+
+/*   socket.emit("moveOrder", {
+       command: 'onStep',
+       distance: dist,
+       MaxSpeed: speed,
+       typeMove: "translate"
+   });*/
+
+   var commandeStep = {
+       command: 'onStep',
+       distance: -dist,
+       MaxSpeed: speed,
+       typeMove: "translate"    
+    }
+    // envoi des valeurs au serveur par websocket
+    if (parameters.navCh == 'webSocket') {
+        socket.emit("piloteOrder", commandeStep);
+    // envoi des valeurs au serveur par webRtc
+    } else if (parameters.navCh == 'webRTC') {
+        sendCommand(commandeStep);
+    }
+
+}
+
+
+var cmdDown = function() {
+   var speed = document.getElementById("jaugeSpeedSetting").value;
+   var dist = document.getElementById("stepDistance").value;
+
+   var commandeStep = {
+       command: 'onStep',
+       distance: -dist,
+       MaxSpeed: speed,
+       typeMove: "translate"    
+    }
+    // envoi des valeurs au serveur par websocket
+    if (parameters.navCh == 'webSocket') {
+        socket.emit("piloteOrder", commandeStep);
+    // envoi des valeurs au serveur par webRtc
+    } else if (parameters.navCh == 'webRTC') {
+        sendCommand(commandeStep);
+    }
+
+   /*
+   socket.emit("moveOrder", {
+       command: 'onStep',
+       distance: -dist,
+       MaxSpeed: speed,
+       typeMove: "translate"
+   });
+   /**/
+}
+
+
+//fonction pour convertir les degres --> rad
+var degToRad = function(val) {
+   return val * (Math.PI / 180);
+}
+
+
+
+
+
+
+/*// KeyBoards
+// -------------------------------------------
 function keyBoardController() {
     var Input = {
 
         gamepad: null,
-
         ticking: false,
 
         // Previous timestamps for gamepad state; used in Chrome to not bother with
@@ -172,10 +333,8 @@ function keyBoardController() {
             // Set up the keyboard events
             document.onkeydown  = function(e) { Input.changeKey((e||window.event).keyCode, 1); }
             document.onkeyup    = function(e) { Input.changeKey((e||window.event).keyCode, 0); }
-
             // Checks Chrome to see if the GamePad API is supported.
             var gamepadSupportAvailable = !!navigator.webkitGetGamepads || !!navigator.webkitGamepads;
-
             if(gamepadSupportAvailable) {
                 // Since Chrome only supports polling, we initiate polling loop straight
                 // away. For Firefox, we will only do it if we get a connect event.
@@ -198,11 +357,8 @@ function keyBoardController() {
                 case 90: key[7]=to; break; // select (z)
             }
         },
-
-
-        /**
-         * Starts a polling loop to check for gamepad state.
-         */
+        
+        // Starts a polling loop to check for gamepad state.
         startPolling: function() {
             // Don’t accidentally start a second loop, man.
             if (!Input.ticking) {
@@ -211,18 +367,16 @@ function keyBoardController() {
             }
         },
 
-        /**
-         * Stops a polling loop by setting a flag which will prevent the next
-         * requestAnimationFrame() from being scheduled.
-         */
+       
+        // Stops a polling loop by setting a flag which will prevent the next
+        // requestAnimationFrame() from being scheduled.
         stopPolling: function() {
             Input.ticking = false;
         },
 
-        /**
-         * A function called with each requestAnimationFrame(). Polls the gamepad
-         * status and schedules another poll.
-         */
+        
+        // A function called with each requestAnimationFrame(). Polls the gamepad
+        // status and schedules another poll.
         tick: function() {
             Input.pollStatus();
             Input.scheduleNextTick();
@@ -236,11 +390,10 @@ function keyBoardController() {
             }
         },
 
-        /**
-         * Checks for the gamepad status. Monitors the necessary data and notices
-         * the differences from previous state (buttons and connects/disconnects for Chrome). If differences are noticed, asks
-         * to update the display accordingly. Should run as close to 60 frames per second as possible.
-         */
+        
+        // Checks for the gamepad status. Monitors the necessary data and notices
+        // the differences from previous state (buttons and connects/disconnects for Chrome). If differences are noticed, asks
+        // to update the display accordingly. Should run as close to 60 frames per second as possible.
         pollStatus: function() {
             // We're only interested in one gamepad, which is the first.
             gamepad = navigator.webkitGetGamepads && navigator.webkitGetGamepads()[0];
@@ -280,4 +433,4 @@ function keyBoardController() {
 
     }
 } // function keyboardController() {...
-// keyboardController();
+/**/// keyboardController();

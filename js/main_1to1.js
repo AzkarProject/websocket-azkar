@@ -336,6 +336,12 @@ socket.on('updateUsers', function(data) {
     }
 })
 
+// Reception du niveau de la batterie
+socket.on("battery_level", function(data) {
+   // console.log('objet Batterie percentage ' + data.percentage);
+    refreshJaugeBattery(data.percentage) // redessiner la jauge au niveau de l'ihm pilote
+});
+
 // ------------ Ajouts 1toN -------------------------
 
 
@@ -820,13 +826,14 @@ function sendCommandDriveInterface(command,enable,aSpeed,lSpeed) {
             onMove = false;
             lastMoveTimeStamp = 0;
             robubox.sendDrive(enable, aSpeed, lSpeed); // Et on envoie le mouvement
-        };
+        }
         /*
         if (command == "onStep") {};
         if (command == "onGoto") {};
         if (command == "onClicAndGo") {};
         /**/
 }
+
 
 // Reception d'une commande pilote
 // On la renvoie au client robot qui exécuté sur la même machine que la Robubox.
@@ -835,14 +842,19 @@ socket.on("piloteOrder", function(data) {
     console.log('@onPiloteOrder >> command:' + data.command);
     if (type == "robot-appelé") {
         
-        //if (data.command == "onDrive" && data.command == "onStop") sendCommandDriveInterface(data.command,data.enable, data.aSpeed, data.lSpeed);
+        if (data.command == "onDrive" && data.command == "onStop") {
+            sendCommandDriveInterface(data.command,data.enable, data.aSpeed, data.lSpeed);
+        } else if (data.command == 'onStep') {
+            console.log('@onMoveOrder >>  step/'+ data.typeMove +'   :  distance :' + data.distance + '  et max speed :' + data.MaxSpeed);
+            robubox.sendStep(data.typeMove,data.distance,data.MaxSpeed) ;
+        }
         /*
         if (data.command == "onStop") {};
         if (data.command == "onStep") {};
         if (data.command == "onGoto") {};
         if (data.command == "onClicAndGo") {};
         /**/
-        sendCommandDriveInterface(data.command,data.enable, data.aSpeed, data.lSpeed);
+        
     }
 });
 
