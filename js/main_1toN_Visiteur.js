@@ -90,13 +90,17 @@ function initLocalMedia_1toN_VtoP(peerCnxId) {
         localStream_1toN_VtoP = stream;
         
         // Le pilote n'as pas besoin d'afficher 2 fois son image....
-        if (type == "visiteur-appelé") video1_1toN_VtoP.src = URL.createObjectURL( localStream_1toN_VtoP);
-        else if (type == "pilote-appelant") {
+        if (type == "visiteur-appelé") {
+            video1_1toN_VtoP.src = URL.createObjectURL( localStream_1toN_VtoP);
+            peerCnxCollection[peerCnxId].addStream( localStream_1toN_VtoP);
+        } else if (type == "pilote-appelant") {
         	// On vérifie que la connexion avec le robot n'est pas en route...
         	// if (piloteCnxStatus == "new") video1.src = URL.createObjectURL( localStream_1toN_VtoP);
+            peerCnxCollection[peerCnxId].addStream( remoteStream);
         }
         
-        peerCnxCollection[peerCnxId].addStream( localStream_1toN_VtoP);
+        // peerCnxCollection[peerCnxId].addStream( localStream_1toN_VtoP);
+        
         connect_1toN_VtoP(peerCnxId);
 
     }, errorHandler);
