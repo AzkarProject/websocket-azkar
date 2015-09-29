@@ -76,6 +76,17 @@
                 <strong>Robot controls</strong> <span id="connect-notice"></span>
                 <hr/>
 
+                <span id="dataChannelSetting" class="">
+                Channel: 
+                    <input type="radio" name="controlChannel" value="webSocket" id="webSocket" onclick="setNavChannel('webSocket')" checked /> <label for="webSocket">webSocket</label>
+                    <input type="radio" name="controlChannel" value="webRTC" id="webRTC" onclick="setNavChannel('webRTC')"/> <label for="webRTC">webRTC</label>
+                    
+                </span>
+                <hr/>
+
+
+
+
                 <div id="step-commands">
                     Distance :
                     <input type="text" name="distance" id="stepDistance" size="4" value="0.1" /> mètres 
@@ -150,6 +161,13 @@
                     <div id="colDroiteBottomVisitorsArea" class="floatLeft oneThirdContainerBox">
             <div id="manageVisitors" class="insideFlex visiteur oneThirdBox shadowBlack floatLeft" style="height:180px">
                 <strong> Manage visitors </strong>
+                <hr/>
+
+                <span id="streamSetting" class="">
+                    Stream to Visitor:
+                    <input type="radio" name="streamRobotToVisitor" value="open" id="streamOpen" onclick="setRobotStreamToVisitor('open')" checked /> <label for="streamOpen">Robot</label>
+                    <input type="radio" name="streamRobotToVisitor" value="close" id="streamClose" onclick="setRobotStreamToVisitor('close')" /> <label for="streamClose">Pilote</label>
+                </span>
                 <hr/>
                 <div id="listConnected">Nobody's here...</div>
 
@@ -241,19 +259,23 @@
         <div id="colFullTopSettingsArea" class="insideFlex colorSettings shadowBlack floatLeft fourQuarterBox">
             <strong> Settings </strong>
             <hr/>
-            <span id="dataChannelSetting" class="">
+            
+<!--             <span id="dataChannelSetting" class="">
                     Navigation channel: 
                     <input type="radio" name="controlChannel" value="webSocket" id="webSocket" onclick="setNavChannel('webSocket')" checked /> <label for="webSocket">webSocket</label>
                     <input type="radio" name="controlChannel" value="webRTC" id="webRTC" onclick="setNavChannel('webRTC')"/> <label for="webRTC">webRTC</label>
                     
                 </span>
-            <br/>
-            <span id="streamSetting" class="">
+            <br/> -->
+            
+<!--             <span id="streamSetting" class="">
                     Video Stream Settings - Open & Send Robot Stream to Visitor:
                     <input type="radio" name="streamRobotToVisitor" value="open" id="streamOpen" onclick="setRobotStreamToVisitor('open')" checked /> <label for="streamOpen">Yes</label>
                     <input type="radio" name="streamRobotToVisitor" value="close" id="streamClose" onclick="setRobotStreamToVisitor('close')" /> <label for="streamClose">No</label>
                 </span>
-            <br/>
+            <br/> -->
+            
+
             <span id="robotVideoSetting" class="">
                     IHM Robot - Local view: 
                     <input type="radio" name="RlVidSetting" value="show" id="RlVshow" checked onclick="setLocalRobotView('show')"> <label for="RlVshow">Show</label>
