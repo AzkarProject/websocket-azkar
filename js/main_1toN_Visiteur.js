@@ -189,7 +189,8 @@ function connect_1toN_VtoP(peerCnxId) {
             video2_1toN_VtoP.src = URL.createObjectURL(e.stream);
         } else if (type == "pilote-appelant") {
 			if (originStream == "Visiteur") {
-				addRemoteMultiVideo(e.stream,peerCnxId);
+				console.log("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*")
+                addRemoteMultiVideo(e.stream,peerCnxId);
 			}
         }
         
@@ -449,9 +450,6 @@ function onDisconnect_1toN_VtoP(peerCnxId) {
     	removeRemoteVideo(peerCnxId);
     	// videoVisitor1.src = ""; // RemoteVideoVisiteur
     }
-
-
-
     //videoElement.src = null;
     //window.stream.stop();
 

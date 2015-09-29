@@ -306,7 +306,6 @@ io.on('connection', function(socket, pseudo) {
         // console.log (users2);
 
         console.log("> Il reste " + nbUsers + " connectés");
-
     });
     /**/
 
@@ -349,11 +348,10 @@ io.on('connection', function(socket, pseudo) {
 
 
 
-
     // ----------------------------------------------------------------------------------
     // Partie 'signaling'. Ces messages transitent par websocket 
     // mais n'ont pas vocation à s'afficher dans le tchat client...
-    // Cezs messages sont relayés à tous les autres connectés (sauf à celui qui l'a envoyé)
+    // Ces messages sont relayés à tous les autres connectés (sauf à celui qui l'a envoyé)
 
 
     socket.on('offer2', function(data) {
@@ -409,10 +407,9 @@ io.on('connection', function(socket, pseudo) {
         //io.to(data.cible.id).emit('candidate', data);
     });
 
-
-
     // ----------------------------------------------------------------------------------
-    // Phase pré-signaling ( selections caméras et micros du robot par l'IHM pilote et status de la connexion WebRTC de chaque client)
+    // Phase pré-signaling ( selections caméras et micros du robot par l'IHM pilote 
+    // et status de la connexion WebRTC de chaque client)
 
     // Retransmission du statut de connexion WebRTC du pilote
     socket.on('piloteCnxStatus', function(message) {
@@ -435,8 +432,6 @@ io.on('connection', function(socket, pseudo) {
        console.log(tools.humanDateER('R') + " @ visitorCnxPiloteStatus >>>> "+data.iceState);
        socket.broadcast.emit('visitorCnxPiloteStatus', data);
     });
-
-
 
     // Robot >> Pilote: Offre des cams/micros disponibles coté robot
     socket.on('remoteListDevices', function(data) {
