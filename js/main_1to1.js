@@ -811,12 +811,13 @@ if (type == "robot-appelé") {
             }
         
         }
-        setTimeout(deathMan,1000); /* rappel après 100 millisecondes */
+        setTimeout(deathMan,1000); /* rappel après 1000 millisecondes */
     }
     deathMan();
 }
 
 
+/*
 function sendCommandDriveInterface(command,enable,aSpeed,lSpeed) {
         // onMove = false; // Flag > Si un mouvement est en cours
         // lastMoveTimeStamp =  Date.now(); // on met a jour le timestamp du dernier ordre de mouvement...
@@ -832,12 +833,8 @@ function sendCommandDriveInterface(command,enable,aSpeed,lSpeed) {
             lastMoveTimeStamp = 0;
             robubox.sendDrive(enable, aSpeed, lSpeed); // Et on envoie le mouvement
         }
-        /*
-        if (command == "onStep") {};
-        if (command == "onGoto") {};
-        if (command == "onClicAndGo") {};
-        /**/
 }
+/**/
 
 
 // Reception d'une commande pilote
@@ -847,9 +844,15 @@ socket.on("piloteOrder", function(data) {
     console.log('@onPiloteOrder >> command:' + data.command);
     if (type == "robot-appelé") {
         if (data.command == "onDrive") {
-            sendCommandDriveInterface(data.command,data.enable, data.aSpeed, data.lSpeed);
+            onMove = true;
+            lastMoveTimeStamp = Date.now(); // on met a jour le timestamp du dernier ordre de mouvement...
+            robubox.sendDrive(data.enable, data.aSpeed, data.lSpeed); // Et on envoie le mouvement
+            //sendCommandDriveInterface(data.command,data.enable, data.aSpeed, data.lSpeed);
         } else if (data.command == "onStop") {
-            sendCommandDriveInterface(data.command,data.enable, data.aSpeed, data.lSpeed);
+            onMove = false;
+            lastMoveTimeStamp = 0;
+            robubox.sendDrive(data.enable, data.aSpeed, data.lSpeed); // Et on envoie le mouvement
+            //sendCommandDriveInterface(data.command,data.enable, data.aSpeed, data.lSpeed);
         } else if (data.command == 'onStep') {
             robubox.sendStep(data.typeMove,data.distance,data.MaxSpeed) ;
         }
