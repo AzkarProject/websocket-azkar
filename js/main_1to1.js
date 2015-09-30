@@ -817,6 +817,28 @@ if (type == "robot-appelé") {
 }
 
 
+function sendCommandDriveInterface(command,enable,aSpeed,lSpeed) {
+        // onMove = false; // Flag > Si un mouvement est en cours
+        // lastMoveTimeStamp =  Date.now(); // on met a jour le timestamp du dernier ordre de mouvement...
+        console.log ("sendCommandDriveInterface(command,enable,aSpeed,lSpeed)");
+
+        if (command == "onDrive") {
+            onMove = true;
+            lastMoveTimeStamp = Date.now(); // on met a jour le timestamp du dernier ordre de mouvement...
+            robubox.sendDrive(enable, aSpeed, lSpeed); // Et on envoie le mouvement
+        }
+        if (command == "onStop") {
+            onMove = false;
+            lastMoveTimeStamp = 0;
+            robubox.sendDrive(enable, aSpeed, lSpeed); // Et on envoie le mouvement
+        }
+        /*
+        if (command == "onStep") {};
+        if (command == "onGoto") {};
+        if (command == "onClicAndGo") {};
+        /**/
+}
+
 
 // Reception d'une commande pilote
 // On la renvoie au client robot qui exécuté sur la même machine que la Robubox.
@@ -827,11 +849,12 @@ socket.on("piloteOrder", function(data) {
         if (data.command == "onDrive") {
             onMove = true;
             lastMoveTimeStamp = Date.now(); // on met a jour le timestamp du dernier ordre de mouvement...
+            //sendCommandDriveInterface(data.command,data.enable, data.aSpeed, data.lSpeed);
             robubox.sendDrive(data.enable, data.aSpeed, data.lSpeed); // Et on envoie le mouvement
         } else if (data.command == "onStop") {
             onMove = false;
             lastMoveTimeStamp = 0;
-            robubox.sendDrive(data.enable, data.aSpeed, data.lSpeed); // Et on envoie le mouvement
+            robubox.sendDrive(data.enable, data.aSpeed, data.lSpeed);
         } else if (data.command == 'onStep') {
             robubox.sendStep(data.typeMove,data.distance,data.MaxSpeed) ;
         }
