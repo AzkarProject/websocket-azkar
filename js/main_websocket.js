@@ -80,43 +80,6 @@ var localObjUser;
 var myPlaceListe;
 var myPeerID;
 // ------------------------------------------------------
-// Pour contrôle hosting
-// Affichage des variables d'environnement serveur ds la partie cliente
-/*
-socket.on('infoServer', function(nomMachine) {
-  if (!isServerInfoReceived) {
-      isServerInfoReceived = true; 
-      $('#zone_info_server').replaceWith(settings.appName() + " V " + settings.appVersion()+ " ("+nomMachine+")");
-  }
-})
-/**/
-// NB > Obsolète.. >< Remplacé par une récupération directe 
-// depuis le client IHM en ajax par un $.get( "/getvar", function( data ) ) {}
-
-// ----------------------------------------------------------
-
-// Updater le titre de la page (pour le fun...)
-/*// Version Objet...
-socket.on('position_liste2', function(objUser) {
-     // On copie l'objet pour un usage local
-     localObjUser = objUser;
-
-     console.log(">> socket.on(position_liste2,objUser) >>>");
-     console.log(objUser);
-     // document.title = objUser.placeliste+"-" + objUser.pseudo +"("+objUser.typeClient+") - "+document.title;
-     // >>> Même chose sans le numéro d'arrivée pour éviter que AutoIt ne se mélange les pédales dans la détection de la fenêtre du navigateur
-     document.title = objUser.pseudo +"("+objUser.typeClient+") - "+document.title;
-
-     myPlaceListe = objUser.placeliste;
-     //console.log ("Ordre d'arrivée dans la session websocket: "+placeListe);
-     //document.title = "("+myPlaceListe+") " + document.title;
-})
-/**/
-
-
-
-
-
 
 
 // Updater le titre de la page (pour le fun...)
@@ -185,11 +148,15 @@ socket.on('message2', function(data) {
 })
 
 // Quand on reçoit une nouvelle commande de déplacement, on l'insère dans la page
-socket.on('moveOrder', function(data) {
+/*// piloteOrder
+socket.on('piloteOrder', function(data) {
     var dateR = tools.dateER('R');
     var msg = dateR+' '+data.message;
     insereMessage3(data.objUser, msg);
 })
+/**/
+
+
 
 // Quand on reçoit un message de service
 socket.on('service2', function(data) {
@@ -250,13 +217,11 @@ $('#formulaire_chat_1toN_visitor').submit(function () {
 function insereMessage3(objUser, message) {
     
     var text;
-    
     if (objUser){
       text = '['+objUser.typeClient+'] '+ message;
     } else {
-      text = '[????] '+ message;
+      text = message;
     }
-    /**/
     text += '\n';
     
     $('#zone_chat_websocket').prepend(text);

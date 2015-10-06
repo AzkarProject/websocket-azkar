@@ -39,6 +39,21 @@
                 <button id="remote_ButtonDevices" onclick="remoteManageDevices()">Sélectionner</button>
             </div>
 
+            <div id="1to1_master_connection" class="insideFlex oneQuarterbox robot shadowBlack device">
+
+            	<span id="openConnection">
+            		<button class="shadowBlack" id="local_ButtonDevices" onclick="localManageDevices()">
+            			Ouvrir la connexion
+            		</button>
+				<span id="closeConnection"></span>
+
+            </div>
+
+
+
+
+
+
             <div id="piloteDevices" class="insideFlex oneQuarterbox pilote shadowBlack device">
                 <strong> Pilote Devices</strong>
                 <hr/>
@@ -54,8 +69,8 @@
                     <label for="local_videoSource">Video: </label>
                     <select id="local_videoSource"></select>
                 </div>
-                <hr/>
-                <button class="shadowBlack" id="local_ButtonDevices" onclick="localManageDevices()">Ouvrir la connexion</button>
+                <!--<hr/>
+                <button class="shadowBlack" id="local_ButtonDevices" onclick="localManageDevices()">Ouvrir la connexion</button>-->
             </div>
 
 

@@ -414,6 +414,7 @@ function connect(peerCnxId) {
     debugNbConnect += 1;
     console.log("@ connect("+peerCnxId+") n°"+debugNbConnect+"> rôle: " + type);
     isStarted = true;
+    // if (type == "pilote-appelant") updateListUsers(); // Rafraichissement de la liste des visiteurs
 
     // Ecouteurs communs apellant/apellé
     // ---------------------------------
@@ -680,6 +681,7 @@ function onDisconnect(peerCnxId) {
     // On vérifie le flag de connexion
     if (isStarted == false) return;
 
+
     // on retire le flux remoteStream
     video1.src = "";
     video2.src = "";
@@ -705,11 +707,14 @@ function onDisconnect(peerCnxId) {
 function stopAndStart(peerCnxId) {
 
     console.log("@ stopAndStart()");
+    
+    if (type == "pilote-appelant") updateListUsers(); // Rafraichissement de la liste des visiteurs
     input_chat_WebRTC.disabled = true;
     input_chat_WebRTC.placeholder = "RTCDataChannel close";
     env_msg_WebRTC.disabled = true;
 
     peerCnxCollection[peerCnxId] = new PeerConnection(server, options);
+    
 
     // console.log("------pc = new PeerConnection(server, options);-----");
 
@@ -735,57 +740,67 @@ function bindEvents() {
 
     // écouteur de reception message
     channel.onmessage = function(e) {
-        // add the message to the chat log
-        //var dateR = tools.dateER('R');
         var dateR = Date.now();
-        //console.log("@ channel.onmessage");
         // si c'est u message string
         if (tools.isJson(e.data) == false) {
             $(chatlog).prepend(dateR + ' ' + e.data + "\n");
         }
-        // sinon si c'est un objet Json
+        
+        // sinon si c'est un objet Json 
         else if (tools.isJson(e.data) == true || type == "robot-appelé"){
             var cmd = e.data;
             cmd = JSON.parse(cmd);
+            // S'il existe une propriété "command" (commande via webRTC))
             if (cmd.command) {
+                // Affiche la trace de la commande dans le chatlog webRTC
                 var delta = dateR-cmd.dateE;
-                //$(chatlog).prepend(cmd.dateE +' ' +dateR + ' ' + cmd.command + "\n");
-                $(chatlog).prepend('[ ' +delta+' ms ] ' + cmd.command + "\n");
-                //if (type == "robot-appelé") {
-                    if (cmd.command == "onDrive") robubox.sendDrive(cmd.enable, cmd.aSpeed, cmd.lSpeed);
-                    else if (cmd.command == "onStop") robubox.sendDrive(cmd.enable, cmd.aSpeed, cmd.lSpeed);
-                    else if (cmd.command == "onStep") robubox.sendStep(cmd.typeMove,cmd.distance,cmd.MaxSpeed) ;
-
-                    // ...
-                //}
+                $(chatlog).prepend('[' +delta+' ms] ' + cmd.command + "\n");
+                
+                // Envoi de la commande à la Robubox...
+                if (cmd.command == "onDrive") {
+                    // Flags homme mort
+                    onMove = true;
+                    lastMoveTimeStamp = Date.now(); // on met a jour le timestamp du dernier ordre de mouvement...
+                    // Envoi commande  
+                    robubox.sendDrive(cmd.enable, cmd.aSpeed, cmd.lSpeed);
+                }
+                else if (cmd.command == "onStop") {
+                    // Flags homme mort
+                    onMove = false;
+                    lastMoveTimeStamp = 0;
+                    // Envoi commande    
+                    robubox.sendDrive(cmd.enable, cmd.aSpeed, cmd.lSpeed);
+                }
+                else if (cmd.command == "onStep") {
+                    robubox.sendStep(cmd.typeMove,cmd.distance,cmd.MaxSpeed) ;
+                }
             }
         }
-        /**/
     };
 }
 
-// envoi message par WebRTC
+// Robot & Pilote: envoi d'un message par WebRTC
 function sendMessage() {
     var dateE = tools.dateER('E');
     var msgToSend = dateE + ' [' + localObjUser.typeClient + '] ' + message.value;
     channel.send(msgToSend);
     message.value = "";
-    // Affiche le message dans le chatlog websocket
+    // Affiche trace du message dans le chatlog websocket local
     $(chatlog).prepend(msgToSend + "\n");
 }
 
-// envoi commande par WebRTC
+// Pilote: Envoi au robot d'une commande par WebRTC
 function sendCommand(commandToSend) {
     console.log ("@ sendCommand("+commandToSend.command+")");
-    // var dateE = tools.dateER('E');
-    var dateE = Date.now()
-    commandToSend.dateE = dateE;
-    //tools.traceObjectDump(commandToSend,'commandToSend');
-    $(chatlog).prepend(dateE + " "+commandToSend.command + "\n");
-    commandToSend = JSON.stringify(commandToSend);
-    //console.log('toto');
-    channel.send(commandToSend);
+
+    // Affiche trace de la commande dans le chatlog webRTC local
+    //var dateE = Date.now()
+    //commandToSend.dateE = dateE;
+    $(chatlog).prepend(commandToSend.dateE + " SEND "+commandToSend.command + "\n");
     
+    // sérialisation et envoi de la commande au robot via WebRTC
+    commandToSend = JSON.stringify(commandToSend);
+    channel.send(commandToSend);
 }
 
 
@@ -803,40 +818,20 @@ $('#formulaire_chat_webRTC').submit(function() {
 // fonction homme mort...
 if (type == "robot-appelé") {
     function deathMan(){
+    
+        console.log("@ deathMan() >> onMove:"+onMove+" "+"lastMoveTimeStamp:"+lastMoveTimeStamp);    
+
         if (onMove == true || lastMoveTimeStamp != 0) {
             var now = Date.now();
             var test = now - lastMoveTimeStamp;
             if (test >= 1000 ) {
-               sendCommandDriveInterface('onStop',false,0,0) 
+               robubox.sendDrive(false,0,0); // Envoi de la commande a la Robubox
+               console.log("@ >> deathMan() ---> STOP");
             }
-        
         }
         setTimeout(deathMan,1000); /* rappel après 1000 millisecondes */
     }
     deathMan();
-}
-
-
-function sendCommandDriveInterface(command,enable,aSpeed,lSpeed) {
-        // onMove = false; // Flag > Si un mouvement est en cours
-        // lastMoveTimeStamp =  Date.now(); // on met a jour le timestamp du dernier ordre de mouvement...
-        console.log ("sendCommandDriveInterface(command,enable,aSpeed,lSpeed)");
-
-        if (command == "onDrive") {
-            onMove = true;
-            lastMoveTimeStamp = Date.now(); // on met a jour le timestamp du dernier ordre de mouvement...
-            robubox.sendDrive(enable, aSpeed, lSpeed); // Et on envoie le mouvement
-        }
-        if (command == "onStop") {
-            onMove = false;
-            lastMoveTimeStamp = 0;
-            robubox.sendDrive(enable, aSpeed, lSpeed); // Et on envoie le mouvement
-        }
-        /*
-        if (command == "onStep") {};
-        if (command == "onGoto") {};
-        if (command == "onClicAndGo") {};
-        /**/
 }
 
 
@@ -845,19 +840,30 @@ function sendCommandDriveInterface(command,enable,aSpeed,lSpeed) {
 // Il pourra ainsi faire un GET ou un POST de la commande à l'aide d'un proxy et éviter le Cross Origin 
 socket.on("piloteOrder", function(data) {
     console.log('@onPiloteOrder >> command:' + data.command);
+    
     if (type == "robot-appelé") {
         if (data.command == "onDrive") {
+            // Flags homme mort
             onMove = true;
             lastMoveTimeStamp = Date.now(); // on met a jour le timestamp du dernier ordre de mouvement...
             //sendCommandDriveInterface(data.command,data.enable, data.aSpeed, data.lSpeed);
-            robubox.sendDrive(data.enable, data.aSpeed, data.lSpeed); // Et on envoie le mouvement
+            // Envoi commande Robubox
+            robubox.sendDrive(data.enable, data.aSpeed, data.lSpeed);
         } else if (data.command == "onStop") {
+            // Flags homme mort
             onMove = false;
             lastMoveTimeStamp = 0;
+            // Envoi commande Robubox
             robubox.sendDrive(data.enable, data.aSpeed, data.lSpeed);
         } else if (data.command == 'onStep') {
             robubox.sendStep(data.typeMove,data.distance,data.MaxSpeed) ;
         }
+        
+        // Quand envoie une trace au log WebSocket de l'IHM robot
+        var dateR = Date.now();
+        var delta = dateR-data.dateE;
+        var msg = '[' +delta+' ms] ' +data.command;
+        insereMessage3("",msg);
         /*
         if (data.command == "onStop") {};
         if (data.command == "onStep") {};

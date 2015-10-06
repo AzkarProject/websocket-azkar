@@ -11,7 +11,10 @@ pStoR = 'open'; // close
 
 
 function setNavChannel(navChSet) {
+    
     parameters.navCh = navChSet;
+    // alert("navChannel = "+parameters.navCh);
+
 }
 
 function setLocalPilotView(lPVSet) {

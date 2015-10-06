@@ -140,7 +140,7 @@ video {
 /* hauteur des blocs */
 /* Partie 1to1 */
 .ihmPilote #robotDevices {}
-.ihmPilote #piloteDevices .videosContainer{height:151px}
+.ihmPilote #piloteDevices .videosContainer{height:146px}
 .ihmPilote #robotCommands {height: 202px;}
 .ihmPilote #robotInfos {}
 .ihmPilote #websocketChat {height:310px}

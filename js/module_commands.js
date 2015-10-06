@@ -6,7 +6,7 @@ var gamepad = new Gamepad();
 
 var btHommeMort = 'false';
 
- 
+// Michael & Thierry ------------
 function gamePadController() {
 
     gamepad.bind(Gamepad.Event.CONNECTED, function(device) {
@@ -41,8 +41,8 @@ function gamePadController() {
 
          // Modif de la notice et affichage des onglets idoines
          $('#connect-notice').replaceWith(" <span id ='connect-notice'>  -- Gamepad activé !</span>");
-         $('#step-commands').hide();
-         $('#drive-commands').show();
+         //$('#step-commands').hide();
+         //$('#drive-commands').show();
     });
 
     // Alerte de Gamepad non détecté
@@ -73,7 +73,8 @@ function gamePadController() {
                  onMove = true;
                  btHommeMort = true;
 
-                
+		         $('#step-commands').hide();
+		         $('#drive-commands').show();
                  //console.log ("navCh: "+navCh);
                  //console.log ("parameters.navCh: "+ parameters.navCh);
 
@@ -95,9 +96,15 @@ function gamePadController() {
                  // TODO: Inverser les Axes - OK
                  // TODO: Ajouter une pente pour l'accélération ou limiter la vitesse du linear speed... 
 
+                 // Bridage des vitesses pour gagner en précision...
+                 aSpeed = aSpeed/5;
+                 lSpeed = lSpeed/10;
+
+                 var dateE = Date.now();
 
                  //navCh = 'webSocket'; // webRTC
                  var driveCommand = {
+                         dateE: dateE,
                          command: 'onDrive',
                          aSpeed: aSpeed,
                          lSpeed: lSpeed,
@@ -111,10 +118,16 @@ function gamePadController() {
                     // console.log(' >>>>> START gamepad (WebRTC)');
                     sendCommand(driveCommand);
                  }
+
+
+
              } else {
                  if (btHommeMort) {
+                     
+                     var dateE = Date.now();
                      //onMove = false;
                      var driveStop = {
+                             dateE: dateE,
                              command: 'onStop',
                              aSpeed: 0,
                              lSpeed: 0,
@@ -129,6 +142,8 @@ function gamePadController() {
                         sendCommand(driveStop);
                      }
                      btHommeMort = false;
+                     $('#step-commands').show();
+             		 $('#drive-commands').hide();
                  }
 
              }
@@ -159,7 +174,7 @@ gamePadController();
 
 
 
-// StepCommands
+// StepCommands ( Michael)
 // -------------------------------------------------------------------------------------------------------------------
 
 function jaugeSpeedSetting() {
@@ -194,8 +209,9 @@ var cmdLeft = function() {
        typeMove: "relative"
    });*/
 
-   
+   var dateE = Date.now();
    var commandeStep = {
+       dateE: dateE,
        command: 'onStep',
        distance: angle,
        MaxSpeed: speed,
@@ -225,8 +241,9 @@ var cmdRight = function() {
        MaxSpeed: speed,
        typeMove: "relative"
    });*/
-
+   var dateE = Date.now();
    var commandeStep = {
+       dateE: dateE,
        command: 'onStep',
        distance: -angle,
        MaxSpeed: speed,
@@ -252,8 +269,9 @@ var cmdUp = function() {
        MaxSpeed: speed,
        typeMove: "translate"
    });*/
-
+   var dateE = Date.now();
    var commandeStep = {
+       dateE: dateE,
        command: 'onStep',
        distance: dist,
        MaxSpeed: speed,
@@ -273,8 +291,9 @@ var cmdUp = function() {
 var cmdDown = function() {
    var speed = document.getElementById("jaugeSpeedSetting").value;
    var dist = document.getElementById("stepDistance").value;
-
+  var dateE = Date.now();
    var commandeStep = {
+       dateE: dateE,
        command: 'onStep',
        distance: -dist,
        MaxSpeed: speed,

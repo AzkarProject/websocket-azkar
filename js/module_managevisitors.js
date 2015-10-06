@@ -22,7 +22,13 @@ function closeCnxwith(userID) {
     var data = {from: localObjUser, cible: cible}
     // console.log (data);
     socket.emit("closeConnectionOrder", data);
-    // si c'est uin visiteur, on lance aussi localement le processus de déconnexion pilote/visiteur
+    // Si la cible est le robot, on vire le bouton closeConnection
+    if (cible.typeClient == "Robot") {
+    	var buttonClose1to1 = "";
+    	document.getElementById('closeConnection').innerHTML = buttonClose1to1;
+    }  
+    document.getElementById('closeConnection').innerHTML = buttonClose1to1;
+    // si c'est un visiteur, on lance aussi localement le processus de déconnexion pilote/visiteur
     if (cible.typeClient == "Visiteur") {
     	var thisPeerCnx = prefix_peerCnx_1toN_VtoP+userID; // On reconstruit l'Id de l'objet peerConnexion
     	// on lance le processus préparatoire à une reconnexion
@@ -31,9 +37,24 @@ function closeCnxwith(userID) {
 }
 
 
+function isRobotConnected(peerCnxCollection) {
+	console.log ("@ isRobotConnected()");
+	console.log (peerCnxCollection);
+	var isConnected = false;
+	// var toto = peerCnxCollection[peerCnx1to1];
+	// console.log(toto);
+	if (peerCnxCollection[peerCnx1to1]) {
+
+		if (peerCnxCollection[peerCnx1to1].iceConnectionState != "new" ) isConnected = true;
+	 	
+	 }
+	return isConnected;
+}
+
+
+
 function isVisitorConnected(peerCnxCollection,userID) {
-    //var cibleID = userID.replace(prefix_peerCnx_1toN_VtoP, "");
-	console.log(peerCnxCollection);
+    //var cibleID = userID.replace(prefix_peerCnx_1toN_VtoP, "")
 	var isConnected = false;
 	for (var key in peerCnxCollection) {
 		// Inutile si la Key (id connection) est celle du peer Pilote-to-Robot
@@ -67,7 +88,9 @@ function updateListUsers() {
 		    if (oneUser.typeClient == "Robot" )
 		    	// Si connexion active entre robot et pilote
 		    	if (robotCnxStatus != "new") {
-		    		openform = '<button class="shadowBlack" id="openCnx'+oneUser.id+'" onclick="closeCnxwith(\''+oneUser.id+'\')">Close Stream</button>';
+		    		// openform = '<button class="shadowBlack" id="openCnx'+oneUser.id+'" onclick="closeCnxwith(\''+oneUser.id+'\')">Close Stream</button>';
+		    		var buttonClose1to1 = '<button class="shadowBlack" id="openCnx'+oneUser.id+'" onclick="closeCnxwith(\''+oneUser.id+'\')">Fermer la connexion</button>';
+		    		document.getElementById('closeConnection').innerHTML = buttonClose1to1;
 		    	}
 		    
 		    
@@ -76,11 +99,14 @@ function updateListUsers() {
 		    	// Test de la connexion du visiteur:
 		    	var activeCnx = false;
 		    	activeCnx = isVisitorConnected (peerCnxCollection,oneUser.id);
+
+		    	var active1to1Cnx = false;
+		    	active1to1Cnx = isRobotConnected (peerCnxCollection);
 		    	
 			    if (activeCnx == true ) { // Connexion active >> Bouton close
 			    	openform = '<button class="shadowBlack" id="openCnx'+oneUser.id;
 			    	openform += '" onclick="closeCnxwith(\''+oneUser.id+'\')">Close Stream</button>';
-			    } else { // Connexion inactive >> Bouton Open
+			    } else if (active1to1Cnx == true){ // seulement si connexion active entre robot et pilote
 					openform = '<button class="shadowBlack" id="openCnx'+oneUser.id;
 					openform +='" onclick="openCnxwith(\''+oneUser.id+'\')">Open Stream</button>';
 			    }
