@@ -17,23 +17,18 @@ dyDns = 'azkar.ddns.net'; // Adresse no-Ip pointant sur Livebox domicile
 ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP || "127.0.0.1"; // défaut
 port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 80; // défaut
 
-// Machines windows
-/*
-if (hostName == "azcary") {
-	ipaddress = "localhost"; // Machine HP bureau >> localhost pour les scripts autoIt
-	port = 2000 ; // idem, pour ne pas réecrire tous les scripts autoIt basés sur ce port et cette IP...
-}
-/**/
-
+// Machines windows - I3S
 if (hostName == "azcary") ipaddress = "192.168.173.1"; // Ip du réseau virtuel robulab2_wifi
-
-
 else if (hostName == "thaby") ipaddress = "192.168.173.1"; // Tablette HP sur Robulab: ip du réseau virtuel robulab_wifi
+
+// Machine Windows - Domicile
 else if (hostName == "lapto_Asus") ipaddress = "0.0.0.0"; // Pc perso - (IP interne, Livebox domicile)
 
-// Machines Ubuntu
+// Machines Ubuntu - Domicile
 else if (hostName == "ubuntu64azkar") ipaddress = "192.168.1.10"; // Vm Ubuntu sur Pc perso (Domicile)
 else if (hostName == "azkar-Latitude-E4200") ipaddress = "0.0.0.0"; // Pc Dell Latitude - Livebox domicile - noip > azkar.ddns.net
+
+// VM Sparks -Ubuntu
 else if (hostName == "Mainline") ipaddress = "134.59.130.141"; // IP statique de la Vm sparks
 else if (hostName == "AZKAR-1") ipaddress = "134.59.130.143"; // IP statique de la Vm sparks 
 else if (hostName == "AZKAR-2") ipaddress = "134.59.130.142"; // IP statique de la Vm sparks
@@ -120,7 +115,7 @@ var histoUsers2 = {};
 var placeHisto2 = 0;
 histoPosition2 = 0;
 
-// ID websockets pour les envois non broadcastés
+// ID websockets 1to1 Pilote et Robot pour les envois non broadcastés
 wsIdPilote = '';
 wsIdRobot = '';
 
@@ -155,11 +150,7 @@ io.on('connection', function(socket, pseudo) {
         // Accepter la connexion, faire le traitement et renvoyer
         // au client un simple message websocket avec en paramètre l'ip de redirection. 
         // A sa réception, le client se redirige vers la nouvelle url, se déconnectant d'office. 
-
-        // TODO: A régler Bug sur OpenShift:
-        // >>>> Si déco/reco du robot, celui-ci n'est toujours compté parmis les connectés...
-        // >> FIX: ne plus utiliser OpenShift !!!!!
-        
+       
         var isAuthorized = true;
         var authMessage;
         var rMsg = "> Connexion Rejetée: ";
@@ -248,18 +239,17 @@ io.on('connection', function(socket, pseudo) {
 		// NB > Obsolète.. >< Remplacé par une récupération directe 
 		// depuis le client IHM en ajax par un $.get( "/getvar", function( data ) ) {}
 		
-
         // On signale à tout le monde l'arrivée de l'User
         socket.broadcast.emit('nouveau_client2', objUser);
 
-        // Si c'st un "Visiteur", on informe Pilote et Robot
+        // Si c'st un "Visiteur", on informe Pilote (et Robot ??)
         if (objUser.typeClient == "Visiteur") {
             io.to(wsIdPilote).emit('newVisitor', objUser);
             //io.to(wsIdRobot).emit('newVisitor', objUser);
         }
         
 
-        // On met a jour le nombre de connectés coté client"
+        // On met a jour la liste des connectés coté client"
         nbUsers2 = tools.lenghtObject(users2);
         io.sockets.emit('updateUsers', {
             listUsers: users2
@@ -267,14 +257,6 @@ io.on('connection', function(socket, pseudo) {
 
         console.log("> Il y a " + nbUsers2 + " connectés");
 
-
-        // 4 - on met à jour la liste des connectés cotés clients
-        // ... TODO... EST-ce bien nécéssaire ????
-        // exports.searchInObjects = function (hashTable,attribute,value,typeReturn){
-
-        // contrôle fontion tests de tableau d'objet coté serveur
-        //var commonTest2 = common.searchInObjects(users2,"typeClient","Robot","boolean");
-        //console.log("commonTest2 >>> " + commonTest2 + " >>> true = robot - false = pilote");
     });
 
     // Quand un user se déconnecte
@@ -284,17 +266,17 @@ io.on('connection', function(socket, pseudo) {
 
         var message = "> Connexion sortante";
 
-        // on retire le connecté de la liste des utilisateurs
+        // On met a jour la liste des connectés
         delete users2[socket.id];
+
+        // On envoie a tous le monde l'info de déconnexion
         socket.broadcast.emit('disconnected', {
-            listUsers: users2
-        });
-        // On prévient tout le monde
-        socket.broadcast.emit('message2', {
             objUser: dUser,
             message: message
         });
-        // On actualise le nombre de connectés  
+
+
+        // On actualise le nombre de connectés coté serveur
         nbUsers = tools.lenghtObject(users2)
 
         // On met a jour la liste des connectés coté client"
@@ -303,8 +285,6 @@ io.on('connection', function(socket, pseudo) {
         });
 
         // contrôle liste connectés coté serveur
-        // console.log (users2);
-
         console.log("> Il reste " + nbUsers + " connectés");
     });
     /**/
@@ -427,11 +407,7 @@ io.on('connection', function(socket, pseudo) {
         });
     });
 
-    // Retransmission du statut de connexion WebRTC du visiteur ( p2p pilote/visiteur)
-    socket.on('visitorCnxPiloteStatus', function(data) {
-       console.log(tools.humanDateER('R') + " @ visitorCnxPiloteStatus >>>> "+data.iceState);
-       socket.broadcast.emit('visitorCnxPiloteStatus', data);
-    });
+
 
     // Robot >> Pilote: Offre des cams/micros disponibles coté robot
     socket.on('remoteListDevices', function(data) {
@@ -486,9 +462,13 @@ io.on('connection', function(socket, pseudo) {
         io.to(data.cible.id).emit('readyForSignaling_1toN_VtoP', data);
     }); 
 
+    //  Visiteur > pilote >> statut de connexion WebRTC du visiteur ( p2p pilote/visiteur)
+    socket.on('visitorCnxPiloteStatus', function(data) {
+       console.log(tools.humanDateER('R') + " @ visitorCnxPiloteStatus >>>> "+data.iceState);
+       socket.broadcast.emit('visitorCnxPiloteStatus', data);
+    });
 
-        // Elements de post-signaling----------------------------------------------------------------------------------
-
+   // Elements de post-signaling----------------------------------------------------------------------------------
 
     socket.on('closeConnectionOrder', function(data) { 
         var consoleTxt = tools.humanDateER('R') + " @ closeConnectionOrder >>>> from "+data.from.pseudo+" ("+data.from.id+") ";

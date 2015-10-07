@@ -117,7 +117,7 @@ socket.on('nouveau_client2', function(objUser) {
 // Réception d'une info de deconnexion 
 // >>> plus réactif que l'écouteur de l'API WebRTC
 // >>> On déplace ici l'écouteur ici au cas où la fonction
-// Connect n'as pas encore été apellée.
+// >>> Connect n'as pas encore été apellée.
 socket.on("disconnected", function(data) { 
   console.log(">> socket.on('disconnected',...");
 
@@ -126,10 +126,21 @@ socket.on("disconnected", function(data) {
   insereMessage3(data.objUser,msg); // Plante puisque no data.objUser  !!!
 
   // On met à jour la liste des cliens connectés
-  var users = data;
-  var debug = tools.stringObjectDump(users,"users");
+  //var users = data;
+  //var debug = tools.stringObjectDump(users,"users");
   // console.log(debug); 
   
+  // Si le receveur est le pilote*
+  // et que le déconnecté est un visiteur
+  // on lance d'office la procédure de déconnexion 
+  if (type == "pilote-appelant") {
+    if (data.objUser.typeClient = "Visiteur") {
+        closeCnxwith(data.objUser.id);
+        }
+  }
+
+
+
   // On lance la méthode de préparatoire à la renégo WebRTC
   // Todo >>>> Tester déclenchement a la detection WebRTC...
   // Pour voir si ca résoud le problème de déco intempestive sur openShift

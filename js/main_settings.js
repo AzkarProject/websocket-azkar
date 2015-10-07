@@ -118,6 +118,7 @@ if (type == "pilote-appelant" || type == "visiteur-appelé") {
     // 1toN > Pilote+Visiteur 
     video1_1toN_VtoP = document.getElementById("1to1_localVideo"); // Sur IHM Robot, pilote, visiteur
     video2_1toN_VtoP = document.getElementById("1to1_remoteVideo"); // Sur IHM Robot, pilote, visiteur
+    /*
     if (type == "pilote-appelant") {
     videoVisitor1 = document.getElementById("1toN_remoteVideos"); // Vue des visiteurs sur IHM Pilote
     videoVisitor2 = document.getElementById("1toN_remoteVideos2"); // Vue des visiteurs sur IHM Pilote
@@ -129,6 +130,7 @@ if (type == "pilote-appelant" || type == "visiteur-appelé") {
     //video3 = document.getElementById("1toN_remoteVideos"); // Vue des visiteurs sur IHM Pilote
     //video4 = document.getElementById("1toN_remoteVideoRobot"); // Vue du Robot sur IHM Visiteur
     } 
+    /**/
 
     prefix_peerCnx_1toN_VtoP = "Pilote-to-Visiteur-"; // connexion principale Pilote/Robot
     peerCnxId_1toN_VtoP = "default"; // Nom par défaut
@@ -158,7 +160,7 @@ if (type == "pilote-appelant") {
 if (type == "visiteur-appelé") {
 } // 1toN visiteur seulement
 
-// --------------------------  Communs (Robot, pilote, visiteurs)
+// --------------------------  Communs 1to1 & 1toN (Robot, pilote, visiteurs)
 
 // Tableau des connexions WebRTC
 peerCnxCollection = {};
@@ -238,11 +240,12 @@ function getClientBy(key,value) {
     }
 };
 
-
+// Retourne l'objet client distant d'une peerConnexion
 // On peux retrouver l'ID du pair distant en analysant l'ID de la connexion:
 // Le peerID de la connexion est constitué d'une concaténation
 // d'un préfixe et de l'id client du visiteur
 // Il suffit donc d'oter le préfixe pour retrouver l'id du pair distant...
+// A partir de là, on récupère aussi le client.
 function getCibleFromPeerConnectionID(peerCnxId, prefix) {
     var cibleID = peerCnxId;
     cibleID = cibleID.replace(prefix, "");

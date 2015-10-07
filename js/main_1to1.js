@@ -835,7 +835,7 @@ if (type == "robot-appelé") {
 }
 
 
-// Reception d'une commande pilote
+// Reception webSocket d'une commande pilote
 // On la renvoie au client robot qui exécuté sur la même machine que la Robubox.
 // Il pourra ainsi faire un GET ou un POST de la commande à l'aide d'un proxy et éviter le Cross Origin 
 socket.on("piloteOrder", function(data) {

@@ -14,6 +14,8 @@ if (type == "visiteur-appelé") {
 	    // On met à jour la liste locale des connectés...
 	    oldUsers = users;
 	    users = data;
+        // On affiche la liste des disparus...
+        // TODO >>>>>>>> 
 
 	})
 }
@@ -61,10 +63,37 @@ if (type == "pilote-appelant") {
 function initLocalMedia_1toN_VtoP(peerCnxId) {
 
     console.log("@ initLocalMedia_1toN_VtoP("+peerCnxId+")");
-    var videoConstraint_1toN_VtoP = {
-        audio: true,
-        video: true
+    
+   //if (type == "visiteur-appelé") {
+        var videoConstraint_1toN_VtoP = {
+            audio: true,
+            video: true
+        }
+    //}
+    /**/
+    
+    if (type == "pilote-appelant") {
+        // Récupération et affectation des caméras et micros selectionnés  
+        var audioSource = local_AudioSelect.value;
+        var videoSource = local_VideoSelect.value;
+
+        videoConstraint_1toN_VtoP = {
+            audio: {
+                optional: [{
+                    sourceId: audioSource
+                }]
+            },
+
+            video: {
+                optional: [{
+                    sourceId: videoSource
+                }]
+            }
+        } 
     }
+
+
+
     peerCnxCollection[peerCnxId] =new PeerConnection(server, options);
     console.log("new peerCnxCollection_1toN_VtoP["+peerCnxId+"]"); 
     //console.log(peerCnxCollection); 
@@ -305,7 +334,7 @@ function connect_1toN_VtoP(peerCnxId) {
 }
 
 
-// Ecouteurs Signaling de l'API websocket (Offer, Answer et Candidate) -----
+// Ecouteurs Signaling (Offer, Answer et Candidate) de l'API websocket  -----
 // if (type == "visiteur-appelé") pour éviter 
 // double instanciation coté pilote & Robot
 if (type == "visiteur-appelé") {
@@ -381,7 +410,7 @@ if (type == "visiteur-appelé") {
 }
 
 
-// Ecouteurs Answer et Candidate différents du 1to1 pour le pilote
+// Ecouteurs ( Answer & Candidate ) différents du 1to1 pour le pilote
 if (type == "pilote-appelant") {
 
 	// Réception d'une réponse à une offre
@@ -412,7 +441,7 @@ if (type == "pilote-appelant") {
 
 // ----- Phase 3 Post-Signaling --------------------------------------------
 
-// Réception du statut P2P d'un visiteur
+// Pilote: A la réception du statut P2P d'un visiteur
 socket.on('visitorCnxPiloteStatus', function(data) {
 	if (type == "pilote-appelant") {
 		console.log('>> socket.on("visitorCnxPiloteStatus", (from '+data.from.id+ ') - Status:'+data.iceState);
@@ -420,7 +449,7 @@ socket.on('visitorCnxPiloteStatus', function(data) {
 	}
 });
 
-// Réception d'un ordre de déconnexion
+// Tous: Réception d'un ordre de déconnexion
 socket.on("closeConnectionOrder", function(data) {
     if (data.cible.id == myPeerID) {
     	// On reconstruit l'Id de connexion en concaténant le préfixe de connexion pilote/visiteur:

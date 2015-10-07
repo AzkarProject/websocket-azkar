@@ -78,6 +78,13 @@ function updateListUsers() {
         var blabla = "";
         var i = null;
         
+        if (robotCnxStatus == "new") raZNavChannel();
+        else selectChannelWebRTC.disabled = false;
+
+
+
+
+
         // On boucle sur la liste des clients connectés
         for (i in users.listUsers) {
 		    var oneUser = users.listUsers[i];
@@ -101,7 +108,8 @@ function updateListUsers() {
 		    	activeCnx = isVisitorConnected (peerCnxCollection,oneUser.id);
 
 		    	var active1to1Cnx = false;
-		    	active1to1Cnx = isRobotConnected (peerCnxCollection);
+		    	if (robotCnxStatus != "new" ) active1to1Cnx = true;
+		    	// active1to1Cnx = isRobotConnected (peerCnxCollection);
 		    	
 			    if (activeCnx == true ) { // Connexion active >> Bouton close
 			    	openform = '<button class="shadowBlack" id="openCnx'+oneUser.id;

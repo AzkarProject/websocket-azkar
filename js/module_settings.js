@@ -1,4 +1,3 @@
-// TODO récupérer les paramétrages du benchmark
 
 /*// mémo Default Benchmarks Settings
 navCh = 'webSocket'; // webRTC
@@ -10,11 +9,22 @@ pStoR = 'open'; // close
 /**/
 
 
-function setNavChannel(navChSet) {
-    
+selectChannelWebSocket = document.querySelector('input#webSocket');
+selectChannelWebRTC = document.querySelector('input#webRTC');
+
+// Par défaut, désactivation du selecteur de canal webRTC
+// si aucune connexion 1to1 active entre Pilote et Robot
+function raZNavChannel() {
+	selectChannelWebRTC.disabled = true;
+	selectChannelWebRTC.checked = false;
+	selectChannelWebSocket.checked = true;
+	parameters.navCh = "webSocket";
+}
+raZNavChannel();
+
+function setNavChannel(navChSet) { 
     parameters.navCh = navChSet;
     // alert("navChannel = "+parameters.navCh);
-
 }
 
 function setLocalPilotView(lPVSet) {
