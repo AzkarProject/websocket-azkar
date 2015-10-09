@@ -124,7 +124,7 @@ form {margin-bottom: 9px;}
 
 /* Add multiView Michel */
 #videos {
-  border:1px solid black;
+  /*border:1px solid black;*/
   margin: 0 auto;
   transition: all 2s;
 }
@@ -132,7 +132,7 @@ form {margin-bottom: 9px;}
 video {
   transform:rotate(0deg);
   position:absolute;
-  border:1px solid black;
+  /*border:1px solid black;*/
   transition: all 1s;
 }
 /*----*/
@@ -258,6 +258,12 @@ video {
 #divBtDown {float:left; width:100%; text-align:center}
 #divBtSpeed {float:left; width:100%; text-align:center}
 .btnCommandsPad {min-height:35px}
+
+
+.txtGreen {color: green;}
+.txtRed {color: red;}
+
+
 
 /* forme, taille et couleurs des boutons */
 button{

@@ -5,10 +5,6 @@ var nbVideos = 0;
 var width, height;
 var tabVideos = [];
 
-
-// videosCollection = {};
-
-
 window.onload = function(evt) {
   
   
@@ -43,10 +39,10 @@ function addRemoteMultiVideo(remoteStream,peerCnxID) {
     v.style.height=hauteurVideo + "px";
 
     v.style.left=xVideo + "px";
-    // v.style.top=yVideo + "px";
+    // v.style.top=yVideo + "px"; // Modif Titi
 
-    // v.id = 'vid'+ tabVideos.length;
-    v.id = peerCnxID;
+    // v.id = 'vid'+ tabVideos.length; // Modif Titi
+    v.id = peerCnxID; // Modif Titi
     v.setAttribute("controls", "true");
     v.setAttribute("autoplay", "true");
     v.setAttribute("muted", "true");
@@ -63,36 +59,28 @@ function addRemoteMultiVideo(remoteStream,peerCnxID) {
 }
 
 
-function removeVideoCallback(evt) {
-  removeVideo();
-}
-
 function removeRemoteVideo(peerCnxId) {
 
   console.log("@ removeRemoteVideo("+peerCnxId+")");
   // if(! indexVideo) indexVideo = tabVideos.length-1;
   // console.log("on supprime la video id=" + peerCnxId);
-
-  console.log("------------------------------------------");
+  console.log("-------------"+tabVideos.length+" vidéos -----------------------------");
   console.log(tabVideos);
-  console.log("------------------------------------------");
+  //console.log("------------------------------------------");
   
-
-
-  // On supprime du tableau
-  // tabVideos.splice(indexVideo, 1);
+  /*// tabVideos.splice(indexVideo, 1);
   for(var i = tabVideos.length-1; i--;){
     
     console.log(" - tabVideos["+i+"].id: "+tabVideos[i].id);
-    /*
-    if (tabVideos[i].id == peerCnxId) {
-      console.log(" >>>> Suppression tabVideos["+i+"].id: "+tabVideos[i].id);
-      tabVideos.splice(i, 1);
-    }
-    /**/
+    
+    //if (tabVideos[i].id == peerCnxId) {
+      //console.log(" >>>> Suppression tabVideos["+i+"].id: "+tabVideos[i].id);
+      //tabVideos.splice(i, 1);
+    //}
   }
+  /**/
 
-  console.log("------------------------------------------");
+  // On la vire de la liste des vidéos
   for(var i in tabVideos){
         console.log(" - tabVideos["+i+"].id: "+tabVideos[i].id);
         if (tabVideos[i].id == peerCnxId) {
@@ -101,19 +89,21 @@ function removeRemoteVideo(peerCnxId) {
         }
   }
   
-  console.log("------------------------------------------");
+  
+  console.log("-------------"+tabVideos.length+" vidéos -----------------------------");
   console.log(tabVideos);
   console.log("------------------------------------------");
 
-
-  // Et du DOM
-  var id = peerCnxId;
-  //console.log("removing #"+id);
-  var v = document.querySelector("#"+id);
-  //console.log(v);
-  videoSection.removeChild(v);
-    // et on repositionne les videos restantes
-  setLayoutForTwoVideos();
+  // Et ensuite on la vire du dom
+  //if ( tabVideos.length != 0 ) {
+    var id = peerCnxId;
+    var v = document.querySelector("#"+id);
+    // videoSection.removeChild(v); // modif Titi
+    //if (v.nodeType === 1) videoSection.removeChild(v); // modif Titi
+    if (v != null) videoSection.removeChild(v); // modif Titi
+    // Repositionnement des vidéos restantes
+    setLayoutForTwoVideos();
+  //}
 
 }
 
@@ -153,7 +143,7 @@ function setLayoutForTwoVideos() {
     v.style.height=videoHeight + "px";
 
     v.style.left = x + "px";
-    //v.style.top  = y + "px";
+    //v.style.top  = y + "px"; // Modif Titi
   
     x+=videoWidth;
   }

@@ -158,6 +158,7 @@ if (type == "pilote-appelant") {
 
 // 1toN visiteur seulement
 if (type == "visiteur-appelé") {
+    isStarted_1toN_VtoP = false;
 } // 1toN visiteur seulement
 
 // --------------------------  Communs 1to1 & 1toN (Robot, pilote, visiteurs)

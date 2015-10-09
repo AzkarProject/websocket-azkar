@@ -129,6 +129,9 @@ socket.on("disconnected", function(data) {
   //var users = data;
   //var debug = tools.stringObjectDump(users,"users");
   // console.log(debug); 
+
+  //if (!data.objUser) alert ("!data.objUser");
+  if (!data.objUser) return;
   
   // Si le receveur est le pilote*
   // et que le déconnecté est un visiteur
@@ -139,6 +142,17 @@ socket.on("disconnected", function(data) {
         }
   }
 
+
+  // Si le receveur est le Robot
+  // Et que le connecté est le pilote,
+  // On lance aussi la procédure de déco/reco
+  if (type == "robot-appelé") {
+    if (data.objUser.typeClient = "Pilote") {
+        //closeCnxwith(data.objUser.id);
+        onDisconnect(peerCnx1to1);
+        // alert ("pilote déconnecté)");
+        }
+  }
 
 
   // On lance la méthode de préparatoire à la renégo WebRTC

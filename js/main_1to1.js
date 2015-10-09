@@ -653,6 +653,7 @@ socket.on("candidate", function(data) {
         //console.log("- peerconnection: " + data.peerCnxId);
         //console.log (data.message);
         // TODO : ici intercepter et filter le candidate
+        // console.log (data.message);
         peerCnxCollection[data.peerCnxId].addIceCandidate(new IceCandidate(data.message)); // OK
     }
 });

@@ -62,8 +62,10 @@ if (type == "pilote-appelant") {
 // initialisation du localStream et initialisation connexion
 function initLocalMedia_1toN_VtoP(peerCnxId) {
 
-    console.log("@ initLocalMedia_1toN_VtoP("+peerCnxId+")");
+   console.log("@ initLocalMedia_1toN_VtoP("+peerCnxId+")");
     
+   // console.log(peerCnxCollection);
+
    //if (type == "visiteur-appelé") {
         var videoConstraint_1toN_VtoP = {
             audio: true,
@@ -71,6 +73,7 @@ function initLocalMedia_1toN_VtoP(peerCnxId) {
         }
     //}
     /**/
+    
     
     if (type == "pilote-appelant") {
         // Récupération et affectation des caméras et micros selectionnés  
@@ -91,12 +94,20 @@ function initLocalMedia_1toN_VtoP(peerCnxId) {
             }
         } 
     }
+    /**/
 
+    if (peerCnxCollection[peerCnxId]) {
+        alert ("peerCnxCollection[peerCnxId]") // en cas de renégo
 
-
-    peerCnxCollection[peerCnxId] =new PeerConnection(server, options);
+    } else if (!peerCnxCollection[peerCnxId]) {
+        alert (" No peerCnxCollection[peerCnxId]") // si c'est la première connexion
+        peerCnxCollection[peerCnxId] =new PeerConnection(server, options);
+        console.log("new peerCnxCollection_1toN_VtoP["+peerCnxId+"]"); 
+    }
+    
+    // peerCnxCollection[peerCnxId] =new PeerConnection(server, options);
     console.log("new peerCnxCollection_1toN_VtoP["+peerCnxId+"]"); 
-    //console.log(peerCnxCollection); 
+    console.log(peerCnxCollection); 
 
     
     // Un foi l'objet onnexion crée
@@ -116,7 +127,13 @@ function initLocalMedia_1toN_VtoP(peerCnxId) {
     // Initialisation du localStream et lancement connexion
     navigator.getUserMedia(videoConstraint_1toN_VtoP, function(stream) {
 
+        
+
         localStream_1toN_VtoP = stream;
+
+        //console.log("----------------localStream_1toN_VtoP-----------------");
+        //console.log(localStream_1toN_VtoP);
+        //console.log("----------------------------------------");
         
         // Le pilote n'as pas besoin d'afficher 2 fois son image....
         if (type == "visiteur-appelé") {
@@ -128,8 +145,21 @@ function initLocalMedia_1toN_VtoP(peerCnxId) {
             
             var streamToRemote = localStream_1toN_VtoP
             // On met le stream du robot en lieu et place du stream du piulote
-            if (parameters.rStoV == 'open') streamToRemote = remoteStream;
-            peerCnxCollection[peerCnxId].addStream( streamToRemote); 
+            
+            console.log ("-- navigator.getUserMedia(videoConstraint_1toN_VtoP, function(stream) --");
+            
+
+
+
+
+            if (parameters.rStoV == 'open') {
+                streamToRemote = remoteStream;
+                console.log("-----------remoteStream-----------");
+            } else {
+                console.log("-----------localStream-----------");
+            }
+            console.log(stream);
+            peerCnxCollection[peerCnxId].addStream(streamToRemote); 
         }
         
         // peerCnxCollection[peerCnxId].addStream( localStream_1toN_VtoP);
@@ -224,10 +254,6 @@ function connect_1toN_VtoP(peerCnxId) {
         }
         
        	/**/// ----------------------------------------------------------------------------------
-
-
-
-
     };
 
 
@@ -399,12 +425,54 @@ if (type == "visiteur-appelé") {
 	socket.on("candidate", function(data) {
 	    if (data.cible.id == myPeerID) {
 	        console.log ("------------ >>>> _1toN_VtoP Candidate from "+data.from.typeClient+"----------");
-	        //console.log("- candidate From: " + data.from.pseudo +"("+data.from.id+")");
-	        //console.log("- Cible: " + data.cible.pseudo +"("+data.cible.id+")");
-	        //console.log("- peerconnection: " + data.peerCnxId);
+	        // console.log("- candidate From: " + data.from.pseudo +"("+data.from.id+")");
+	        // console.log("- Cible: " + data.cible.pseudo +"("+data.cible.id+")");
+	        // console.log("- peerconnection: " + data.peerCnxId);
 	        // console.log (data.message);
 	        // TODO : ici intercepter et filter le candidate
-	        peerCnxCollection[data.peerCnxId].addIceCandidate(new IceCandidate(data.message)); // OK
+            
+            // console.log (data.message);
+            // console.log (data.message.candidate);
+            // console.log (data.message.sdpMid);
+            // console.log (data.message.sdpMLineIndex);
+            
+	        var thisCandidate = data.message.candidate;
+            var thisSdpMid = data.message.sdpMid;
+            var sdpMLineIndex = data.message.sdpMLineIndex;
+
+            // if ( data.message.sdpMLineIndex == "0") console.log('data.message.sdpMLineIndex == "0"');
+            // if ( data.message.sdpMLineIndex === "0") console.log('data.message.sdpMLineIndex === "0"'); // Non
+            // if ( data.message.sdpMLineIndex == 0) console.log('data.message.sdpMLineIndex == 0');
+            // if ( data.message.sdpMLineIndex === 0) console.log('data.message.sdpMLineIndex === 0');
+
+            // if ( data.message.sdpMLineIndex == "1") console.log('data.message.sdpMLineIndex == "1"'); 
+            // if ( data.message.sdpMLineIndex === "1") console.log('data.message.sdpMLineIndex === "1"'); // non
+            // if ( data.message.sdpMLineIndex == 1) console.log('data.message.sdpMLineIndex == 1');
+            // if ( data.message.sdpMLineIndex === 1) console.log('data.message.sdpMLineIndex === 1');
+            
+            // peerCnxCollection[data.peerCnxId].addIceCandidate(new IceCandidate(data.message)); // OK /: Bug après déco/reco Robot...
+
+            //var candidateFromPilote = new IceCandidate(data.message);
+            //peerCnxCollection[data.peerCnxId].addIceCandidate(candidateFromPilote); // BUG Idem...
+
+
+            /*            
+            x = new webkitRTCPeerConnection(null)
+
+            y = new RTCIceCandidate({candidate: 'foo', sdpMLineIndex: 1})
+            RTCIceCandidate {}
+
+            (no error)
+
+             x.addIceCandidate(y)
+             */
+             if ( data.message.sdpMLineIndex == 0) sdpMLineIndex = 0;
+             else if ( data.message.sdpMLineIndex == 1) sdpMLineIndex = 1;
+             var candidateFromPilote2 = new IceCandidate({candidate: thisCandidate, sdpMid: thisSdpMid, sdpMLineIndex: sdpMLineIndex});
+             peerCnxCollection[data.peerCnxId].addIceCandidate(candidateFromPilote2); // BUG Idem...
+
+
+
 	    }
 	});
 }
@@ -463,20 +531,48 @@ socket.on("closeConnectionOrder", function(data) {
 });
 
 
+// Visiteur & pilote: Réception d'une info de déconnexion pilote/Robot
+socket.on("closeMasterConnection", function(data) {
+    console.log ("------------ >>> closeMasterConnection");
+    if (type == "pilote-appelant")  {
+        updateListUsers();
+    } else if (type == "visiteur-appelé") {
+        // On coupe toutes les connexions p2p pilote/visiteurs
+        // Pour pouvoir leur retransmettre le nouveau Stream si changement de caméra coté robot.
+
+        // On reconstruit l'Id de connexion en concaténant le préfixe de connexion pilote/visiteur:
+        // var thisPeerCnx = prefix_peerCnx_1toN_VtoP+myPeerID;
+        // on lance le processus préparatoire a une reconnexion
+        // onDisconnect_1toN_VtoP(thisPeerCnx); // provoque BUG de récession
+
+        // Fix >>>> Réutiliser le process de déconnexion des visiteurs du manageVisiteurs
+        // Comme ca la déconnexion de chaque client est initiée proprement par le Pilote.
+        closeCnxwithAllVisitors();
+    }
+});
+
+
+
 // A la déconnection du pair distant:
 function onDisconnect_1toN_VtoP(peerCnxId) {
 
     console.log("@ onDisconnect_1toN_VtoP()");
 
-    // On vérifie le flag de connexion
-    if (isStarted_1toN_VtoP == false) return;
+
+    // Dabord on vérifie que cette connexion existe dans le table des connexions
+    // if (isStarted_1toN_VtoP == false) return;
+    
 
     // on retire le flux remoteStream
     if (type == 'visiteur-appelé') {
-    	video1_1toN_VtoP.src = ""; //localVideo
+        // Dabord on vérifie le flag de connexion
+        if (isStarted_1toN_VtoP == false) return;
+        video1_1toN_VtoP.src = ""; //localVideo
     	video2_1toN_VtoP.src = ""; //RemotevideoPilote
     } else if (type == "pilote-appelant") {
-    	removeRemoteVideo(peerCnxId);
+    	// Dabord on vérifie que cette connexion p2p existe
+        if (!peerCnxCollection[peerCnxId])  return;
+        removeRemoteVideo(peerCnxId);
     	// videoVisitor1.src = ""; // RemoteVideoVisiteur
     }
     //videoElement.src = null;
@@ -491,6 +587,7 @@ function onDisconnect_1toN_VtoP(peerCnxId) {
     //pc["+peerCnxId+"].close();
     //pc = null;
 
+    peerCnxCollection[peerCnxId].onicecandidate = null;
     peerCnxCollection[peerCnxId].close();
     peerCnxCollection[peerCnxId] = null;
     
@@ -499,7 +596,7 @@ function onDisconnect_1toN_VtoP(peerCnxId) {
     stopAndStart_1toN_VtoP(peerCnxId);
 }
 
-// Fermeture et relance de la connexion p2p par l'apellé (Robot)
+// Fermeture et relance de la connexion p2p par l'apellé (visiteur)
 function stopAndStart_1toN_VtoP(peerCnxId) {
 
     console.log("@ stopAndStart()");
