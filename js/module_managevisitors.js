@@ -35,34 +35,10 @@ function closeCnxwith(userID) {
     // Si la cible est le robot, 
     if (cible.typeClient == "Robot") {
 
-    	// On informe tous les visiteurs de cette déconnexion
-    	// Et on leur demande de lancer une procédure de déconnexion de leur coté
-    	// socket.emit("closeMasterConnection", data); // BUG de récession...
-
     	// On coupe toutes les connexions p2p pilote/visiteurs
     	// Pour pouvoir leur retransmettre le nouveau Stream si changeme,nt de caméra coté robot.
     	closeCnxwithAllVisitors();
-    	/*
-    	for (i in users.listUsers) {
-			// On récupère l'objet client
-			var cibleToClose = getClientBy('id',users.listUsers[i].id);
-			// Si le client est un visiteur
-		    if (cibleToClose.typeClient == "Visiteur" ) {
-		    	// On vérifie qu'il est bien l'objet d'une connexion p2p (WebRTC) entre pilote et visiteur
-		    	var activeCnx = false;
-		    	activeCnx = isVisitorConnected (peerCnxCollection,cibleToClose.id);
-			    // Si connecté p2p >> on lance la procédure de Déconnexion locale du client.
-			    if (activeCnx == true ) { 
-			    	  // On reconstruit l'Id de la connexion p2p à cloturer
-			    	  var thisPeerCnx = prefix_peerCnx_1toN_VtoP+cibleToClose.id; 
-    				  // On lance le process de déconnexion coté Pilote
-    				  onDisconnect_1toN_VtoP(thisPeerCnx);
-			    } 
-		    }
-		    
 
-    	}
-    	/**/
     	// On vire le bouton de fermeture de la connexion principale
     	var buttonClose1to1 = "";
     	document.getElementById('closeConnection').innerHTML = buttonClose1to1;
@@ -136,7 +112,6 @@ function isRobotConnected(peerCnxCollection) {
 }
 
 
-
 function isVisitorConnected(peerCnxCollection,userID) {
     //var cibleID = userID.replace(prefix_peerCnx_1toN_VtoP, "")
 	var isConnected = false;
@@ -155,6 +130,21 @@ function isVisitorConnected(peerCnxCollection,userID) {
 	console.log("Visitor connected: "+isConnected);
 	return isConnected;
 }
+
+
+// open/Close connexions P2P directes 
+// entre visiteur et Robot ( Option full Mesh )
+function setCnxWithRobot(message) {
+    console.log("@ setCnxWithRobot()");
+    var cible = getClientBy('typeClient',"Robot"); 
+	console.log ('socket.emit("setCnxWithRobot('+message+')", ...)');
+    var data = {from: localObjUser, message: message, cible: cible}
+    socket.emit("setCnxWithRobot", data);
+    updateListUsers ();
+}
+
+
+
 
 function updateListUsers() {
         console.log ("@ updateListUsers()");
@@ -186,6 +176,11 @@ function updateListUsers() {
     	var active1to1Cnx = false;
     	active1to1Cnx = isRobotConnected (peerCnxCollection);
 
+        
+    	// Elements HTML des boutons
+    	var HButton
+
+
         // On boucle sur la liste des clients connectés
         for (i in users.listUsers) {
 		    var oneUser = users.listUsers[i];
@@ -215,11 +210,24 @@ function updateListUsers() {
 		    	// Si Connexion p2p pilote/visiteur >> Bouton Close Stream
 			    if (activeCnx == true ) { 
 			    	openform = '<button class="shadowBlack txtRed" id="openCnx'+oneUser.id;
+
+			    	// Si Stream == Pilote (Défaut)
 			    	openform += '" onclick="closeCnxwith(\''+oneUser.id+'\')">Close Stream</button>';
+			    	// Si Stream == Robot
+			    	// openform += '" onclick="setCnxWithRobot(\''close'\')">Close Stream</button>';
+
 			    // Sinon si Connexion principale p2p active entre pilote et robot >> Bouton Open Stream
 			    } else if (active1to1Cnx == true) { 
 					openform = '<button class="shadowBlack txtGreen" id="openCnx'+oneUser.id;
+
+					// Si Stream == Pilote (Défaut)
 					openform +='" onclick="openCnxwith(\''+oneUser.id+'\')">Open Stream</button>';
+					
+					// Si Stream == Robot
+
+
+
+
 			    }
 		    
 		    }
