@@ -180,7 +180,7 @@ gamePadController();
 function jaugeSpeedSetting() {
    var ava = document.getElementById("jaugeSpeedSetting");
    var prc = document.getElementById("speedSetting");
-   // prc.innerHTML = ava.value + " m.s";
+   prc.innerHTML = ava.value + " m.s";
 }
 
 
