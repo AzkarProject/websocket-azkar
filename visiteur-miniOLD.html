@@ -1,0 +1,107 @@
+<html>
+<head>
+
+	
+</head>
+
+    <head>
+        <meta charset="utf-8" />
+        <meta name='keywords' content='WebRTC, HTML5, JavaScript' />
+		<meta name='description' content='WebRTC benchmarks base for AZKAR project' />
+		<!-- viewport sert a controler la mise en page sur les appareils mobiles -->
+		<meta name='viewport' content='width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1'>
+		<link rel="stylesheet" href="/css/style.css" />
+        <title>WebRTC AZKAR</title>
+    </head>
+
+
+<body class="ihmRobot">
+
+    <strong><span id="zone_info_server">WebRTC AZKAR</span></strong>
+    <hr/>
+		
+
+
+
+		<section id="bloc_1toN" class="fullSizeContainerBox">
+			
+			<div  class="floatLeft oneQuarterContainerBox">
+				<div id="piloteCam" class="insideFlex pilote shadowBlack">
+				    <strong> Pilot Camera</strong>
+				    <hr/>
+				    <div class = "videosContainer">
+				    	<!-- <video id='otherPeer' autoplay muted controls="controls" ></video> -->
+				    	<video id='1to1_remoteVideo' class="" autoplay muted controls="controls"></video>
+				    </div>
+		  	 	</div>
+			</div>
+		
+
+			<div  class="floatLeft oneQuarterContainerBox">
+				<div id="robotCam" class="insideFlex robot shadowBlack">
+				    <strong> local Camera</strong>
+				    <hr/>
+				    <div class = "videosContainer">
+				    	<!-- <video id='video' autoplay muted controls="controls"></video>-->
+                		<video id='1to1_localVideo' autoplay muted controls="controls"></video>
+                	</div>
+		  	 	</div>
+			</div>
+
+
+
+			<div  class="floatLeft doubleQuarterContainerBox">
+				<div id="visitorsList" class="insideFlex visiteur shadowBlack">
+						<strong>Visitor's List</strong>
+						<hr/>
+						TODO
+		  	 	</div>
+			</div>
+
+		</section>
+
+		
+	
+       	<script>	  	 
+		//var otherType = "visiteur-appelant";
+		var type = "visiteur-appelé";
+		</script>
+
+		<!--
+         <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+         -->
+        <script src='/js/lib/jquery-1.10.1.min.js'></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src='/js/lib/adapter.js'></script>
+		<script src="/js/lib/FileSaver.js"></script>
+        
+        <script src="/js/common_tools.js"></script>
+        <script src="/js/common_settings.js"></script>
+        <script src='/js/common_robubox.js'></script>
+
+ 		<script src='/js/main_websocket.js'></script>
+ 		<script src='/js/main_settings.js'></script>
+ 		<script src='/js/main_1toN_Visiteur.js'></script>
+ 		<script src='/js/main_1toN_Robot.js'></script>
+		
+		<script src="/js/module_logs.js"></script>
+
+
+
+		<script>                    
+            // On récupère depuis nodejs le nom de la machine serveur
+            // en passant par de l'AJAX plutôt que par websocket....
+            hostName = "???";    
+            $.get( "/getvar", function( data ) {
+              hostName = data.hostName;
+              //if (hostName != "???" ) $('#zone_info_server').replaceWith(settings.appName() + " V " + settings.appVersion()+ " ("+hostName+")");
+              infoServerTxt = settings.appBranch() + ' - ' + settings.appName() + " V " + settings.appVersion()+ " ("+hostName+")";
+              if (hostName != "???" ) $('#zone_info_server').replaceWith(infoServerTxt);
+            });
+    	
+			// On lance l'utilitaire de récupération de la batterie
+			//robubox.getBattery();
+		</script>
+
+</body>
+</html>

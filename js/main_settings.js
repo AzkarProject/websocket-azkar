@@ -159,6 +159,7 @@ if (type == "pilote-appelant") {
 // 1toN visiteur seulement
 if (type == "visiteur-appelé") {
     isStarted_1toN_VtoP = false;
+    video3_VtoR = document.getElementById("1toN_remoteVideoRobot"); 
 } // 1toN visiteur seulement
 
 // --------------------------  Communs 1to1 & 1toN (Robot, pilote, visiteurs)
@@ -214,7 +215,10 @@ socket.on('rejectConnexion', function(data) {
     alertAndRedirect(data.message, data.url)
 })
 
-
+socket.on('razConnexion', function(data) {
+    console.log(">> socket.on('razConnexion',...");
+    forceRedirect(data.url)
+})
 // --------------------- Gestion des messages d'erreur ------------------
 
 function errorHandler(err) {
@@ -231,6 +235,13 @@ function alertAndRedirect(message, url) {
 
 // ------ fonctions diverses ---------------
 
+
+function forceRedirect(url) {
+    console.log("@ forceRedirect("+url+")");
+    //alert (message);
+    // window.alert(message)
+    window.location.href = url;
+}
 
 function getClientBy(key,value) {
     for (i in users.listUsers) {

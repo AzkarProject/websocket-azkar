@@ -4,9 +4,14 @@
 // Envoi d'une commande de type "Drive" au robot
 exports.sendDrive = function (enable, aSpeed,lSpeed){
         
-        var toto = "robubox.sendDrive(1) >> enable:"+enable+" onMove:"+onMove+" "+"lastMoveTimeStamp:"+lastMoveTimeStamp;
+        
+    var isRobubox = settings.isRobubox();
+    console.log ("robubox.sendDrive("+isRobubox+")");
+    
+    
+    if (isRobubox == true) {
 
-        // console.log("robubox.sendDrive(1) >> enable:"+enable+" onMove:"+onMove+" "+"lastMoveTimeStamp:"+lastMoveTimeStamp); 
+        var toto = "robubox.sendDrive(1) >> enable:"+enable+" onMove:"+onMove+" "+"lastMoveTimeStamp:"+lastMoveTimeStamp;
         
         // Flags Homme mort:  
         if (enable == true) {
@@ -18,7 +23,6 @@ exports.sendDrive = function (enable, aSpeed,lSpeed){
         }
         
         var tata = "robubox.sendDrive(2) >> enable:"+enable+" onMove:"+onMove+" "+"lastMoveTimeStamp:"+lastMoveTimeStamp;
-
         console.log(toto);
         console.log(tata); 
             
@@ -41,14 +45,24 @@ exports.sendDrive = function (enable, aSpeed,lSpeed){
                 "TargetLinearSpeed": lSpeed
             }));
         xhr.closed;
-        /**/
+        
+    }
+    /**/
       
 }
 
 // Envoi d'une commande de type "Step" au robot avec une "promize"
 exports.sendStep = function (typeMove,dist, MaxSpeed){
         
-        console.log ("robubox.sendStep()");
+        
+    var isRobubox = settings.isRobubox();
+    console.log ("robubox.sendStep("+isRobubox+")");
+    
+    
+    if (isRobubox == true) {
+
+
+        // console.log ("robubox.sendStep()");
 
         // le type --> relative ou translate
         // var url = 'http://localhost:50000/lokarria/step';
@@ -65,7 +79,10 @@ exports.sendStep = function (typeMove,dist, MaxSpeed){
                 "MaxSpeed": MaxSpeed                
             }));
         xhr.closed;
-        /**/
+            
+
+    }
+    /**/
 
 }
 
@@ -74,7 +91,12 @@ exports.sendStep = function (typeMove,dist, MaxSpeed){
 // elle interroge chaque 1000ms le robot via url et retourne le niveau de la batterie en pourcentage
 exports.getBattery = function (){
         
-        console.log ("robubox.getBattery()");
+        
+    var isRobubox = settings.isRobubox();
+    console.log ("robubox.getBattery("+isRobubox+")");
+    
+    
+    if (isRobubox == true) {
 
         //var url = "http://127.0.0.1:8080/?url=http://127.0.0.1:50000/robulab/battery/battery" ;
         var url = "http://127.0.0.1:8080/127.0.0.1:50000/lokarria/battery" ; // Tests CORS-ANYWHERE
@@ -113,7 +135,10 @@ exports.getBattery = function (){
                  percentage: percentage
             });
         }, delay);
-        /**/
+
+    }
+    /**/
+        
                  
 } // End getBattery
 

@@ -17,7 +17,9 @@ exports.appBranch = function(){
 };
 
 exports.isRobubox = function(){
-    return false;
+    var user = getCookie("username");
+    if (user == "Thaby") return true; 
+ 	else return false;
 };
 
 })(typeof exports === 'undefined'? this['settings']={}: exports);

@@ -23,6 +23,27 @@ function openCnxwith(userID) {
 }
 
 
+function VtoR_InitCnxwith(userID) {
+    console.log("@ VtoR_InitCnxwith("+userID+")");
+    var offerer = getClientBy('id',userID);
+    var cible = getClientBy('typeClient','Robot');
+	console.log ('socket.emit("VtoR_initPreSignaling", ...) >>> ['+cible.typeClient+'] - ');
+    var data = {from: offerer, cible: cible}
+    socket.emit("VtoR_initPreSignaling", data);
+    // updateListUsers ();
+}
+
+    /*
+    socket.on("VtoR_initPreSignaling", function(data) {
+        if (data.cible.id === myPeerID ) {
+            console.log(">> socket.on('VtoR_initPreSignaling',...");
+            var data = {from: localObjUser, cible: data.cible};  
+            socket.emit('VtoR_requestConnect', data);
+        }
+    });
+    /**/
+
+
 function closeCnxwith(userID) {
     console.log("@ closeCnxwith("+userID+")");
     
@@ -216,18 +237,19 @@ function updateListUsers() {
 			    	// Si Stream == Robot
 			    	// openform += '" onclick="setCnxWithRobot(\''close'\')">Close Stream</button>';
 
+					var cible = getClientBy('typeClient','Robot');
+					openform += '...<button class="shadowBlack txtGreen" id="initCnx'+oneUser.id;
+					openform +='" onclick="VtoR_InitCnxwith(\''+oneUser.id+'\')">Open Stream</button>';
+
 			    // Sinon si Connexion principale p2p active entre pilote et robot >> Bouton Open Stream
 			    } else if (active1to1Cnx == true) { 
 					openform = '<button class="shadowBlack txtGreen" id="openCnx'+oneUser.id;
 
 					// Si Stream == Pilote (Défaut)
 					openform +='" onclick="openCnxwith(\''+oneUser.id+'\')">Open Stream</button>';
-					
+
+
 					// Si Stream == Robot
-
-
-
-
 			    }
 		    
 		    }

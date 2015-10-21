@@ -4,13 +4,18 @@
 
 //------ PHASE 1 : Pré-signaling ----------------------------------------------------------
 
-// rejectConnexion', message:message, url:indexUrl);
+// ---- > Ecouteurs webSocket 
+// Messages d'erreur et contrôles d'accès
 socket.on('error', errorHandler);
 socket.on('rejectConnexion', function(data) {
     alertAndRedirect(data.message, data.url)
 })
 
+// ----- Variables globales Robot/Pilote
 
+audioSource = local_AudioSelect.value;
+videoSource = local_VideoSelect.value;
+constraint = null;
 
 // Lancement de la récupération des Devices disponibles
 if (typeof MediaStreamTrack === 'undefined') {
@@ -112,8 +117,8 @@ function gotSources(sourceInfos) {
 }
 
 // IHM Pilote
-// Dévérouillage formulaires selection caméras
-// et processus connexion 1to1 pilote/robot
+// Dévérouillage formulaires selection caméras Robot
+// Animation d'invite
 function activeManageDevices() {
 
     // On active les sélecteurs de listes
@@ -127,8 +132,8 @@ function activeManageDevices() {
 
 // IHM Pilote:
 // Traitement du formulaire de selection caméras du robot
-// et ouverture du formulaire de selection des devices du pilote 
-// Avec animation CSS d'invite du formulaire
+// Dévérouillage du formulaire de selection des devices du pilote 
+// et invite lancement processus connexion 1to1 pilote/robot
 function remoteManageDevices() {
 
     console.log("@ remoteManageDevices()");
@@ -191,11 +196,35 @@ function localManageDevices() {
     }
 }
 
+// IHM Pilote & Robot: 
+// Construction des constrain locale (affectation des devices sélectionnées)
+function getLocalConstraint() {
+	audioSource = local_AudioSelect.value;
+	videoSource = local_VideoSelect.value;
+	var localConstraint = {
+	        audio: {
+	            optional: [{
+	                sourceId: audioSource
+	            }]
+	        },
+
+	        video: {
+	            optional: [{
+	                sourceId: videoSource
+	            }]
+	        }
+	    }  
+	return localConstraint;
+} 
+
+
+
+
+
 
 // ---- > Ecouteurs webSocket de pré-signaling
-// --- Ecouteurs Websockets exclusifs au Pilote (appelant)
 
-// Reception de la liste des Devices du Robot V2 (version objet)
+// Pilote: Reception de la liste des Devices du Robot V2 (version objet)
 // coté serveur >> socket.broadcast.emit('remoteListDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
 socket.on('remoteListDevices', function(data) {
     console.log(">> socket.on('remoteListDevices',...");
@@ -207,7 +236,7 @@ socket.on('remoteListDevices', function(data) {
     }
 })
 
-// Reception du signal de fin pré-signaling
+// Pilote: Reception du signal de fin pré-signaling
 socket.on("readyForSignaling", function(data) {
     console.log(">> socket.on('readyForSignaling',...");
     if (type == "pilote-appelant") {
@@ -218,10 +247,7 @@ socket.on("readyForSignaling", function(data) {
     }
 })
 
-
-// ---- Ecouteurs Websockets exclusifs au Robot (appelé)
-
-// Reception cam et micro selectionnés par le pilote (apellant) V2 Objet
+// Robot: Reception cam et micro selectionnés par le pilote (apellant)
 // Coté serveur >> socket.broadcast.emit('selectedRemoteDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
 socket.on('selectedRemoteDevices', function(data) {
     console.log(">> socket.on('selectedRemoteDevices',...");
@@ -240,13 +266,16 @@ socket.on('selectedRemoteDevices', function(data) {
         //console.log(debugg);
         //console.log(data);
 
-        // On lance l'initlocalmedia
-        initLocalMedia(peerCnx1to1);
+
 
         var infoMicro = "<strong> Micro Activé </strong>"
         var infoCam = "<strong> Caméra Activée </strong>"
         document.getElementById("messageDevicesStateMicro").innerHTML = infoMicro;
         document.getElementById("messageDevicesStateCams").innerHTML = infoCam;
+
+        // On lance l'initlocalmedia
+        initLocalMedia(peerCnx1to1);
+
 
         // On rebalance au pilote-appelant le top-départ pour 
         // qu'il lance un intilocalMedia de son coté....
@@ -255,15 +284,16 @@ socket.on('selectedRemoteDevices', function(data) {
         // Fix Bug renégociation > On vérifie que c'est une renégo et
         // si c'est le cas, on attend d'avoir l'état du statut webRTC ps iceConnexionXtate à "new"
         // pour lancer le message de fin de pré-signaling . A faire ds l'écouteur idoine...
-        socket.emit('readyForSignaling', {
+        /*socket.emit('readyForSignaling', {
             objUser: localObjUser,
             message: "ready"
         }); // Version objet
+/**/
     }
 })
 
 
-// ---- Ecouteurs Websockets communs
+// ---- Ecouteurs Websockets communs au pilote et robot
 
 // Reception du statut de connexion du pilote
 socket.on("piloteCnxStatus", function(data) {
@@ -366,27 +396,12 @@ function initLocalMedia(peerCnxId) {
 
     console.log("@ initLocalMedia("+peerCnxId+")");
 
-    // Récupération et affectation des caméras et micros selectionnés  
-    var audioSource = local_AudioSelect.value;
-    var videoSource = local_VideoSelect.value;
-
-    var constraint = {
-        audio: {
-            optional: [{
-                sourceId: audioSource
-            }]
-        },
-
-        video: {
-            optional: [{
-                sourceId: videoSource
-            }]
-        }
-    } 
-
     peerCnxCollection[peerCnxId] =new PeerConnection(server, options);
     console.log("new peerCnxCollection["+peerCnxId+"]"); 
     console.log(peerCnxCollection); 
+
+    // Récupération et affectation des caméras et micros selectionnés  
+    constraint = getLocalConstraint();
 
     // Initialisation du localStream et lancement connexion
     navigator.getUserMedia(constraint, function(stream) {
@@ -399,6 +414,12 @@ function initLocalMedia(peerCnxId) {
         } else if (type == "robot-appelé") {
             // alert("local view: " +parameters.lRview);
             if (parameters.lRview != 'show') showLocalVideo = false;
+        	// On prévient l'autre pair qu'il peut lui aussi ouvrir sa caméra
+            socket.emit('readyForSignaling', {
+	            objUser: localObjUser,
+	            message: "ready"
+			});
+			/**/
         }
         if (showLocalVideo == true) video1.src = URL.createObjectURL(localStream);
         
@@ -478,7 +499,8 @@ function connect(peerCnxId) {
     // Permet de déterminer si le pair distant s'est déconnecté. (Version 1to1)
     peerCnxCollection[peerCnxId].oniceconnectionstatechange = function(e) {
 
-        var dateE = tools.dateER('E');
+        //var dateE = tools.dateER('E');
+        var dateE = tools.humanDateER("E");
         console.log("@ pc["+peerCnxId+"].oniceconnectionstatechange > " + dateE);
 
         //console.log(">>> stateConnection Event > " + peerCnxCollection[peerCnxId].iceConnectionState);
@@ -539,9 +561,57 @@ function connect(peerCnxId) {
         // Si on est dans la peerConnection principale (Pilote <> Robot)
         if (peerCnxId == peerCnx1to1) {
 
-            // l'apellant crée un dataChannel
+            
+	        // Bug: l'objet RTCDataChannel de l'apellé est null 
+	        // si le createDataChannel de l'apellant est activé sous Chrome Version 46.0.2490.71 m
+	        // Bug de recession Release Chrome du 15/16 Oct(11) 2015...
+	        // Tentative de contournement: Envoi de l'objet RTCDatachannel par websocket...
+
+            /*// l'apellant crée un dataChannel
             channel = peerCnxCollection[peerCnxId].createDataChannel("mychannel", {});
-            // et peut maintenant lancer l'écouteur d'évènement sur le datachannel
+            var tStp = tools.humanDateER("date");
+            console.log ("peerCnxCollection[peerCnxId].createDataChannel("+tStp+")");
+            /**/
+            
+
+            /*function setupDC1() {
+			    try {
+			        console.log("+++++++++++++++++++++++++++++++++++++")
+			    	console.log(channel);
+			        channel = peerCnxCollection[peerCnxId].createDataChannel("1to1_PtoR", {reliable: false});
+            		var tStp = tools.humanDateER("date");
+            		console.log ("peerCnxCollection[peerCnxId].createDataChannel("+tStp+")");
+			        console.log(channel);
+			        console.log("+++++++++++++++++++++++++++++++++++++");
+
+			        //var data = {from: localObjUser, channel: channel.toJSON()};
+			        //console.log (data);
+			        var data = tools.deepClone(channel);
+			        socket.emit("channelObject", data);
+
+			    } catch (e) { console.warn("No data channel (peerCnxCollection[peerCnxId])", e); }
+			}
+
+			/**/// setupDC1();
+
+
+					console.log("+++++++++++++++++++++++++++++++++++++")
+			    	console.log(channel);
+			        channel = peerCnxCollection[peerCnxId].createDataChannel("1to1_PtoR", {reliable: false});
+            		var tStp = tools.humanDateER("date");
+            		console.log ("peerCnxCollection[peerCnxId].createDataChannel("+tStp+")");
+			        console.log(channel);
+			        console.log("+++++++++++++++++++++++++++++++++++++");
+
+			        //var data = {from: localObjUser, channel: channel.toJSON()};
+			        //console.log (data);
+			        // -----------------------------------------
+			        // var data = tools.deepClone(channel);
+			        // socket.emit("channelObject", data);
+
+
+
+            // et on peut maintenant lancer l'écouteur d'évènement sur le datachannel
             bindEvents();
 
             // création et envoi de l'offre SDP
@@ -550,7 +620,7 @@ function connect(peerCnxId) {
                         peerCnxCollection[peerCnxId].setLocalDescription(sdp);
                         console.log ("------------ offer >>> to "+cible.typeClient+"----------");
                         var data = {from: localObjUser, message: sdp, cible: cible, peerCnxId: peerCnxId}
-                        // console.log (data);
+                        // console.log (data.message.sdp);
                         socket.emit("offer2", data);
                     }
                     , errorHandler, 
@@ -564,16 +634,25 @@ function connect(peerCnxId) {
         
         // Si on est dans la peerConnection principale (Pilote <> Robot)
         if (peerCnxId == peerCnx1to1) {
+            var tStp1 = tools.humanDateER("date");
+            console.log ("@ ondatachannel = function(e) {... "+tStp1)
 
+            // bindEvents(); //now bind the events
             // l'appelé doit attendre l'ouverture d'un dataChannel pour lancer son écouteur d'èvènement data...
             // Ecouteur d'ouverture d'un data channel
             peerCnxCollection[peerCnxId].ondatachannel = function(e) {
+                console.log("+++++++++++++++++++++++++++++++++++++")
+                var tStp2 = tools.humanDateER("date");
+            	console.log ("peerCnxCollection[peerCnxId].ondatachannel("+tStp2+")");
+            	console.log(e);
+                console.log("+++++++++++++++++++++++++++++++++++++")
+
                 channel = e.channel;
-                console.log("pc["+peerCnxId+"].ondatachannel(e)... ");
                 bindEvents(); //now bind the events
             };
+            /**/
         } // endif connexion principale (Pilote <> Robot)
-
+        /**/
     }
 }
 
@@ -593,8 +672,12 @@ function connect(peerCnxId) {
 socket.on("offer", function(data) {
     
     if (data.cible.id == myPeerID) {
-        console.log ("------------ >>> offer from "+data.from.typeClient+"----------");
-        console.log ("isRenegociate:"+isRenegociate);
+        
+    	var tStp = tools.humanDateER("R");
+		console.log ("------------ >>> offer from "+data.from.typeClient+" "+tStp);
+       
+
+
         if (isRenegociate == false) {            
 
             //console.log("(apellé)>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
@@ -635,7 +718,8 @@ socket.on("offer", function(data) {
 // Réception d'une réponse à une offre
 socket.on("answer", function(data) {
     if (data.cible.id == myPeerID) {
-        console.log ("------------ >>> answer from "+data.from.typeClient+"----------");
+        var tStp = tools.humanDateER("R");
+		console.log ("------------ >>> answer from "+data.from.typeClient+" "+tStp);
         //console.log("- Answer From: " + data.from.pseudo +"("+data.from.id+")");
         //console.log("- Cible: " + data.cible.pseudo +"("+data.cible.id+")");
         //console.log("- peerconnection: " + data.peerCnxId);
@@ -657,6 +741,18 @@ socket.on("candidate", function(data) {
         peerCnxCollection[data.peerCnxId].addIceCandidate(new IceCandidate(data.message)); // OK
     }
 });
+
+// tentative contournement BUG createDataChannel sous Chrome
+socket.on("channelObject", function(data) {
+	var tStp = tools.humanDateER("R");
+	console.log ("------------ >>> channelObject ");
+	console.log (data);
+	// channel = peerCnxCollection[peerCnx1to1].createDataChannel(data, {reliable: false});
+	// channel = data;
+    // bindEvents(); //now bind the events
+});
+/**/
+
 
 
 // ----- Phase 3 Post-Signaling --------------------------------------------
@@ -728,6 +824,9 @@ function stopAndStart(peerCnxId) {
 // bind the channel events
 function bindEvents() {
 
+    // alert ("@ bindEvents()");
+    console.log("@ bindEvents()");
+
     // écouteur d'ouverture
     channel.onopen = function() {
         //console.log("RTCDataChannel is Open");
@@ -753,6 +852,7 @@ function bindEvents() {
             cmd = JSON.parse(cmd);
             // S'il existe une propriété "command" (commande via webRTC))
             if (cmd.command) {
+                
                 // Affiche la trace de la commande dans le chatlog webRTC
                 var delta = dateR-cmd.dateE;
                 $(chatlog).prepend('[' +delta+' ms] ' + cmd.command + "\n");
@@ -765,6 +865,7 @@ function bindEvents() {
                     // Envoi commande  
                     robubox.sendDrive(cmd.enable, cmd.aSpeed, cmd.lSpeed);
                 }
+                
                 else if (cmd.command == "onStop") {
                     // Flags homme mort
                     onMove = false;
@@ -772,6 +873,7 @@ function bindEvents() {
                     // Envoi commande    
                     robubox.sendDrive(cmd.enable, cmd.aSpeed, cmd.lSpeed);
                 }
+                
                 else if (cmd.command == "onStep") {
                     robubox.sendStep(cmd.typeMove,cmd.distance,cmd.MaxSpeed) ;
                 }
@@ -816,7 +918,7 @@ $('#formulaire_chat_webRTC').submit(function() {
 
 // --------------------- Gestion des commandes du robot -------------------
 
-// fonction homme mort...
+// Robot: fonction homme mort...
 if (type == "robot-appelé") {
     function deathMan(){
     
@@ -836,7 +938,7 @@ if (type == "robot-appelé") {
 }
 
 
-// Reception webSocket d'une commande pilote
+// Robot: Reception webSocket d'une commande pilote
 // On la renvoie au client robot qui exécuté sur la même machine que la Robubox.
 // Il pourra ainsi faire un GET ou un POST de la commande à l'aide d'un proxy et éviter le Cross Origin 
 socket.on("piloteOrder", function(data) {
@@ -860,7 +962,7 @@ socket.on("piloteOrder", function(data) {
             robubox.sendStep(data.typeMove,data.distance,data.MaxSpeed) ;
         }
         
-        // Quand envoie une trace au log WebSocket de l'IHM robot
+        // Envoi d'une trace au log WebSocket de l'IHM robot
         var dateR = Date.now();
         var delta = dateR-data.dateE;
         var msg = '[' +delta+' ms] ' +data.command;

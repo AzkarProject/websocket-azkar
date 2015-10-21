@@ -45,14 +45,48 @@ console.log("***********************************");
 console.log("Serveur sur machine: " + hostName);
 
 
-var app = require('express')(),
+// This line is from the Node.js HTTPS documentation.
+/*
+var options = {
+  key: fs.readFileSync('test/fixtures/keys/agent2-key.pem'),
+  cert: fs.readFileSync('test/fixtures/keys/agent2-cert.cert')
+};
+/**/
+/*
+var options = {
+  key: fs.readFileSync('test/fixtures/keys/agent2-key.pem'),
+  cert: fs.readFileSync('test/fixtures/keys/agent2-cert.cert')
+};
+/**/
+
+//var privateKey = fs.readFileSync('./ssl/privatekey.pem').toString();
+//var certificate = fs.readFileSync('./ssl/certificate.pem').toString(); 
+var fs = require('fs');
+var options = {
+  key: fs.readFileSync('./ssl/privatekey.pem'),
+  cert: fs.readFileSync('./ssl/certificate.pem')
+};
+
+console.log(options); 
+var express = require('express');
+var app = express(),
     server = require('http').createServer(app),
-    //server = require('https').createServer(app),
+    //server = require('https').createServer(options, app),
+    io = require('socket.io').listen(server),
+    ent = require('ent'); // Permet de bloquer les caractères HTML (sécurité équivalente à htmlentities en PHP)
+    //fs = require('fs');
+/**/
+
+/*
+var app = require('express')(),
+    //server = require('http').createServer(app),
+    server = require('https').createServer(options, app),
     io = require('socket.io').listen(server),
     ent = require('ent'), // Permet de bloquer les caractères HTML (sécurité équivalente à htmlentities en PHP)
     fs = require('fs');
+/**/
 
-var express = require('express');
+//var express = require('express');
 
 // affectation du port
 app.set('port', port);
@@ -120,11 +154,30 @@ wsIdPilote = '';
 wsIdRobot = '';
 
 
+// Flag session serveur
+isServerStarted = false;
+
 io.on('connection', function(socket, pseudo) {
 
+    // Ecouteur de connexion entrante
     onSocketConnected(socket);
 
-    // Quand un User rentre un pseudo (version objet), 
+    // Ejection de force de tous les connectés de la précédente session serveur
+    function razConnexions() {
+        var data = { url: indexUrl};  
+        socket.broadcast.emit('razConnexion',data); 
+        console.log ("> socket.broadcast.emit('razConnexion',"+data.url+")");
+        isServerStarted = true;         
+    }
+    
+    // Temporisation avant lancement du RAZconnexion
+    // le temps de laisser au système le délai nécéssaire 
+    // à la découverte des connectés de la session serveur précédente
+    if (isServerStarted == false ) {
+        setTimeout(razConnexions,5000);
+    }
+    
+    // Quand un User rentre un pseudo 
     // on le stocke en variable de session et on informe les autres Users
     socket.on('nouveau_client2', function(data) {
 
@@ -364,11 +417,12 @@ io.on('connection', function(socket, pseudo) {
         consoleTxt += " to " + data.cible.pseudo +"("+data.cible.id+") / peerConnectionID: "+ data.peerCnxId;
         console.log(consoleTxt);
         // 1toN pilote/Visiteur
-        if (data.from.typeClient == "Visiteur") socket.broadcast.emit('answerFromVisitor',data);
+        //if (data.from.typeClient == "Visiteur") socket.broadcast.emit('answerFromVisitor',data);
         // 1to1 pilote/Robot 
-        else socket.broadcast.emit('answer',data);
+        //else socket.broadcast.emit('answer',data);
         
         //io.to(data.cible.id).emit('answer', data);
+        socket.broadcast.emit('answer',data);
     });
 
     socket.on('candidate2', function(data) {
@@ -379,17 +433,40 @@ io.on('connection', function(socket, pseudo) {
         consoleTxt += "to "+data.cible.pseudo +" ("+data.cible.id+") / peerConnectionID: "+ data.peerCnxId;
         console.log(consoleTxt);
         // 1toN pilote/Visiteur
-        if (data.from.typeClient == "Visiteur") socket.broadcast.emit('candidateFromVisitor',data);
+        //if (data.from.typeClient == "Visiteur") socket.broadcast.emit('candidateFromVisitor',data);
         // 1to1 pilote/Robot
-        else socket.broadcast.emit('candidate', data);
+        //else socket.broadcast.emit('candidate', data);
         
 
         //io.to(data.cible.id).emit('candidate', data);
+        socket.broadcast.emit('candidate', data);
     });
+
+    
+    socket.on('offer_VtoR', function(data) {
+
+        var consoleTxt = tools.humanDateER('R') + " @ offer_VtoR >>>> (SDP from "+ data.from.pseudo +"("+data.from.id+")"
+        consoleTxt += " to " + data.cible.pseudo +"("+data.cible.id+") / peerConnectionID: "+ data.peerCnxId;
+        console.log(consoleTxt);
+
+        socket.broadcast.emit('offer_VtoR', data);
+        //io.to(data.cible.id).emit('offer', data);
+    });
+
+
+    // tentative contournement BUG createDataChannel sous Chrome
+    socket.on("channelObject", function(data) {
+        var consoleTxt = tools.humanDateER('R') + " @ channelObject >>>> (RTCdatachannel from Pilote";
+        console.log(consoleTxt);
+        console.log(data);
+        socket.broadcast.emit('channelObject', data);
+        //io.to(data.cible.id).emit('offer', data);
+    });
+    
 
     // ----------------------------------------------------------------------------------
     // Phase pré-signaling ( selections caméras et micros du robot par l'IHM pilote 
-    // et status de la connexion WebRTC de chaque client)
+    // et statut de la connexion WebRTC de chaque client)
 
     // Retransmission du statut de connexion WebRTC du pilote
     socket.on('piloteCnxStatus', function(message) {
@@ -439,7 +516,7 @@ io.on('connection', function(socket, pseudo) {
 
 
     // ----------------------------------------------------------------------------------
-    // elements pré-Signaling adaptée au 1toN & NtoN
+    // Elements pré-Signaling adaptée au 1toN & NtoN
     // A la différence du 1to1 de base, ces messages ne sont pas broadcastés à tous les connectés
     // mais sont relayés à une cible spécifique 'io.to(destinataire.id)...' 
 
@@ -468,6 +545,69 @@ io.on('connection', function(socket, pseudo) {
        socket.broadcast.emit('visitorCnxPiloteStatus', data);
     });
 
+   
+    // Connexions p2p Robot-visiteur (1toN) --------------
+    
+    socket.on("VtoR_initPreSignaling", function(data) {
+        var consoleTxt = tools.humanDateER('R') + " @ VtoR_initPreSignaling >>>> from "+data.from.pseudo+" ("+data.from.id+") ";
+        consoleTxt += "to: "+data.cible.pseudo+"("+data.cible.id+")"; 
+        console.log(consoleTxt); 
+        io.to(data.cible.id).emit('VtoR_requestConnect', data);
+    });
+
+    /*
+    socket.on("VtoR_requestConnect", function(data) {
+        var consoleTxt = tools.humanDateER('R') + " @ VtoR_requestConnect >>>> from "+data.from.pseudo+" ("+data.from.id+") ";
+        consoleTxt += "to: "+data.cible.pseudo+"("+data.cible.id+")"; 
+        console.log(consoleTxt); 
+        io.to(data.cible.id).emit('VtoR_requestConnect', data);
+    });
+    /**/
+
+    socket.on('VtoR_readyForSignaling', function(data) { 
+        var consoleTxt = tools.humanDateER('R') + " @ VtoR_ReadyForSignaling >>>> from "+data.from.pseudo+" ("+data.from.id+") ";
+        consoleTxt += "to: "+data.cible.pseudo+"("+data.cible.id+")"; 
+        console.log(consoleTxt); 
+        io.to(data.cible.id).emit('VtoR_ReadyForSignaling', data);
+    }); 
+
+
+/*if (type == "robot-appelé") {    
+    socket.on("VtoR_requestConnect", function(data) {
+        // Si on est la bonne cible...
+        if (data.cible.id === myPeerID ) {
+            // mémo: data = {from: localObjUser, cible: cible}
+            console.log(">> socket.on('VtoR_requestConnect',...");
+            var peerID = prefix_peerCnx_VtoR+myPeerID; // On fabrique l'ID de la connexion
+            initLocalMedia_VtoR(peerID); // Et on l'ance l'initlocalmedia avec sa nouvelle id de connexion
+        }
+        var data = {from: localObjUser, cible: data.from}
+        socket.emit("VtoR_readyForSignaling", data);
+    })
+}
+
+// socket.on("VtoR_ReadyForSignaling", function(data) {
+if (type == "visiteur-apellé") {
+    socket.on("VtoR_ReadyForSignaling", function(data) {
+        console.log(">> socket.on('VtoR_readyForSignaling',...");
+        // Si on est la bonne cible
+        if (data.cible.id === myPeerID ) {
+            // mémo: data = {from: localObjUser, cible: cible}
+            var cibleID = data.from.id; // On récupère l'Id du visiteur
+            var peerID = prefix_peerCnx_VtoR+cibleID; // On la concatène avec le préfixe 
+            initLocalMedia_VtoR(peerID); // Et on l'ance l'initlocalmedia avec sa nouvelle id de connexion
+        }
+    })
+ }
+ /**/
+
+
+
+
+
+
+
+
    // Elements de post-signaling----------------------------------------------------------------------------------
 
     socket.on('closeConnectionOrder', function(data) { 
@@ -494,14 +634,11 @@ io.on('connection', function(socket, pseudo) {
 // ------------ fonctions Diverses ------------
 
 // Pour Contrôle des connectés coté serveur
-// Ecouteur de connexion d'un nouveau client
+// Ecouteur de connexion entrante
 function onSocketConnected(socket) {
-    // console.log ("-------------------------------");
     console.log("> Connexion entrante: (ID: " + socket.id + ")");
-    //var infoServer = appName + " V " + appVersion;
-    //io.to(socket.id).emit('infoServer', infoServer);
 }
-/**/
+
 
 // ----- Contrôles pour débuggage coté serveur
 

@@ -232,8 +232,21 @@ exports.toObject = function  (arr) {
   return rv;
 }
 
+// ----------------- Objets
 
 
+// Copie profonde d'un objet
+exports.deepClone = function  (obj) {
+    console.log("tools.deepClone(obj)")
+    try{
+        var copy = JSON.parse(JSON.stringify(obj));
+    } catch(ex){
+        alert("Vous utilisez un vieux navigateur bien pourri, qui n'est pas pris en charge par ce site");
+    }
+    return copy;
+}
+
+ 
  // Fonctions de débuggage
  // ---------------------------
 
