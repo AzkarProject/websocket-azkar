@@ -18,9 +18,10 @@ exports.appBranch = function(){
 
 exports.isRobubox = function(){
     var user = getCookie("username");
-    // if (user == "Thaby") return true; 
- 	// else return false;
- 	return false;
+    if (user == "Thaby") return true; 
+ 	else return false;
+ 	// return false;
 };
+
 
 })(typeof exports === 'undefined'? this['settings']={}: exports);

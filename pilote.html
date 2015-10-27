@@ -10,8 +10,10 @@
     <!-- viewport sert a controler la mise en page sur les appareils mobiles -->
     <meta name='viewport' content='width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1'>
     <link rel="stylesheet" href="/css/style.css" />
-    
+    <!--
     <script src='http://code.jquery.com/jquery-1.11.3.min.js'></script>
+    -->
+    <script src='/js/lib/jquery-1.11.3.min.js'></script>
     <link rel="import" href="/kom-remote.html">
     
 
@@ -106,7 +108,11 @@
 
                 <div id="step-commands">
                     
+                    
                     <kom-remote class="kom-remote"></kom-remote>
+
+
+
                     <!--
                     Distance :
                     <input type="text" name="distance" id="stepDistance" size="4" value="0.1" /> mètres 
@@ -373,7 +379,6 @@
 
     <script>
     var type = "pilote-appelant";
-    var otherType = "robot-appelé";
     </script>
     
     <script src="/socket.io/socket.io.js"></script>

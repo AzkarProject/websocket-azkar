@@ -14,8 +14,11 @@ var os = require("os");
 hostName = os.hostname();
 dyDns = 'azkar.ddns.net'; // Adresse no-Ip pointant sur Livebox domicile
 
-ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP || "127.0.0.1"; // défaut
-port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 80; // défaut
+// ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP || "127.0.0.1"; // défaut
+// port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 80; // défaut
+
+ipaddress = "127.0.0.1"; // défaut
+port = 80; // défaut
 
 // Machines windows - I3S
 if (hostName == "azcary") ipaddress = "192.168.173.1"; // Ip du réseau virtuel robulab2_wifi
@@ -44,52 +47,83 @@ console.log('');
 console.log("***********************************");
 console.log("Serveur sur machine: " + hostName);
 
-
-// This line is from the Node.js HTTPS documentation.
-/*
-var options = {
-  key: fs.readFileSync('test/fixtures/keys/agent2-key.pem'),
-  cert: fs.readFileSync('test/fixtures/keys/agent2-cert.cert')
-};
-/**/
-/*
-var options = {
-  key: fs.readFileSync('test/fixtures/keys/agent2-key.pem'),
-  cert: fs.readFileSync('test/fixtures/keys/agent2-cert.cert')
-};
-/**/
-
-//var privateKey = fs.readFileSync('./ssl/privatekey.pem').toString();
-//var certificate = fs.readFileSync('./ssl/certificate.pem').toString(); 
+/*// Original http -----------------------------
 var fs = require('fs');
-var options = {
-  key: fs.readFileSync('./ssl/privatekey.pem'),
-  cert: fs.readFileSync('./ssl/certificate.pem')
-};
-
-console.log(options); 
 var express = require('express');
 var app = express(),
     server = require('http').createServer(app),
     //server = require('https').createServer(options, app),
     io = require('socket.io').listen(server),
-    ent = require('ent'); // Permet de bloquer les caractères HTML (sécurité équivalente à htmlentities en PHP)
-    //fs = require('fs');
-/**/
+    ent = require('ent'); // Bloque les caractères HTML (idem htmlentities en PHP)
 
-/*
-var app = require('express')(),
-    //server = require('http').createServer(app),
-    server = require('https').createServer(options, app),
-    io = require('socket.io').listen(server),
-    ent = require('ent'), // Permet de bloquer les caractères HTML (sécurité équivalente à htmlentities en PHP)
-    fs = require('fs');
-/**/
+// Pour que nodejs puisse servir correctement 
+// les dépendances css du document html
+app.use(express.static(__dirname));
 
-//var express = require('express');
+// ------------ routing ------------
+
+// Chargement de la page index.html
+app.get('/', function(req, res) {
+    res.sendFile(__dirname + '/index.html');
+});
+
+// Routing IHM >>>> TODO coté clients
+app.get('/pilote/', function(req, res) {
+    res.sendFile(__dirname + '/pilote.html');
+});
+
+app.get('/robot/', function(req, res) {
+    res.sendFile(__dirname + '/robot.html');
+});
+
+app.get('/visiteur/', function(req, res) {
+    res.sendFile(__dirname + '/visiteur.html');
+});
+
+app.get('/cartographie/', function(req, res) {
+    res.sendFile(__dirname + '/cartographie.html');
+});
+
+// On passe la variable hostName en ajax à l'ihm d'accueil
+// puisqu'on ne peux plus passer par websocket...
+// TODO >> Faire pareil avec Pilote et Robot pour économiser une requête ws...
+// NB : Fait le 19/08
+app.get("/getvar", function(req, res){
+    res.json({ hostName: hostName });
+});
+
+// Lancement du serveur
+server.listen(port, ipaddress); // OK HTTP
+
+/**/// Fin original http ---------------------------------
+
+/*//  Alternative fonctionnelle en HTTP ------
+
+var http = require('http');
+var https = require('https');
+var fs = require('fs');
+var ent = require('ent'); // Permet de bloquer les caractères HTML (sécurité équivalente à htmlentities en PHP)
+
+var options = {
+  key: fs.readFileSync('./ssl/hacksparrow-key.pem'),
+  cert: fs.readFileSync('./ssl/hacksparrow-cert.pem')
+};
+
+
+// // OK ca fonctionne
+// var a = https.createServer(options, function (req, res) {
+//   res.writeHead(200);
+//   res.end("hello world\n");
+// }).listen(8000); // Ca plante si on définit une adresse IP...
+
+
+var express = require('express');
+var app = express();
+
+/// -------------------------------------------------
 
 // affectation du port
-app.set('port', port);
+// app.set('port', port);
 
 // Pour que nodejs puisse servir correctement 
 // les dépendances css du document html
@@ -129,16 +163,86 @@ app.get("/getvar", function(req, res){
 
 
 // Lancement du serveur
-server.listen(app.get('port'), ipaddress);
+//server.listen(app.get('port'), ipaddress);
+server = http.createServer(app); // OK HTTP
+//server = https.createServer(options, app); // Pas OK...
+server.listen(port, ipaddress); // OK HTTP
+// server.listen(port); // BUG HTTPS
+io = require('socket.io').listen(server); // OK
 
+/**/// Fin ------ Alternative fonctionnelle en HTTP ------
+
+
+// Alternative HTTPS ---------------------------
+
+var fs = require('fs');
+var express = require('express');
+var https = require('https');
+var ent = require('ent'); // Permet de bloquer les caractères HTML (sécurité équivalente à htmlentities en PHP)
+
+var key = fs.readFileSync('./ssl/hacksparrow-key.pem');
+var cert = fs.readFileSync('./ssl/hacksparrow-cert.pem');
+// A chaque serveur son certificat avec l'URL proprement indiquée
+// pour importer et enregistrer le certificat coté client
+// et ne plus avoir à autoriser la connexion a chaque foi... 
+if (hostName == "azcary") { 
+	key = fs.readFileSync('./ssl/azcary-key.pem');
+	cert = fs.readFileSync('./ssl/azcary-cert.pem');	
+} else if (hostName == "AZKAR-1") {
+	key = fs.readFileSync('./ssl/vm-azkar1-key.pem');
+	cert = fs.readFileSync('./ssl/vm-azkar1-cert.pem');	
+}
+
+var https_options = {
+    key: key,
+    cert: cert
+};
+
+var PORT = port;
+var HOST = ipaddress;
+app = express();
+
+server = https.createServer(https_options, app).listen(PORT, HOST);
+console.log('HTTPS Server listening on %s:%s', HOST, PORT);
+
+// Pour que nodejs puisse servir correctement 
+// les dépendances css du document html
+app.use(express.static(__dirname));
+
+// Routing des différentes IHM
+app.get('/', function(req, res) {
+    res.sendFile(__dirname + '/index.html');
+});
+
+app.get('/pilote/', function(req, res) {
+    res.sendFile(__dirname + '/pilote.html');
+});
+
+app.get('/robot/', function(req, res) {
+    res.sendFile(__dirname + '/robot.html');
+});
+
+app.get('/visiteur/', function(req, res) {
+    res.sendFile(__dirname + '/visiteur.html');
+});
+
+// On passe la variable hostName en ajax à l'IHM d'accueil
+// puisqu'on ne peux pas passer par websocket...
+app.get("/getvar", function(req, res){
+    res.json({ hostName: hostName });
+});
+
+
+io = require('socket.io').listen(server); // OK
+/**/// Fin test 2 -----------------------------
 
 // ------ Partie Websocket ------------------
 
 // Adresse de redirection pour les connexions refusées
 var indexUrl;
-indexUrl = "http://" + ipaddress + ":" + port; // Par défaut...
+indexUrl = "https://" + ipaddress + ":" + port; // Par défaut...
+// Todo: a modifier coté dydns >>>> Redirection vers https...
 if (hostName == "azkar-Latitude-E4200") indexUrl = "http://" + dyDns; // Si machine derrière liveBox && noip
-
 
 // liste des clients connectés
 var users2 = {};
@@ -153,9 +257,10 @@ histoPosition2 = 0;
 wsIdPilote = '';
 wsIdRobot = '';
 
-
 // Flag session serveur
 isServerStarted = false;
+
+
 
 io.on('connection', function(socket, pseudo) {
 
@@ -340,7 +445,7 @@ io.on('connection', function(socket, pseudo) {
         // contrôle liste connectés coté serveur
         console.log("> Il reste " + nbUsers + " connectés");
     });
-    /**/
+    
 
     // Transmission de messages génériques 
     socket.on('message2', function(data) {
@@ -388,14 +493,14 @@ io.on('connection', function(socket, pseudo) {
 
 
     socket.on('offer2', function(data) {
-        /*
-        console.log("----+offer+----");
-        console.log(">>>>> Offer From: " + data.from.pseudo +"("+data.from.id+")");
-        console.log(">>>>> Cible: " + data.cible.pseudo +"("+data.cible.id+")");
-        console.log(">>>>> peerConnectionID: " + data.peerCnxId);
-        console.log(data.message);
-        console.log("----/offer/----");
-        /**/
+        
+        // console.log("----+offer+----");
+        // console.log(">>>>> Offer From: " + data.from.pseudo +"("+data.from.id+")");
+        // console.log(">>>>> Cible: " + data.cible.pseudo +"("+data.cible.id+")");
+        // console.log(">>>>> peerConnectionID: " + data.peerCnxId);
+        // console.log(data.message);
+        // console.log("----/offer/----");
+        
         var consoleTxt = tools.humanDateER('R') + " @ offer >>>> (SDP from "+ data.from.pseudo +"("+data.from.id+")"
         consoleTxt += " to " + data.cible.pseudo +"("+data.cible.id+") / peerConnectionID: "+ data.peerCnxId;
         console.log(consoleTxt);
@@ -405,14 +510,14 @@ io.on('connection', function(socket, pseudo) {
     });
 
     socket.on('answer2', function(data) {
-        /*
-        console.log("----+answer+----");
-        console.log(">>>>> Answer From: " + data.from.pseudo +"("+data.from.id+")");
-        console.log(">>>>> Cible: " + data.cible.pseudo +"("+data.cible.id+")");
-        console.log(">>>>> peerConnectionID: " + data.peerCnxId);
-        console.log(data.message);
-        console.log("----/answer/----");
-        /**/
+        
+        // console.log("----+answer+----");
+        // console.log(">>>>> Answer From: " + data.from.pseudo +"("+data.from.id+")");
+        // console.log(">>>>> Cible: " + data.cible.pseudo +"("+data.cible.id+")");
+        // console.log(">>>>> peerConnectionID: " + data.peerCnxId);
+        // console.log(data.message);
+        // console.log("----/answer/----");
+        
         var consoleTxt = tools.humanDateER('R') + " @ answer >>>> (SDP from "+ data.from.pseudo +"("+data.from.id+")"
         consoleTxt += " to " + data.cible.pseudo +"("+data.cible.id+") / peerConnectionID: "+ data.peerCnxId;
         console.log(consoleTxt);
@@ -555,14 +660,14 @@ io.on('connection', function(socket, pseudo) {
         io.to(data.cible.id).emit('VtoR_requestConnect', data);
     });
 
-    /*
-    socket.on("VtoR_requestConnect", function(data) {
-        var consoleTxt = tools.humanDateER('R') + " @ VtoR_requestConnect >>>> from "+data.from.pseudo+" ("+data.from.id+") ";
-        consoleTxt += "to: "+data.cible.pseudo+"("+data.cible.id+")"; 
-        console.log(consoleTxt); 
-        io.to(data.cible.id).emit('VtoR_requestConnect', data);
-    });
-    /**/
+    
+    // socket.on("VtoR_requestConnect", function(data) {
+    //     var consoleTxt = tools.humanDateER('R') + " @ VtoR_requestConnect >>>> from "+data.from.pseudo+" ("+data.from.id+") ";
+    //     consoleTxt += "to: "+data.cible.pseudo+"("+data.cible.id+")"; 
+    //     console.log(consoleTxt); 
+    //     io.to(data.cible.id).emit('VtoR_requestConnect', data);
+    // });
+    
 
     socket.on('VtoR_readyForSignaling', function(data) { 
         var consoleTxt = tools.humanDateER('R') + " @ VtoR_ReadyForSignaling >>>> from "+data.from.pseudo+" ("+data.from.id+") ";
@@ -570,43 +675,6 @@ io.on('connection', function(socket, pseudo) {
         console.log(consoleTxt); 
         io.to(data.cible.id).emit('VtoR_ReadyForSignaling', data);
     }); 
-
-
-/*if (type == "robot-appelé") {    
-    socket.on("VtoR_requestConnect", function(data) {
-        // Si on est la bonne cible...
-        if (data.cible.id === myPeerID ) {
-            // mémo: data = {from: localObjUser, cible: cible}
-            console.log(">> socket.on('VtoR_requestConnect',...");
-            var peerID = prefix_peerCnx_VtoR+myPeerID; // On fabrique l'ID de la connexion
-            initLocalMedia_VtoR(peerID); // Et on l'ance l'initlocalmedia avec sa nouvelle id de connexion
-        }
-        var data = {from: localObjUser, cible: data.from}
-        socket.emit("VtoR_readyForSignaling", data);
-    })
-}
-
-// socket.on("VtoR_ReadyForSignaling", function(data) {
-if (type == "visiteur-apellé") {
-    socket.on("VtoR_ReadyForSignaling", function(data) {
-        console.log(">> socket.on('VtoR_readyForSignaling',...");
-        // Si on est la bonne cible
-        if (data.cible.id === myPeerID ) {
-            // mémo: data = {from: localObjUser, cible: cible}
-            var cibleID = data.from.id; // On récupère l'Id du visiteur
-            var peerID = prefix_peerCnx_VtoR+cibleID; // On la concatène avec le préfixe 
-            initLocalMedia_VtoR(peerID); // Et on l'ance l'initlocalmedia avec sa nouvelle id de connexion
-        }
-    })
- }
- /**/
-
-
-
-
-
-
-
 
    // Elements de post-signaling----------------------------------------------------------------------------------
 
@@ -624,12 +692,8 @@ if (type == "visiteur-apellé") {
         console.log(consoleTxt); 
         socket.broadcast.emit('closeMasterConnection', data);
     }); 
-
 });
-
-
-
-
+/**/
 
 // ------------ fonctions Diverses ------------
 
@@ -648,21 +712,18 @@ var expressVersion = require('express/package').version;
 var entVersion = require('ent/package').version;
 //var fsVersion = require('express/package').version;
 //var httpVersion = require('socket.io/package').version;
-var bodyparserVersion = require('body-parser/package').version;
-var HttpStatusVersion = require('http-status-codes/package').version;
-var xhr2Version = require('xhr2/package').version;
-var QVersion = require('q/package').version;
+//var bodyparserVersion = require('body-parser/package').version;
+//var HttpStatusVersion = require('http-status-codes/package').version;
+//var xhr2Version = require('xhr2/package').version;
+//var QVersion = require('q/package').version;
 
 // Affichage de contrôle coté serveur
 console.log("***********************************");
 console.log("** Socket.IO Version: " + ioVersion);
 console.log("** Express Version: " + expressVersion);
 console.log("** Ent  Version: " + entVersion);
-console.log("** Body-parser Version: " + bodyparserVersion);
-console.log("** Http-status-codes Version: " + HttpStatusVersion);
-console.log("** Xhr2 Version: " + xhr2Version);
-console.log("** Q Version: " + QVersion);
-console.log("***********************************");
-console.log("** Adresse IP = " + ipaddress);
-console.log("** N° de port = " + port);
+//console.log("** Body-parser Version: " + bodyparserVersion);
+//console.log("** Http-status-codes Version: " + HttpStatusVersion);
+//nsole.log("** Xhr2 Version: " + xhr2Version);
+//console.log("** Q Version: " + QVersion);
 console.log("***********************************");

@@ -187,7 +187,7 @@ server.iceServers.push({url: "turn:numb.viagenie.ca",credential: "webrtcdemo",us
 server.iceServers.push({url: "turn:turn.anyfirewall.com:443?transport=tcp",credential: "webrtc",username: "webrtc"});
 server.iceServers.push({url: "turn:turn1.xirsys.com:443?transport=tcp",credential: "b8631283-b642-4bfc-9222-352d79e2d793",username: "e0f4e2b6-005f-440b-87e7-76df63421d6f"});
 
-
+/*
 options = {
     optional: [{
             DtlsSrtpKeyAgreement: true
@@ -196,6 +196,10 @@ options = {
         } //required for Firefox
     ]
 }
+/**/
+
+// corection du bug createDataChannel à partir de Chrome M46
+options = { optional: [{DtlsSrtpKeyAgreement: true }]};
 
 
 // Constraints de l'offre SDP. 
