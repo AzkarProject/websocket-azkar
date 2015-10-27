@@ -10,20 +10,23 @@
 	- [X] Transformer les Users en "objet"
 	- [x] Passer liste Users coté client
 
-- [x] Reviews Projets Miage + multiStream Plan B
-
 - [ ] (option 1) 1toN Bas niveau
     - [x] Peerconnexion en tableaux
     - [x] Modélisation signaling 1to1 & 1toN
     - [x] Modélisation post-signaling 1to1 & 1toN
-    - [X] 1to1 Pilote<>Robot
+    - [x] 1to1 Pilote<>Robot
     - [x] 1toN Pilote<>Visiteurs(S)
-    - [X] 1toN 1-Robot > 1-Pilote > N-Visiteurs(S) - (option1 - BroadCast)
+    - [ ] 1toN 1-Robot > 1-Pilote > N-Visiteurs(S) - (option1 - BroadCast)
+        - [x] Pre-signaling
+        - [x] Signaling
+        - [X] Post-Signaling
         - [ ] Fix Bug Stream Audio
     - [ ] 1toN 1-Robot > N-Visiteurs(S) - (option2 - full Mesh)
+        - [x] Pre-signaling
+        - [x] Signaling
+        - [ ] Post-Signaling
     - [ ] Transfert fichiers Pilote > Visiteurs
     - [X] Implémentation gestion des Visiteurs (droits, etc...)
-        - [X] Implémentation gestion des Visiteurs (droits, etc...)
 
 - [ ] (option 2 Lib) 1toN lib RTCMulticonnection.js
     - [ ] Refactorisa° >>> All .js
@@ -42,9 +45,9 @@
         - [ ] bloc Liste visiteurs
     - [ ] IHM Visiteur 
         - [x] CSS
-        - [ ] Cam Pilote
+        - [x] Cam Pilote
         - [x] Cam Visiteur
-        - [ ] Cam Robot
+        - [x] Cam Robot
         - [ ] Tchat
         - [ ] Bloc Uploaded Files
 
