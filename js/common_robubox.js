@@ -29,7 +29,8 @@ exports.sendDrive = function (enable, aSpeed,lSpeed){
 
 
         // var url = 'http://localhost:50000/api/drive';
-        var url = "http://127.0.0.1:8080/127.0.0.1:50000/api/drive" ; // CORS-ANYWHERE
+        //var url = "http://127.0.0.1:8080/127.0.0.1:50000/api/drive" ; // CORS-ANYWHERE
+        var url = "https://127.0.0.1:443/127.0.0.1:50000/api/drive" ; // CORS-ANYWHERE
 
         // function sendDrive(url, enable, aSpeed,lSpeed) {
         var btnA = (enable == 'true' ? true : false); //  
@@ -67,7 +68,8 @@ exports.sendStep = function (typeMove,dist, MaxSpeed){
         // le type --> relative ou translate
         // var url = 'http://localhost:50000/lokarria/step';
         
-        var url = "http://127.0.0.1:8080/127.0.0.1:50000/lokarria/step/" ; // Tests CORS-ANYWHERE
+        //var url = "http://127.0.0.1:8080/127.0.0.1:50000/lokarria/step/" ; // Tests CORS-ANYWHERE
+        var url = "https://127.0.0.1:443/127.0.0.1:50000/lokarria/step/" ; // Tests CORS-ANYWHERE
             url = url + typeMove ;
             console.log(url) ;
                    
@@ -99,7 +101,8 @@ exports.getBattery = function (){
     if (isRobubox == true) {
 
         //var url = "http://127.0.0.1:8080/?url=http://127.0.0.1:50000/robulab/battery/battery" ;
-        var url = "http://127.0.0.1:8080/127.0.0.1:50000/lokarria/battery" ; // Tests CORS-ANYWHERE
+        //var url = "http://127.0.0.1:8080/127.0.0.1:50000/lokarria/battery" ; // Tests CORS-ANYWHERE
+        var url = "https://127.0.0.1:443/127.0.0.1:50000/lokarria/battery" ; // Tests CORS-ANYWHERE
         //var url = "http://127.0.0.1:8080/127.0.0.1:50000/robulab/battery/battery" ; // Tests CORS-ANYWHERE
         //var url = "http://127.0.0.1:50000/robulab/battery/battery"; // url est passé en paramètre , elle sera interpretée par le 
         var delay = 1000; // l'interval de temps au bout du quel on envoi une autre requete pour rafraichir les information
