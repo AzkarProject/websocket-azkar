@@ -97,6 +97,11 @@ function closeCnxwithAllVisitors() {
 	    }
 	}
 }
+
+
+
+
+
 /**/
 
 function countVisitorsP2P() {
@@ -233,20 +238,20 @@ function updateListUsers() {
 			    	openform = '<button class="shadowBlack txtRed" id="openCnx'+oneUser.id;
 
 			    	// Si Stream == Pilote (Défaut)
-			    	openform += '" onclick="closeCnxwith(\''+oneUser.id+'\')">Close Stream</button>';
+			    	openform += '" onclick="closeCnxwith(\''+oneUser.id+'\')">Close</button>';
 			    	// Si Stream == Robot
 			    	// openform += '" onclick="setCnxWithRobot(\''close'\')">Close Stream</button>';
 
 					var cible = getClientBy('typeClient','Robot');
 					openform += '...<button class="shadowBlack txtGreen" id="initCnx'+oneUser.id;
-					openform +='" onclick="VtoR_InitCnxwith(\''+oneUser.id+'\')">Open Stream</button>';
+					openform +='" onclick="VtoR_InitCnxwith(\''+oneUser.id+'\')">Connect to Robot</button>';
 
 			    // Sinon si Connexion principale p2p active entre pilote et robot >> Bouton Open Stream
 			    } else if (active1to1Cnx == true) { 
 					openform = '<button class="shadowBlack txtGreen" id="openCnx'+oneUser.id;
 
 					// Si Stream == Pilote (Défaut)
-					openform +='" onclick="openCnxwith(\''+oneUser.id+'\')">Open Stream</button>';
+					openform +='" onclick="openCnxwith(\''+oneUser.id+'\')">Open</button>';
 
 
 					// Si Stream == Robot

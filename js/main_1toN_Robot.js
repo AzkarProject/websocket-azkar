@@ -15,7 +15,6 @@ robotConstraints = {
         OfferToReceiveVideo: false
     }
 };
-
 // Constraints de l'offre SDP. 
 visitorConstraints = {
     mandatory: {
@@ -24,7 +23,7 @@ visitorConstraints = {
     }
 };
 
-// socket.on("VtoR_requestConnect", function(data) {
+/*// socket.on("VtoR_requestConnect", function(data) {
 if (type == "robot-appelé") {    
 	socket.on("VtoR_requestConnect", function(data) {
 		// Si on est la bonne cible...
@@ -63,8 +62,51 @@ if (type == "visiteur-appelé") {
 		}
 	})
  }
+/**/
+
+// Visiteur: recoit l'ordre du pilote de demander une connexion au robot
+socket.on("VtoR_initPreSignaling", function(data) {
+    if (type == "visiteur-appelé") {    
+        if (data.cible.id === myPeerID ) {
+            console.log(">> socket.on('VtoR_initPreSignaling',...");
+            var data = {from: localObjUser, cible: data.cible};  
+            socket.emit('VtoR_requestConnect', data);
+        }
+    }
+});
 
 
+// Robot: reçoit la demande de connexion du visiteur
+// il initie la connexion de son coté et prévient le visiteur 
+// qu'il est prêt a recevoir son offre
+socket.on("VtoR_requestConnect", function(data) {
+    if (type == "robot-appelé") {    
+        // Si on est la bonne cible...
+        if (data.cible.id === myPeerID ) {
+            // mémo: data = {from: localObjUser, cible: cible}
+            
+            console.log(">> socket.on('VtoR_requestConnect',...");
+            console.log(data);
+            var peerID = prefix_peerCnx_VtoR+data.from.id; // On fabrique l'ID de la connexion
+            initLocalMedia_VtoR(peerID); // Et on l'ance l'initlocalmedia avec sa nouvelle id de connexion
+            // var data = {from: localObjUser, cible: data.from}
+            // socket.emit("VtoR_readyForSignaling", data);
+        }
+    }
+})
+
+// Visiteur: reçoit la clearance du robot pour initier la connexion
+// de son coté et envoyer son offre au robot. 
+socket.on("VtoR_ReadyForSignaling", function(data) {
+    if (type == "visiteur-appelé") {
+        console.log(">> socket.on('VtoR_readyForSignaling',...");
+        // Si on est la bonne cible
+        if (data.cible.id === myPeerID ) {
+            var peerID = prefix_peerCnx_VtoR+myPeerID; // On la concatène avec le préfixe 
+            initLocalMedia_VtoR(peerID); // Et on l'ance l'initlocalmedia avec sa nouvelle id de connexion
+        }
+}
+})
 
 
 // ---- PHASE 2 : Signaling --------------------------------------------------
@@ -77,10 +119,21 @@ function initLocalMedia_VtoR(peerCnxId) {
         audio: true,
         video: true
     }
-    peerCnxCollection[peerCnxId] =new PeerConnection(server, options);
-    console.log("new peerCnxCollection_VtoR["+peerCnxId+"]"); 
-    //console.log(peerCnxCollection); 
+    
+    // peerCnxCollection[peerCnxId] =new PeerConnection(server, options);
+    // console.log("new peerCnxCollection_VtoR["+peerCnxId+"]"); 
+
  
+    
+    if (peerCnxCollection[peerCnxId]) {
+        // alert ("peerCnxCollection[peerCnxId]") // en cas de renégo
+
+    } else if (!peerCnxCollection[peerCnxId]) {
+        // alert (" No peerCnxCollection[peerCnxId]") // si c'est la première connexion
+        peerCnxCollection[peerCnxId] =new PeerConnection(server, options);
+         console.log("new peerCnxCollection_VtoR["+peerCnxId+"]"); 
+    }
+
     // Récupération des caméras sélectionnées par le pilote
     if (type == "robot-appelé"){
 
@@ -104,12 +157,6 @@ function initLocalMedia_VtoR(peerCnxId) {
         console.log(videoConstraint_VtoR);
 
     }
-
-
-
-
-
-
 
 
     // Initialisation du localStream et lancement connexion
@@ -137,7 +184,7 @@ function connect_VtoR(peerCnxId) {
     //console.log ("@ connect()");
     debugNbConnect_VtoR += 1;
     console.log("@ connect_VtoR("+peerCnxId+") n°"+debugNbConnect_VtoR+"> rôle: " + type);
-    isStarted_VtoR = true;
+    // isStarted_VtoR = true;
 
     // Ecouteurs communs apellant/apellé
     // Ecouteur déclenché à la génération d'un candidate 
@@ -182,7 +229,10 @@ function connect_VtoR(peerCnxId) {
      
         // si le pair distant  est déconnecté en WebRTC,
         if (peerCnxCollection[peerCnxId].iceConnectionState == 'disconnected') {               
+            
             // on lance le processus préparatoire a une reconnexion
+            if (type == 'robot-appellé') alert ("Visiteur déconnecté");
+            else alert ("Robot déconnecté");
             onDisconnect_VtoR(peerCnxId);
         }
 
@@ -231,59 +281,50 @@ function connect_VtoR(peerCnxId) {
 }
 
 
-// Ecouteur signaling
-if (type == "robot-appelé") {
-	
-	socket.on("offer_VtoR", function(data) {
-	    
-	    if (data.cible.id == myPeerID) {
-	        console.log(data);
-	        console.log ("------------ >>> _VtoR offer from "+data.from.typeClient+"----------");
-	        console.log ("isRenegociate_VtoR:"+isRenegociate_VtoR);
-	        if (isRenegociate_VtoR == false) {                      
+// Ecouteur signaling ------------------
+// Ecouteurs Answer et Candidate 
+// Déjas instanciés dans le main_1to1 pour le robot
+// et le 1toN_Visiteurs pour le visiteur 
 
-	            // ------------- Version 1toN
-	            var offer = new SessionDescription(data.message);
-	            peerCnxCollection[data.peerCnxId].setRemoteDescription(offer); 
-	            
-	            // Une foi l'offre reçue et celle-ci enregistrée dans un setRemoteDescription,
-	            // on peu enfin générer une réponse SDP 
-	            var cible = getClientBy('id', data.from.id);
-	            var idPeerConnection = data.peerCnxId;
+// écouteur OFFER:
+socket.on("offer_VtoR", function(data) {
 
-	            console.log (cible);
-
-	            // création de l'offre SDP
-	            peerCnxCollection[idPeerConnection].createAnswer(function(sdp){
-	                    peerCnxCollection[idPeerConnection].setLocalDescription(sdp);
-	                    console.log ("------------ _VtoR Answer to >>> "+cible.typeClient+"----------");
-	                    var data = {from: localObjUser, message: sdp, cible: cible, peerCnxId: idPeerConnection}
-	                    //console.log (data);
-	                    socket.emit("answer2", data);
-	                }
-	                , errorHandler, 
-	                //constraints
-                    robotConstraints
-	            );
-	        }
-	    }
-	});
-
-
-    /*// Réception d'un ICE Candidate
-    socket.on("candidate_VtoR", function(data) {
+    if (type == "robot-appelé") {	    
         if (data.cible.id == myPeerID) {
-            console.log ("------------ >>>> _1toN_VtoP Candidate from "+data.from.typeClient+"----------");
+            console.log(data);
+            console.log ("------------ >>> _VtoR offer from "+data.from.typeClient+"----------");
+            console.log ("isRenegociate_VtoR:"+isRenegociate_VtoR);
+            if (isRenegociate_VtoR == false) {                      
 
-            var candidateFromVisitor = new IceCandidate(data.message);
-            peerCnxCollection[data.peerCnxId].addIceCandidate(candidateFromVisitor);
+                // ------------- Version 1toN
+                var offer = new SessionDescription(data.message);
+                peerCnxCollection[data.peerCnxId].setRemoteDescription(offer); 
+                
+                // Une foi l'offre reçue et celle-ci enregistrée dans un setRemoteDescription,
+                // on peu enfin générer une réponse SDP 
+                var cible = getClientBy('id', data.from.id);
+                var idPeerConnection = data.peerCnxId;
+
+                console.log (cible);
+
+                // création de l'offre SDP
+                peerCnxCollection[idPeerConnection].createAnswer(function(sdp){
+                        peerCnxCollection[idPeerConnection].setLocalDescription(sdp);
+                        console.log ("------------ _VtoR Answer to >>> "+cible.typeClient+"----------");
+                        var data = {from: localObjUser, message: sdp, cible: cible, peerCnxId: idPeerConnection}
+                        //console.log (data);
+                        socket.emit("answer2", data);
+                    }
+                    , errorHandler, 
+                    //constraints
+                    robotConstraints
+                );
+            }
         }
-    });
-    /**/
-	
+    }
+});
 
 
-}
 
 // ----- Phase 3 Post-Signaling --------------------------------------------
 
@@ -294,6 +335,7 @@ socket.on('visitorCnxPiloteStatus', function(data) {
 		updateListUsers(); // refresh contrôles de manage Users
 	}
 });
+/**/
 
 // Réception d'un ordre de déconnexion
 socket.on("closeConnectionOrder", function(data) {
@@ -316,31 +358,10 @@ function onDisconnect_VtoR(peerCnxId) {
 
     console.log("@ onDisconnect_VtoR()");
 
-    /*// On vérifie le flag de connexion
-    if (isStarted_VtoR == false) return;
-
     // on retire le flux remoteStream
     if (type == 'visiteur-appelé') {
-    	video1_VtoR.src = ""; //localVideo
-    	video2_VtoR.src = ""; //RemotevideoPilote
-    } else if (type == "pilote-appelant") {
-    	removeRemoteVideo(peerCnxId);
-    	// videoVisitor1.src = ""; // RemoteVideoVisiteur
-    }
-
-
-
-    //videoElement.src = null;
-    //window.stream.stop();
-
-    // on coupe le RTC Data channel
-    // if (channel) channel.close();
-    // channel = null;
-
-    // On vide et on ferme la connexion courante
-    // pc["+peerCnxId+"].onicecandidate = null;
-    //pc["+peerCnxId+"].close();
-    //pc = null;
+        video3_VtoR.src = "";
+    } 
 
     peerCnxCollection[peerCnxId].close();
     peerCnxCollection[peerCnxId] = null;
@@ -355,9 +376,8 @@ function onDisconnect_VtoR(peerCnxId) {
 function stopAndStart_VtoR(peerCnxId) {
 
     console.log("@ stopAndStart_VtoR()");
- 
-    /*
     peerCnxCollection[peerCnxId] = new PeerConnection(server, options);
+    
     // On informe la machine à état que c'est une renégociation
     isRenegociate_VtoR = true;
     /**/

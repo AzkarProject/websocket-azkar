@@ -114,12 +114,21 @@ socket.on('nouveau_client2', function(objUser) {
     insereMessage3(objUser,message);
 })
 
+
+function isInPeerCnxCollection(peerCnxID ){
+  var isPresent = true
+  if (!peerCnxCollection[peerCnxID] || peerCnxCollection[peerCnxID] == null) isPresent = false;
+  return isPresent;
+}
+
+
+
 // Réception d'une info de deconnexion 
 // >>> plus réactif que l'écouteur de l'API WebRTC
-// >>> On déplace ici l'écouteur ici au cas où la fonction
-// >>> Connect n'as pas encore été apellée.
+// >>> On déplace ici l'écouteur au cas où la fonction
+// >>> Connect de webRTC n'as pas encore été instanciée.
 socket.on("disconnected", function(data) { 
-  console.log(">> socket.on('disconnected',...");
+  console.log(">> socket.on('webSocket-disconnected',...");
 
   var dateR = tools.dateER('R');
   var msg = dateR+' '+data.message;
@@ -133,27 +142,79 @@ socket.on("disconnected", function(data) {
   //if (!data.objUser) alert ("!data.objUser");
   if (!data.objUser) return;
   
-  // Si le receveur est le pilote*
-  // et que le déconnecté est un visiteur
-  // on lance d'office la procédure de déconnexion 
+  
+ // TODO: déplacer à la réception de l'event webRTC "disconnected"
+ // Et si besoin factoriser ca en méthode genres 
+ // common.removeRtc(collection,peercnxID) 
+ // pour éviter d'avoir a retaper le même code sur les 3 mains
+ /*
+ var oldPeerCnx = "......";
+ console.log(oldPeerCnx);
+ for (var key in peerCnxCollection) {
+      oldPeerCnx = key.indexOf(data.objUser.id);
+      //console.log(key);
+      console.log(peerCnxCollection[key]);
+      if (oldPeerCnx != -1) {
+        console.log("----------------------------");
+        peerCnxCollection[key] = null;
+        console.log(peerCnxCollection);
+        console.log("----------------------------");
+      }  
+  }
+ /**/
+
+  
+
+  
+  var testPeerCnxId = "";
+  var isAPeerCnxID = false;
+
+  // Si le receveur est le pilote
   if (type == "pilote-appelant") {
-    if (data.objUser.typeClient = "Visiteur") {
-        closeCnxwith(data.objUser.id);
-        }
+    // si le déconnecté est un visiteur
+    if (data.objUser.typeClient == "Visiteur") {
+      // on lance la procédure individuelle de déconnexion 
+      closeCnxwith(data.objUser.id);
+    // si le déconnecté est un robot
+    } else if (data.objUser.typeClient == "Robot") {
+      // On lance la procédure de déco/reco 1to1 par défaut
+        onDisconnect(peerCnx1to1); 
+    }
   }
-
-
+  
   // Si le receveur est le Robot
-  // Et que le connecté est le pilote,
-  // On lance aussi la procédure de déco/reco
   if (type == "robot-appelé") {
-    if (data.objUser.typeClient = "Pilote") {
-        //closeCnxwith(data.objUser.id);
+    // Si le déconnecté est le pilote,
+    if (data.objUser.typeClient == "Pilote") {
+        // On lance la procédure de déco/reco 1to1 par défaut
         onDisconnect(peerCnx1to1);
-        // alert ("pilote déconnecté)");
-        }
+    // Si le déconnecté est un visiteur,
+    } else if (data.objUser.typeClient == "Visiteur") {
+      // On vérifie que la connexion existe bien...
+      testPeerCnxId = prefix_peerCnx_VtoR+data.objUser.id;
+      if ( isInPeerCnxCollection(testPeerCnxId) == false ) return; 
+      else onDisconnect_VtoR(testPeerCnxId);
+    }
+
   }
 
+  // Si le receveur est un Visiteur
+  if (type == "visiteur-appelé") { 
+      // si le déconnecté est un pilote
+      if (data.objUser.typeClient == "Pilote") {
+        // On vérifie que la connexion existe bien...
+        testPeerCnxId = prefix_peerCnx_1toN_VtoP+myPeerID;
+        if ( isInPeerCnxCollection(testPeerCnxId) == false ) return; 
+        onDisconnect_1toN_VtoP(testPeerCnxId);
+      // si le déconnecté est un robot
+      } else if (data.objUser.typeClient == "Robot") {
+        
+        // On vérifie que la connexion existe bien...
+        testPeerCnxId = prefix_peerCnx_VtoR+myPeerID;
+        if ( isInPeerCnxCollection(testPeerCnxId) == false ) return; 
+        else onDisconnect_VtoR(testPeerCnxId);
+      }
+  }
 
   // On lance la méthode de préparatoire à la renégo WebRTC
   // Todo >>>> Tester déclenchement a la detection WebRTC...

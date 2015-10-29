@@ -775,6 +775,7 @@ function onDisconnect(peerCnxId) {
 
     console.log("@ onDisconnect()");
 
+
     // On vérifie le flag de connexion
     if (isStarted == false) return;
 
