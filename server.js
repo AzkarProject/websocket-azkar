@@ -382,8 +382,9 @@ io.on('connection', function(socket, pseudo) {
         var p3 = userPlacelist;
         var p4 = data.typeClient;
         var p5 = Date.now();
-        var p6 = null;
-        var objUser = new tools.client(p1, p2, p3, p4, p5, p6);
+        //var p6 = null;
+        // var objUser = new tools.client(p1, p2, p3, p4, p5, p6);
+        var objUser = new tools.client(p1, p2, p3, p4, p5);
 
         // On ajoute l'User à la liste des connectés
         users2[socket.id] = objUser;
@@ -531,19 +532,9 @@ io.on('connection', function(socket, pseudo) {
     });
 
     socket.on('candidate2', function(data) {
-        //console.log("----+candidate+----");
-        //console.log(">>>>> candidate From: " + data.from.pseudo +"("+data.from.id+") to: " + data.cible.pseudo +"("+data.cible.id+")  / peerConnectionID: "+ data.peerCnxId);
-        
        var consoleTxt = tools.humanDateER('R') + " @ candidate >>>> (from "+data.from.pseudo + " ("+data.from.id+")" ;
         consoleTxt += "to "+data.cible.pseudo +" ("+data.cible.id+") / peerConnectionID: "+ data.peerCnxId;
-        console.log(consoleTxt);
-        // 1toN pilote/Visiteur
-        //if (data.from.typeClient == "Visiteur") socket.broadcast.emit('candidateFromVisitor',data);
-        // 1to1 pilote/Robot
-        //else socket.broadcast.emit('candidate', data);
-        
-
-        //io.to(data.cible.id).emit('candidate', data);
+        // console.log(consoleTxt);
         socket.broadcast.emit('candidate', data);
     });
 
@@ -685,6 +676,14 @@ io.on('connection', function(socket, pseudo) {
         io.to(data.cible.id).emit('closeConnectionOrder', data);
     }); 
 
+    socket.on('closeAllVisitorsConnectionOrder', function(data) { 
+        var consoleTxt = tools.humanDateER('R') + " @ closeAllVisitorsConnectionOrder >>>> from "+data.from.pseudo+" ("+data.from.id+") ";
+        consoleTxt += "to: "+data.cible.pseudo+"("+data.cible.id+")"; 
+        console.log(consoleTxt); 
+        //io.to(data.cible.id).emit('closeAllVisitorsConnectionOrder', data);
+        socket.broadcast.emit('closeAllVisitorsConnectionOrder', data);
+    }); 
+
 
     // Pilote/Robot >>> Visiteurs > Signal de perte de la connexion WebRTC principale (Pilote <> Robot)
     socket.on('closeMasterConnection', function(data) { 
@@ -692,6 +691,14 @@ io.on('connection', function(socket, pseudo) {
         console.log(consoleTxt); 
         socket.broadcast.emit('closeMasterConnection', data);
     }); 
+
+
+    socket.on('infoToPilote', function(data) {
+        var consoleTxt = tools.humanDateER('R') + " @ infoToPilote >>>>"; 
+        console.log(consoleTxt); 
+       io.to(wsIdPilote).emit('infoToPilote', data);
+    });
+
 });
 /**/
 

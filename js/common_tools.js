@@ -25,7 +25,7 @@ exports.sourceDevice = function sourcedevice (id,kind,label,facing){
 }
 
 
-// Objet client ( Robot, Pilote, Visiteur, Patient, ect... )
+/*// Objet client ( Robot, Pilote, Visiteur, Patient, ect... )
 exports.client = function client (id,pseudo,placeliste,typeClient,connectionDate,disConnectionDate){
   this.id = id;
   this.pseudo = pseudo;
@@ -33,6 +33,18 @@ exports.client = function client (id,pseudo,placeliste,typeClient,connectionDate
   this.typeClient = typeClient;
   this.connectionDate = connectionDate;
   this.disConnectionDate = disConnectionDate;
+}
+/**/
+
+// Objet client ( Robot, Pilote, Visiteur, Patient, ect... )
+exports.client = function client (id,pseudo,placeliste,typeClient,connectionDate){
+  this.id = id;
+  this.pseudo = pseudo;
+  this.placeliste = placeliste;
+  this.typeClient = typeClient;
+  this.connectionDate = connectionDate;
+  this.disConnectionDate = null;
+  this.peerCnxCollection = null;
 }
 
 

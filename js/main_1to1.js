@@ -763,7 +763,7 @@ socket.on("closeConnectionOrder",function(data) {
     if (data.cible.id == myPeerID) {
         // A priori on est dans la peerConnection principale (Pilote <> Robot) >> peerCnx1to1
         console.log ("------------ >>> closeConnectionOrder "+data.from.typeClient+"----------");
-        // on lance le processus préparatoire a une reconnexion
+        // on lance le processus préparatoire à une reconnexion
         onDisconnect(peerCnx1to1);
     }
 });

@@ -200,12 +200,21 @@ socket.on("disconnected", function(data) {
 
   // Si le receveur est un Visiteur
   if (type == "visiteur-appelé") { 
+      
       // si le déconnecté est un pilote
       if (data.objUser.typeClient == "Pilote") {
-        // On vérifie que la connexion existe bien...
+        
+        // Déconnexion avec le pilote
         testPeerCnxId = prefix_peerCnx_1toN_VtoP+myPeerID;
         if ( isInPeerCnxCollection(testPeerCnxId) == false ) return; 
         onDisconnect_1toN_VtoP(testPeerCnxId);
+       
+        // Mais aussi déconnexion avecv le Robot
+        testPeerCnxId = prefix_peerCnx_VtoR+myPeerID;
+        if ( isInPeerCnxCollection(testPeerCnxId) != false ) {
+          onDisconnect_VtoR(testPeerCnxId);
+        }
+
       // si le déconnecté est un robot
       } else if (data.objUser.typeClient == "Robot") {
         

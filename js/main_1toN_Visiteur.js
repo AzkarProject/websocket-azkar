@@ -2,8 +2,10 @@
 // https://developer.mozilla.org/fr/docs/Web/Guide/API/WebRTC/WebRTC_basics
 // Source github : https://github.com/louisstow/WebRTC/blob/master/media.html
 
-//------ PHASE 1 : Pré-signaling ----------------------------------------------------------
 
+RtoV_PeerCnx_Collection = [];
+
+//------ PHASE 1 : Pré-signaling ----------------------------------------------------------
 
 // socket.on('updateUsers', function(data) {
 // Quand on reçoit un update de la liste des clients websockets 
@@ -463,6 +465,14 @@ socket.on("closeMasterConnection", function(data) {
 });
 
 
+// Seul le pilote est sensé recevoir ces infos
+socket.on('infoToPilote', function(data) {
+    console.log ("------------ >>> closeMasterConnection"); 
+    if (data.message = "VtoR_disconnected") {
+        RtoV_PeerCnx_Collection[data.from.id].status = "Close";
+        updateListUsers(); 
+    }
+});
 
 // A la déconnection du pair distant:
 function onDisconnect_1toN_VtoP(peerCnxId) {

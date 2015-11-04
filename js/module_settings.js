@@ -93,6 +93,9 @@ function setOpenRelay(status) {
 }
 
 
+
+
+
 function freezeOpenRelay() {
     console.log("@ activeOpenRelay()");
     selectOpenRelay.disabled = true;

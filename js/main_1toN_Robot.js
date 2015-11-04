@@ -216,10 +216,13 @@ function connect_VtoR(peerCnxId) {
     // Permet de déterminer si le pair distant s'est déconnecté. (Version 1to1)
     peerCnxCollection[peerCnxId].oniceconnectionstatechange = function(e) {
 
-        var dateE = tools.dateER('E');
-        console.log("@ pc["+peerCnxId+"].oniceconnectionstatechange_VtoR > " + dateE);
-        console.log(">>> pc["+peerCnxId+"] stateConnection Event > " + peerCnxCollection[peerCnxId].iceConnectionState);
+        
 
+        var dateE = tools.dateER('E');
+        var iceState = peerCnxCollection[peerCnxId].iceConnectionState;
+        console.log("@ pc["+peerCnxId+"].oniceconnectionstatechange_VtoR > " + dateE);
+        console.log(">>> pc["+peerCnxId+"] stateConnection Event > " + iceState);
+        // alert ("peerCnxCollection["+peerCnxId+"]iceConnectionState: "+ iceState );
         // Si la connexion est neuve, on remet le flag de renégo à sa position par défaut...
         if ( peerCnxCollection[peerCnxId].iceConnectionState == 'new') isRenegociate_VtoR = false; 
 
@@ -228,7 +231,7 @@ function connect_VtoR(peerCnxId) {
         // else if (type == 'visiteur-appelé') // Todo
      
         // si le pair distant  est déconnecté en WebRTC,
-        if (peerCnxCollection[peerCnxId].iceConnectionState == 'disconnected') {               
+        if (iceState == 'disconnected') {               
             
             // on lance le processus préparatoire a une reconnexion
             if (type == 'robot-appellé') alert ("Visiteur déconnecté");
@@ -337,17 +340,22 @@ socket.on('visitorCnxPiloteStatus', function(data) {
 });
 /**/
 
-// Réception d'un ordre de déconnexion
-socket.on("closeConnectionOrder", function(data) {
-    if (data.cible.id == myPeerID) {
-    	// On reconstruit l'Id de connexion en concaténant le préfixe de connexion pilote/visiteur:
-    	// prefix_peerCnx_VtoR = "Pilote-to-Visiteur-";
-    	var thisPeerCnx = prefix_peerCnx_VtoR+myPeerID;
-        // A priori on est dans la peerConnection principale (Pilote <> Robot) >> peerCnx1to1
-        console.log ("------------ >>> closeConnectionOrder"+data.from.typeClient+"----------");
-        // on lance le processus préparatoire a une reconnexion
-        onDisconnect_VtoR(thisPeerCnx);
-    }
+// Réception d'un ordre de déconnexion en provenance du Pilote
+// >> Pour le robot: se déconneter de tous les visiteurs
+// >> Pour tous les visiteurs, se déconnecter du robot Et du pilote
+socket.on("closeAllVisitorsConnectionOrder", function(data) {
+
+        console.log ("------------ >>> closeAllVisitorsConnectionOrder "+data.from.typeClient+"----------");
+        var prefixID = "Robot-To-Visiteur-";
+        var robotPeerCnxID = "Robot-To-Visiteur-"+myPeerID;
+        var pilotePeerCnxID = "Pilote-To-Visiteur-"+myPeerID;
+        // Si robot on vire tous les visiteurs
+        if (type == 'robot-appelé') closeCnxwithAllVisitors("Robot"); 
+        // Si visiteur on vire Pilote et Robot
+        else if (type == 'visiteur-appelé') {
+            onDisconnect_VtoR(robotPeerCnxID);
+            onDisconnect_1toN_VtoP(pilotePeerCnxID);      
+        }
 });
 /**/
 
@@ -361,6 +369,11 @@ function onDisconnect_VtoR(peerCnxId) {
     // on retire le flux remoteStream
     if (type == 'visiteur-appelé') {
         video3_VtoR.src = "";
+        // et on pévient le pilote que la connexion
+        // n'est plus valide
+        var message = "VtoR_disconnected";
+        var data = {from: localObjUser, message: message}
+        socket.emit("infoToPilote", data);
     } 
 
     peerCnxCollection[peerCnxId].close();
