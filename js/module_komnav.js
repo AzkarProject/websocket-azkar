@@ -12,7 +12,7 @@ if ( activKomkom == "true") {
 	/**/
 
 	var connection = new autobahn.Connection({
-		url: 'wss://127.0.0.1.53js.fr:443',
+		url: 'wss://127.0.0.1:443',
 		realm: 'com.kompai2'
 	});
 
