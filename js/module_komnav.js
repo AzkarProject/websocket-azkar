@@ -11,11 +11,17 @@ if ( activKomkom == "true") {
 	});
 	/**/
 
+	/*
 	var connection = new autobahn.Connection({
 		url: 'wss://127.0.0.1:443',
 		realm: 'com.kompai2'
 	});
 	/**/
+
+	var connection = new autobahn.Connection({
+		url: 'wss://127.0.0.1',
+		realm: 'com.thaby'
+	});
 
 	connection.onopen = function(session, details) {
 		console.log('OPEN', session, details);
