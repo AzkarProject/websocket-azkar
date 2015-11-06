@@ -1,0 +1,79 @@
+:host {
+	user-select: none;
+	-webkit-user-select: none;
+}
+
+:host-context(.komcom-connected) .hidden-komcom-connected {
+	display: none;
+}
+
+.visible-komcom-connected {
+	display: none;
+}
+
+:host-context(.komcom-connected) .visible-komcom-connected {
+	display: block;
+}
+
+.komremote-switch {
+	text-align: center;
+	margin-bottom: 50px;
+}
+
+:host(.is-pad) .joystick { display: none; }
+:host(.is-pad) .pad { display: block; }
+
+.joystick {
+	margin: auto;
+	position: relative;
+	width: 160px;
+	height: 160px;
+	background: #ddd;
+	border-radius: 50%;
+}
+
+.joystick-stick {
+	position: absolute;
+	top: 50px;
+	left: 50px;
+	display: inline-block;
+	width: 60px;
+	height: 60px;
+	border-radius: 50%;
+	background: blue;
+	transition: 0.2s;
+	vertical-align: middle;
+}
+
+.pad {
+	display: none;
+	position: relative;
+	width: 100px;
+	height: 100px;
+	margin: auto;
+}
+
+.pad-arrow {
+	position: absolute;
+	display: block;
+	background: blue;
+}
+
+.pad-arrow-top,
+.pad-arrow-bottom {
+	width: 30px;
+	height: 35px;
+	left: 35px;
+}
+
+.pad-arrow-left,
+.pad-arrow-right {
+	width: 35px;
+	height: 30px;
+	top: 35px;
+}
+
+.pad-arrow-top { top: 0; }
+.pad-arrow-right { right: 0; }
+.pad-arrow-bottom { bottom: 0; }
+.pad-arrow-left { left: 0; }
