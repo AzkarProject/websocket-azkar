@@ -1,3 +1,58 @@
+require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function (global){
+'use strict';
+
+var utils = {
+	round: function(value, decimals) {
+		var divider = Math.pow(10, decimals ||  0);
+		return Math.round(value * divider) / divider;
+	},
+	bound: function(value, min, max) {
+		return Math.min(Math.max(value, min), max);
+	},
+	min: function(value, minValue) {
+		var result = Math.min(value, minValue);
+		result = result * (value ? value / Math.abs(value) : 1);
+		return result;
+	},
+	extend: function(target, source) {
+		target = target || {};
+		for (var prop in source) {
+			if (typeof source[prop] === 'object') {
+				target[prop] = this.extend(target[prop], source[prop]);
+			} else {
+				target[prop] = source[prop];
+			}
+		}
+		return target;
+	}
+};
+
+var Animator = utils.Animator = function(interval) {
+	this.interval = interval || 16;
+	this.id = null;
+};
+
+Animator.prototype.cancel = function() {
+	if (this.id) {
+		global.clearTimeout(this.id);
+	}
+	return this;
+};
+
+Animator.prototype.execute = function(callback) {
+	this.cancel();
+	if (callback() !== false) {
+		this.id = global.setTimeout(this.execute.bind(this, callback), this.interval);
+	}
+};
+
+module.exports = utils;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
+},{}],"differential-drive":[function(require,module,exports){
+(function (global){
 'use strict';
 
 /**
@@ -28,12 +83,23 @@ var defaults = {
  * @param {Session} session - websocket session of komcom client
  * @param {Object} options - options will be merged with defaults
  */
+/*
 function DifferentialDrive(session, options) {
 	var settings = this.settings = utils.extend(utils.extend({}, defaults), options);
 	this.session = session;
 	this.animator = new utils.Animator(settings.interval);
 	this._set(settings.linear, settings.radial);
 }
+/**/
+
+
+function DifferentialDrive(options) {
+	var settings = this.settings = utils.extend(utils.extend({}, defaults), options);
+	// this.session = session;
+	this.animator = new utils.Animator(settings.interval);
+	this._set(settings.linear, settings.radial);
+}
+
 
 /**
  * Get the current rounded linear and radial values as Array.
@@ -65,6 +131,7 @@ DifferentialDrive.prototype.update = function(linear, radial) {
  * @return {DifferentialDrive}
  */
 DifferentialDrive.prototype.send = function() {
+	// console.log('DifferentialDrive [%f, %f]', values[0], values[1]);
 	if (!global.DEBUG_SAFE) {
 		this.session.call(this.settings.rpcMethod, this.getValues());
 	}
@@ -118,3 +185,10 @@ DifferentialDrive.prototype._set = function(linear, radial) {
 };
 
 module.exports = DifferentialDrive;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
+},{"./utils.js":1}]},{},[])
+
+
+//# sourceMappingURL=differential-drive.js.map

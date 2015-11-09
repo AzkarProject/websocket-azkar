@@ -1,34 +1,55 @@
 'use strict';
 
-var autobahn = require('autobahn'),
-	$ = require('jquery');
 
-global.DEBUG = true; // Uncomment to log values
-//global.DEBUG_SAFE = true; // Uncomment to prevent sending values to komcom
+/*//
+//var activKomkom = "false";
+var activKomkom = "true";
 
-console.log('Autobahn %s loaded', autobahn.version);
+if ( activKomkom == "true") {
 
-/**
- * Example of requiring DifferentialDrive
- * var DifferentialDrive = require('differential-drive');
- */
+	
+	// var connection = new autobahn.Connection({
+		// url: 'wss://komcom.53js.fr:443',
+		// realm: 'com.kompai2'
+	// });
 
-var KOMCOM_SERVER = 'komcom.53js.fr',
-	KOMCOM_REALM = 'com.kompai2',
-	connection = new autobahn.Connection({ url: 'wss://' + KOMCOM_SERVER, realm: KOMCOM_REALM });
+	var connection = new autobahn.Connection({
+		url: 'wss://127.0.0.1',
+		realm: 'com.thaby'
+	});
 
-connection.onopen = function(session, details) {
+	connection.onopen = function(session, details) {
+		console.log('OPEN', session, details);
+		$('body').addClass('komcom-connected');
+		document.querySelector('kom-remote').start(session);
+	};
+
+	connection.onclose = function(reason, details) {
+		console.log('CLOSE', reason, details);
+		$('body').removeClass('komcom-connected');
+		document.querySelector('kom-remote').destroy();
+	};
+
+connection.open();
+
+}
+
+/**/
+
+
+var testOpen = function() {
 	// Publish, Subscribe, Call and Register
-	console.log('OPEN', session, details);
+	//console.log('OPEN', session, details);
 	$('body').addClass('komcom-connected');
-	document.querySelector('kom-remote').start(session);
+	document.querySelector('kom-remote').start();
 };
 
-connection.onclose = function(reason, details) {
+var testClose = function() {
 	// handle connection lost
-	console.log('CLOSE', reason, details);
+	//console.log('CLOSE', reason, details);
 	$('body').removeClass('komcom-connected');
 	document.querySelector('kom-remote').destroy();
 };
 
-connection.open();
+testOpen();
+/**/
