@@ -182,9 +182,9 @@ server.iceServers.push({url: 'stun:stun.anyfirewall.com:3478'});
 server.iceServers.push({url: 'stun:turn1.xirsys.com'});
 
 // Ajout de serveurs TURN
- server.iceServers.push({url: "turn:turn.bistri.com:80",credential: "homeo",username: "homeo"});
- server.iceServers.push({url: 'turn:turn.anyfirewall.com:443?transport=tcp', credential: 'webrtc',username: 'azkarproject'});
- server.iceServers.push({url: "turn:numb.viagenie.ca",credential: "webrtcdemo",username: "temp20fev2015@gmail.com"});
+// server.iceServers.push({url: "turn:turn.bistri.com:80",credential: "homeo",username: "homeo"});
+// server.iceServers.push({url: 'turn:turn.anyfirewall.com:443?transport=tcp', credential: 'webrtc',username: 'azkarproject'});
+// server.iceServers.push({url: "turn:numb.viagenie.ca",credential: "webrtcdemo",username: "temp20fev2015@gmail.com"});
 
  server.iceServers.push({url: "turn:turn.anyfirewall.com:443?transport=tcp",credential: "webrtc",username: "webrtc"});
 
