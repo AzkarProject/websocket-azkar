@@ -74,7 +74,7 @@ var defaults = {
 	radialMax: 1,									// maximum radial speed
 	interval: 16,									// animation interval delay
 	acceleration: 1000,								// time to reach requested speed in milliseconds
-	rpcMethod: 'com.kompai2.drive'	// RPC method provided by KomNav
+	rpcMethod: 'com.thaby.drive'	// RPC method provided by KomNav
 };
 
 /**
