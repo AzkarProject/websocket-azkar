@@ -83,7 +83,7 @@ var defaults = {
  * @param {Session} session - websocket session of komcom client
  * @param {Object} options - options will be merged with defaults
  */
-/*
+
 function DifferentialDrive(session, options) {
 	var settings = this.settings = utils.extend(utils.extend({}, defaults), options);
 	this.session = session;
@@ -92,8 +92,9 @@ function DifferentialDrive(session, options) {
 }
 /**/
 
-
+/*
 function DifferentialDrive(options) {
+	//console.log(DifferentialDrive(options))
 	var settings = this.settings = utils.extend(utils.extend({}, defaults), options);
 	// this.session = session;
 	this.animator = new utils.Animator(settings.interval);

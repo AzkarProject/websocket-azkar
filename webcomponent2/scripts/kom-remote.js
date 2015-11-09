@@ -315,7 +315,7 @@ function DifferentialDrive(session, options) {
 function DifferentialDrive(session, options) {
 	console.log("(2) > DifferentialDrive()");
 	var settings = this.settings = utils.extend(utils.extend({}, defaults), options);
-	// this.session = session;
+	this.session = session;
 	this.animator = new utils.Animator(settings.interval);
 	this._set(settings.linear, settings.radial);
 }
@@ -461,9 +461,10 @@ KomRemoteElementPrototype.destroy = function () {
 	return this;
 };
 
-/*
+
 KomRemoteElementPrototype.start = function (session) {
-	
+	console.log('(1) > KomRemoteElementPrototype.start()'); // OK
+	console.log(session);
 	this.differentialDrive = new DifferentialDrive(session, { acceleration: 500 });
 	this.$element.on('joystick:move.komremote', this.onjoystickmove.bind(this));
 	this.$element.on('pad:pressed.komremote', this.onpadpressed.bind(this));
@@ -471,6 +472,7 @@ KomRemoteElementPrototype.start = function (session) {
 };
 /**/
 
+/*
 KomRemoteElementPrototype.start = function () {
 	console.log('(1) > KomRemoteElementPrototype.start()'); // OK
 	this.differentialDrive = new DifferentialDrive( { acceleration: 500 });
@@ -478,15 +480,16 @@ KomRemoteElementPrototype.start = function () {
 	this.$element.on('pad:pressed.komremote', this.onpadpressed.bind(this));
 	return this;
 };
+/**/
 
 KomRemoteElementPrototype.onjoystickmove = function(event) {
-	console.log('KomRemoteElementPrototype.onjoystickmove()');  // NIET...
+	console.log('(?) > KomRemoteElementPrototype.onjoystickmove()');  // NIET...
 	var values = event.originalEvent.detail;
 	this.differentialDrive.update(-values.ratioY / 2, -values.ratioX);
 };
 
 KomRemoteElementPrototype.onpadpressed = function(event) {
-	console.log('(?) >KomRemoteElementPrototype.onpadpressed()');  // ???
+	console.log('(?) > KomRemoteElementPrototype.onpadpressed()');  // ???
 	switch (event.originalEvent.detail.direction) {
 		case 'top':
 			this.differentialDrive.update(0.2, 0);

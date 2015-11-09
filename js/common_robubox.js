@@ -94,7 +94,8 @@ exports.sendStep = function (typeMove,dist, MaxSpeed){
 exports.getBattery = function (){
         
         
-    var isRobubox = settings.isRobubox();
+    //var isRobubox = settings.isRobubox();
+    var isRobubox = false;
     console.log ("robubox.getBattery("+isRobubox+")");
     
     

@@ -1,6 +1,6 @@
 
 //var activKomkom = "false";
-var activKomkom = "false";
+var activKomkom = "true";
 
 if ( activKomkom == "true") {
 
