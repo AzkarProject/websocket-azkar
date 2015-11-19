@@ -74,7 +74,7 @@ var defaults = {
 	radialMax: 1,									// maximum radial speed
 	interval: 16,									// animation interval delay
 	acceleration: 1000,								// time to reach requested speed in milliseconds
-	rpcMethod: 'com.kompai2.drive'	// RPC method provided by KomNav
+	rpcMethod: 'com.thaby.drive'	// RPC method provided by KomNav
 };
 
 /**
@@ -83,7 +83,7 @@ var defaults = {
  * @param {Session} session - websocket session of komcom client
  * @param {Object} options - options will be merged with defaults
  */
-
+/*
 function DifferentialDrive(session, options) {
 	var settings = this.settings = utils.extend(utils.extend({}, defaults), options);
 	this.session = session;
@@ -92,7 +92,7 @@ function DifferentialDrive(session, options) {
 }
 /**/
 
-/*
+
 function DifferentialDrive(options) {
 	//console.log(DifferentialDrive(options))
 	var settings = this.settings = utils.extend(utils.extend({}, defaults), options);
@@ -134,7 +134,11 @@ DifferentialDrive.prototype.update = function(linear, radial) {
 DifferentialDrive.prototype.send = function() {
 	// console.log('DifferentialDrive [%f, %f]', values[0], values[1]);
 	if (!global.DEBUG_SAFE) {
-		this.session.call(this.settings.rpcMethod, this.getValues());
+		
+		// this.session.call(this.settings.rpcMethod, this.getValues());
+		var values = this.getValues();
+		console.log('DifferentialDrive [%f, %f]', values[0], values[1]);
+
 	}
 	if (global.DEBUG || global.DEBUG_SAFE) {
 		var values = this.getValues();

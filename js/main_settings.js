@@ -12,6 +12,7 @@ if (type == "pilote-appelant" || type == "robot-appelé") {
     
     // 1to1 Pilote+Robot
     // Benchmarks Settings Default
+    navSys = 'Robubox';
     navCh = 'webSocket';
     lPview = 'show';
     lRview = 'show';
@@ -22,6 +23,7 @@ if (type == "pilote-appelant" || type == "robot-appelé") {
     // 1to1 Pilote+Robot
     // Objet paramètres
     parameters = {
+        navSys: navSys,
         navCh: navCh,
         lPview: lPview,
         lRview: lRview,

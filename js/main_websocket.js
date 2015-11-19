@@ -7,14 +7,16 @@ var myPlaceListe = 0;
 var nbUsers = 0;
 
 // Initialisation du canal de signalisation
-// On récupère l'URL complète du client
-var currentUrl = window.location.href; 
-// On regarde si l'url contient la chaine "rhcloud.com"
-var isOpenShift = currentUrl.indexOf("rhcloud.com") > -1;
-var pIoConnect = ''; // local:; pas de proxy particulier
-if (isOpenShift) {pIoConnect = 'http://'+settings.appHostName()+'.rhcloud.com:8000'} // proxy Openshift.
-var socket = io.connect(pIoConnect); 
+var socket = io.connect(); 
 
+// Sur OpenShift, il faut passer par le proxy...
+// On récupère l'URL complète du client
+// On regarde si l'url contient la chaine "rhcloud.com"
+// var currentUrl = window.location.href; 
+// var pIoConnect = ''; // local: pas de proxy particulier
+// var isOpenShift = currentUrl.indexOf("rhcloud.com") > -1;
+// if (isOpenShift) {pIoConnect = 'http://'+settings.appHostName()+'.rhcloud.com:8000'} // proxy Openshift.
+// var socket = io.connect(pIoConnect); 
 
 
 var typeClient = null;

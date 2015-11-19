@@ -14,8 +14,10 @@
     <script src='http://code.jquery.com/jquery-1.11.3.min.js'></script>
     -->
     <script src='/js/lib/jquery-1.11.3.min.js'></script>
-    <link rel="import" href="/webcomponent2/kom-remote.html">
     
+
+    <link rel="import" href="/webcomponent2/kom-remote.html">
+
 
     <title>WebRTC AZKAR</title>
 </head>
@@ -95,6 +97,13 @@
                 <strong>Robot controls</strong> <span id="connect-notice"></span>
                 <hr/>
 
+                
+                <span id="systemSetting" class="">
+                System: 
+                    <input type="radio" name="controlSystem" value="Robubox" id="Robubox" onclick="setNavSystem('Robubox')" checked /> <label for="Robubox">Robubox</label>
+                    <input type="radio" name="controlSystem" value="KomNAV" id="KomNAV" onclick="setNavSystem('KomNAV')"/> <label for="KomNAV">KomNAV</label>
+                </span>
+                <br/>
                 <span id="dataChannelSetting" class="">
                 Channel: 
                     <input type="radio" name="controlChannel" value="webSocket" id="webSocket" onclick="setNavChannel('webSocket')" checked /> <label for="webSocket">webSocket</label>
@@ -381,12 +390,14 @@
     var type = "pilote-appelant";
     </script>
     
+    
+
     <script src="/socket.io/socket.io.js"></script>
-    <!--<script src='/js/lib/jquery-1.10.1.min.js'></script>-->
     <script src='/js/lib/adapter.js'></script>
     <script src="/js/lib/gamepad.js"></script>
     <script src="/js/lib/FileSaver.js"></script>
-    <script src="https://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+    <!--<script src="https://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>-->
+    <script src="/js/lib/autobahn.min.jgz"></script>
     
     <script src="/js/common_tools.js"></script>
     <script src="/js/common_settings.js"></script>    
@@ -405,6 +416,8 @@
     <script src='/js/module_navigation.js'></script>
     <script src="/js/module_logs.js"></script>
     
+    
+
     <script>                    
             // On récupère depuis nodejs le nom de la machine serveur
             // en passant par de l'AJAX plutôt que par websocket....

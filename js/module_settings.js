@@ -1,5 +1,6 @@
 
 /*// mémo Default Benchmarks Settings
+navSys = 'Robubox'; // 'KomNAV'
 navCh = 'webSocket'; // webRTC
 lPview = 'show'; // 'hide'
 lRview = 'show'; // 'hide' 
@@ -8,19 +9,20 @@ rRView = 'show'; // 'hide'
 pStoR = 'open'; // close
 /**/
 
+// Formulaire de sélection systeme embarqué
+selectSystemRobubox = document.querySelector('input#Robubox');
+selectSystemKomNAV = document.querySelector('input#KomNAV');
+
+// Raz du selecteur de systeme embarqué
+function raZNavSystem() {
+    // selectSystemKomNAV.disabled = true;
+    selectSystemKomNAV.checked = false;
+    selectSystemRobubox.checked = true;
+    parameters.navSys = "Robubox";
+}
+raZNavSystem();
 
 
-
-
-/* Mémo
-<span id="dataChannelSetting" class="">
-Channel: 
-    <input type="radio" name="controlChannel" value="webSocket" id="webSocket" onclick="setNavChannel('webSocket')" checked /> <label for="webSocket">webSocket</label>
-    <input type="radio" name="controlChannel" value="webRTC" id="webRTC" onclick="setNavChannel('webRTC')"/> <label for="webRTC">webRTC</label>
-    
-</span>
-<hr/>
-/**/
 
 // Formulaire de sélection canal de commandes
 selectChannelWebSocket = document.querySelector('input#webSocket');
@@ -45,14 +47,6 @@ raZNavChannel();
 // Si cnx/reco P/R > Activer Switch Relay
 // On activ Switch Relay > Si P/V no relay en cours > Couper all p/V
 // Si déco P/R > Si Stream Relay en cours > couper all P/V
-
-/* Mémo
-<span id="streamSetting" class="">
-    Stream to Visitor:
-    <input type="radio" name="streamRobotToVisitor" value="open" id="streamOpen" onclick="setRobotStreamToVisitor('open')" checked /> <label for="streamOpen">Robot</label>
-    <input type="radio" name="streamRobotToVisitor" value="close" id="streamClose" onclick="setRobotStreamToVisitor('close')" /> <label for="streamClose">Pilote</label>
-</span>
-/**/
 
 // Formulaire de sélection canal de commandes
 selectOpenRelay = document.querySelector('input#streamOpen');
@@ -108,9 +102,19 @@ function freezeOpenRelay() {
 // --------------- Ecouteurs des formulaires HTML
 
 
+function setNavSystem(navSysSet) { 
+    parameters.navSys = navSysSet;
+    // On prévient le robot qu'on bascule entre Robubox ou KomNav
+    // console.log (parameters.navSys);
+    socket.emit('changeNavSystem', {
+        objUser: localObjUser,
+        navSystem: navSysSet
+    }); 
+}
+
+
 function setNavChannel(navChSet) { 
     parameters.navCh = navChSet;
-    // alert("navChannel = "+parameters.navCh);
 }
 
 function setLocalPilotView(lPVSet) {
@@ -132,3 +136,22 @@ function setRemoteRobotView(rRVSet) {
 function setRobotStreamToVisitor(vRStream) {
     parameters.rStoV = vRStream;
 }
+
+
+
+/*               
+<span id="systemSetting" class="">
+System: 
+    <input type="radio" name="controlSystem" value="Robubox" id="Robubox" onclick="setNavSystem('Robubox')" checked /> <label for="Robubox">Robubox</label>
+    <input type="radio" name="controlSystem" value="KomNAV" id="webRTC" onclick="setNavSystem('KomNAV')"/> <label for="KomNAV">KomNAV</label>
+</span>
+<br/>
+<span id="dataChannelSetting" class="">
+Channel: 
+    <input type="radio" name="controlChannel" value="webSocket" id="webSocket" onclick="setNavChannel('webSocket')" checked /> <label for="webSocket">webSocket</label>
+    <input type="radio" name="controlChannel" value="webRTC" id="webRTC" onclick="setNavChannel('webRTC')"/> <label for="webRTC">webRTC</label>
+    
+</span>
+<hr/>
+
+*/

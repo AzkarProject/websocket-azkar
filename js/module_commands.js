@@ -100,11 +100,13 @@ function gamePadController() {
                  aSpeed = aSpeed/5;
                  lSpeed = lSpeed/10;
 
-                 var dateE = Date.now();
+                 var dateA = Date.now();
 
                  //navCh = 'webSocket'; // webRTC
                  var driveCommand = {
-                         dateE: dateE,
+                         channel: parameters.navCh,
+                         system: parameters.navSys,
+                         dateA: dateA,
                          command: 'onDrive',
                          aSpeed: aSpeed,
                          lSpeed: lSpeed,
@@ -124,10 +126,12 @@ function gamePadController() {
              } else {
                  if (btHommeMort) {
                      
-                     var dateE = Date.now();
+                     var dateA = Date.now();
                      //onMove = false;
                      var driveStop = {
-                             dateE: dateE,
+                             channel: parameters.navCh,
+                             system: parameters.navSys,
+                             dateA: dateA,
                              command: 'onStop',
                              aSpeed: 0,
                              lSpeed: 0,

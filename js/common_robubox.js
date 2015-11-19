@@ -2,13 +2,31 @@
 
 
 // Envoi d'une commande de type "Drive" au robot
-exports.sendDrive = function (enable, aSpeed,lSpeed){
-        
+//exports.sendDrive = function (enable, aSpeed,lSpeed){
+exports.sendDrive = function (data){        
         
     var isRobubox = settings.isRobubox();
-    console.log ("robubox.sendDrive("+isRobubox+")");
+    console.log ("robubox.sendDrive_01("+isRobubox+")");
+    console.log(data);
     
+     // driveSettings: this.settings.rpcMethod,
+     // channel: parameters.navCh,
+     // system: parameters.navSys,
+     // dateA: dateA,
+     // command: 'onDrive',
+     // aSpeed: values[1],
+     // lSpeed: values[0],
+     // enable: 'true'
     
+    var enable = data.enable;
+    var aSpeed = data.aSpeed;
+    var lSpeed = data.lSpeed;
+    var dateA = data.dateA;
+    var dateB = Date.now();
+    var delta = dateB - dateA;
+    var msg = '['+data.channel+']['+data.system+']['+data.command+'][AtoB>'+delta+' ms]';
+    insereMessage3("",msg);
+
     if (isRobubox == true) {
 
         var toto = "robubox.sendDrive(1) >> enable:"+enable+" onMove:"+onMove+" "+"lastMoveTimeStamp:"+lastMoveTimeStamp;
@@ -23,34 +41,117 @@ exports.sendDrive = function (enable, aSpeed,lSpeed){
         }
         
         var tata = "robubox.sendDrive(2) >> enable:"+enable+" onMove:"+onMove+" "+"lastMoveTimeStamp:"+lastMoveTimeStamp;
-        console.log(toto);
-        console.log(tata); 
+        //console.log(toto);
+        //console.log(tata); 
             
 
+         if (parameters.navSys == 'Robubox') {
+            console.log (">>>>>>>>>>>>>> Send Drive To Robubox");
+            // var url = 'http://localhost:50000/api/drive';
+            //var url = "http://127.0.0.1:8080/127.0.0.1:50000/api/drive" ; // CORS-ANYWHERE
+            var url = "https://127.0.0.1:443/http://127.0.0.1:50000/api/drive" ; // CORS-ANYWHERE
 
-        // var url = 'http://localhost:50000/api/drive';
-        //var url = "http://127.0.0.1:8080/127.0.0.1:50000/api/drive" ; // CORS-ANYWHERE
-        var url = "https://127.0.0.1:443/http://127.0.0.1:50000/api/drive" ; // CORS-ANYWHERE
+            // function sendDrive(url, enable, aSpeed,lSpeed) {
+            var btnA = (enable == 'true' ? true : false); //  
+            //return Q.Promise(function(resolve, reject, notify) {
+                
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', url);
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            //xhr.send(data);
+            xhr.send(JSON.stringify({
+                    "Enable": btnA,
+                    "TargetAngularSpeed": aSpeed,
+                    "TargetLinearSpeed": lSpeed
+                }));
+            xhr.closed;
+       
+        } else if (parameters.navSys == 'KomNAV') {
+            console.log (">>>>>>>>>>>>>> Send Drive To KomNav");
 
-        // function sendDrive(url, enable, aSpeed,lSpeed) {
-        var btnA = (enable == 'true' ? true : false); //  
-        //return Q.Promise(function(resolve, reject, notify) {
+            var values = [];
+            values[1] = aSpeed;
+            values[0] = lSpeed;
+
+            var rpcMethod = 'com.thaby.drive'    
             
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', url);
-        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        //xhr.send(data);
-        xhr.send(JSON.stringify({
-                "Enable": btnA,
-                "TargetAngularSpeed": aSpeed,
-                "TargetLinearSpeed": lSpeed
-            }));
-        xhr.closed;
+            SESSION.call(rpcMethod, values);
+
+        }
         
     }
     /**/
       
 }
+
+// Envoi d'une commande de type "Drive" au robot
+exports.sendDrive2 = function (enable, aSpeed,lSpeed){
+        
+        
+    var isRobubox = settings.isRobubox();
+    console.log ("robubox.sendDrive_01("+isRobubox+")");
+    
+    
+    var dateB = Date.now();
+
+
+    if (isRobubox == true) {
+
+        var toto = "robubox.sendDrive(1) >> enable:"+enable+" onMove:"+onMove+" "+"lastMoveTimeStamp:"+lastMoveTimeStamp;
+        
+        // Flags Homme mort:  
+        if (enable == true) {
+            onMove = true;
+            lastMoveTimeStamp = Date.now(); // MAJ du dernier timestamp mouvement... 
+        } else if (enable == false){
+            onMove = false;
+            lastMoveTimeStamp = 0;
+        }
+        
+        var tata = "robubox.sendDrive(2) >> enable:"+enable+" onMove:"+onMove+" "+"lastMoveTimeStamp:"+lastMoveTimeStamp;
+        //console.log(toto);
+        //console.log(tata); 
+            
+
+         if (parameters.navSys == 'Robubox') {
+            console.log (">>>>>>>>>>>>>> Send Drive To Robubox");
+            // var url = 'http://localhost:50000/api/drive';
+            //var url = "http://127.0.0.1:8080/127.0.0.1:50000/api/drive" ; // CORS-ANYWHERE
+            var url = "https://127.0.0.1:443/http://127.0.0.1:50000/api/drive" ; // CORS-ANYWHERE
+
+            // function sendDrive(url, enable, aSpeed,lSpeed) {
+            var btnA = (enable == 'true' ? true : false); //  
+            //return Q.Promise(function(resolve, reject, notify) {
+                
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', url);
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            //xhr.send(data);
+            xhr.send(JSON.stringify({
+                    "Enable": btnA,
+                    "TargetAngularSpeed": aSpeed,
+                    "TargetLinearSpeed": lSpeed
+                }));
+            xhr.closed;
+       
+        } else if (parameters.navSys == 'KomNAV') {
+            console.log (">>>>>>>>>>>>>> Send Drive To KomNav");
+
+            var values = [];
+            values[1] = aSpeed;
+            values[0] = lSpeed;
+
+            var rpcMethod = 'com.thaby.drive'    
+            
+            SESSION.call(rpcMethod, values);
+
+        }
+        
+    }
+    /**/
+      
+}/**/
+
 
 // Envoi d'une commande de type "Step" au robot avec une "promize"
 exports.sendStep = function (typeMove,dist, MaxSpeed){

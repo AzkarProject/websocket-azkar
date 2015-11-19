@@ -293,7 +293,7 @@ var defaults = {
 	radialMax: 1,									// maximum radial speed
 	interval: 16,									// animation interval delay
 	acceleration: 1000,								// time to reach requested speed in milliseconds
-	rpcMethod: 'com.kompai2.drive'	// RPC method provided by KomNav
+	rpcMethod: 'com.thaby.drive'	// RPC method provided by KomNav
 };
 
 /**
@@ -302,7 +302,7 @@ var defaults = {
  * @param {Session} session - websocket session of komcom client
  * @param {Object} options - options will be merged with defaults
  */
-/*
+
 function DifferentialDrive(session, options) {
 	alert ("DifferentialDrive(session, options)");
 	var settings = this.settings = utils.extend(utils.extend({}, defaults), options);
@@ -312,20 +312,12 @@ function DifferentialDrive(session, options) {
 }
 /**/
 
-function DifferentialDrive(session, options) {
-	console.log("(2) > DifferentialDrive()");
-	var settings = this.settings = utils.extend(utils.extend({}, defaults), options);
-	this.session = session;
-	this.animator = new utils.Animator(settings.interval);
-	this._set(settings.linear, settings.radial);
-}
-
 /**
  * Get the current rounded linear and radial values as Array.
  * @return {Array} - array of 2 elements containing the current linear and radial values rounded with 4 decimals.
  */
 DifferentialDrive.prototype.getValues = function() {
-	console.log("(?) > DifferentialDrive.prototype.getValues()");
+	// console.log("(?) > DifferentialDrive.prototype.getValues()");
 	return [this.linear, this.radial].map(function(v) { 
 		return utils.round(v, 4);
 	});
@@ -337,7 +329,7 @@ DifferentialDrive.prototype.getValues = function() {
  * @param  {Number} radial
  */
 DifferentialDrive.prototype.update = function(linear, radial) {
-	console.log("(?) > DifferentialDrive.prototype.update()");
+	// console.log("(?) > DifferentialDrive.prototype.update()");
 	var boundedUpdate = this._getBoundedUpdate(linear, radial);
 
 	this.animator.execute(function() {
@@ -352,13 +344,34 @@ DifferentialDrive.prototype.update = function(linear, radial) {
  * @return {DifferentialDrive}
  */
 DifferentialDrive.prototype.send = function() {
-	console.log('(?) > DifferentialDrive.prototype.send()');
+	// console.log('(?) > DifferentialDrive.prototype.send()');
+	
+	var values = this.getValues();
+	var dateA = Date.now();
+	// var 
+	var driveCommand = {
+                         driveSettings: this.settings.rpcMethod,
+                         channel: parameters.navCh,
+                         system: parameters.navSys,
+                         dateA: dateA,
+                         command: 'onDrive',
+                         aSpeed: values[1],
+                         lSpeed: values[0],
+                         enable: 'true'
+                     }
+
 	if (!global.DEBUG_SAFE) {
-		this.session.call(this.settings.rpcMethod, this.getValues());
+		// this.session.call(this.settings.rpcMethod, this.getValues());
+		// console.log('DifferentialDrive01 [%f, %f]', values[0], values[1]);
+		// envoi des valeurs au serveur par websocket
+		//console.log(this.getValues());
+        if (parameters.navCh == 'webSocket') socket.emit("piloteOrder", driveCommand);
+        // envoi des valeurs au serveur par webRtc
+        else if (parameters.navCh == 'webRTC') sendCommand(driveCommand);
 	}
 	if (global.DEBUG || global.DEBUG_SAFE) {
-		var values = this.getValues();
-		console.log('DifferentialDrive [%f, %f]', values[0], values[1]);
+		// var values = this.getValues();
+		console.log('DifferentialDrive02 [%f, %f]', values[0], values[1]);
 	}
 	return this;
 };
@@ -370,7 +383,7 @@ DifferentialDrive.prototype.send = function() {
  * @return {Function}
  */
 DifferentialDrive.prototype._getBoundedUpdate = function(linear, radial) {
-	console.log('(?) > DifferentialDrive.prototype._getBoundedUpdate()');
+	// console.log('(?) > DifferentialDrive.prototype._getBoundedUpdate()');
 	// steps are computed from the delta and the acceleration setting
 	var linearStep = (linear - this.linear) / (this.settings.acceleration / this.settings.interval),
 		radialStep = (radial - this.radial) / (this.settings.acceleration / this.settings.interval);
@@ -396,7 +409,7 @@ DifferentialDrive.prototype._getBoundedUpdate = function(linear, radial) {
  * @return {DifferentialDrive}
  */
 DifferentialDrive.prototype._set = function(linear, radial) {
-	console.log('(3) > DifferentialDrive.prototype._set()');
+	// console.log('(3) > DifferentialDrive.prototype._set()');
 	// if parameters are undefined or NaN, do not update the value
 	linear = linear !== undefined && !isNaN(radial) ? linear : this.linear ||  0;
 	radial = linear !== undefined && !isNaN(radial)  ? radial : this.radial ||  0;
@@ -434,7 +447,7 @@ var template = document.currentScript.ownerDocument.querySelector('#kom-remote')
 var KomRemoteElementPrototype = Object.create(HTMLElement.prototype);
 
 KomRemoteElementPrototype.init = function() {
-	console.log('(4) > KomRemoteElementPrototype.init()');  // ???
+	// console.log('(4-(1)-) > KomRemoteElementPrototype.init()');  // ???
 	this.$element = $(this);
 	var $shadow = this.$shadow = $(this.shadowRoot);
 
@@ -453,7 +466,7 @@ KomRemoteElementPrototype.init = function() {
  * @return {KomRemoteElementPrototype}
  */
 KomRemoteElementPrototype.destroy = function () {
-	console.log('(?) >KomRemoteElementPrototype.destroy()');  // ???
+	// console.log('(?) >KomRemoteElementPrototype.destroy()');  // ???
 	this.$element.off('joystick:move.komremote pad:pressed.komremote');
 	this.$switch.off('change.komremote');
 	this.$joystick.data('joystick').destroy();
@@ -461,10 +474,9 @@ KomRemoteElementPrototype.destroy = function () {
 	return this;
 };
 
-
+/*
 KomRemoteElementPrototype.start = function (session) {
 	console.log('(1) > KomRemoteElementPrototype.start()'); // OK
-	console.log(session);
 	this.differentialDrive = new DifferentialDrive(session, { acceleration: 500 });
 	this.$element.on('joystick:move.komremote', this.onjoystickmove.bind(this));
 	this.$element.on('pad:pressed.komremote', this.onpadpressed.bind(this));
@@ -472,10 +484,10 @@ KomRemoteElementPrototype.start = function (session) {
 };
 /**/
 
-/*
+
 KomRemoteElementPrototype.start = function () {
-	console.log('(1) > KomRemoteElementPrototype.start()'); // OK
-	this.differentialDrive = new DifferentialDrive( { acceleration: 500 });
+	// console.log('(1) > KomRemoteElementPrototype.start()'); // OK
+	this.differentialDrive = new DifferentialDrive( {acceleration: 500 });
 	this.$element.on('joystick:move.komremote', this.onjoystickmove.bind(this)); // null
 	this.$element.on('pad:pressed.komremote', this.onpadpressed.bind(this));
 	return this;
@@ -483,13 +495,13 @@ KomRemoteElementPrototype.start = function () {
 /**/
 
 KomRemoteElementPrototype.onjoystickmove = function(event) {
-	console.log('(?) > KomRemoteElementPrototype.onjoystickmove()');  // NIET...
+	// console.log('(?) > KomRemoteElementPrototype.onjoystickmove()');  // NIET...
 	var values = event.originalEvent.detail;
 	this.differentialDrive.update(-values.ratioY / 2, -values.ratioX);
 };
 
 KomRemoteElementPrototype.onpadpressed = function(event) {
-	console.log('(?) > KomRemoteElementPrototype.onpadpressed()');  // ???
+	// console.log('(?) > KomRemoteElementPrototype.onpadpressed()');  // ???
 	switch (event.originalEvent.detail.direction) {
 		case 'top':
 			this.differentialDrive.update(0.2, 0);
@@ -510,7 +522,7 @@ KomRemoteElementPrototype.onpadpressed = function(event) {
 };
 
 KomRemoteElementPrototype.onswitch = function(event) {
-	console.log('(x) > KomRemoteElementPrototype.onswitch()');  // OK
+	// console.log('(x) > KomRemoteElementPrototype.onswitch()');  // OK
 	var type = event.target.value;
 	switch (type) {
 		case 'pad':
@@ -525,7 +537,7 @@ KomRemoteElementPrototype.onswitch = function(event) {
 };
 
 KomRemoteElementPrototype.createdCallback = function() {
-	console.log('(0) > KomRemoteElementPrototype.createdCallback()');  // ???
+	// console.log('(0) > KomRemoteElementPrototype.createdCallback()');  // ???
 	var clone = document.importNode(template.content, true);
 	this.createShadowRoot().appendChild(clone);
 

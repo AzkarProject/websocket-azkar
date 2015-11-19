@@ -855,8 +855,8 @@ function bindEvents() {
             if (cmd.command) {
                 
                 // Affiche la trace de la commande dans le chatlog webRTC
-                var delta = dateR-cmd.dateE;
-                $(chatlog).prepend('[' +delta+' ms] ' + cmd.command + "\n");
+                // var delta = dateR-cmd.dateE;
+                // $(chatlog).prepend('[' +delta+' ms] ' + cmd.command + "\n");
                 
                 // Envoi de la commande à la Robubox...
                 if (cmd.command == "onDrive") {
@@ -864,7 +864,8 @@ function bindEvents() {
                     onMove = true;
                     lastMoveTimeStamp = Date.now(); // on met a jour le timestamp du dernier ordre de mouvement...
                     // Envoi commande  
-                    robubox.sendDrive(cmd.enable, cmd.aSpeed, cmd.lSpeed);
+                    // robubox.sendDrive(cmd.enable, cmd.aSpeed, cmd.lSpeed);
+                    robubox.sendDrive(cmd);
                 }
                 
                 else if (cmd.command == "onStop") {
@@ -872,7 +873,8 @@ function bindEvents() {
                     onMove = false;
                     lastMoveTimeStamp = 0;
                     // Envoi commande    
-                    robubox.sendDrive(cmd.enable, cmd.aSpeed, cmd.lSpeed);
+                    //robubox.sendDrive(cmd.enable, cmd.aSpeed, cmd.lSpeed);
+                    robubox.sendDrive(cmd);
                 }
                 
                 else if (cmd.command == "onStep") {
@@ -900,7 +902,7 @@ function sendCommand(commandToSend) {
     // Affiche trace de la commande dans le chatlog webRTC local
     //var dateE = Date.now()
     //commandToSend.dateE = dateE;
-    $(chatlog).prepend(commandToSend.dateE + " SEND "+commandToSend.command + "\n");
+    $(chatlog).prepend(commandToSend.dateA + " SEND "+commandToSend.command + "\n");
     
     // sérialisation et envoi de la commande au robot via WebRTC
     commandToSend = JSON.stringify(commandToSend);
@@ -923,13 +925,24 @@ $('#formulaire_chat_webRTC').submit(function() {
 if (type == "robot-appelé") {
     function deathMan(){
     
-        console.log("@ deathMan() >> onMove:"+onMove+" "+"lastMoveTimeStamp:"+lastMoveTimeStamp);    
+        console.log("@ deathMan() >> onMove:"+onMove+" "+"lastMoveTimeStamp:"+lastMoveTimeStamp);          
+
+         var data = {
+                 channel: parameters.navCh,
+                 system: parameters.navSys,
+                 dateA: Date.now(),
+                 command: 'deathMan',
+                 aSpeed: 0,
+                 lSpeed: 0,
+                 enable: 'false'
+             }
 
         if (onMove == true || lastMoveTimeStamp != 0) {
             var now = Date.now();
             var test = now - lastMoveTimeStamp;
             if (test >= 1000 ) {
-               robubox.sendDrive(false,0,0); // Envoi de la commande a la Robubox
+               robubox.sendDrive(data); // Envoi de la commande a la Robubox
+               command
                console.log("@ >> deathMan() ---> STOP");
             }
         }
@@ -946,28 +959,35 @@ socket.on("piloteOrder", function(data) {
     console.log('@onPiloteOrder >> command:' + data.command);
     
     if (type == "robot-appelé") {
+        
+
+
         if (data.command == "onDrive") {
             // Flags homme mort
             onMove = true;
             lastMoveTimeStamp = Date.now(); // on met a jour le timestamp du dernier ordre de mouvement...
-            //sendCommandDriveInterface(data.command,data.enable, data.aSpeed, data.lSpeed);
             // Envoi commande Robubox
-            robubox.sendDrive(data.enable, data.aSpeed, data.lSpeed);
+            // robubox.sendDrive(data.enable, data.aSpeed, data.lSpeed);
+            robubox.sendDrive(data);
         } else if (data.command == "onStop") {
             // Flags homme mort
             onMove = false;
             lastMoveTimeStamp = 0;
             // Envoi commande Robubox
-            robubox.sendDrive(data.enable, data.aSpeed, data.lSpeed);
+            // robubox.sendDrive(data.enable, data.aSpeed, data.lSpeed);
+            robubox.sendDrive(data);
+        
+
         } else if (data.command == 'onStep') {
             robubox.sendStep(data.typeMove,data.distance,data.MaxSpeed) ;
         }
         
-        // Envoi d'une trace au log WebSocket de l'IHM robot
-        var dateR = Date.now();
-        var delta = dateR-data.dateE;
+        /*// Envoi d'une trace au log WebSocket de l'IHM robot
+        var dateB = Date.now();
+        var delta = dateB-data.dateA;
         var msg = '[' +delta+' ms] ' +data.command;
         insereMessage3("",msg);
+        /**/
         /*
         if (data.command == "onStop") {};
         if (data.command == "onStep") {};
@@ -978,3 +998,10 @@ socket.on("piloteOrder", function(data) {
     }
 });
 
+
+// Robot: Selection du système embarqué (Robubox ou KomNAV)
+// pour l'exécution des commandes reçues en WebRTC et webSocket
+socket.on('changeNavSystem', function(data) {
+   console.log('@changeNavSystem >> ' + data.navSystem);
+   parameters.navSys = data.navSystem;
+});

@@ -341,6 +341,9 @@ DifferentialDrive.prototype.update = function(linear, radial) {
 DifferentialDrive.prototype.send = function() {
 	if (!global.DEBUG_SAFE) {
 		this.session.call(this.settings.rpcMethod, this.getValues());
+		// console.log (this.session);
+		// console.log (this.settings.rpcMethod);
+		// console.log (this.getValues());
 	}
 	if (global.DEBUG || global.DEBUG_SAFE) {
 		var values = this.getValues();

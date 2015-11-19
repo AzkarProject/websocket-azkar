@@ -1,6 +1,7 @@
 
 //var activKomkom = "false";
 var activKomkom = "true";
+SESSION = null;
 
 if ( activKomkom == "true") {
 
@@ -28,6 +29,7 @@ if ( activKomkom == "true") {
 
 	connection.onopen = function(session, details) {
 		console.log('OPEN', session, details);
+		SESSION = session;
 		$('body').addClass('komcom-connected');
 		document.querySelector('kom-remote').start(session);
 	};

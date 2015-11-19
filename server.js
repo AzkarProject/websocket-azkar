@@ -264,6 +264,9 @@ isServerStarted = false;
 
 io.on('connection', function(socket, pseudo) {
 
+    
+    // console.log(io);
+
     // Ecouteur de connexion entrante
     onSocketConnected(socket);
 
@@ -485,6 +488,13 @@ io.on('connection', function(socket, pseudo) {
        io.to(wsIdPilote).emit('battery_level', data);
     });
 
+
+   // Selection du système embarqué (Robubox ou KomNAV)
+   // pour l'exécution des commandes reçues en WebRTC et webSocket
+   socket.on('changeNavSystem', function(data) {
+        io.to(wsIdRobot).emit('changeNavSystem', data);
+    });
+    
 
 
     // ----------------------------------------------------------------------------------
