@@ -292,19 +292,23 @@ var defaults = {
 	radialMin: -1,									// minimum radial speed
 	radialMax: 1,									// maximum radial speed
 	interval: 16,									// animation interval delay
-	acceleration: 1000,								// time to reach requested speed in milliseconds
-	rpcMethod: 'com.thaby.drive'	// RPC method provided by KomNav
+	acceleration: 500,								// time to reach requested speed in milliseconds
+	rpcMethodName: 'com.thaby.drive',				// RPC method provided by KomNav
+	transportSession: null,							// Provided transport session (mandatory)
 };
 
 /**
  * Kompai differential drive manager.
  * @constructor
- * @param {Session} session - websocket session of komcom client
  * @param {Object} options - options will be merged with defaults
  */
-function DifferentialDrive(session, options) {
+function DifferentialDrive(options) {
 	var settings = this.settings = utils.extend(utils.extend({}, defaults), options);
-	this.session = session;
+	// Override transportSession because it is not an instance of Session anymore
+	this.settings.transportSession = options.transportSession;
+	if (!settings.transportSession || !settings.transportSession.call) {
+		throw new Error('options.transportSession is invalid');
+	}
 	this.animator = new utils.Animator(settings.interval);
 	this._set(settings.linear, settings.radial);
 }
@@ -340,10 +344,7 @@ DifferentialDrive.prototype.update = function(linear, radial) {
  */
 DifferentialDrive.prototype.send = function() {
 	if (!global.DEBUG_SAFE) {
-		this.session.call(this.settings.rpcMethod, this.getValues());
-		// console.log (this.session);
-		// console.log (this.settings.rpcMethod);
-		// console.log (this.getValues());
+		this.settings.transportSession.call(this.settings.rpcMethodName, this.getValues());
 	}
 	if (global.DEBUG || global.DEBUG_SAFE) {
 		var values = this.getValues();
@@ -405,10 +406,20 @@ module.exports = DifferentialDrive;
 var $,
 	DifferentialDrive = require('differential-drive');
 
+function onDocumentReady(callback) {
+	if (document.readyState === 'complete') {
+		callback();
+	} else {
+		document.addEventListener('DOMContentLoaded', function() {
+			callback();
+		});
+	}
+}
+
 /**
  * Load jQuery dependencies when jQuery is available (ie DOMContentLoaded)
  */
-document.addEventListener('DOMContentLoaded', function() {
+onDocumentReady(function() {
 	$ = (typeof window !== "undefined" ? window['jQuery'] : typeof global !== "undefined" ? global['jQuery'] : null);
 	require('./jquery.joystick.js');
 	require('./jquery.pad.js');
@@ -432,6 +443,11 @@ KomRemoteElementPrototype.init = function() {
 	this.$switch = $shadow.find('input[name=switch-remote]');
 
 	this.$switch.on('change.komremote', this.onswitch.bind(this));
+
+	// kom-remote custom element is now ready for use!
+	this.ready = true;
+	this.dispatchEvent(new CustomEvent('ready'));
+
 	return this;
 };
 
@@ -439,7 +455,7 @@ KomRemoteElementPrototype.init = function() {
  * Destroy KomRemoteElementPrototype: removes event listeners and calls destroy on joystick and pad jQuery plugins
  * @return {KomRemoteElementPrototype}
  */
-KomRemoteElementPrototype.destroy = function () {
+KomRemoteElementPrototype.destroy = function() {
 	this.$element.off('joystick:move.komremote pad:pressed.komremote');
 	this.$switch.off('change.komremote');
 	this.$joystick.data('joystick').destroy();
@@ -447,8 +463,8 @@ KomRemoteElementPrototype.destroy = function () {
 	return this;
 };
 
-KomRemoteElementPrototype.start = function (session) {
-	this.differentialDrive = new DifferentialDrive(session, { acceleration: 500 });
+KomRemoteElementPrototype.start = function(options) {
+	this.differentialDrive = new DifferentialDrive(options);
 	this.$element.on('joystick:move.komremote', this.onjoystickmove.bind(this));
 	this.$element.on('pad:pressed.komremote', this.onpadpressed.bind(this));
 	return this;
@@ -497,7 +513,7 @@ KomRemoteElementPrototype.createdCallback = function() {
 	var clone = document.importNode(template.content, true);
 	this.createShadowRoot().appendChild(clone);
 
-	document.addEventListener('DOMContentLoaded', this.init.bind(this));
+	onDocumentReady(this.init.bind(this));
 	return this;
 };
 

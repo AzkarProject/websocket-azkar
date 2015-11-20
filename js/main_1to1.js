@@ -942,7 +942,6 @@ if (type == "robot-appelé") {
             var test = now - lastMoveTimeStamp;
             if (test >= 1000 ) {
                robubox.sendDrive(data); // Envoi de la commande a la Robubox
-               command
                console.log("@ >> deathMan() ---> STOP");
             }
         }

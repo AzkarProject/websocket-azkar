@@ -73,34 +73,24 @@ var defaults = {
 	radialMin: -1,									// minimum radial speed
 	radialMax: 1,									// maximum radial speed
 	interval: 16,									// animation interval delay
-	acceleration: 1000,								// time to reach requested speed in milliseconds
-	rpcMethod: 'com.thaby.drive'	// RPC method provided by KomNav
+	acceleration: 500,								// time to reach requested speed in milliseconds
+	rpcMethodName: 'com.thaby.drive',				// RPC method provided by KomNav
+	transportSession: null,							// Provided transport session (mandatory)
 };
 
 /**
  * Kompai differential drive manager.
  * @constructor
- * @param {Session} session - websocket session of komcom client
  * @param {Object} options - options will be merged with defaults
  */
-/*
-function DifferentialDrive(session, options) {
-	var settings = this.settings = utils.extend(utils.extend({}, defaults), options);
-	this.session = session;
-	this.animator = new utils.Animator(settings.interval);
-	this._set(settings.linear, settings.radial);
-}
-/**/
-
-
 function DifferentialDrive(options) {
-	//console.log(DifferentialDrive(options))
 	var settings = this.settings = utils.extend(utils.extend({}, defaults), options);
-	// this.session = session;
+	if (!settings.transportSession) {
+		throw new Error('options.transportSession is missing');
+	}
 	this.animator = new utils.Animator(settings.interval);
 	this._set(settings.linear, settings.radial);
 }
-
 
 /**
  * Get the current rounded linear and radial values as Array.
@@ -132,13 +122,8 @@ DifferentialDrive.prototype.update = function(linear, radial) {
  * @return {DifferentialDrive}
  */
 DifferentialDrive.prototype.send = function() {
-	// console.log('DifferentialDrive [%f, %f]', values[0], values[1]);
 	if (!global.DEBUG_SAFE) {
-		
-		// this.session.call(this.settings.rpcMethod, this.getValues());
-		var values = this.getValues();
-		console.log('DifferentialDrive [%f, %f]', values[0], values[1]);
-
+		this.settings.transportSession.call(this.settings.rpcMethodName, this.getValues());
 	}
 	if (global.DEBUG || global.DEBUG_SAFE) {
 		var values = this.getValues();

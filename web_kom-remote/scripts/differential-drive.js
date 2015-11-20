@@ -73,19 +73,23 @@ var defaults = {
 	radialMin: -1,									// minimum radial speed
 	radialMax: 1,									// maximum radial speed
 	interval: 16,									// animation interval delay
-	acceleration: 1000,								// time to reach requested speed in milliseconds
-	rpcMethod: 'com.thaby.drive'	// RPC method provided by KomNav
+	acceleration: 500,								// time to reach requested speed in milliseconds
+	rpcMethodName: 'com.thaby.drive',				// RPC method provided by KomNav
+	transportSession: null,							// Provided transport session (mandatory)
 };
 
 /**
  * Kompai differential drive manager.
  * @constructor
- * @param {Session} session - websocket session of komcom client
  * @param {Object} options - options will be merged with defaults
  */
-function DifferentialDrive(session, options) {
+function DifferentialDrive(options) {
 	var settings = this.settings = utils.extend(utils.extend({}, defaults), options);
-	this.session = session;
+	// Override transportSession because it is not an instance of Session anymore
+	this.settings.transportSession = options.transportSession;
+	if (!settings.transportSession || !settings.transportSession.call) {
+		throw new Error('options.transportSession is invalid');
+	}
 	this.animator = new utils.Animator(settings.interval);
 	this._set(settings.linear, settings.radial);
 }
@@ -121,7 +125,7 @@ DifferentialDrive.prototype.update = function(linear, radial) {
  */
 DifferentialDrive.prototype.send = function() {
 	if (!global.DEBUG_SAFE) {
-		this.session.call(this.settings.rpcMethod, this.getValues());
+		this.settings.transportSession.call(this.settings.rpcMethodName, this.getValues());
 	}
 	if (global.DEBUG || global.DEBUG_SAFE) {
 		var values = this.getValues();
