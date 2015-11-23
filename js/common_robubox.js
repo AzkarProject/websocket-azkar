@@ -7,7 +7,7 @@ exports.sendDrive = function (data){
         
     var isRobubox = settings.isRobubox();
     console.log ("robubox.sendDrive_01("+isRobubox+")");
-    console.log(data);
+    // console.log(data);
     
      // driveSettings: this.settings.rpcMethod,
      // channel: parameters.navCh,
@@ -24,8 +24,8 @@ exports.sendDrive = function (data){
     var dateA = data.dateA;
     var dateB = Date.now();
     var delta = dateB - dateA;
-    var msg = '['+data.channel+']['+data.system+']['+data.command+'][AtoB>'+delta+' ms]';
-    insereMessage3("",msg);
+    //var msg = '['+data.channel+']['+data.system+']['+data.command+'][AtoB>'+delta+' ms]';
+    //insereMessage3("",msg);
 
     if (isRobubox == true) {
 
