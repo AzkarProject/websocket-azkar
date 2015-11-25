@@ -237,16 +237,16 @@ function updateListUsers() {
         // Idem pour l'ouverture ou la fermeture de l'option relay Stream
         if (robotCnxStatus == "new") {
         	raZNavChannel();
-        	razOpenRelay();
+        	if (proto == "1toN") razOpenRelay();
         } else {
         	selectChannelWebRTC.disabled = false;
-        	activeOpenRelay();
+        	if (proto == "1toN") activeOpenRelay();
         }
 
         // On verouille le switch Relay dés la première connection p2p d'un visiteur 
         var nbVisitors = countVisitorsP2P();
 		console.log ("XXXXXXXXXXXX nbVisitors >> "+nbVisitors);
-		if ( nbVisitors > 0 ) freezeOpenRelay();
+		if ( nbVisitors > 0 && proto == "1toN" ) freezeOpenRelay();
 
 
 		// Si connexion principale p2p active entre robot et pilote
@@ -333,5 +333,5 @@ function updateListUsers() {
         } // end For
         
         // Affichage de la liste
-        document.getElementById('listConnected').innerHTML = blabla;   
+       if (proto == "1toN") document.getElementById('listConnected').innerHTML = blabla;   
 }

@@ -902,7 +902,7 @@ function sendCommand(commandToSend) {
     // Affiche trace de la commande dans le chatlog webRTC local
     //var dateE = Date.now()
     //commandToSend.dateE = dateE;
-    $(chatlog).prepend(commandToSend.dateA + " SEND "+commandToSend.command + "\n");
+    // $(chatlog).prepend(commandToSend.dateA + " SEND "+commandToSend.command + "\n");
     
     // sérialisation et envoi de la commande au robot via WebRTC
     commandToSend = JSON.stringify(commandToSend);
@@ -928,7 +928,8 @@ if (type == "robot-appelé") {
         console.log("@ deathMan() >> onMove:"+onMove+" "+"lastMoveTimeStamp:"+lastMoveTimeStamp);          
 
          var data = {
-                 channel: parameters.navCh,
+                 channel: "Local-Robot",
+                 source: "Homme-Mort",
                  system: parameters.navSys,
                  dateA: Date.now(),
                  command: 'deathMan',

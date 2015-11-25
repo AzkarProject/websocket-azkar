@@ -12,6 +12,7 @@ exports.sendToRobot = function (rpcMethodName, values,controlDevice, driveComman
                  driveSettings: rpcMethodName,
                  channel: parameters.navCh,
                  system: parameters.navSys,
+                 source: controlDevice,
                  dateA: null,
                  command: 'onDrive',
                  aSpeed: values[1],
@@ -21,6 +22,7 @@ exports.sendToRobot = function (rpcMethodName, values,controlDevice, driveComman
 
         } else if (controlDevice == "Gamepad") {
             driveCommand.driveSettings = rpcMethodName;
+            driveCommand.channel = parameters.navCh;
         }
 		var dateA = Date.now();
         driveCommand.dateA = dateA;

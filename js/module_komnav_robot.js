@@ -16,7 +16,7 @@
 var SESSION = null;
 
 var KOMCOM_SERVER = '127.0.0.1', // wss://127.0.0.1
-	KOMCOM_REALM = 'com.kompai2', // com.thaby / com.kompai2
+	KOMCOM_REALM = 'com.thaby', // com.thaby / com.kompai2
 	KOMNAV_METHOD_DRIVE = KOMCOM_REALM + '.drive',
 	connection = new autobahn.Connection({ url: 'wss://' + KOMCOM_SERVER, realm: KOMCOM_REALM });
 

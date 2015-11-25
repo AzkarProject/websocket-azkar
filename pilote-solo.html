@@ -10,12 +10,23 @@
     <!-- viewport sert a controler la mise en page sur les appareils mobiles -->
     <meta name='viewport' content='width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1'>
     <link rel="stylesheet" href="/css/style.css" />
+    <!--
+    <script src='http://code.jquery.com/jquery-1.11.3.min.js'></script>
+    -->
     <script src='/js/lib/jquery-1.11.3.min.js'></script>
+    
+
     <link rel="import" href="/web_kom-remote/kom-remote.html">
 
 
-    <title>AZKAR 1toN</title>
+    
+
+
+
+    <title>AZKAR 1to1</title>
 </head>
+
+
 
 <body class="ihmPilote">
     
@@ -24,6 +35,11 @@
     
 
     
+    
+
+
+
+
     <section id="controlArea" class="fullSizeContainerBox">
 
         <div id="colGaucheUpControlArea" class="floatLeft oneQuarterContainerBox">
@@ -59,6 +75,8 @@
                     <label for="local_videoSource">Video: </label>
                     <select id="local_videoSource"></select>
                 </div>
+                <!--<hr/>
+                <button class="shadowBlack" id="local_ButtonDevices" onclick="localManageDevices()">Ouvrir la connexion</button>-->
             </div>
 
 
@@ -71,8 +89,6 @@
                 <span id="closeConnection"></span>
 
             </div>
-
-
         </div>
 
         <div id="colDroiteUpControlArea" class="floatRight tripleQuarterBox" style="height:440px;width:960px">
@@ -86,7 +102,7 @@
             </div>
         
 
-            <div id="robotCommands" class="insideFlex oneQuarterbox robot shadowBlack device" style="height:333px;width:316px">
+            <div id="robotCommands" class="insideFlex oneQuarterbox robot shadowBlack device" style="height:333px">
                 <strong>Robot controls</strong> <span id="connect-notice"></span>
                 <hr/>
 
@@ -105,13 +121,9 @@
                 </span>
                 <hr/>
 
-
-
-
-                <div id="step-commands">
+                <div id="step-commands">                   
                     <kom-remote class="kom-remote"></kom-remote>
                 </div>
-
 
                 <div id="drive-commands" style="display:none; overflow: scroll; height:150px">
                     <ul id="gamepads"></ul>
@@ -120,7 +132,8 @@
             </div> <!-- id="robotCommands" -->
 
 
-            <div id="robotInfos" class="insideFlex robot oneThirdBox shadowBlack device floatLeft" style="height:60px;width:316px;min-width:316px">
+            <!--<div id="robotInfos" class="insideFlex robot oneThirdBox shadowBlack device floatLeft" style="height:60px;width:316px;min-width:316px">-->
+            <div id="robotInfos" class="insideFlex robot oneQuarterbox shadowBlack device floatLeft" style="height:60px">
                 <strong> Robot Informations</strong>
                 <hr/>
                 <div class="jauge"style="width:300px">
@@ -128,14 +141,18 @@
                     <progress id="battery_level" class="floatRight" max="100" style="width:100px"></progress>
                 </div>
             </div>
-
         </div>
-        
-        <div id="colDroiteMiddleControlArea" class="floatLeft oneThirdContainerBox">
-            
 
+   
+    </section>
+
+   
+
+    <section id="controlArea2" class="fullSizeContainerBox">
+
+        <div id="colGaucheUpControlArea" class="floatLeft oneQuarterContainerBox">
             
-            <div id="websocketChat" class="insideFlex pilote oneThirdBox shadowBlack floatLeft" style="height:200px">
+            <div id="websocketChat" class="insideFlex pilote oneQuarterbox shadowBlack floatLeft" style="height:200px">
                 <strong> Websocket Messages & Chat</strong>
                 <hr/>
                 <form action="/" method="post" id="formulaire_chat_websoket">
@@ -143,113 +160,53 @@
                     <button id="envoi_message" type="submit">Envoyer</button>
                 </form>
                 <hr class="hrForm">
-                <textarea class="input" id="zone_chat_websocket" placeholder="Once upon a time..." style="height:100px"></textarea>
+                <textarea class="input" id="zone_chat_websocket" placeholder="Once upon a time..." size="20" style="height:100px"></textarea>
                 <form id="text-options1">
-                    <label>Filename:
-                        <input type="text1" class="filename" id="text-filename1" placeholder="Pilote_WS_LOGS" />.txt</label>
+                    <label><input type="text1" class="filename" id="text-filename1" placeholder="Pilote_WS_LOGS" />.txt</label>
                     <button id="saveLogs_webSocket" type="submit" value="Save" />Save</button>
                 </form>
             </div>
-
-
-                    <!--<div id="colDroiteBottomVisitorsArea" class="floatLeft oneThirdContainerBox">-->
-            <div id="manageVisitors" class="insideFlex visiteur oneThirdBox shadowBlack floatLeft" style="height:180px">
-                <strong> Manage visitors </strong>
-                <hr/>
-
-                <span id="streamSetting" class="">
-                    Robot Stream Mode:
-                    <input type="radio" name="streamRobotToVisitor" value="open" id="streamOpen" onclick="setRobotStreamToVisitor('open')" checked /> <label for="streamOpen">Relay</label>
-                    <input type="radio" name="streamRobotToVisitor" value="close" id="streamClose" onclick="setRobotStreamToVisitor('close')" /> <label for="streamClose">Direct</label>
-                </span>
-                <hr/>
-                <div id="listConnected">Nobody's here...</div>
-
-            </div>
-        </div>
-
-
-
-
-
-
-        </div>      
-
-        <div id="colGaucheUpVisitorsArea" class="floatRight doubleThirdContainerBox">
-            <div id="remoteVisitorsCameras" class="insideFlex visiteur DoubleThirdBox shadowBlack floatRight">
-                <strong> Visitors Views</strong>
-                <hr/>
-                <div class = "videosContainer">
-                    <div id="videos"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        
-        <div id="colFullBottomControlArea" class="floatRight fullSizeContainerBox">
-            <div id="dataChannelArea" class="insideFlex pilote shadowBlack floatLeft fourQuarterBox">
-                <strong> WebRTC dataChannel Log </strong>
-                <hr/>
-                <div id="formulaire_chat_webRTC" class="pseudoForm">
-                    <input type="text" name="message" id="input_chat_WebRTC" disabled placeholder="Waiting open channel..." size="28" autofocus />
-                    <button id="env_msg_WebRTC" disabled onclick="sendMessage()">Envoyer</button>
-                </div>
-                <hr class="hrForm">
-                <textarea class="input" id="zone_chat_WebRTC" placeholder="Once upon a time..."></textarea>
-                <form id="text-options2">
-                    <label>Filename:
-                        <input type="text" class="filename" id="text-filename2" placeholder="Pilote_WebRTC_LOGS" />.txt</label>
-                    <button id="saveLogs_webRTC" type="submit" value="Save" />Save</button>
-                </form>
-            </div>
-        </div>
-   
-    </section>
-
-    <section id="Visitors_Area" class="fullSizeContainerBox">
-
-        <div id="colDroiteUpVisitorsArea" class="floatLeft oneThirdContainerBox">
-
-            <div id="OneToNChat" class="insideFlex visiteur oneThirdBox shadowBlack floatLeft">
-                <strong> 1toN Messages & Chat</strong>
-                <hr/>
-                <form action="/" method="post" id="formulaire_chat_1toN">
-                    <input type="text3" name="message3" id="message3" placeholder="Votre message..." size="28" autofocus />
-                    <button id="envoi_message3" type="submit">Envoyer</button>
-                </form>
-                <hr class="hrForm">
-                <textarea class="input" id="zone_chat_1toN" placeholder="Once upon a time..."></textarea>
-                <form id="text-options3">
-                    <label>Filename:
-                        <input type="text3" class="filename" id="text-filename3" placeholder="1toN_chat" />.txt</label>
-                    <button id="saveLogs_1toN" type="submit" value="Save" />Save</button>
-                </form>
-            </div>        
-        </div>
-
-
-    
        
 
-
-
-        <div id="colGaucheBottomVisitorsArea" class="floatRight doubleThirdContainerBox">
-            <div id="manageFiles" class="insideFlex visiteur DoubleThirdBox shadowBlack floatRight">
-                <strong> Manage Files </strong>
-                <hr/>
-                TODO... upload, delete files, etc...
-            </div>       
         </div>
 
+        <div id="colDroiteUpControlArea2" class="floatRight tripleQuarterBox" style="width:960px">
+            
+            <div id="NavigationArea" class="insideFlex robot tripleQuarterBox shadowBlack floatRight" style="height:200px; width:600px;min-width:600px">
+                <strong> Navigation</strong>
+                <hr/>
+
+            </div>
+        
+
+            <div id="WebRTC_Logs" class="insideFlex oneQuarterbox pilote shadowBlack device" style="height:200px">
+                
+                <!--<div id="dataChannelArea" class="insideFlex pilote shadowBlack floatLeft fourQuarterBox">-->
+                    <strong> WebRTC dataChannel Log </strong>
+                    <hr/>
+                    <div id="formulaire_chat_webRTC" class="pseudoForm">
+                        <input type="text" name="message" id="input_chat_WebRTC" disabled placeholder="Waiting open channel..." size="28" autofocus />
+                        <button id="env_msg_WebRTC" disabled onclick="sendMessage()">Envoyer</button>
+                    </div>
+                    <hr class="hrForm">
+                    <textarea class="input" id="zone_chat_WebRTC" placeholder="Once upon a time..." size="20" style="height:100px"></textarea>
+                    <form id="text-options2">
+                        <label><input type="text" class="filename" id="text-filename2" placeholder="Pilote_WebRTC_LOGS" />.txt</label>
+                        <button id="saveLogs_webRTC" type="submit" value="Save" />Save</button>
+                    </form>
+            </div>
+        </div>    
+    
     </section>
+
+
 
     <section id="settingsArea" class="fullSizeContainerBox">
         
-        <div id="colFullTopSettingsArea" class="insideFlex colorSettings shadowBlack floatLeft fourQuarterBox">
+        <div id="colFullTopSettingsArea" class="insideFlex colorSettings shadowBlack floatLeft " style="width:1248px">
             <strong> Settings </strong>
             <hr/>
+            
             
 
             <span id="robotVideoSetting" class="">
@@ -273,100 +230,15 @@
                 </span>
             <hr/>
         </div>
-
     </section>
-    
-    <section id="temporaire">
-    
-
-<!--         <div id="colGaucheMiddleControlArea" class="floatRight doubleThirdContainerBox">
-            <div id="navigation" class="insideFlex robot DoubleThirdBox shadowBlack floatRight">
-                <strong> Navigation</strong>
-                <hr/>
-                <canvas id="mapviewer_canvas" width="620" height="350" class="floatright">
-                    Votre navigateur ne supporte pas les canvas.
-                </canvas>
-                <div id="points_interets_area" class="floatLeft">
-                    <form action="/" method="post" id="formulaire_points_interets">
-                        <p>
-                            <input type="radio" name="goto" value="x,y" id="salon" />
-                            <label for="salon">Salon</label>
-                            <br />
-                            <input type="radio" name="goto" value="x,y" id="cuisine" />
-                            <label for="cuisine">Cuisine</label>
-                            <br />
-                            <input type="radio" name="goto" value="x,y" id="chambre" />
-                            <label for="chambre">Chambre</label>
-                            <br />
-                            <input type="radio" name="goto" value="x,y" id="sdb" />
-                            <label for="sdb">Salle de bain</label>
-                            <br />
-                            <input type="radio" name="goto" value="x,y" id="entree" />
-                            <label for="entree">Entrée</label>
-                            <br />
-                            <button id="envoi_goto" type="submit">Go</button>
-                        </p>
-                    </form>
-                </div>
-            </div>
-        </div> -->
-
-<!--         <div id="colGaucheUpVisitorsArea" class="floatRight doubleThirdContainerBox">
-            <div id="remoteVisitorsCameras" class="insideFlex visiteur DoubleThirdBox shadowBlack floatRight">
-                <strong> Visitors Views</strong>
-                <hr/>
-                <div class = "videosContainer">
-                    <video id='1toN_remoteVideos' class="" autoplay muted controls="controls"></video>
-                </div>
-            </div>
-        </div> -->
-
-
-        <!--
-         <div id="step-commands">
-                    
-                    
-                    Distance :
-                    <input type="text" name="distance" id="stepDistance" size="4" value="0.1" /> mètres 
-                    <br/>  
-                    Rotation :
-                    <input type="text" name="rotation" id="stepRotation" size="4" value="22.5" /> degrés
-                    
-                    <div id="divBtUp">
-                        <button id="btnUp" class="btnCommandsPad" onclick="cmdUp()">&uarr;</button>
-                    </div>
-                    
-                    <div id="divBtLeft">
-                        <button id="btnLeft" class="btnCommandsPad" onclick="cmdLeft()">&larr;</button>
-                    </div>
-                   
-                    <div id="divBtRight">
-                        <button id="btnRight" class="btnCommandsPad" onclick="cmdRight()">&rarr;</button>
-                    </div>
-                    
-                    <div id="divBtDown">
-                        <button id="btnDown" class="btnCommandsPad" onclick="cmdDown()">&darr;</button>
-                    </div>
-                    
-                    <div id="divBtSpeed">
-                        <button id="btnIncrease" class="btnCommandsPad" onclick="cmdSpeed(-0.1)">-</button>
-                        <progress id="jaugeSpeedSetting" value="0.1" max="1"></progress>
-                        <button id="btnDecrease" class="btnCommandsPad" onclick="cmdSpeed(0.1)">+</button>
-                        <br/> Speed Setting: <span id="speedSetting">m.s</span>
-                    </div>
-                    
-                </div>
-            -->
-
-    </section>
-
-
 
 
     <script>
-    var type = "pilote-appelant";
-    var proto = "1toN";
+        var type = "pilote-appelant";
+        var proto = "1to1";
     </script>
+
+
     
     
 
@@ -385,14 +257,20 @@
     <script src='/js/main_websocket.js'></script>
     <script src='/js/main_settings.js'></script>
     <script src='/js/main_1to1.js'></script>
+    <!--
     <script src='/js/main_1toN_Visiteur.js'></script>
+    -->
     
     <script src='/js/module_komnav_pilote.js'></script>
     <script src='/js/module_settings.js'></script>
     <script src='/js/module_infos.js'></script>
+   
+    
     <script src='/js/module_managevisitors.js'></script>
-    <script src='/js/module_streamrelay.js'></script>
+    
+    <!--
     <script src='/js/module_multiview.js'></script>
+    -->
     
     <script src='/js/module_gamepad.js'></script>
     <script src='/js/module_navigation.js'></script>

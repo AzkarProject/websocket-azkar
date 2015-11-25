@@ -23,13 +23,17 @@ exports.sendDrive = function (data){
     var lSpeed = data.lSpeed;
     var dateA = data.dateA;
     var dateB = Date.now();
-    var delta = dateB - dateA;
+    var source = data.source;
+    var channel = data.channel;
+    // var delta = dateB - dateA;
     //var msg = '['+data.channel+']['+data.system+']['+data.command+'][AtoB>'+delta+' ms]';
     //insereMessage3("",msg);
+    console.log(data);
+
 
     if (isRobubox == true) {
 
-        var toto = "robubox.sendDrive(1) >> enable:"+enable+" onMove:"+onMove+" "+"lastMoveTimeStamp:"+lastMoveTimeStamp;
+        // var toto = "robubox.sendDrive(1) >> enable:"+enable+" onMove:"+onMove+" "+"lastMoveTimeStamp:"+lastMoveTimeStamp;
         
         // Flags Homme mort:  
         if (enable == true) {
@@ -40,9 +44,9 @@ exports.sendDrive = function (data){
             lastMoveTimeStamp = 0;
         }
         
-        var tata = "robubox.sendDrive(2) >> enable:"+enable+" onMove:"+onMove+" "+"lastMoveTimeStamp:"+lastMoveTimeStamp;
-        //console.log(toto);
-        //console.log(tata); 
+        // var tata = "robubox.sendDrive(2) >> enable:"+enable+" onMove:"+onMove+" "+"lastMoveTimeStamp:"+lastMoveTimeStamp;
+        // console.log(toto);
+        // console.log(tata); 
             
 
          if (parameters.navSys == 'Robubox') {
@@ -70,12 +74,20 @@ exports.sendDrive = function (data){
             console.log (">>>>>>>>>>>>>> Send Drive To KomNav");
 
             var values = [];
-            values[1] = aSpeed;
             values[0] = lSpeed;
-
-            var rpcMethod = 'com.thaby.drive'    
+            values[1] = aSpeed;
             
-            SESSION.call(rpcMethod, values);
+            values[2] = source; // source
+            values[3] = channel; // channel
+
+            values[4] = dateA;
+            values[5] = dateB;
+
+            var rpcMethod = 'com.thaby.drive';
+
+            var rpcMethod2 = 'com.thaby.drive.benchmark';      
+            
+            SESSION.call(rpcMethod2, values);
 
         }
         
@@ -84,7 +96,7 @@ exports.sendDrive = function (data){
       
 }
 
-// Envoi d'une commande de type "Drive" au robot
+/*// Envoi d'une commande de type "Drive" au robot
 exports.sendDrive2 = function (enable, aSpeed,lSpeed){
         
         
@@ -148,9 +160,10 @@ exports.sendDrive2 = function (enable, aSpeed,lSpeed){
         }
         
     }
-    /**/
+    
       
-}/**/
+}
+/**/
 
 
 // Envoi d'une commande de type "Step" au robot avec une "promize"
@@ -163,6 +176,8 @@ exports.sendStep = function (typeMove,dist, MaxSpeed){
     
     if (isRobubox == true) {
 
+
+       
 
         // console.log ("robubox.sendStep()");
 
@@ -202,44 +217,53 @@ exports.getBattery = function (){
     
     if (isRobubox == true) {
 
-        //var url = "http://127.0.0.1:8080/?url=http://127.0.0.1:50000/robulab/battery/battery" ;
-        //var url = "http://127.0.0.1:8080/127.0.0.1:50000/lokarria/battery" ; // Tests CORS-ANYWHERE
-        var url = "https://127.0.0.1:443/http://127.0.0.1:50000/lokarria/battery" ; // Tests CORS-ANYWHERE
-        //var url = "http://127.0.0.1:8080/127.0.0.1:50000/robulab/battery/battery" ; // Tests CORS-ANYWHERE
-        //var url = "http://127.0.0.1:50000/robulab/battery/battery"; // url est passé en paramètre , elle sera interpretée par le 
-        var delay = 1000; // l'interval de temps au bout du quel on envoi une autre requete pour rafraichir les information
-        var dataJson, remaining, percentage, dataString, thenum, progressBar;
+        
+    	if (parameters.navSys == 'Robubox') {
 
-       
-        //    1- envoyer toutes les "delay"  ms  une requete get sur "url" 
-        //    2- le resultat  data  est en application/XML 
-        //    3- on serialise data en string 
-        //    4- on recupère la balise remaining 
-        //    5- on recupère le nombre qui est dans la balise remaining
-        //    6- on la converti en %
-        //    7- on recupère id du progressBar 
-        //    8- on attribue la value du pourcentage à la propriété value du progress bar  , avec un arondi
-         
-                
-        setInterval(function() {
-            $.get(url, function(data) { // 1 -  et 2- 
-              batteryInfo = JSON.parse(data);
-              //  console.log('batteryInfo -->', batteryInfo);
+	        //var url = "http://127.0.0.1:8080/?url=http://127.0.0.1:50000/robulab/battery/battery" ;
+	        //var url = "http://127.0.0.1:8080/127.0.0.1:50000/lokarria/battery" ; // Tests CORS-ANYWHERE
+	        var url = "https://127.0.0.1:443/http://127.0.0.1:50000/lokarria/battery" ; // Tests CORS-ANYWHERE
+	        //var url = "http://127.0.0.1:8080/127.0.0.1:50000/robulab/battery/battery" ; // Tests CORS-ANYWHERE
+	        //var url = "http://127.0.0.1:50000/robulab/battery/battery"; // url est passé en paramètre , elle sera interpretée par le 
+	        var delay = 1000; // l'interval de temps au bout du quel on envoi une autre requete pour rafraichir les information
+	        var dataJson, remaining, percentage, dataString, thenum, progressBar;
 
-               // dataString = new XMLSerializer().serializeToString(data.documentElement); // 3- 
-                //remaining = dataString.substr(dataString.indexOf("<Remaining>"), dataString.indexOf("</Remaining>")); // 4 - 
-                //thenum = remaining.match(/\d+/)[0] // 5-
-                thenum = batteryInfo.Remaining ;
-                // console.log('thenum -->', thenum);
-                percentage = (thenum <= 100) ? thenum : 100; // 6- 
-            });
-            
-            // envoi des valeurs au pilote via le serveur
-             socket.emit("battery_level", {
-                 command: 'battery_level',
-                 percentage: percentage
-            });
-        }, delay);
+	       
+	        //    1- envoyer toutes les "delay"  ms  une requete get sur "url" 
+	        //    2- le resultat  data  est en application/XML 
+	        //    3- on serialise data en string 
+	        //    4- on recupère la balise remaining 
+	        //    5- on recupère le nombre qui est dans la balise remaining
+	        //    6- on la converti en %
+	        //    7- on recupère id du progressBar 
+	        //    8- on attribue la value du pourcentage à la propriété value du progress bar  , avec un arondi
+	         
+	                
+	        setInterval(function() {
+	            $.get(url, function(data) { // 1 -  et 2- 
+	              batteryInfo = JSON.parse(data);
+	              //  console.log('batteryInfo -->', batteryInfo);
+
+	               // dataString = new XMLSerializer().serializeToString(data.documentElement); // 3- 
+	                //remaining = dataString.substr(dataString.indexOf("<Remaining>"), dataString.indexOf("</Remaining>")); // 4 - 
+	                //thenum = remaining.match(/\d+/)[0] // 5-
+	                thenum = batteryInfo.Remaining ;
+	                // console.log('thenum -->', thenum);
+	                percentage = (thenum <= 100) ? thenum : 100; // 6- 
+	            });
+	            
+	            // envoi des valeurs au pilote via le serveur
+	             socket.emit("battery_level", {
+	                 command: 'battery_level',
+	                 percentage: percentage
+	            });
+	        }, delay);
+
+       	} else if (parameters.navSys == 'KomNAV') {
+
+       		// TODO
+
+       	}
 
     }
     /**/

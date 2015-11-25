@@ -47,133 +47,7 @@ console.log('');
 console.log("***********************************");
 console.log("Serveur sur machine: " + hostName);
 
-/*// Original http -----------------------------
-var fs = require('fs');
-var express = require('express');
-var app = express(),
-    server = require('http').createServer(app),
-    //server = require('https').createServer(options, app),
-    io = require('socket.io').listen(server),
-    ent = require('ent'); // Bloque les caractères HTML (idem htmlentities en PHP)
-
-// Pour que nodejs puisse servir correctement 
-// les dépendances css du document html
-app.use(express.static(__dirname));
-
-// ------------ routing ------------
-
-// Chargement de la page index.html
-app.get('/', function(req, res) {
-    res.sendFile(__dirname + '/index.html');
-});
-
-// Routing IHM >>>> TODO coté clients
-app.get('/pilote/', function(req, res) {
-    res.sendFile(__dirname + '/pilote.html');
-});
-
-app.get('/robot/', function(req, res) {
-    res.sendFile(__dirname + '/robot.html');
-});
-
-app.get('/visiteur/', function(req, res) {
-    res.sendFile(__dirname + '/visiteur.html');
-});
-
-app.get('/cartographie/', function(req, res) {
-    res.sendFile(__dirname + '/cartographie.html');
-});
-
-// On passe la variable hostName en ajax à l'ihm d'accueil
-// puisqu'on ne peux plus passer par websocket...
-// TODO >> Faire pareil avec Pilote et Robot pour économiser une requête ws...
-// NB : Fait le 19/08
-app.get("/getvar", function(req, res){
-    res.json({ hostName: hostName });
-});
-
-// Lancement du serveur
-server.listen(port, ipaddress); // OK HTTP
-
-/**/// Fin original http ---------------------------------
-
-/*//  Alternative fonctionnelle en HTTP ------
-
-var http = require('http');
-var https = require('https');
-var fs = require('fs');
-var ent = require('ent'); // Permet de bloquer les caractères HTML (sécurité équivalente à htmlentities en PHP)
-
-var options = {
-  key: fs.readFileSync('./ssl/hacksparrow-key.pem'),
-  cert: fs.readFileSync('./ssl/hacksparrow-cert.pem')
-};
-
-
-// // OK ca fonctionne
-// var a = https.createServer(options, function (req, res) {
-//   res.writeHead(200);
-//   res.end("hello world\n");
-// }).listen(8000); // Ca plante si on définit une adresse IP...
-
-
-var express = require('express');
-var app = express();
-
-/// -------------------------------------------------
-
-// affectation du port
-// app.set('port', port);
-
-// Pour que nodejs puisse servir correctement 
-// les dépendances css du document html
-app.use(express.static(__dirname));
-
-// ------------ routing ------------
-
-// Chargement de la page index.html
-app.get('/', function(req, res) {
-    res.sendFile(__dirname + '/index.html');
-});
-
-// Routing IHM >>>> TODO coté clients
-app.get('/pilote/', function(req, res) {
-    res.sendFile(__dirname + '/pilote.html');
-});
-
-app.get('/robot/', function(req, res) {
-    res.sendFile(__dirname + '/robot.html');
-});
-
-app.get('/visiteur/', function(req, res) {
-    res.sendFile(__dirname + '/visiteur.html');
-});
-
-app.get('/cartographie/', function(req, res) {
-    res.sendFile(__dirname + '/cartographie.html');
-});
-
-// On passe la variable hostName en ajax à l'ihm d'accueil
-// puisqu'on ne peux plus passer par websocket...
-// TODO >> Faire pareil avec Pilote et Robot pour économiser une requête ws...
-// NB : Fait le 19/08
-app.get("/getvar", function(req, res){
-    res.json({ hostName: hostName });
-});
-
-
-// Lancement du serveur
-//server.listen(app.get('port'), ipaddress);
-server = http.createServer(app); // OK HTTP
-//server = https.createServer(options, app); // Pas OK...
-server.listen(port, ipaddress); // OK HTTP
-// server.listen(port); // BUG HTTPS
-io = require('socket.io').listen(server); // OK
-
-/**/// Fin ------ Alternative fonctionnelle en HTTP ------
-
-
-// Alternative HTTPS ---------------------------
+// HTTPS ---------------------------
 
 var fs = require('fs');
 var express = require('express');
@@ -214,17 +88,37 @@ app.get('/', function(req, res) {
     res.sendFile(__dirname + '/index.html');
 });
 
-app.get('/pilote/', function(req, res) {
-    res.sendFile(__dirname + '/pilote.html');
-});
+// --------------- 1to1
 
 app.get('/robot/', function(req, res) {
     res.sendFile(__dirname + '/robot.html');
 });
 
+
+app.get('/pilote-solo/', function(req, res) {
+    res.sendFile(__dirname + '/pilote-solo.html');
+});
+
+
+// ------------- 1toN
+
+
+app.get('/pilote/', function(req, res) {
+    res.sendFile(__dirname + '/pilote.html');
+});
+
+
+
 app.get('/visiteur/', function(req, res) {
     res.sendFile(__dirname + '/visiteur.html');
 });
+
+
+app.get('/admin/', function(req, res) {
+    res.sendFile(__dirname + '/admin.html');
+});
+
+
 
 // On passe la variable hostName en ajax à l'IHM d'accueil
 // puisqu'on ne peux pas passer par websocket...
@@ -270,7 +164,7 @@ io.on('connection', function(socket, pseudo) {
     // Ecouteur de connexion entrante
     onSocketConnected(socket);
 
-    // Ejection de force de tous les connectés de la précédente session serveur
+    /*// Ejection de force de tous les connectés de la précédente session serveur
     function razConnexions() {
         var data = { url: indexUrl};  
         socket.broadcast.emit('razConnexion',data); 
@@ -284,6 +178,15 @@ io.on('connection', function(socket, pseudo) {
     if (isServerStarted == false ) {
         setTimeout(razConnexions,5000);
     }
+    /**/
+
+    // Bouton ejection de tous les clients robot/Pilote et visiteurs
+    socket.on('razConnexions', function(data) {
+        var data = { url: indexUrl};  
+        socket.broadcast.emit('razConnexion',data); 
+        console.log ("> socket.broadcast.emit('razConnexion',"+data.url+")");
+     });
+    /**/
     
     // Quand un User rentre un pseudo 
     // on le stocke en variable de session et on informe les autres Users
