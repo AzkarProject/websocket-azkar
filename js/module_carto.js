@@ -1,0 +1,269 @@
+$(document).ready(function() {
+    
+
+    var dataMap, // height , width , offset (x,y) , resolution
+        dataLocalization, //
+        offsetX,
+        offsetY,
+        corrOffestX,
+        corrOffestY,
+        robotInfo;
+    var canvasMap = document.getElementById('myCanvas');
+    var context = canvasMap.getContext('2d');
+    // var urlP = 'http://127.0.0.1:8080/127.0.0.1:50000/nav/maps/parameters';
+    // var urlRobotPosition = 'http://127.0.0.1:8080/127.0.0.1:50000/lokarria/localization';
+
+    // Titi: Rebond proxy en https(Client Robot) > Http(Robubox)
+    var urlP = 'https://127.0.0.1:443/http://127.0.0.1:50000/nav/maps/parameters';
+    var urlRobotPosition = 'https://127.0.0.1:443/http://127.0.0.1:50000/lokarria/localization';
+    
+
+    // Titi: 
+    // Resize width et Height en conservant le ratio
+    // retourne aussi le ratio utilisé.
+    // Paramètres: width et Height d'origine, Width et Height max
+    function resizeRatio(srcWidth, srcHeight, maxWidth, maxHeight) {
+        var ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
+        return { width: srcWidth*ratio, height: srcHeight*ratio, ratio: ratio };
+     }
+
+
+    // Titi: 
+    // Retourne les offsets  X Y resizés du point 0,0 de la carte originale
+    // Paramètres: position point 0,0 sur la carte originale, width et Height carte originale, Width et Height carte affichée
+    function resizeOffset (offsetWidth,offsetHeight,originalWidth,originalHeight,resizedWidth,resizedHeight) {
+        var offsetArrowWidth = originalWidth/offsetWidth;
+        offsetArrowWidth = resizedWidth/offsetArrowWidth;
+        var offsetArrowHeight = originalHeight/offsetHeight;
+        offsetArrowHeight = resizedHeight/offsetArrowHeight;
+        return { width: offsetArrowWidth, height: offsetArrowHeight };
+    }
+
+    // Titi: Image BackGround aux dimensions du Canvas
+    var backGroundMap = new Image();
+    backGroundMap.src = '/images/mapOriginale.png';
+    var mapSize = 0;
+    var canvasWidth = $('#myCanvas').width();
+    var canvasHeight = $('#myCanvas').height();
+
+    
+    // Titi: 
+
+
+    /*// Image BackGround aux dimensions du Canvas
+    var backGroundMap = new Image();
+    backGroundMap.src = '/images/mapOriginale.png';
+    
+    var sourceWidth = 2834;
+    var sourceHeight = 1171;
+    
+    // console.log (sourceWidth + ' : ' + sourceHeight);
+   
+
+
+
+    var mapSize = resizeRatio(sourceWidth, sourceHeight, canvasWidth, canvasHeight)
+    // console.log (canvasWidth + " : " + canvasHeight);
+    console.log ("mapSize: "+mapSize.ratio);
+    /**/
+
+
+    /* START */
+    /* call init() then load() and finaly refresh() with setInterval */
+    init(load);
+
+    function init(callback) {
+
+        console.log('@ init(callback)');
+
+        var d1 = $.Deferred();
+        var d2 = $.Deferred();
+
+        $.when(d1, d2).done(function(v1, v2) {
+            callback();
+        });
+
+        console.log ('get map informations');
+        $.get(urlP, function(rep) { // Les informations de la carte 
+            if (!rep)
+                return;
+            dataMap = rep;
+            // console.log('datamap -->', dataMap);
+            
+            // Michaël:
+            //console.log ('get the map width and height to adjust the canvas')
+            //$('#myCanvas').attr("width", dataMap.Width);
+            //$('#myCanvas').attr("height", dataMap.Height);
+            //console.log("Dimension  width : " +  dataMap.Width + " height : " +dataMap.Height ); 
+            
+            // Titi: Calcul des W,H et ratio de la carte à redéssiner
+            mapSize = resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
+
+            d1.resolve();
+        });
+
+        console.log ('get robot position');
+        $.get(urlRobotPosition, function(dataLocalization) { // la localisation du robot sur la carte
+            robotInfo = JSON.parse(dataLocalization);
+            console.log ('then, call load function')
+            d2.resolve();
+        });
+
+    }
+
+    function load() {
+        
+        console.log('@ load()');
+
+        // console.log('dataMap 2  --->', dataMap);
+        offsetX = dataMap.Offset.X;
+        offsetY = dataMap.Offset.Y;
+        corrOffestX = dataMap.Height - (offsetX / dataMap.Resolution);
+        corrOffestY = dataMap.Width - (offsetY / dataMap.Resolution);
+        // calcul the coordinates of locationsPoint on the canvasMap
+        // and fill tab array
+        // initLocationsPoints();           
+
+        console.log ('then call refresh function'); 
+        refresh();
+    }
+
+
+    function refresh() {
+        
+        console.log('@ refresh()');
+        setInterval(function() {
+            $.get(urlRobotPosition, function(dataLocalization) {
+                robotInfo = JSON.parse(dataLocalization);
+                console.log('robotInfo -->', robotInfo);
+            });
+
+            context.clearRect(0, 0, canvasMap.width, canvasMap.height);
+            
+            // Add titi:
+            // context.drawImage(backGroundMap, 0,0); // Image taille non resizée 
+            context.drawImage(backGroundMap, 0,0, mapSize.width, mapSize.height); // Image taille resizée avec ratio
+            
+            drawRobot();
+
+        }, 100); // 600
+    }
+
+    function drawRobot() {
+        
+        // Michaël...
+        // context.translate(1308, 861); // ramener l'origine du repère au point 1308,861
+               
+        // Titi
+        console.log('@ drawRobot()');
+        context.save(); // Sauvegarde du contexte AVANT le contexte Translate..
+        var drawRatio = mapSize.ratio;
+        // conversion de l'offset d'origine au ratio d'affichage...
+        // Todo: ajouter les éléments d'ofset d'origine en paramètres...
+        // console.log (dataMap.Offset.X + " : " + dataMap.Offset.Y) 
+        // offset: -25.8644... &&  -6.4501... >>> 1308 && 861 
+        // reso: 0.2
+        // size:  X = 2384 && Y = 1171 >>  399 && 165 
+        var newOffset = resizeOffset (1308,861,dataMap.Width, dataMap.Height, mapSize.width,mapSize.height);
+        context.translate(newOffset.width,newOffset.height);
+        
+        
+        if (Math.round(Math.abs(robotInfo.Pose.Position.Y)) === 0) var ry = 0;
+        else if (robotInfo.Pose.Position.Y > 0) ry = -robotInfo.Pose.Position.Y /0.02  ;
+        else ry = robotInfo.Pose.Position.Y / 0.02;
+
+        if (Math.round(Math.abs(robotInfo.Pose.Position.X)) === 0) var rx = 0;
+        else if (robotInfo.Pose.Position.X < 0) rx = -robotInfo.Pose.Position.X / 0.02;
+        else rx = robotInfo.Pose.Position.X /0.02;
+
+
+        var qz = robotInfo.Pose.Orientation.Z;
+
+        console.log("X --> ", rx);
+        console.log("Y --> ", ry);
+        
+        // Titi: 
+        // Inversion des axes d'orientation (Carte en horizontal)
+        // et application du ratio de resize
+        console.log("z --> ", qz); 
+        qz = - qz;
+        rx = rx*drawRatio;
+        ry = ry*drawRatio;
+
+
+        drawArrow(context, 0, 0, 0, -100, 1, "green"); // axe Y
+        drawArrow(context, 0, 0, 100, 0, 1, "red"); // axe X
+        // circleWithDirection(ry, rx, 0, "blue", 3, 2); // Michael
+        
+        // Titi: Ajout du paramètre QZ pour l'orientation du robot et inversion des axes X,Y...
+        circleWithDirection(rx, -ry, qz, "blue", 3, 2);
+        
+        // Titi: RAZ du context pour éviter la surimpression d'image décalée...
+        context.restore();
+    }
+
+
+    //draw a circle with a line     
+    function circleWithDirection(x, y, theta, color, size, sizeStroke) {
+        
+        console.log('@ dcircleWithDirection()');
+        context.save();
+        context.beginPath();
+        context.arc(x, y, size, 0, 2 * Math.PI, false);
+        context.fillStyle = color;
+        context.fill();
+        context.lineWidth = 2;
+        context.strokeStyle = "black";
+        context.stroke();
+        x2 = x + Math.cos(theta) * 15;
+        y2 = y + Math.sin(theta) * 15;
+        context.closePath();
+        context.beginPath();
+        context.moveTo(x, y);
+        context.lineTo(x2, y2);
+        context.strokeStyle = color;
+        context.lineCap = "round";
+        context.lineWidth = sizeStroke;
+        context.stroke();
+        context.closePath();
+        context.restore();
+    }
+
+    // Borrowed and adapted from : http://stackoverflow.com/questions/808826/draw-arrow-on-canvas-tag
+    function drawArrow(ctx, fromx, fromy, tox, toy, arrowWidth, color) {
+        
+
+        console.log('@ drawArrow()');
+        //variables to be used when creating the arrow
+        var headlen = 10;
+        var angle = Math.atan2(toy - fromy, tox - fromx);
+
+        ctx.save();
+        ctx.strokeStyle = color;
+
+        //starting path of the arrow from the start square to the end square and drawing the stroke
+        ctx.beginPath();
+        ctx.moveTo(fromx, fromy);
+        ctx.lineTo(tox, toy);
+        ctx.lineWidth = arrowWidth;
+        ctx.stroke();
+
+        //starting a new path from the head of the arrow to one of the sides of the point
+        ctx.beginPath();
+        ctx.moveTo(tox, toy);
+        ctx.lineTo(tox - headlen * Math.cos(angle - Math.PI / 7), toy - headlen * Math.sin(angle - Math.PI / 7));
+
+        //path from the side point of the arrow, to the other side point
+        ctx.lineTo(tox - headlen * Math.cos(angle + Math.PI / 7), toy - headlen * Math.sin(angle + Math.PI / 7));
+
+        //path from the side point back to the tip of the arrow, and then again to the opposite side point
+        ctx.lineTo(tox, toy);
+        ctx.lineTo(tox - headlen * Math.cos(angle - Math.PI / 7), toy - headlen * Math.sin(angle - Math.PI / 7));
+
+        //draws the paths created above
+        ctx.stroke();
+        ctx.restore();
+    }
+
+
+});

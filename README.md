@@ -18,16 +18,17 @@ Livrable base 1toN:
 
 - [ ] IHMs (Pilote/Robot/Visiteur)
     - [ ] IHM Pilote 
-        - [X] CSS Mookups
+        - [X] CSS
         - [x] bloc Cam Pilote
         - [x] bloc Cam Visiteurs
         - [x] bloc Tchat
         - [x] bloc Manage Visiteurs
+        - [ ] bloc cartographie
         - [ ] bloc Manage Files
     - [ ] IHM Robot 
-        - [x] CSS
+        - [ ] CSS
         - [x] bloc pilot camera
-        - [ ] bloc Liste visiteurs
+        - [x] bloc cartographie
     - [ ] IHM Visiteur 
         - [x] CSS
         - [x] Cam Pilote

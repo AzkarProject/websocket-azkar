@@ -22,7 +22,7 @@
     <strong><span id="zone_info_server">WebRTC AZKAR</span></strong>
     <hr/>
 		
-		<section id="bloc_1to1_messages" class="fullSizeContainerBox">
+		<section id="bloc_1to1_messages" class="" style="float:left;width:300px">
 				
 			<div id="websocketChat" class="insideFlex robot shadowBlack floatLeft doubleQuarterBox">  
 				
@@ -64,8 +64,20 @@
 
 
 
-		<section id="bloc_1toN" class="fullSizeContainerBox">
+		<section id="bloc_1toN" class="" style="float:left">
 			
+
+			<div  class="floatLeft doubleQuarterContainerBox">
+				<div id="remoteCanvasArea" class="insideFlex robot shadowBlack">
+		            <strong> Navigation</strong>
+		            <hr/>
+					<canvas id="myCanvas" width="500" height="140" style=""></canvas>
+	        	</div>
+        	</div>
+
+			
+
+
 			<div  class="floatLeft oneQuarterContainerBox">
 				<div id="piloteCam" class="insideFlex pilote shadowBlack">
 				    <strong> Pilot Camera</strong>
@@ -91,6 +103,8 @@
 
 
 
+
+			<!--
 			<div  class="floatLeft doubleQuarterContainerBox">
 				<div id="visitorsList" class="insideFlex visiteur shadowBlack">
 						<strong>Visitor's List</strong>
@@ -98,9 +112,91 @@
 						<kom-remote class="kom-remote"></kom-remote>
 		  	 	</div>
 			</div>
+			-->
 
+
+
+	</section>
+
+	<section id="bloc_1to1_commands" class="" style="float:left;width:1300px">
+	
+			<div  class="floatLeft oneQuarterContainerBox">
+ 					<div id="Command PAD" class="insideFlex robot shadowBlack">
+							<kom-remote class="kom-remote"></kom-remote>
+			  	 	</div>
+			</div>
+
+			
+			<div id="robotSettings" class="floatLeft robot shadowBlack" style="width:956px; margin:3px">
+				
+				<select id="local_audioSource"></select>
+				<select id="local_videoSource"></select>
+									
+				<div class="jauge">
+	           		<label for="battery_level">Battery Level:</label>
+	            	<progress id="battery_level" class="floatRight" max="100"></progress>
+	        	</div>
+	      	</div>
+			
+
+	</section>
+		
+
+		<!--
+		<section id="bloc_1to1_commands" class="" style="float:left">
+
+			<div  class="floatLeft oneQuarterContainerBox">
+					<div id="Command PAD" class="insideFlex visiteur shadowBlack" style="height:300px">
+							<strong>Command PAD</strong>
+							<hr/>
+							<kom-remote class="kom-remote"></kom-remote>
+			  	 	</div>
+			</div>
+
+			
+
+			<div id="robotSettings" class="insideFlex robot shadowBlack floatLeft tripleQuarterContainerBox" style="width:940px;height:300px">
+						
+
+
+	
+				<div id="selectionMicros" class="insideFlex robot shadowBlack floatLeft "> 
+				  	<span id="messageDevicesStateMicro"> Micros disponibles</span>
+					<hr/>
+					<div class="select">
+						<select id="local_audioSource"></select>
+					</div>
+				</div>	
+
+
+				<div id="selectionCams" class="insideFlex robot shadowBlack floatLeft "> 
+				  	<span id="messageDevicesStateCams"> Caméras disponibles</span>
+					<hr/>
+					<div class="select">
+					   	<select id="local_videoSource"></select>
+					</div>
+				</div>
+				
+				
+				<div id="robotSettings" class="insideFlex robot shadowBlack floatLeft oneThirdContainerBox alignCenter">
+						
+					<div class="jauge">
+                   		<label for="battery_level">Battery Level:</label>
+                    	<progress id="battery_level" class="floatRight" max="100"></progress>
+                	</div>
+	      		
+	      		</div>
+
+
+
+	      	</div>
+	      	
+		
 		</section>
+		
+-->
 
+		<!--
 		<section id="bloc_1to1_settings" class="fullSizeContainerBox">
 				
 
@@ -132,6 +228,7 @@
 				</div>
 
 		</section>
+		-->
 
 		
 	
@@ -159,6 +256,7 @@
  		<script src='/js/main_settings.js'></script>
  		<script src='/js/main_1to1.js'></script>
 		<script src='/js/main_1toN_Robot.js'></script>
+		<script src='/js/module_carto.js'></script>
 		
  		
 		<script src='/js/module_komnav_robot.js'></script>
