@@ -22,7 +22,9 @@
     <strong><span id="zone_info_server">WebRTC AZKAR</span></strong>
     <hr/>
 		
-		<section id="bloc_1to1_messages" class="" style="float:left;width:300px">
+	
+
+	<section id="bloc_1to1_messages" class="" style="float:left;width:1300px">
 				
 			<div id="websocketChat" class="insideFlex robot shadowBlack floatLeft doubleQuarterBox">  
 				
@@ -57,14 +59,9 @@
 	      		
 
 	      	</div>
-
-
-		</section>		
+	</section>		
 				
-
-
-
-		<section id="bloc_1toN" class="" style="float:left">
+	<section id="bloc_1toN" class="" style="float:left">
 			
 
 			<div  class="floatLeft doubleQuarterContainerBox">
@@ -100,164 +97,76 @@
                 	</div>
 		  	 	</div>
 			</div>
-
-
-
-
-			<!--
-			<div  class="floatLeft doubleQuarterContainerBox">
-				<div id="visitorsList" class="insideFlex visiteur shadowBlack">
-						<strong>Visitor's List</strong>
-						<hr/>
-						<kom-remote class="kom-remote"></kom-remote>
-		  	 	</div>
-			</div>
-			-->
-
-
-
 	</section>
 
 	<section id="bloc_1to1_commands" class="" style="float:left;width:1300px">
-	
-			<div  class="floatLeft oneQuarterContainerBox">
- 					<div id="Command PAD" class="insideFlex robot shadowBlack">
-							<kom-remote class="kom-remote"></kom-remote>
-			  	 	</div>
+		
+
+		<div  class="floatLeft oneQuarterContainerBox">
+					<div id="Command_PAD" class="insideFlex robot shadowBlack">
+						<kom-remote class="kom-remote"></kom-remote>
+		  	 	</div>
 			</div>
 
 			
-			<div id="robotSettings" class="floatLeft robot shadowBlack" style="width:956px; margin:3px">
-				
-				<select id="local_audioSource"></select>
-				<select id="local_videoSource"></select>
+			<div class="floatLeft oneQuarterContainerBox">
 									
-				<div class="jauge">
+				<div class="jauge insideFlex robot shadowBlack">
 	           		<label for="battery_level">Battery Level:</label>
 	            	<progress id="battery_level" class="floatRight" max="100"></progress>
 	        	</div>
+	      	
 	      	</div>
-			
 
+	      	<div class="floatLeft oneQuarterContainerBox">
+			
+				<div id="selectionMicros" class="insideFlex robot shadowBlack"> 
+				  	<span id="messageDevicesStateMicro"> Micros disponibles</span>
+					<hr/>
+					<div class="select">
+						<select id="local_audioSource"></select>
+					</div>
+				</div>	
+			</div>
+
+			<div class="floatLeft oneQuarterContainerBox">
+			
+				<div id="selectionCams" class="insideFlex robot shadowBlack"> 
+				  	<span id="messageDevicesStateCams"> Caméras disponibles</span>
+					<hr/>
+					<div class="select">
+					   	<select id="local_videoSource"></select>
+					</div>
+				</div>	
+			</div>
 	</section>
 		
 
-		<!--
-		<section id="bloc_1to1_commands" class="" style="float:left">
-
-			<div  class="floatLeft oneQuarterContainerBox">
-					<div id="Command PAD" class="insideFlex visiteur shadowBlack" style="height:300px">
-							<strong>Command PAD</strong>
-							<hr/>
-							<kom-remote class="kom-remote"></kom-remote>
-			  	 	</div>
-			</div>
-
-			
-
-			<div id="robotSettings" class="insideFlex robot shadowBlack floatLeft tripleQuarterContainerBox" style="width:940px;height:300px">
-						
-
-
-	
-				<div id="selectionMicros" class="insideFlex robot shadowBlack floatLeft "> 
-				  	<span id="messageDevicesStateMicro"> Micros disponibles</span>
-					<hr/>
-					<div class="select">
-						<select id="local_audioSource"></select>
-					</div>
-				</div>	
-
-
-				<div id="selectionCams" class="insideFlex robot shadowBlack floatLeft "> 
-				  	<span id="messageDevicesStateCams"> Caméras disponibles</span>
-					<hr/>
-					<div class="select">
-					   	<select id="local_videoSource"></select>
-					</div>
-				</div>
-				
-				
-				<div id="robotSettings" class="insideFlex robot shadowBlack floatLeft oneThirdContainerBox alignCenter">
-						
-					<div class="jauge">
-                   		<label for="battery_level">Battery Level:</label>
-                    	<progress id="battery_level" class="floatRight" max="100"></progress>
-                	</div>
-	      		
-	      		</div>
-
-
-
-	      	</div>
-	      	
-		
-		</section>
-		
--->
-
-		<!--
-		<section id="bloc_1to1_settings" class="fullSizeContainerBox">
-				
-
-				<div id="robotSettings" class="insideFlex robot shadowBlack floatLeft oneThirdContainerBox alignCenter">
-						
-					<div class="jauge">
-                   		<label for="battery_level">Battery Level:</label>
-                    	<progress id="battery_level" class="floatRight" max="100"></progress>
-                	</div>
-	      		
-	      		</div>
-
-
-				<div id="selectionMicros" class="insideFlex robot shadowBlack floatLeft oneThirdContainerBox"> 
-				  	<span id="messageDevicesStateMicro"> Micros disponibles</span>
-					<hr/>
-					<div class="select">
-						<select id="local_audioSource"></select>
-					</div>
-				</div>	
-
-
-				<div id="selectionCams" class="insideFlex robot shadowBlack floatLeft oneThirdContainerBox"> 
-				  	<span id="messageDevicesStateCams"> Caméras disponibles</span>
-					<hr/>
-					<div class="select">
-					   	<select id="local_videoSource"></select>
-					</div>
-				</div>
-
-		</section>
-		-->
-
-		
-	
        	<script>	  	 
 		var type = "robot-appelé";
 		</script>
 
-		<!--
-         <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-         -->
-        <!--
         <script src='/js/lib/jquery-1.10.1.min.js'></script>
-        -->
         <script src="/socket.io/socket.io.js"></script>
         <script src='/js/lib/adapter.js'></script>
 		<script src="/js/lib/FileSaver.js"></script>
-		    <!--<script src="https://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>-->
+		<!--<script src="https://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>-->
     	<script src="/js/lib/autobahn.min.jgz"></script>
         
         <script src="/js/common_tools.js"></script>
         <script src="/js/common_settings.js"></script>
+
+        <script src='/js/module_commands.js'></script>
+        
         <script src='/js/common_robubox.js'></script>
+        
 
  		<script src='/js/main_websocket.js'></script>
  		<script src='/js/main_settings.js'></script>
  		<script src='/js/main_1to1.js'></script>
 		<script src='/js/main_1toN_Robot.js'></script>
 		<script src='/js/module_carto.js'></script>
-		
+		<script src='/js/module_battery.js'></script>
  		
 		<script src='/js/module_komnav_robot.js'></script>
 		<script src='/js/module_managevisitors.js'></script>
@@ -277,7 +186,6 @@
             });
     	
 			// On lance l'utilitaire de récupération de la batterie
-			
 			robubox.getBattery();
 		</script>
 

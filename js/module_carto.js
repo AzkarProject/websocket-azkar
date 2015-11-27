@@ -1,6 +1,9 @@
 $(document).ready(function() {
     
 
+
+
+
     var dataMap, // height , width , offset (x,y) , resolution
         dataLocalization, //
         offsetX,
@@ -16,6 +19,12 @@ $(document).ready(function() {
     // Titi: Rebond proxy en https(Client Robot) > Http(Robubox)
     var urlP = 'https://127.0.0.1:443/http://127.0.0.1:50000/nav/maps/parameters';
     var urlRobotPosition = 'https://127.0.0.1:443/http://127.0.0.1:50000/lokarria/localization';
+    
+
+    // Titi: offsets du point 0,0 de localisation de la carte
+    // -- Récupérés manuellement avec GIMP sur copie d'écran tailel réelle de la carte
+	var offsetWidth = 1308;
+	var offsetHeight = 861;
     
 
     // Titi: 
@@ -47,67 +56,91 @@ $(document).ready(function() {
     var canvasHeight = $('#myCanvas').height();
 
     
-    // Titi: 
-
-
-    /*// Image BackGround aux dimensions du Canvas
-    var backGroundMap = new Image();
-    backGroundMap.src = '/images/mapOriginale.png';
+    // Titi:
+    // Flags et Ecouteurs pilote/robot pour l'échange des protocoles d'infos de navigation
+    //var pilotGetNav = false; // Flag d'échande par défaut.  
+    // si c'est un pilote qui éxécute le script
+    // Il prévient le robot qu'il doit lui envoyer ses infos de navigation.
+    if (type == "pilote-appelant") {
+    	pilotGetNav = true;
+    	socket.emit("pilotGetNav",{message:"getNavInfos"});
+    }
     
-    var sourceWidth = 2834;
-    var sourceHeight = 1171;
+    // Titi:
+    // Ecouteur coté Robot: reception demande d'échange de données cartos
+    // Flag d'échange a true et envoi au pilote des paramètres de la carte
+    if (type == "robot-appelé") {
+    	socket.on("pilotGetNav", function(data) {
+    		if (data = "getNavInfos") {
+    			// pilotGetNav = true;
+    			commandes.sendToPilote("map_parameters", dataMap);
+    		}
+    	});
+    }
     
-    // console.log (sourceWidth + ' : ' + sourceHeight);
-   
+
+    // Titi: reception de données de navigation
+    if (type == "pilote-appelant") {
+    	socket.on("navigation", function(data) {
+
+    		if (data.command == "map_parameters") {
+    			 dataMap = data.dataMap;
+    			 mapSize = resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
+    		} else if (data.command == "robot_localization") {
+    			 robotInfo = data.robotInfo;
+    			 refresh();
+    		}
 
 
-
-    var mapSize = resizeRatio(sourceWidth, sourceHeight, canvasWidth, canvasHeight)
-    // console.log (canvasWidth + " : " + canvasHeight);
-    console.log ("mapSize: "+mapSize.ratio);
+    	});
+    }
     /**/
+
 
 
     /* START */
     /* call init() then load() and finaly refresh() with setInterval */
-    init(load);
+    // type = pilote-appelant ou robot-appelé
+    init(load,type);
 
-    function init(callback) {
+    function init(callback, typeUser) {
 
         console.log('@ init(callback)');
+        // console.log (typeUser)
 
-        var d1 = $.Deferred();
-        var d2 = $.Deferred();
+	        var d1 = $.Deferred();
+	        var d2 = $.Deferred();
 
-        $.when(d1, d2).done(function(v1, v2) {
-            callback();
-        });
+	        $.when(d1, d2).done(function(v1, v2) {
+	            callback();
+	        });
 
-        console.log ('get map informations');
-        $.get(urlP, function(rep) { // Les informations de la carte 
-            if (!rep)
-                return;
-            dataMap = rep;
-            // console.log('datamap -->', dataMap);
-            
-            // Michaël:
-            //console.log ('get the map width and height to adjust the canvas')
-            //$('#myCanvas').attr("width", dataMap.Width);
-            //$('#myCanvas').attr("height", dataMap.Height);
-            //console.log("Dimension  width : " +  dataMap.Width + " height : " +dataMap.Height ); 
-            
-            // Titi: Calcul des W,H et ratio de la carte à redéssiner
-            mapSize = resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
+	        console.log ('get map informations');
+	        $.get(urlP, function(rep) { // Les informations de la carte 
+	            if (!rep)
+	                return;
+	            dataMap = rep;
+	            // console.log('datamap -->', dataMap);
+	            
+	            // Michaël:
+	            //console.log ('get the map width and height to adjust the canvas')
+	            //$('#myCanvas').attr("width", dataMap.Width);
+	            //$('#myCanvas').attr("height", dataMap.Height);
+	            //console.log("Dimension  width : " +  dataMap.Width + " height : " +dataMap.Height ); 
+	            
+	            // Titi: Calcul des W,H et ratio de la carte à redéssiner
+	            mapSize = resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
 
-            d1.resolve();
-        });
+	            d1.resolve();
+	        });
 
-        console.log ('get robot position');
-        $.get(urlRobotPosition, function(dataLocalization) { // la localisation du robot sur la carte
-            robotInfo = JSON.parse(dataLocalization);
-            console.log ('then, call load function')
-            d2.resolve();
-        });
+	        console.log ('get robot position');
+	        $.get(urlRobotPosition, function(dataLocalization) { // la localisation du robot sur la carte
+	            robotInfo = JSON.parse(dataLocalization);
+	            console.log ('then, call load function')
+	            d2.resolve();
+	        });
+	    /**/
 
     }
 
@@ -131,22 +164,48 @@ $(document).ready(function() {
 
     function refresh() {
         
-        console.log('@ refresh()');
-        setInterval(function() {
-            $.get(urlRobotPosition, function(dataLocalization) {
-                robotInfo = JSON.parse(dataLocalization);
-                console.log('robotInfo -->', robotInfo);
-            });
+        if (type == "robot-appelé") {
+	        
+	        setInterval(function() {
 
-            context.clearRect(0, 0, canvasMap.width, canvasMap.height);
-            
-            // Add titi:
-            // context.drawImage(backGroundMap, 0,0); // Image taille non resizée 
-            context.drawImage(backGroundMap, 0,0, mapSize.width, mapSize.height); // Image taille resizée avec ratio
-            
-            drawRobot();
+	        	// console.log("@ refresh()");
 
-        }, 100); // 600
+	            $.get(urlRobotPosition, function(dataLocalization) {
+	                robotInfo = JSON.parse(dataLocalization);
+	                //console.log('robotInfo -->', robotInfo);
+	            });
+
+	            // Titi:
+	            // si échange Robot/Pilote de données carto activé
+	            if ( isOnePilot == true) commandes.sendToPilote("robot_localization", robotInfo);
+
+
+	            context.clearRect(0, 0, canvasMap.width, canvasMap.height);
+	            
+	            // Add titi:
+	            // context.drawImage(backGroundMap, 0,0); // Image taille non resizée 
+	            context.drawImage(backGroundMap, 0,0, mapSize.width, mapSize.height); // Image taille resizée avec ratio
+	            
+	            drawRobot();
+
+	        }, 100); // 600
+    	
+
+    	} else if (type = "pilote-appelant") {
+    			
+    			if (dataMap == null) socket.emit("pilotGetNav",{message:"getNavInfos"});
+
+    			if (dataMap != null) {
+	    			context.clearRect(0, 0, canvasMap.width, canvasMap.height);
+	    			context.drawImage(backGroundMap, 0,0, mapSize.width, mapSize.height); // Image taille resizée avec ratio
+	    			drawRobot();
+	    		}
+    			/**/
+    	}
+
+   
+
+
     }
 
     function drawRobot() {
@@ -161,12 +220,11 @@ $(document).ready(function() {
         // conversion de l'offset d'origine au ratio d'affichage...
         // Todo: ajouter les éléments d'ofset d'origine en paramètres...
         // console.log (dataMap.Offset.X + " : " + dataMap.Offset.Y) 
-        // offset: -25.8644... &&  -6.4501... >>> 1308 && 861 
+        // offsets: -25.8644... &&  -6.4501... >>> 1308 && 861 
         // reso: 0.2
         // size:  X = 2384 && Y = 1171 >>  399 && 165 
-        var newOffset = resizeOffset (1308,861,dataMap.Width, dataMap.Height, mapSize.width,mapSize.height);
+        var newOffset = resizeOffset (offsetWidth,offsetHeight,dataMap.Width, dataMap.Height, mapSize.width,mapSize.height);
         context.translate(newOffset.width,newOffset.height);
-        
         
         if (Math.round(Math.abs(robotInfo.Pose.Position.Y)) === 0) var ry = 0;
         else if (robotInfo.Pose.Position.Y > 0) ry = -robotInfo.Pose.Position.Y /0.02  ;
@@ -179,13 +237,13 @@ $(document).ready(function() {
 
         var qz = robotInfo.Pose.Orientation.Z;
 
-        console.log("X --> ", rx);
-        console.log("Y --> ", ry);
+        //console.log("X --> ", rx);
+        //console.log("Y --> ", ry);
         
         // Titi: 
         // Inversion des axes d'orientation (Carte en horizontal)
         // et application du ratio de resize
-        console.log("z --> ", qz); 
+        //console.log("z --> ", qz); 
         qz = - qz;
         rx = rx*drawRatio;
         ry = ry*drawRatio;
@@ -206,7 +264,7 @@ $(document).ready(function() {
     //draw a circle with a line     
     function circleWithDirection(x, y, theta, color, size, sizeStroke) {
         
-        console.log('@ dcircleWithDirection()');
+        //console.log('@ dcircleWithDirection()');
         context.save();
         context.beginPath();
         context.arc(x, y, size, 0, 2 * Math.PI, false);
@@ -233,7 +291,7 @@ $(document).ready(function() {
     function drawArrow(ctx, fromx, fromy, tox, toy, arrowWidth, color) {
         
 
-        console.log('@ drawArrow()');
+        //console.log('@ drawArrow()');
         //variables to be used when creating the arrow
         var headlen = 10;
         var angle = Math.atan2(toy - fromy, tox - fromx);

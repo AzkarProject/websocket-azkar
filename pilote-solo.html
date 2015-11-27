@@ -172,12 +172,19 @@
 
         <div id="colDroiteUpControlArea2" class="floatRight tripleQuarterBox" style="width:960px">
             
-            <div id="NavigationArea" class="insideFlex robot tripleQuarterBox shadowBlack floatRight" style="height:200px; width:600px;min-width:600px">
-                <strong> Navigation</strong>
-                <hr/>
 
-            </div>
         
+            <div id="NavigationArea" class="insideFlex robot tripleQuarterBox shadowBlack floatRight" style="height:200px; width:600px;min-width:600px">
+                    <strong> Navigation</strong>
+                    <hr/>
+                    <canvas id="myCanvas" width="500" height="180" style=""></canvas>
+            </div>
+
+
+
+
+
+
 
             <div id="WebRTC_Logs" class="insideFlex oneQuarterbox pilote shadowBlack device" style="height:200px">
                 
@@ -257,21 +264,17 @@
     <script src='/js/main_websocket.js'></script>
     <script src='/js/main_settings.js'></script>
     <script src='/js/main_1to1.js'></script>
-    <!--
-    <script src='/js/main_1toN_Visiteur.js'></script>
-    -->
+
     
     <script src='/js/module_komnav_pilote.js'></script>
     <script src='/js/module_settings.js'></script>
-    <script src='/js/module_infos.js'></script>
+    <script src='/js/module_battery.js'></script>
+    <script src='/js/module_carto.js'></script>
    
     
     <script src='/js/module_managevisitors.js'></script>
     
-    <!--
-    <script src='/js/module_multiview.js'></script>
-    -->
-    
+   
     <script src='/js/module_gamepad.js'></script>
     <script src='/js/module_navigation.js'></script>
     <script src="/js/module_logs.js"></script>

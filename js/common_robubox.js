@@ -6,7 +6,7 @@
 exports.sendDrive = function (data){        
         
     var isRobubox = settings.isRobubox();
-    console.log ("robubox.sendDrive_01("+isRobubox+")");
+    //console.log ("robubox.sendDrive_01("+isRobubox+")");
     // console.log(data);
     
      // driveSettings: this.settings.rpcMethod,
@@ -28,7 +28,7 @@ exports.sendDrive = function (data){
     // var delta = dateB - dateA;
     //var msg = '['+data.channel+']['+data.system+']['+data.command+'][AtoB>'+delta+' ms]';
     //insereMessage3("",msg);
-    console.log(data);
+    //console.log(data);
 
 
     if (isRobubox == true) {
@@ -50,7 +50,7 @@ exports.sendDrive = function (data){
             
 
          if (parameters.navSys == 'Robubox') {
-            console.log (">>>>>>>>>>>>>> Send Drive To Robubox");
+            //console.log (">>>>>>>>>>>>>> Send Drive To Robubox");
             // var url = 'http://localhost:50000/api/drive';
             //var url = "http://127.0.0.1:8080/127.0.0.1:50000/api/drive" ; // CORS-ANYWHERE
             var url = "https://127.0.0.1:443/http://127.0.0.1:50000/api/drive" ; // CORS-ANYWHERE
@@ -71,7 +71,7 @@ exports.sendDrive = function (data){
             xhr.closed;
        
         } else if (parameters.navSys == 'KomNAV') {
-            console.log (">>>>>>>>>>>>>> Send Drive To KomNav");
+            //console.log (">>>>>>>>>>>>>> Send Drive To KomNav");
 
             var values = [];
             values[0] = lSpeed;
@@ -210,9 +210,9 @@ exports.sendStep = function (typeMove,dist, MaxSpeed){
 exports.getBattery = function (){
         
         
-    //var isRobubox = settings.isRobubox();
-    var isRobubox = false;
-    console.log ("robubox.getBattery("+isRobubox+")");
+    var isRobubox = settings.isRobubox();
+    //var isRobubox = false;
+    // console.log ("robubox.getBattery("+isRobubox+")");
     
     
     if (isRobubox == true) {
@@ -252,11 +252,13 @@ exports.getBattery = function (){
 	                percentage = (thenum <= 100) ? thenum : 100; // 6- 
 	            });
 	            
-	            // envoi des valeurs au pilote via le serveur
-	             socket.emit("battery_level", {
-	                 command: 'battery_level',
-	                 percentage: percentage
-	            });
+	            
+                // rafraichissement de la jauge sur l'IHM Robot
+                refreshJaugeBattery(percentage);
+
+                // envoi des valeurs au pilote via le serveur
+                commandes.sendToPilote("battery_level",percentage)
+
 	        }, delay);
 
        	} else if (parameters.navSys == 'KomNAV') {

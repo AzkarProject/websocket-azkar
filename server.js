@@ -371,7 +371,7 @@ io.on('connection', function(socket, pseudo) {
 
 
     // ---------------------------------------------------------------------------------
-    // Partie commandes du robot par websocket (stop, moveDrive, moveSteps, goto & clicAndGo)
+    // Echanges clients Robot/Pilote
 
     // A la réception d'un ordre de commande en provenance du pilote
     // On le renvoie au client robot qui exécuté sur la même machine que la Robubox.
@@ -398,6 +398,23 @@ io.on('connection', function(socket, pseudo) {
         io.to(wsIdRobot).emit('changeNavSystem', data);
     });
     
+
+    // Demande d'infos navigation au robot
+    socket.on('pilotGetNav', function(data) {
+       io.to(wsIdRobot).emit('pilotGetNav', data);
+    });
+
+
+
+    // Envoi infos navigation au pilote.
+    socket.on('navigation', function(data) {
+       //console.log("@ navigation >>>> ");
+       io.to(wsIdPilote).emit('navigation', data);
+    });
+    
+
+
+
 
 
     // ----------------------------------------------------------------------------------

@@ -2,9 +2,6 @@
 
 exports.sendToRobot = function (rpcMethodName, values,controlDevice, driveCommand){     
 
-		
-        
-        
 
         if (controlDevice == "kom-remote") {
             driveCommand = {
@@ -35,6 +32,51 @@ exports.sendToRobot = function (rpcMethodName, values,controlDevice, driveComman
 
 };
 
+
+exports.sendToPilote = function (typeData, data){ 
+
+        
+        if (typeData == "battery_level") {
+
+            // envoi des valeurs par websocket
+            if (parameters.navCh == 'webSocket') {
+                socket.emit(typeData, {
+                    command: typeData,
+                    percentage: data
+                });
+
+            }
+            // envoi des valeurs par webRtc
+            else if (parameters.navCh == 'webRTC') {
+                // sendData(driveCommand);  
+                socket.emit(typeData, {
+                    command: typeData,
+                    percentage: data
+                });
+            }     
+
+
+        } else if (typeData == "map_parameters") {
+            
+            console.log("@ sendToPilote >>> map_parameters");
+            socket.emit('navigation', {
+                        command: typeData,
+                        dataMap: data
+                    });
+         } else if (typeData == "robot_localization") {
+            
+            console.log("@ sendToPilote >>> robot_localization");
+
+            socket.emit('navigation', {
+                        command: typeData,
+                        robotInfo: data
+                    });
+
+        
+        }
+
+
+};
 
 
 })(typeof exports === 'undefined'? this['commandes']={}: exports);

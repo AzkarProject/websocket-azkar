@@ -1,7 +1,11 @@
 // Initialisation des variables, objets et paramètres du script
 // NB toutes les variables sont déclarées en global...
 
-  
+// Robot seulement
+if (type == "robot-appelé") {  
+ isOnePilot = false;
+}
+
 // 1to1 Pilote+Robot
 if (type == "pilote-appelant" || type == "robot-appelé") {
 
@@ -111,7 +115,6 @@ if (type == "pilote-appelant" || type == "robot-appelé") {
 
     robotCnxStatus = 'new';
     piloteCnxStatus = 'new';
-
 } // 1to1 Pilote+Robot
 
 // 1toN Pilote+Visiteur
@@ -146,8 +149,6 @@ if (type == "pilote-appelant" || type == "visiteur-appelé") {
     // Si une renégociation à déja eu lieu
     // >> pour éviter de réinitialiser +sieurs fois le même écouteur
     isRenegociate_1toN_VtoP = false;
-
-
 } // 1toN Pilote+Visiteur   
     
 

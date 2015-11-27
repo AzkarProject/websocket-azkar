@@ -23,7 +23,7 @@ Livrable base 1toN:
         - [x] bloc Cam Visiteurs
         - [x] bloc Tchat
         - [x] bloc Manage Visiteurs
-        - [ ] bloc cartographie
+        - [x] bloc cartographie
         - [ ] bloc Manage Files
     - [ ] IHM Robot 
         - [ ] CSS

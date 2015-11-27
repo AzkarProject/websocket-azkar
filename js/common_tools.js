@@ -196,12 +196,13 @@ exports.client = function client (id,pseudo,placeliste,typeClient,connectionDate
   // - value > Valeur à rechercher
   // - typeReturn > boolean ou count
   exports.searchInObjects = function (hashTable,key,value,typeReturn){
+    console.log("@ searchInObjects");
     var returnValue = false;
     var nbr = 0;
     //console.log(">>>>>>>>>> " + hashTable +" / " + key + " / " + value + " / " + typeReturn );
     for (i in hashTable) {
-        //console.log(">>>>>>>>>> " + i );
-        //console.log(">>>>>>>>>> " + hashTable[i][key]);        
+        console.log(">>>>>>>>>> " + i );
+        console.log(">>>>>>>>>> " + hashTable[i][key]);        
         if (hashTable[i][key] == value) {
             returnValue = true;
             if (typeReturn == "boolean" ) {

@@ -335,13 +335,17 @@ socket.on('updateUsers', function(data) {
     // On met à jour la liste locale des connectés...
     oldUsers = users;
     users = data;
-    //var debug = tools.stringObjectDump(users,"users");
-    //console.log(debug);
+    var debug = tools.stringObjectDump(users,"users");
+    console.log(debug);
 
     // si on est l'apellé  (Robot)
     // On renvoie à l'autre pair la liste de ses devices
+    // Et on met à jour le flag isOnePilot (pour ouvrir le canal d'infos de cartographie)
     if (type == "robot-appelé") {
+        // isOnePilot = tools.searchInObjects(users, "typeClient", "Pilote", "boolean");
+        isOnePilot = tools.searchInObjects(users.listUsers, "typeClient", "Pilote", "boolean");
         
+        console.log ("isOnePilot ="+ isOnePilot);
         socket.emit('remoteListDevices', {
             objUser: localObjUser,
             listeDevices: listeLocalSources
@@ -362,7 +366,7 @@ socket.on('updateUsers', function(data) {
         else piloteCnxStatus = peerCnxCollection[peerCnx1to1].iceConnectionState; 
         socket.emit("piloteCnxStatus", piloteCnxStatus);
         console.log (users);
-        updateListUsers(); // Appel à la fonction du module module manageVisitors
+        updateListUsers(); // Appel à la fonction du module manageVisitors
     }
 })
 
@@ -925,7 +929,7 @@ $('#formulaire_chat_webRTC').submit(function() {
 if (type == "robot-appelé") {
     function deathMan(){
     
-        console.log("@ deathMan() >> onMove:"+onMove+" "+"lastMoveTimeStamp:"+lastMoveTimeStamp);          
+        //console.log("@ deathMan() >> onMove:"+onMove+" "+"lastMoveTimeStamp:"+lastMoveTimeStamp);          
 
          var data = {
                  channel: "Local-Robot",
@@ -943,7 +947,7 @@ if (type == "robot-appelé") {
             var test = now - lastMoveTimeStamp;
             if (test >= 1000 ) {
                robubox.sendDrive(data); // Envoi de la commande a la Robubox
-               console.log("@ >> deathMan() ---> STOP");
+               //console.log("@ >> deathMan() ---> STOP");
             }
         }
         setTimeout(deathMan,1000); /* rappel après 1000 millisecondes */
@@ -956,7 +960,7 @@ if (type == "robot-appelé") {
 // On la renvoie au client robot qui exécuté sur la même machine que la Robubox.
 // Il pourra ainsi faire un GET ou un POST de la commande à l'aide d'un proxy et éviter le Cross Origin 
 socket.on("piloteOrder", function(data) {
-    console.log('@onPiloteOrder >> command:' + data.command);
+    // console.log('@onPiloteOrder >> command:' + data.command);
     
     if (type == "robot-appelé") {
         

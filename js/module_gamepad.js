@@ -164,7 +164,7 @@ gamePadController();
 
 
 // StepCommands ( Michael)
-// -------------------------------------------------------------------------------------------------------------------
+/*// -------------------------------------------------------------------------------------------------------------------
 
 function jaugeSpeedSetting() {
    var ava = document.getElementById("jaugeSpeedSetting");
@@ -174,6 +174,7 @@ function jaugeSpeedSetting() {
 
 
 jaugeSpeedSetting();
+
 
 function cmdSpeed(val) {
    var ava = document.getElementById("jaugeSpeedSetting");
@@ -191,13 +192,6 @@ var cmdLeft = function() {
   
    angle = degToRad(rot);
   
-/*   socket.emit("moveOrder", {
-       command: 'onStep',
-       distance: angle,
-       MaxSpeed: speed,
-       typeMove: "relative"
-   });*/
-
    var dateE = Date.now();
    var commandeStep = {
        dateE: dateE,
@@ -224,12 +218,6 @@ var cmdRight = function() {
 
    angle = degToRad(rot);
 
-/*   socket.emit("moveOrder", {
-       command: 'onStep',
-       distance: -angle,
-       MaxSpeed: speed,
-       typeMove: "relative"
-   });*/
    var dateE = Date.now();
    var commandeStep = {
        dateE: dateE,
@@ -252,12 +240,6 @@ var cmdUp = function() {
    var speed = document.getElementById("jaugeSpeedSetting").value;
    var dist = document.getElementById("stepDistance").value;
 
-/*   socket.emit("moveOrder", {
-       command: 'onStep',
-       distance: dist,
-       MaxSpeed: speed,
-       typeMove: "translate"
-   });*/
    var dateE = Date.now();
    var commandeStep = {
        dateE: dateE,
@@ -295,15 +277,6 @@ var cmdDown = function() {
     } else if (parameters.navCh == 'webRTC') {
         sendCommand(commandeStep);
     }
-
-   /*
-   socket.emit("moveOrder", {
-       command: 'onStep',
-       distance: -dist,
-       MaxSpeed: speed,
-       typeMove: "translate"
-   });
-   /**/
 }
 
 
@@ -313,7 +286,7 @@ var degToRad = function(val) {
 }
 
 
-
+/**/
 
 
 

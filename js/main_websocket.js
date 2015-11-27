@@ -114,6 +114,7 @@ socket.on('nouveau_client2', function(objUser) {
     //var message = dateR + " à rejoint le Tchat";
     var message = dateR + " > Connexion entrante";
     insereMessage3(objUser,message);
+
 })
 
 
