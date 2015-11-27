@@ -125,6 +125,8 @@ $(document).ready(function() {
 	            dataMap = rep;
 	            console.log('datamap -->', dataMap);
 	            console.log(dataMap);
+                var debug = tools.stringObjectDump(dataMap,"dataMap");
+                console.log(debug);
 	            // Michaël:
 	            //console.log ('get the map width and height to adjust the canvas')
 	            //$('#myCanvas').attr("width", dataMap.Width);
@@ -142,6 +144,8 @@ $(document).ready(function() {
 	            robotInfo = JSON.parse(dataLocalization);
                 console.log('robotInfo -->', robotInfo);
                 console.log(robotInfo);
+                var debug = tools.stringObjectDump(robotInfo,"robotInfo");
+                console.log(debug);
 	            console.log ('then, call load function')
 	            d2.resolve();
 	        });

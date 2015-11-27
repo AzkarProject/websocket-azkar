@@ -335,8 +335,8 @@ socket.on('updateUsers', function(data) {
     // On met à jour la liste locale des connectés...
     oldUsers = users;
     users = data;
-    var debug = tools.stringObjectDump(users,"users");
-    console.log(debug);
+    //var debug = tools.stringObjectDump(users,"users");
+    //console.log(debug);
 
     // si on est l'apellé  (Robot)
     // On renvoie à l'autre pair la liste de ses devices
