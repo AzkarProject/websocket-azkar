@@ -218,54 +218,61 @@ exports.getBattery = function (){
     if (isRobubox == true) {
 
         
-    	if (parameters.navSys == 'Robubox') {
+    	//if (parameters.navSys == 'Robubox') {
 
-	        //var url = "http://127.0.0.1:8080/?url=http://127.0.0.1:50000/robulab/battery/battery" ;
-	        //var url = "http://127.0.0.1:8080/127.0.0.1:50000/lokarria/battery" ; // Tests CORS-ANYWHERE
-	        var url = "https://127.0.0.1:443/http://127.0.0.1:50000/lokarria/battery" ; // Tests CORS-ANYWHERE
-	        //var url = "http://127.0.0.1:8080/127.0.0.1:50000/robulab/battery/battery" ; // Tests CORS-ANYWHERE
-	        //var url = "http://127.0.0.1:50000/robulab/battery/battery"; // url est passé en paramètre , elle sera interpretée par le 
-	        var delay = 1000; // l'interval de temps au bout du quel on envoi une autre requete pour rafraichir les information
-	        var dataJson, remaining, percentage, dataString, thenum, progressBar;
+	         var delay = 1000; // l'interval de temps au bout du quel on envoi une autre requete pour rafraichir les information
+             var dataJson, remaining, percentage, dataString, thenum, progressBar;
 
-	       
-	        //    1- envoyer toutes les "delay"  ms  une requete get sur "url" 
-	        //    2- le resultat  data  est en application/XML 
-	        //    3- on serialise data en string 
-	        //    4- on recupère la balise remaining 
-	        //    5- on recupère le nombre qui est dans la balise remaining
-	        //    6- on la converti en %
-	        //    7- on recupère id du progressBar 
-	        //    8- on attribue la value du pourcentage à la propriété value du progress bar  , avec un arondi
-	         
-	                
-	        setInterval(function() {
-	            $.get(url, function(data) { // 1 -  et 2- 
-	              batteryInfo = JSON.parse(data);
-	              //  console.log('batteryInfo -->', batteryInfo);
+             if (fakeRobubox == true) {
+                batteryInfo = getFakeBattery();
+                setInterval(function() {
+                    thenum = batteryInfo.Remaining ;
+                    percentage = (thenum <= 100) ? thenum : 100; // 6- 
+                    // rafraichissement de la jauge sur l'IHM Robot
+                    refreshJaugeBattery(percentage);
+                    // envoi des valeurs au pilote via le serveur
+                    commandes.sendToPilote("battery_level",percentage)
+                 }, delay);
+                
 
-	               // dataString = new XMLSerializer().serializeToString(data.documentElement); // 3- 
-	                //remaining = dataString.substr(dataString.indexOf("<Remaining>"), dataString.indexOf("</Remaining>")); // 4 - 
-	                //thenum = remaining.match(/\d+/)[0] // 5-
-	                thenum = batteryInfo.Remaining ;
-	                // console.log('thenum -->', thenum);
-	                percentage = (thenum <= 100) ? thenum : 100; // 6- 
-	            });
-	            
-	            
-                // rafraichissement de la jauge sur l'IHM Robot
-                refreshJaugeBattery(percentage);
+             } else {
 
-                // envoi des valeurs au pilote via le serveur
-                commandes.sendToPilote("battery_level",percentage)
+                var url = "https://127.0.0.1:443/http://127.0.0.1:50000/lokarria/battery" ; // CORS-ANYWHERE
+    	        //var delay = 1000; // l'interval de temps au bout du quel on envoi une autre requete pour rafraichir les information
+    	        //var dataJson, remaining, percentage, dataString, thenum, progressBar;
 
-	        }, delay);
+    	       
+    	        //    1- envoyer toutes les "delay"  ms  une requete get sur "url" 
+    	        //    2- le resultat  data  est en application/XML 
+    	        //    3- on serialise data en string 
+    	        //    4- on recupère la balise remaining 
+    	        //    5- on recupère le nombre qui est dans la balise remaining
+    	        //    6- on la converti en %
+    	        //    7- on recupère id du progressBar 
+    	        //    8- on attribue la value du pourcentage à la propriété value du progress bar  , avec un arondi
+    	         
+    	                
+    	        setInterval(function() {
+    	            $.get(url, function(data) { // 1 -  et 2- 
+    	               batteryInfo = JSON.parse(data);
+    	                thenum = batteryInfo.Remaining ;
+    	                // console.log('thenum -->', thenum);
+    	                percentage = (thenum <= 100) ? thenum : 100; // 6- 
+    	            });
+                    // rafraichissement de la jauge sur l'IHM Robot
+                    refreshJaugeBattery(percentage);
+                    // envoi des valeurs au pilote via le serveur
+                    commandes.sendToPilote("battery_level",percentage)
 
-       	} else if (parameters.navSys == 'KomNAV') {
+    	        }, delay);
+
+            } // end if (fakeRobubox == true) else
+       	
+        //} else if (parameters.navSys == 'KomNAV') {
 
        		// TODO
 
-       	}
+       	//}
 
     }
     /**/

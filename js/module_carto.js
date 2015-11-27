@@ -1,8 +1,7 @@
 $(document).ready(function() {
     
 
-
-
+    // var fakeRobubox = true;
 
     var dataMap, // height , width , offset (x,y) , resolution
         dataLocalization, //
@@ -15,6 +14,12 @@ $(document).ready(function() {
     var context = canvasMap.getContext('2d');
     // var urlP = 'http://127.0.0.1:8080/127.0.0.1:50000/nav/maps/parameters';
     // var urlRobotPosition = 'http://127.0.0.1:8080/127.0.0.1:50000/lokarria/localization';
+
+    // Titi: Ajout d'un mode fakeRobubox pour simuler les infos en provenance de Pure
+    if (fakeRobubox == true) {  
+        dataMap = getFakeDataMap();
+        robotInfo = getFakeRobotInfo();
+    }
 
     // Titi: Rebond proxy en https(Client Robot) > Http(Robubox)
     var urlP = 'https://127.0.0.1:443/http://127.0.0.1:50000/nav/maps/parameters';
@@ -58,7 +63,7 @@ $(document).ready(function() {
     
     // Titi:
     // Flags et Ecouteurs pilote/robot pour l'échange des protocoles d'infos de navigation
-    //var pilotGetNav = false; // Flag d'échande par défaut.  
+    // var pilotGetNav = false; // Flag d'échande par défaut.  
     // si c'est un pilote qui éxécute le script
     // Il prévient le robot qu'il doit lui envoyer ses infos de navigation.
     if (type == "pilote-appelant") {
@@ -108,63 +113,66 @@ $(document).ready(function() {
 
     function init(callback, typeUser) {
 
-        console.log('@ init(callback)');
-        // console.log (typeUser)
+        // console.log('@ init(callback)');
+        
+        if (fakeRobubox == true) {
+            
+            mapSize = resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
+            callback();
 
-	        var d1 = $.Deferred();
-	        var d2 = $.Deferred();
+        } else {
+        
+            var d1 = $.Deferred();
+            var d2 = $.Deferred();
 
-	        $.when(d1, d2).done(function(v1, v2) {
-	            callback();
-	        });
+            $.when(d1, d2).done(function(v1, v2) {
+                callback();
+            });
 
-	        console.log ('get map informations');
-	        $.get(urlP, function(rep) { // Les informations de la carte 
-	            if (!rep)
-	                return;
-	            dataMap = rep;
-	            console.log('datamap -->', dataMap);
-	            console.log(dataMap);
+            console.log ('get map informations');
+            $.get(urlP, function(rep) { // Les informations de la carte 
+                if (!rep)
+                    return;
+                dataMap = rep;
+                console.log('datamap -->', dataMap);
+                console.log(dataMap);
                 var debug = tools.stringObjectDump(dataMap,"dataMap");
                 console.log(debug);
-	            // Michaël:
-	            //console.log ('get the map width and height to adjust the canvas')
-	            //$('#myCanvas').attr("width", dataMap.Width);
-	            //$('#myCanvas').attr("height", dataMap.Height);
-	            //console.log("Dimension  width : " +  dataMap.Width + " height : " +dataMap.Height ); 
-	            
-	            // Titi: Calcul des W,H et ratio de la carte à redéssiner
-	            mapSize = resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
+                // Michaël:
+                //console.log ('get the map width and height to adjust the canvas')
+                //$('#myCanvas').attr("width", dataMap.Width);
+                //$('#myCanvas').attr("height", dataMap.Height);
+                //console.log("Dimension  width : " +  dataMap.Width + " height : " +dataMap.Height ); 
+                
+                // Titi: Calcul des W,H et ratio de la carte à redéssiner
+                mapSize = resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
 
-	            d1.resolve();
-	        });
+                d1.resolve();
+            });
 
-	        console.log ('get robot position');
-	        $.get(urlRobotPosition, function(dataLocalization) { // la localisation du robot sur la carte
-	            robotInfo = JSON.parse(dataLocalization);
+            console.log ('get robot position');
+            $.get(urlRobotPosition, function(dataLocalization) { // la localisation du robot sur la carte
+                robotInfo = JSON.parse(dataLocalization);
                 console.log('robotInfo -->', robotInfo);
                 console.log(robotInfo);
                 var debug = tools.stringObjectDump(robotInfo,"robotInfo");
                 console.log(debug);
-	            console.log ('then, call load function')
-	            d2.resolve();
-	        });
-	    /**/
+                console.log ('then, call load function')
+                d2.resolve();
+            });
+        
+        } // endif fakeRobubox else
 
     }
 
     function load() {
         
-        console.log('@ load()');
-
-        // console.log('dataMap 2  --->', dataMap);
+        // console.log('@ load()');
+       
         offsetX = dataMap.Offset.X;
         offsetY = dataMap.Offset.Y;
         corrOffestX = dataMap.Height - (offsetX / dataMap.Resolution);
-        corrOffestY = dataMap.Width - (offsetY / dataMap.Resolution);
-        // calcul the coordinates of locationsPoint on the canvasMap
-        // and fill tab array
-        // initLocationsPoints();           
+        corrOffestY = dataMap.Width - (offsetY / dataMap.Resolution);         
 
         console.log ('then call refresh function'); 
         refresh();
@@ -177,17 +185,21 @@ $(document).ready(function() {
 	        
 	        setInterval(function() {
 
-	        	// console.log("@ refresh()");
-
-	            $.get(urlRobotPosition, function(dataLocalization) {
-	                robotInfo = JSON.parse(dataLocalization);
-	                //console.log('robotInfo -->', robotInfo);
-	            });
+	        	console.log("@ refresh()");
+                if (fakeRobubox == true) {
+                    robotInfo.Pose.Orientation.Z += 0.05;
+                    //robotInfo.Pose.Orientation.Z = robotInfo.Pose.Orientation.Z+0.20
+                
+                } else {
+                    $.get(urlRobotPosition, function(dataLocalization) {
+                        robotInfo = JSON.parse(dataLocalization);
+                        //console.log('robotInfo -->', robotInfo);
+                    });
+                }
 
 	            // Titi:
 	            // si échange Robot/Pilote de données carto activé
 	            if ( isOnePilot == true) commandes.sendToPilote("robot_localization", robotInfo);
-
 
 	            context.clearRect(0, 0, canvasMap.width, canvasMap.height);
 	            
@@ -197,7 +209,7 @@ $(document).ready(function() {
 	            
 	            drawRobot();
 
-	        }, 100); // 600
+	        }, 600); // 600
     	
 
     	} else if (type = "pilote-appelant") {
@@ -223,7 +235,7 @@ $(document).ready(function() {
         // context.translate(1308, 861); // ramener l'origine du repère au point 1308,861
                
         // Titi
-        console.log('@ drawRobot()');
+        // console.log('@ drawRobot()');
         context.save(); // Sauvegarde du contexte AVANT le contexte Translate..
         var drawRatio = mapSize.ratio;
         // conversion de l'offset d'origine au ratio d'affichage...
@@ -252,7 +264,7 @@ $(document).ready(function() {
         // Titi: 
         // Inversion des axes d'orientation (Carte en horizontal)
         // et application du ratio de resize
-        //console.log("z --> ", qz); 
+        console.log("z --> ", qz); 
         qz = - qz;
         rx = rx*drawRatio;
         ry = ry*drawRatio;
@@ -263,9 +275,9 @@ $(document).ready(function() {
         // circleWithDirection(ry, rx, 0, "blue", 3, 2); // Michael
         
         // Titi: Ajout du paramètre QZ pour l'orientation du robot et inversion des axes X,Y...
-        circleWithDirection(rx, -ry, qz, "blue", 3, 2);
-        
-        // Titi: RAZ du context pour éviter la surimpression d'image décalée...
+        if (fakeRobubox == true) circleWithDirection(0, 0, qz, "blue", 3, 2);
+        else circleWithDirection(rx, -ry, qz, "blue", 3, 2);
+        // Titi: RAZ du context pour éviter la surimpression d'image décalée... 
         context.restore();
     }
 
@@ -273,7 +285,7 @@ $(document).ready(function() {
     //draw a circle with a line     
     function circleWithDirection(x, y, theta, color, size, sizeStroke) {
         
-        //console.log('@ dcircleWithDirection()');
+        // console.log('@ dcircleWithDirection()');
         context.save();
         context.beginPath();
         context.arc(x, y, size, 0, 2 * Math.PI, false);
