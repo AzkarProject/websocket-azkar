@@ -25,10 +25,13 @@ var isRobubox = settings.isRobubox();
 
 if (isRobubox == true) {
 
+	console.log("module_komnav");
+
 	connection.onopen = function(session, details) {
 		// Publish, Subscribe, Call and Register
 		console.log('OPEN', session, details);
 		SESSION = session;
+
 		$('body').addClass('komcom-connected');
 		document.querySelector('kom-remote')
 			.start({
@@ -39,9 +42,11 @@ if (isRobubox == true) {
 
 	connection.onclose = function(reason, details) {
 		// handle connection lost
+		
 		console.log('CLOSE', reason, details);
 		$('body').removeClass('komcom-connected');
 		document.querySelector('kom-remote').destroy();
+		
 	};
 
 	function onWebComponentReady(element, callback) {
