@@ -185,7 +185,7 @@ $(document).ready(function() {
 	        
 	        setInterval(function() {
 
-	        	console.log("@ refresh()");
+	        	// console.log("@ refresh()");
                 if (fakeRobubox == true) {
                     robotInfo.Pose.Orientation.Z += 0.05;
                     //robotInfo.Pose.Orientation.Z = robotInfo.Pose.Orientation.Z+0.20
@@ -264,7 +264,7 @@ $(document).ready(function() {
         // Titi: 
         // Inversion des axes d'orientation (Carte en horizontal)
         // et application du ratio de resize
-        console.log("z --> ", qz); 
+        // console.log("z --> ", qz); 
         qz = - qz;
         rx = rx*drawRatio;
         ry = ry*drawRatio;
