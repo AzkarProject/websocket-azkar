@@ -79,6 +79,9 @@ $(document).ready(function() {
     }
     
 
+
+
+
     // Titi: reception de données de navigation
     if (type == "pilote-appelant") {
     	socket.on("navigation", function(data) {
@@ -120,8 +123,8 @@ $(document).ready(function() {
 	            if (!rep)
 	                return;
 	            dataMap = rep;
-	            // console.log('datamap -->', dataMap);
-	            
+	            console.log('datamap -->', dataMap);
+	            console.log(dataMap);
 	            // Michaël:
 	            //console.log ('get the map width and height to adjust the canvas')
 	            //$('#myCanvas').attr("width", dataMap.Width);
@@ -137,6 +140,8 @@ $(document).ready(function() {
 	        console.log ('get robot position');
 	        $.get(urlRobotPosition, function(dataLocalization) { // la localisation du robot sur la carte
 	            robotInfo = JSON.parse(dataLocalization);
+                console.log('robotInfo -->', robotInfo);
+                console.log(robotInfo);
 	            console.log ('then, call load function')
 	            d2.resolve();
 	        });
