@@ -3,6 +3,22 @@ $(document).ready(function() {
 
     // var fakeRobubox = true;
 
+    // Titi: offsets du point 0,0 de localisation de la carte
+    // -- Récupérés manuellement avec GIMP sur copie d'écran tailel réelle de la carte
+    //var offsetWidth = 1308; // Version carte I3S
+    //var offsetHeight = 861; // Version carte I3S
+    var offsetWidth = 588; // Version carte Robosoft
+    var offsetHeight = 467; // Version carte Robosoft
+
+    
+    // Titi: Image BackGround aux dimensions du Canvas
+    var backGroundMap = new Image();
+    // backGroundMap.src = '/images/mapOriginale.png'; // Version carte I3S
+    backGroundMap.src = '/images/mapRobosoft.png'; // Version carte I3S
+
+    // Titi:  délai de rafraichissement carto en ms
+    var refreshDelay = 100; // 100ms (600ms ca saccade un peu) 
+
     var dataMap, // height , width , offset (x,y) , resolution
         dataLocalization, //
         offsetX,
@@ -24,13 +40,6 @@ $(document).ready(function() {
     // Titi: Rebond proxy en https(Client Robot) > Http(Robubox)
     var urlP = 'https://127.0.0.1:443/http://127.0.0.1:50000/nav/maps/parameters';
     var urlRobotPosition = 'https://127.0.0.1:443/http://127.0.0.1:50000/lokarria/localization';
-    
-
-    // Titi: offsets du point 0,0 de localisation de la carte
-    // -- Récupérés manuellement avec GIMP sur copie d'écran tailel réelle de la carte
-	var offsetWidth = 1308;
-	var offsetHeight = 861;
-    
 
     // Titi: 
     // Resize width et Height en conservant le ratio
@@ -53,9 +62,8 @@ $(document).ready(function() {
         return { width: offsetArrowWidth, height: offsetArrowHeight };
     }
 
-    // Titi: Image BackGround aux dimensions du Canvas
-    var backGroundMap = new Image();
-    backGroundMap.src = '/images/mapOriginale.png';
+
+
     var mapSize = 0;
     var canvasWidth = $('#myCanvas').width();
     var canvasHeight = $('#myCanvas').height();
@@ -209,7 +217,7 @@ $(document).ready(function() {
 	            
 	            drawRobot();
 
-	        }, 600); // 600
+	        }, refreshDelay); // 600
     	
 
     	} else if (type = "pilote-appelant") {
@@ -276,7 +284,9 @@ $(document).ready(function() {
         
         // Titi: Ajout du paramètre QZ pour l'orientation du robot et inversion des axes X,Y...
         if (fakeRobubox == true) circleWithDirection(0, 0, qz, "blue", 3, 2);
-        else circleWithDirection(rx, -ry, qz, "blue", 3, 2);
+        //else circleWithDirection(rx, -ry, qz, "blue", 3, 2);// OK sur I3S/: Inversion XY chez Robosoft...
+         else circleWithDirection(rx, ry, qz, "blue", 3, 2);// OK sur I3S
+
         // Titi: RAZ du context pour éviter la surimpression d'image décalée... 
         context.restore();
     }
