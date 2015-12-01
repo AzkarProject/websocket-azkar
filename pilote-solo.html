@@ -157,9 +157,15 @@
 
         
             <div id="NavigationArea" class="insideFlex robot tripleQuarterBox shadowBlack floatRight" style="height:200px; width:600px;min-width:600px">
-                    <strong> Navigation</strong>
+                    <strong> Localisation</strong>
+                    <input type="radio" name="CartoSetting" value="show" id="CartoShow" checked onclick="setCarto('show')"> <label for="CartoShow">Show</label>
+                    <input type="radio" name="CartoSetting" value="hide" id="CartoHide" onclick="setCarto('hide')"/> <label for="CartoHide">Hide</label>
+                    &nbsp;&nbsp; || &nbsp;&nbsp;
+                    <input type="radio" name="CartoChannel" value="websocket" id="CartoChannelWs" checked onclick="setCartoChannel('webSocket')"> <label for="CartoChannelWs">Websocket</label>
+                    <input type="radio" name="CartoChannel" value="webRTC" id="CartoChannelWebRTC" onclick="setCartoChannel('webRTC')"/> <label for="CartoChannelWebRTC">WebRTC</label>
+
                     <hr/>
-                    <canvas id="myCanvas" width="500" height="180" style=""></canvas>
+                    <canvas id="myCanvas" width="500" height="160" style=""></canvas>
             </div>
 
 

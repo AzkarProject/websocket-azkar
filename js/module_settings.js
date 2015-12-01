@@ -7,6 +7,9 @@ lRview = 'show'; // 'hide'
 rPview = 'high'; // 'medium' 'low'
 rRView = 'show'; // 'hide'
 pStoR = 'open'; // close
+
+cartoView = 'hide'; // 'show'
+cartoChannel = 'webSocket'; // 'webRTC'
 /**/
 
 // Formulaire de sélection systeme embarqué
@@ -39,6 +42,34 @@ function raZNavChannel() {
 raZNavChannel();
 
 
+// Formulaires settings cartographie
+selectCartoShow = document.querySelector('input#CartoShow');
+selectCartoHide = document.querySelector('input#CartoHide');
+selectCartoWs = document.querySelector('input#CartoChannelWs');
+selectCartoWebRTC = document.querySelector('input#CartoChannelWebRTC');
+
+
+// Raz du selecteur de systeme embarqué
+function raZCarto() {
+    // selectSystemKomNAV.disabled = true;
+    selectCartoShow.checked = false;
+    selectCartoHide.checked = true;
+    selectCartoWs.checked = true;
+    selectCartoWebRTC.checked = false;
+    selectCartoWebRTC.disabled = true;
+    //parameters.navSys = "Robubox";
+}
+raZCarto();
+
+
+
+
+
+
+
+
+
+
 // --------------- Ecouteurs des formulaires HTML
 
 
@@ -51,6 +82,16 @@ function setNavSystem(navSysSet) {
         navSystem: navSysSet
     }); 
 }
+
+
+function setCarto() { 
+
+}
+
+function setCartoChannel() { 
+
+}
+
 
 
 function setNavChannel(navChSet) { 

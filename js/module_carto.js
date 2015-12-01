@@ -7,8 +7,8 @@ $(document).ready(function() {
     // -- Récupérés manuellement avec GIMP sur copie d'écran tailel réelle de la carte
     //var offsetWidth = 1308; // Version carte I3S
     //var offsetHeight = 861; // Version carte I3S
-    var offsetWidth = 588; // Version carte Robosoft
-    var offsetHeight = 467; // Version carte Robosoft
+    var offsetWidth = 594; // Version carte Robosoft
+    var offsetHeight = 470; // Version carte Robosoft
 
     
     // Titi: Image BackGround aux dimensions du Canvas
@@ -31,7 +31,7 @@ $(document).ready(function() {
     // var urlP = 'http://127.0.0.1:8080/127.0.0.1:50000/nav/maps/parameters';
     // var urlRobotPosition = 'http://127.0.0.1:8080/127.0.0.1:50000/lokarria/localization';
 
-    // Titi: Ajout d'un mode fakeRobubox pour simuler les infos en provenance de Pure
+    // Titi: Mode fakeRobubox pour simuler les infos en provenance de Pure
     if (fakeRobubox == true) {  
         dataMap = getFakeDataMap();
         robotInfo = getFakeRobotInfo();
@@ -50,7 +50,6 @@ $(document).ready(function() {
         return { width: srcWidth*ratio, height: srcHeight*ratio, ratio: ratio };
      }
 
-
     // Titi: 
     // Retourne les offsets  X Y resizés du point 0,0 de la carte originale
     // Paramètres: position point 0,0 sur la carte originale, width et Height carte originale, Width et Height carte affichée
@@ -61,8 +60,6 @@ $(document).ready(function() {
         offsetArrowHeight = resizedHeight/offsetArrowHeight;
         return { width: offsetArrowWidth, height: offsetArrowHeight };
     }
-
-
 
     var mapSize = 0;
     var canvasWidth = $('#myCanvas').width();
@@ -90,10 +87,6 @@ $(document).ready(function() {
     		}
     	});
     }
-    
-
-
-
 
     // Titi: reception de données de navigation
     if (type == "pilote-appelant") {
@@ -113,6 +106,22 @@ $(document).ready(function() {
     /**/
 
 
+    // Conversion Karto to png
+    // Auteur: Marc Traonmilin (Robosoft)
+    function worldToMap(p, map) {
+        var x = (p.X-map.Offset.X) / map.Resolution;
+        var y = map.Height -((p.Y - map.Offset.Y) / map.Resolution);
+        return {X:x, Y:y};
+    };
+
+    // Conversion png to Karto
+    // Auteur: Marc Traonmilin (Robosoft)
+    function mapToWorld(p, map) {
+        var x = p.X * map.Resolution + map.Offset.X;
+        var y = -(p.Y - map.Height) * map.Resolution + map.Offset.Y;
+        return {X:x, Y:y};
+    };
+
 
     /* START */
     /* call init() then load() and finaly refresh() with setInterval */
@@ -130,44 +139,48 @@ $(document).ready(function() {
 
         } else {
         
-            var d1 = $.Deferred();
-            var d2 = $.Deferred();
+            if (type == "robot-appelé") {
 
-            $.when(d1, d2).done(function(v1, v2) {
-                callback();
-            });
+                var d1 = $.Deferred();
+                var d2 = $.Deferred();
 
-            console.log ('get map informations');
-            $.get(urlP, function(rep) { // Les informations de la carte 
-                if (!rep)
-                    return;
-                dataMap = rep;
-                console.log('datamap -->', dataMap);
-                console.log(dataMap);
-                var debug = tools.stringObjectDump(dataMap,"dataMap");
-                console.log(debug);
-                // Michaël:
-                //console.log ('get the map width and height to adjust the canvas')
-                //$('#myCanvas').attr("width", dataMap.Width);
-                //$('#myCanvas').attr("height", dataMap.Height);
-                //console.log("Dimension  width : " +  dataMap.Width + " height : " +dataMap.Height ); 
-                
-                // Titi: Calcul des W,H et ratio de la carte à redéssiner
-                mapSize = resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
+                $.when(d1, d2).done(function(v1, v2) {
+                    callback();
+                });
 
-                d1.resolve();
-            });
+                console.log ('get map informations');
+                $.get(urlP, function(rep) { // Les informations de la carte 
+                    if (!rep)
+                        return;
+                    dataMap = rep;
+                    console.log('datamap -->', dataMap);
+                    console.log(dataMap);
+                    var debug = tools.stringObjectDump(dataMap,"dataMap");
+                    console.log(debug);
+                    // Michaël:
+                    //console.log ('get the map width and height to adjust the canvas')
+                    //$('#myCanvas').attr("width", dataMap.Width);
+                    //$('#myCanvas').attr("height", dataMap.Height);
+                    //console.log("Dimension  width : " +  dataMap.Width + " height : " +dataMap.Height ); 
+                    
+                    // Titi: Calcul des W,H et ratio de la carte à redéssiner
+                    mapSize = resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
 
-            console.log ('get robot position');
-            $.get(urlRobotPosition, function(dataLocalization) { // la localisation du robot sur la carte
-                robotInfo = JSON.parse(dataLocalization);
-                console.log('robotInfo -->', robotInfo);
-                console.log(robotInfo);
-                var debug = tools.stringObjectDump(robotInfo,"robotInfo");
-                console.log(debug);
-                console.log ('then, call load function')
-                d2.resolve();
-            });
+                    d1.resolve();
+                });
+
+                console.log ('get robot position');
+                $.get(urlRobotPosition, function(dataLocalization) { // la localisation du robot sur la carte
+                    robotInfo = JSON.parse(dataLocalization);
+                    console.log('robotInfo -->', robotInfo);
+                    console.log(robotInfo);
+                    var debug = tools.stringObjectDump(robotInfo,"robotInfo");
+                    console.log(debug);
+                    console.log ('then, call load function')
+                    d2.resolve();
+                });
+
+            } // endif (type == "robot-appelé")
         
         } // endif fakeRobubox else
 
@@ -252,18 +265,50 @@ $(document).ready(function() {
         // offsets: -25.8644... &&  -6.4501... >>> 1308 && 861 
         // reso: 0.2
         // size:  X = 2384 && Y = 1171 >>  399 && 165 
-        var newOffset = resizeOffset (offsetWidth,offsetHeight,dataMap.Width, dataMap.Height, mapSize.width,mapSize.height);
+        // ----------------------------------
+        // test fonction Robosoft...
+        // var offsetWidth = 594; // Version carte Robosoft
+        // var offsetHeight = 470; // Version carte Robosoft
+        // function worldToMap(p, map) {
+        //     var x = (p.X-map.Offset.X) / map.Resolution;
+        //     var y = map.Height -((p.Y - map.Offset.Y) / map.Resolution);
+        //     return {X:x, Y:y};
+        // };
+        // On essaie de convertir le point 0.0
+        var basePosition = {};
+        basePosition.X = 0;
+        basePosition.Y = 0;
+        var baseAxis = worldToMap(basePosition, dataMap);
+        //console.log (baseAxis);
+        var newOffset = resizeOffset (baseAxis.X,baseAxis.Y,dataMap.Width, dataMap.Height, mapSize.width,mapSize.height);
+        // var newOffset = resizeOffset (offsetWidth,offsetHeight,dataMap.Width, dataMap.Height, mapSize.width,mapSize.height);
         context.translate(newOffset.width,newOffset.height);
         
+        /*// Titi: Conversion de la position du robot avec la fonction Robosoft:
+        var geoloc = worldToMap(robotInfo.Pose.Position, dataMap);
+        geoloc.Z = -robotInfo.Pose.Orientation.Z;
+        geoloc.Y = geoloc.X*drawRatio;
+        geoloc.Y = geoloc.Y*drawRatio;
+        /**/
+
+
+
+        /*// BUG au passage de l'équateur...        
         if (Math.round(Math.abs(robotInfo.Pose.Position.Y)) === 0) var ry = 0;
-        else if (robotInfo.Pose.Position.Y > 0) ry = -robotInfo.Pose.Position.Y /0.02  ;
-        else ry = robotInfo.Pose.Position.Y / 0.02;
+        else if (robotInfo.Pose.Position.Y > 0) ry = -robotInfo.Pose.Position.Y /0.02  ; // BUG
+        else ry = robotInfo.Pose.Position.Y / 0.02; // BUG Idem
+        //else  ry = -robotInfo.Pose.Position.Y /0.02  ; // Fix Titi
 
+        // BUG au passage de l'équateur...  
         if (Math.round(Math.abs(robotInfo.Pose.Position.X)) === 0) var rx = 0;
-        else if (robotInfo.Pose.Position.X < 0) rx = -robotInfo.Pose.Position.X / 0.02;
-        else rx = robotInfo.Pose.Position.X /0.02;
+        else if (robotInfo.Pose.Position.X < 0) rx = -robotInfo.Pose.Position.X / 0.02; // BUG
+        else rx = robotInfo.Pose.Position.X /0.02; // BUG Idem
+        //else rx = -robotInfo.Pose.Position.X / 0.02; // Fix Titi
+        /**/
 
-
+        // Fix Titi:
+        var ry = -robotInfo.Pose.Position.Y /0.02
+        var rx = -robotInfo.Pose.Position.X / 0.02
         var qz = robotInfo.Pose.Orientation.Z;
 
         //console.log("X --> ", rx);
@@ -278,14 +323,17 @@ $(document).ready(function() {
         ry = ry*drawRatio;
 
 
-        drawArrow(context, 0, 0, 0, -100, 1, "green"); // axe Y
-        drawArrow(context, 0, 0, 100, 0, 1, "red"); // axe X
+
+        drawArrow(context, 0, 0, 0, -50, 1, "green"); // axe Y
+        drawArrow(context, 0, 0, 50, 0, 1, "red"); // axe X
         // circleWithDirection(ry, rx, 0, "blue", 3, 2); // Michael
         
         // Titi: Ajout du paramètre QZ pour l'orientation du robot et inversion des axes X,Y...
         if (fakeRobubox == true) circleWithDirection(0, 0, qz, "blue", 3, 2);
         //else circleWithDirection(rx, -ry, qz, "blue", 3, 2);// OK sur I3S/: Inversion XY chez Robosoft...
-         else circleWithDirection(rx, ry, qz, "blue", 3, 2);// OK sur I3S
+        // else circleWithDirection(rx, ry, qz, "blue", 3, 2);// OK sur I3S
+        // else circleWithDirection(geoloc.X, geoloc.Y, geoloc.Z, "blue", 3, 2);// OK sur I3S/: Inversion XY chez Robosoft...
+        else circleWithDirection(-rx, ry, qz, "blue", 3, 2);// OK sur I3S/: Inversion XY chez Robosoft...
 
         // Titi: RAZ du context pour éviter la surimpression d'image décalée... 
         context.restore();
@@ -297,6 +345,7 @@ $(document).ready(function() {
         
         // console.log('@ dcircleWithDirection()');
         context.save();
+
         context.beginPath();
         context.arc(x, y, size, 0, 2 * Math.PI, false);
         context.fillStyle = color;

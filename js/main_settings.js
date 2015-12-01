@@ -23,6 +23,9 @@ if (type == "pilote-appelant" || type == "robot-appelé") {
     rPview = 'high';
     rRView = 'show';
     pStoR = 'open';
+    cartoView = 'hide';
+    cartoChannel = 'webSocket';
+
 
     // 1to1 Pilote+Robot
     // Objet paramètres
@@ -33,7 +36,10 @@ if (type == "pilote-appelant" || type == "robot-appelé") {
         lRview: lRview,
         rPview: rPview,
         rRView: rRView,
-        pStoR: pStoR
+        pStoR: pStoR,
+        cartoView: cartoView,
+        cartoChannel: cartoChannel
+
     };
     
 
