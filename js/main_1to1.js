@@ -628,7 +628,7 @@ function connect(peerCnxId) {
                         socket.emit("offer2", data);
                     }
                     , errorHandler, 
-                    constraints
+                    constraints // Pilote
                 );
 
         } 
@@ -711,7 +711,7 @@ socket.on("offer", function(data) {
                     socket.emit("answer2", data);
                 }
                 , errorHandler, 
-                constraints
+                constraints // Robot
             );
         }
     }

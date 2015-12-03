@@ -21,8 +21,9 @@ exports.sendToRobot = function (rpcMethodName, values,controlDevice, driveComman
             driveCommand.driveSettings = rpcMethodName;
             driveCommand.channel = parameters.navCh;
         }
-		var dateA = Date.now();
-        driveCommand.dateA = dateA;
+		//var dateA = Date.now();
+        //driveCommand.dateA = dateA;
+        driveCommand.dateA = Date.now();
 
 
         // envoi des valeurs au serveur par websocket

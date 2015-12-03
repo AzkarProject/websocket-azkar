@@ -8,6 +8,8 @@ var prefix_peerCnx_VtoR = "Robot-to-Visiteur-"
 var debugNbConnect_VtoR = 0;
 var VtoR_localStream;
 var isRenegociate_VtoR = false;
+
+
 // Constraints de l'offre SDP. 
 robotConstraints = {
     mandatory: {
@@ -23,46 +25,7 @@ visitorConstraints = {
     }
 };
 
-/*// socket.on("VtoR_requestConnect", function(data) {
-if (type == "robot-appelé") {    
-	socket.on("VtoR_requestConnect", function(data) {
-		// Si on est la bonne cible...
-		if (data.cible.id === myPeerID ) {
-			// mémo: data = {from: localObjUser, cible: cible}
-            
-			console.log(">> socket.on('VtoR_requestConnect',...");
-            console.log(data);
-			var peerID = prefix_peerCnx_VtoR+data.from.id; // On fabrique l'ID de la connexion
-			initLocalMedia_VtoR(peerID); // Et on l'ance l'initlocalmedia avec sa nouvelle id de connexion
-		    // var data = {from: localObjUser, cible: data.from}
-            // socket.emit("VtoR_readyForSignaling", data);
-        }
 
-	})
-}
-
-// socket.on("VtoR_ReadyForSignaling", function(data) {
-if (type == "visiteur-appelé") {
-	
-
-    socket.on("VtoR_initPreSignaling", function(data) {
-        if (data.cible.id === myPeerID ) {
-            console.log(">> socket.on('VtoR_initPreSignaling',...");
-            var data = {from: localObjUser, cible: data.cible};  
-            socket.emit('VtoR_requestConnect', data);
-        }
-    });
-
-    socket.on("VtoR_ReadyForSignaling", function(data) {
-	    console.log(">> socket.on('VtoR_readyForSignaling',...");
-    	// Si on est la bonne cible
-		if (data.cible.id === myPeerID ) {
-            var peerID = prefix_peerCnx_VtoR+myPeerID; // On la concatène avec le préfixe 
-			initLocalMedia_VtoR(peerID); // Et on l'ance l'initlocalmedia avec sa nouvelle id de connexion
-		}
-	})
- }
-/**/
 
 // Visiteur: recoit l'ordre du pilote de demander une connexion au robot
 socket.on("VtoR_initPreSignaling", function(data) {

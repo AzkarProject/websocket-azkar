@@ -97,8 +97,8 @@ function gamePadController() {
                  // TODO: Ajouter une pente pour l'accélération ou limiter la vitesse du linear speed... 
 
                  // Bridage des vitesses pour gagner en précision...
-                 aSpeed = aSpeed/5;
-                 lSpeed = lSpeed/10;
+                 // aSpeed = aSpeed/5;
+                 // lSpeed = lSpeed/10;
 
                  //var dateA = Date.now();
 
