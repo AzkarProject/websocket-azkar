@@ -17,6 +17,58 @@ audioSource = local_AudioSelect.value;
 videoSource = local_VideoSelect.value;
 constraint = null;
 
+// ----------- variation de la définition
+var qvgaConstraints = {
+  video: {
+    mandatory: {
+      maxWidth: 320,
+      maxHeight: 180
+    }
+  }
+};
+
+var vgaConstraints = {
+  video: {
+    mandatory: {
+      maxWidth: 640,
+      maxHeight: 360
+    }
+  }
+};
+
+var hdConstraints = {
+  video: {
+    mandatory: {
+      minWidth: 1280,
+      minHeight: 720
+    }
+  }
+};
+
+constraint = qvgaConstraints;
+
+/**/// -----------------------------
+
+// Constraints de l'offre SDP. 
+robotConstraints = {
+    mandatory: {
+        OfferToReceiveAudio: true,
+        OfferToReceiveVideo: true
+    }
+};
+
+// Constraints de l'offre SDP. 
+piloteConstraints = {
+    mandatory: {
+        OfferToReceiveAudio: true,
+        OfferToReceiveVideo: true
+    }
+};
+
+//console.log (robotConstraints);
+//console.log (piloteConstraints);
+
+
 // Lancement de la récupération des Devices disponibles
 if (typeof MediaStreamTrack === 'undefined') {
     alert('This browser does not support MediaStreamTrack.\n\nTry Chrome.');
@@ -629,6 +681,7 @@ function connect(peerCnxId) {
                     }
                     , errorHandler, 
                     constraints // Pilote
+                    // piloteConstraints
                 );
 
         } 
@@ -712,6 +765,7 @@ socket.on("offer", function(data) {
                 }
                 , errorHandler, 
                 constraints // Robot
+                //robotConstraints
             );
         }
     }

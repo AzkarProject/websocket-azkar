@@ -224,14 +224,6 @@ constraints = {
     }
 };
 
-
-
-
-
-
-
-
-
 // --------- contrôle d'accès websocket...
 
 // rejectConnexion', message:message, url:indexUrl);
