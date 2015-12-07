@@ -49,22 +49,21 @@ selectCartoWs = document.querySelector('input#CartoChannelWs');
 selectCartoWebRTC = document.querySelector('input#CartoChannelWebRTC');
 
 
-// Raz du selecteur de systeme embarqué
-function raZCarto() {
-    // selectSystemKomNAV.disabled = true;
-    selectCartoShow.checked = false;
-    selectCartoHide.checked = true;
-    selectCartoWs.checked = true;
-    selectCartoWebRTC.checked = false;
-    selectCartoWebRTC.disabled = true;
-    //parameters.navSys = "Robubox";
+if (proto == "1to1") {
+
+    // Raz du selecteur de systeme embarqué
+    function raZCarto() {
+        // selectSystemKomNAV.disabled = true;
+        selectCartoShow.checked = false;
+        selectCartoHide.checked = true;
+        selectCartoWs.checked = true;
+        selectCartoWebRTC.checked = false;
+        selectCartoWebRTC.disabled = true;
+        //parameters.navSys = "Robubox";
+    }
+    raZCarto();
+
 }
-raZCarto();
-
-
-
-
-
 
 
 

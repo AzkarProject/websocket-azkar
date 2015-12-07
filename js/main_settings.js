@@ -3,7 +3,7 @@
 
 // Robot seulement
 if (type == "robot-appelé") {  
- isOnePilot = false;
+    isOnePilot = false;
 }
 
 // 1to1 Pilote+Robot
@@ -25,6 +25,8 @@ if (type == "pilote-appelant" || type == "robot-appelé") {
     pStoR = 'open';
     cartoView = 'hide';
     cartoChannel = 'webSocket';
+    camDefRobot = 'HD',
+    camDefPilote = 'HD';
 
 
     // 1to1 Pilote+Robot
@@ -38,8 +40,9 @@ if (type == "pilote-appelant" || type == "robot-appelé") {
         rRView: rRView,
         pStoR: pStoR,
         cartoView: cartoView,
-        cartoChannel: cartoChannel
-
+        cartoChannel: cartoChannel,
+        camDefRobot: camDefRobot,
+        camDefPilote: camDefPilote
     };
     
 
@@ -58,6 +61,15 @@ if (type == "pilote-appelant" || type == "robot-appelé") {
     // on laisse par défaut l'affichage des devices.
     local_AudioSelect.disabled = false;
     local_VideoSelect.disabled = false;
+
+    // 1to1 Pilote seulement
+    // Sélécteurs définition caméra
+    if (type == "pilote-appelant") {
+        robot_camdef_select = document.querySelector('select#robot_camdef_select');
+        pilot_camdef_select = document.querySelector('select#pilot_camdef_select');
+    }
+    /**/
+
 
     // 1to1 Pilote+Robot
     // (pilote-Appelant) > Activation/Désativation préalable 

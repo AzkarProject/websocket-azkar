@@ -180,6 +180,27 @@ io.on('connection', function(socket, pseudo) {
     }
     /**/
 
+    // Ping server
+	socket.on('ping', function() {
+	    io.to(socket.id).emit('pong');
+	});
+
+
+    // Synchronisation Horloge
+    socket.on('timesync', function (data) {
+        // console.log('message', data);
+        // socket.emit('timesync', {
+        io.to(socket.id).emit('timesync', {
+          id: data && 'id' in data ? data.id : null,
+          result: Date.now()
+        });
+      });
+
+
+
+
+
+
     // Bouton ejection de tous les clients robot/Pilote et visiteurs
     socket.on('razConnexions', function(data) {
         var data = { url: indexUrl};  

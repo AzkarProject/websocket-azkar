@@ -21,11 +21,9 @@ exports.sendToRobot = function (rpcMethodName, values,controlDevice, driveComman
             driveCommand.driveSettings = rpcMethodName;
             driveCommand.channel = parameters.navCh;
         }
-		//var dateA = Date.now();
-        //driveCommand.dateA = dateA;
-        driveCommand.dateA = Date.now();
-
-
+        //driveCommand.dateA = Date.now();
+        driveCommand.dateA = Date.now(ts.now());
+        // console.log("@ sendToRobot: "+driveCommand.dateA);
         // envoi des valeurs au serveur par websocket
         if (parameters.navCh == 'webSocket') socket.emit("piloteOrder", driveCommand);
         // envoi des valeurs au serveur par webRtc
@@ -59,14 +57,15 @@ exports.sendToPilote = function (typeData, data){
 
         } else if (typeData == "map_parameters") {
             
-            console.log("@ sendToPilote >>> map_parameters");
+            // console.log("@ sendToPilote >>> map_parameters");
             socket.emit('navigation', {
                         command: typeData,
                         dataMap: data
                     });
+         
          } else if (typeData == "robot_localization") {
             
-            console.log("@ sendToPilote >>> robot_localization");
+            // console.log("@ sendToPilote >>> robot_localization");
 
             socket.emit('navigation', {
                         command: typeData,

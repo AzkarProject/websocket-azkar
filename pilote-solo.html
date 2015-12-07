@@ -57,8 +57,6 @@
                     <label for="local_videoSource">Video: </label>
                     <select id="local_videoSource"></select>
                 </div>
-                <!--<hr/>
-                <button class="shadowBlack" id="local_ButtonDevices" onclick="localManageDevices()">Ouvrir la connexion</button>-->
             </div>
 
 
@@ -80,6 +78,7 @@
                 <hr/>
                 <div class = "videosContainer" style="height:300px; width:300px;min-width:300px">
                     <video id='1to1_remoteVideo' class="" autoplay muted controls="controls" style="height:380px; width:600px;min-width:600px"></video>
+                    <!--<video id='1to1_remoteVideo' class="" autoplay muted controls="controls"></video>-->
                 </div>
             </div>
         
@@ -201,27 +200,52 @@
         <div id="colFullTopSettingsArea" class="insideFlex colorSettings shadowBlack floatLeft " style="width:1248px">
             <strong> Settings </strong>
             <hr/>
-            
-            
+            <!--
+            <span id="CameraSettings" class="">
+                Cameras Resolutions:
+                 <input type="radio" name="CamSetting" value="VLD" id="CamVeryLow" onclick="setCamDefinition('VLD')" /> <label for="CamVeryLow">Very Low (100x56)</label>
+                <input type="radio" name="CamSetting" value="LD" id="CamLow" onclick="setCamDefinition('LD')" /> <label for="CamLow">Low (320x180)</label>
+                <input type="radio" name="CamSetting" value="MD" id="CamMedium" onclick="setCamDefinition('MD')"/> <label for="CamMedium">Medium (640x360)</label>
+                <input type="radio" name="CamSetting" value="HD" id="CamHight" onclick="setCamDefinition('HD')"/> <label for="CamHight">High (1280x720)</label>
+            </span>
+            <br/>
+            -->
 
             <span id="robotVideoSetting" class="">
-                    IHM Robot - Local view: 
-                    <input type="radio" name="RlVidSetting" value="show" id="RlVshow" checked onclick="setLocalRobotView('show')"> <label for="RlVshow">Show</label>
-                    <input type="radio" name="RlVidSetting" value="hide" id="RlVhide" onclick="setLocalRobotView('hide')"/> <label for="RlVhide">Hide</label>
-                    &nbsp;&nbsp; || &nbsp;&nbsp; Remote view: 
-                    <input type="radio" name="RRVidSetting" value="show" id="RRVshow" checked onclick="setRemoteRobotView('show')"> <label for="RRVshow">Show</label>
-                    <input type="radio" name="RRVidSetting" value="hide" id="RRVhide" onclick="setRemoteRobotView('hide')"/> <label for="RRVhide">Hide</label>
-                </span>
+                IHM Robot - Local view: 
+                <input type="radio" name="RlVidSetting" value="show" id="RlVshow" checked onclick="setLocalRobotView('show')"> <label for="RlVshow">Show</label>
+                <input type="radio" name="RlVidSetting" value="hide" id="RlVhide" onclick="setLocalRobotView('hide')"/> <label for="RlVhide">Hide</label>
+                &nbsp;&nbsp; || &nbsp;&nbsp; Remote view: 
+                <input type="radio" name="RRVidSetting" value="show" id="RRVshow" checked onclick="setRemoteRobotView('show')"> <label for="RRVshow">Show</label>
+                <input type="radio" name="RRVidSetting" value="hide" id="RRVhide" onclick="setRemoteRobotView('hide')"/> <label for="RRVhide">Hide</label>
+                &nbsp;&nbsp; || &nbsp;&nbsp;
+                <label for="robot_camdef_select">Camera Resolution &nbsp;&nbsp; </label>
+                <select id="robot_camdef_select">
+                    <option value="VLD">Very Low D (100x56)</option>   
+                    <option value="LD">Low D (320x180)</option> 
+                    <option value="MD">Medium D (640x360)</option> 
+                    <option value="HD" selected="selected">High D (1280x720)</option> 
+                    <option value="FHD" disabled="disabled">Full HD (1920x1080)</option>
+                </select>
+            </span>
             <br/>
+            
             <span id="piloteVideoSetting" class="">
-                    IHM Pilote - Local view: 
-                    <input type="radio" name="PlVidSetting" value="show" id="PlVshow" checked onclick="setLocalPilotView('show')"> <label for="PlVshow">Show</label>
-                    <input type="radio" name="PlVidSetting" value="hide" id="PlVhide" onclick="setLocalPilotView('hide')"/> <label for="PlVhide">Hide</label>
-                    &nbsp;&nbsp; || &nbsp;&nbsp; Remote view: 
-                    <input type="radio" name="PRVidSetting" value="high" id="PRVhigh" onclick="setRemotePiloteView('high')" checked/> <label for="PRVhigh">High res</label>
-                    <input type="radio" name="PRVidSetting" value="medium" id="PRVmedium" onclick="setRemotePiloteView('medium')" /> <label for="PRVmedium">Medium res</label>
-                    <input type="radio" name="PRVidSetting" value="low" id="PRVlow" onclick="setRemotePiloteView('low')"/> <label for="PRVlow">Low res</label>
-                    <input type="radio" name="PRVidSetting" value="hide" id="PRVhide" onclick="setRemotePiloteView('hide')"/> <label for="PRVhide">Hide</label>
+                IHM Pilote - Local view: 
+                <input type="radio" name="PlVidSetting" value="show" id="PlVshow" checked onclick="setLocalPilotView('show')"> <label for="PlVshow">Show</label>
+                <input type="radio" name="PlVidSetting" value="hide" id="PlVhide" onclick="setLocalPilotView('hide')"/> <label for="PlVhide">Hide</label>
+                &nbsp;&nbsp; || &nbsp;&nbsp; Remote view: 
+                <input type="radio" name="PRVidSetting" value="high" id="PRVhigh" onclick="setRemotePiloteView('high')" checked/> <label for="PRVhigh">Show</label>
+                <input type="radio" name="PRVidSetting" value="hide" id="PRVhide" onclick="setRemotePiloteView('hide')"/> <label for="PRVhide">Hide</label>
+                &nbsp;&nbsp; || &nbsp;&nbsp;
+                    <label for="pilot_camdef_select">Camera Resolution &nbsp;&nbsp; </label>
+                    <select id="pilot_camdef_select">
+                    <option value="VLD">Very Low D(100x56)</option>   
+                    <option value="LD">Low D (320x180)</option> 
+                    <option value="MD">Medium D (640x360)</option> 
+                    <option value="HD" selected="selected">High D (1280x720)</option> 
+                    <option value="FHD">Full HD (1920x1080)</option>
+                </select>
                 </span>
             <hr/>
         </div>
@@ -241,6 +265,7 @@
     <script src='/js/lib/adapter.js'></script>
     <script src="/js/lib/gamepad.js"></script>
     <script src="/js/lib/FileSaver.js"></script>
+    <script src="/js/lib/timesync.js"></script>
     <!--<script src="https://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>-->
     <script src="/js/lib/autobahn.min.jgz"></script>
     
@@ -251,6 +276,7 @@
 
     <script src='/js/main_websocket.js'></script>
     <script src='/js/main_settings.js'></script>
+    <script src="/js/module_timesync.js"></script>
     <script src='/js/main_1to1.js'></script>
 
     
@@ -279,10 +305,6 @@
               //if (hostName != "???" ) $('#zone_info_server').replaceWith(settings.appName() + " V " + settings.appVersion()+ " ("+hostName+")");
               infoServerTxt = settings.appBranch() + ' - ' + settings.appName() + " V " + settings.appVersion()+ " ("+hostName+")";
               if (hostName != "???" ) $('#zone_info_server').replaceWith(infoServerTxt);
-            
-
-
-
             });
     </script> 
 

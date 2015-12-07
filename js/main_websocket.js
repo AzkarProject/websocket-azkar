@@ -19,6 +19,9 @@ var socket = io.connect();
 // var socket = io.connect(pIoConnect); 
 
 
+
+
+
 var typeClient = null;
 if (type == "pilote-appelant") {typeClient = "Pilote";
 } else if (type == "robot-appelé") { typeClient = "Robot";
@@ -82,6 +85,19 @@ var localObjUser;
 var myPlaceListe;
 var myPeerID;
 // ------------------------------------------------------
+
+
+// Ping serveur:
+setInterval(function() {
+  startTime = Date.now();
+  socket.emit('ping');
+}, 2000);
+
+socket.on('pong', function() {
+  latency = Date.now() - startTime;
+  inserePings(latency)
+});
+
 
 
 // Updater le titre de la page (pour le fun...)
@@ -321,6 +337,16 @@ function insereMessage3(objUser, message) {
       text = message;
     }
     text += '\n';
+    
+    $('#zone_chat_websocket').prepend(text);
+    if ( $('#zone_chat_1toN') )  $('#zone_chat_1toN').prepend(text);
+    if ( $('#zone_chat_1toN_visitor') )  $('#zone_chat_1toN_visitor').prepend(text);
+}
+
+// Affiche les PINGS
+function inserePings(ping) {
+    
+   var text = typeClient+";"+ping+'\n';
     
     $('#zone_chat_websocket').prepend(text);
     if ( $('#zone_chat_1toN') )  $('#zone_chat_1toN').prepend(text);

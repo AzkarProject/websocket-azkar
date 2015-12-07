@@ -17,37 +17,12 @@ audioSource = local_AudioSelect.value;
 videoSource = local_VideoSelect.value;
 constraint = null;
 
-// ----------- variation de la définition
-var qvgaConstraints = {
-  video: {
-    mandatory: {
-      maxWidth: 320,
-      maxHeight: 180
-    }
-  }
-};
+if (type == "pilote-appelant" && proto == "1to1") {
+    robotCamDef = robot_camdef_select.value;
+    piloteCamDef = pilot_camdef_select.value;
+}
 
-var vgaConstraints = {
-  video: {
-    mandatory: {
-      maxWidth: 640,
-      maxHeight: 360
-    }
-  }
-};
-
-var hdConstraints = {
-  video: {
-    mandatory: {
-      minWidth: 1280,
-      minHeight: 720
-    }
-  }
-};
-
-constraint = qvgaConstraints;
-
-/**/// -----------------------------
+// -----------------------------
 
 // Constraints de l'offre SDP. 
 robotConstraints = {
@@ -234,6 +209,13 @@ function localManageDevices() {
         var selectList = {
             selectAudio, selectVideo
         };
+        
+        if (type == "pilote-appelant" && proto == "1to1") {
+            // Récupérations sélections définition caméras
+            parameters.camDefRobot = robot_camdef_select.value;
+            parameters.camDefPilote = pilot_camdef_select.value;
+        }
+
         var appSettings = parameters;
         // socket.emit("selectedRemoteDevices", selectList); Ancienne version
         // Coté serveur >> socket.broadcast.emit('selectedRemoteDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
@@ -253,19 +235,40 @@ function localManageDevices() {
 function getLocalConstraint() {
 	audioSource = local_AudioSelect.value;
 	videoSource = local_VideoSelect.value;
-	var localConstraint = {
-	        audio: {
-	            optional: [{
-	                sourceId: audioSource
-	            }]
-	        },
+	
+    var camDef = "HD";
+    if (type == "pilote-appelant") camDef = parameters.camDefPilote;
+    else if (type == "robot-appelé") camDef = parameters.camDefRobot;
+    var maxCamWidth = 100, maxCamHeight = 100;
+    if (camDef == 'VLD') {maxCamWidth = 100; maxCamHeight = 56}
+    else if (camDef == 'LD') {maxCamWidth = 320; maxCamHeight = 180}
+    else if (camDef == 'MD') {maxCamWidth = 640; maxCamHeight = 360}
+    else if (camDef == 'HD') {maxCamWidth = 1280; maxCamHeight = 720}
+    else if (camDef == 'FHD') {maxCamWidth = 1920; maxCamHeight = 1080}
 
-	        video: {
-	            optional: [{
-	                sourceId: videoSource
-	            }]
-	        }
-	    }  
+    var framerate = 24;
+
+    var testConstraints = { 
+            audio: { optional: [{sourceId: audioSource}] },
+            video: {
+                optional: [{sourceId: videoSource}],   
+                mandatory: { maxWidth: maxCamWidth, maxHeight: maxCamHeight }
+                // mandatory: { width: { ideal: 100 }, height: { ideal: 100 } } // BUG: Ca plante complètement sous Chrome...
+            }
+        }
+    /**/
+
+
+    var sourcedConstraints = {    
+       audio: {optional: [{sourceId: audioSource}]},
+       video: {optional: [{sourceId: videoSource}]}   
+    }
+
+    //var localConstraint = sourcedConstraints;
+    var localConstraint = testConstraints;
+
+
+
 	return localConstraint;
 } 
 
@@ -462,8 +465,27 @@ function initLocalMedia(peerCnxId) {
     // Initialisation du localStream et lancement connexion
     navigator.getUserMedia(constraint, function(stream) {
 
-        //console.log(parameters.lRview);
+        
+        console.log(" >>>> @  navigator.getUserMedia(constraint, function(stream)");
+        console.log(stream);    
+
+        /*// Pour évire la perte de caméras en cas de changement de constraints
+        //// PUTAIN  DE BUG DE MERDE !!!!!!!!!!! ---- Michel, il marche pas ton code !!!!!!!
+        // J'ai encore les cam du pc pilote complètement HS !!!!!!!!!!!!!!!!
+        // WTF ...@%§!/@..
+        if (!!stream) {
+            video1.src = null;
+            stream.stop();
+        }
+        /**/
+        // alert(stream);
+
+
+        //console.log(parameters.lRview)
         localStream = stream;
+
+
+
         var showLocalVideo = true;
         if (type == "pilote-appelant") {
             if (parameters.lPview != 'show') showLocalVideo = false;
@@ -989,15 +1011,17 @@ if (type == "robot-appelé") {
                  channel: "Local-Robot",
                  source: "Homme-Mort",
                  system: parameters.navSys,
-                 dateA: Date.now(),
+                 // dateA: Date.now(),
+                 dateA: Date.now(ts.now()), // date synchronisée avec le serveur
                  command: 'deathMan',
                  aSpeed: 0,
                  lSpeed: 0,
-                 enable: 'false'
+                 enable: false
              }
 
         if (onMove == true || lastMoveTimeStamp != 0) {
-            var now = Date.now();
+            // var now = Date.now();
+            var now = Date.now(ts.now()); // date synchronisée avec le serveur
             var test = now - lastMoveTimeStamp;
             if (test >= 1000 ) {
                robubox.sendDrive(data); // Envoi de la commande a la Robubox

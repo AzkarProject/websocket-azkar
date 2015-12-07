@@ -1,18 +1,5 @@
 'use strict';
 
-//var autobahn = require('autobahn'),
-//	$ = require('jquery');
-
-// global.DEBUG = true; // Uncomment to log values
-//global.DEBUG_SAFE = true; // Uncomment to prevent sending values to komcom
-
-// console.log('Autobahn %s loaded', autobahn.version);
-
-/**
- * Example of requiring DifferentialDrive
- * var DifferentialDrive = require('differential-drive');
- */
-
 var SESSION = null;
 
 var KOMCOM_SERVER = '127.0.0.1', // wss://127.0.0.1
@@ -27,40 +14,83 @@ if (isRobubox == true) {
 
 	console.log("module_komnav");
 
-	connection.onopen = function(session, details) {
-		// Publish, Subscribe, Call and Register
-		console.log('OPEN', session, details);
-		SESSION = session;
+	
+	if (fakeRobubox == false) {
 
-		$('body').addClass('komcom-connected');
-		document.querySelector('kom-remote')
-			.start({
-				transportSession: session,
-				rpcMethodName: KOMNAV_METHOD_DRIVE
-			});
-	};
 
-	connection.onclose = function(reason, details) {
-		// handle connection lost
-		
-		console.log('CLOSE', reason, details);
-		$('body').removeClass('komcom-connected');
-		document.querySelector('kom-remote').destroy();
-		
-	};
+		connection.onopen = function(session, details) {
+			// Publish, Subscribe, Call and Register
+			console.log('OPEN', session, details);
+			SESSION = session;
 
-	function onWebComponentReady(element, callback) {
-		if (element.ready) { // already loaded
-			callback.call(element);
-		} else {
-			element.addEventListener('ready', function() {  // wait for ready event
+			$('body').addClass('komcom-connected');
+			document.querySelector('kom-remote')
+				.start({
+					transportSession: session,
+					rpcMethodName: KOMNAV_METHOD_DRIVE
+				});
+		};
+
+		connection.onclose = function(reason, details) {
+			// handle connection lost
+			
+			console.log('CLOSE', reason, details);
+			$('body').removeClass('komcom-connected');
+			document.querySelector('kom-remote').destroy();
+			
+		};
+
+	
+		function onWebComponentReady(element, callback) {
+			if (element.ready) { // already loaded
 				callback.call(element);
-			});
+			} else {
+				element.addEventListener('ready', function() {  // wait for ready event
+					callback.call(element);
+				});
+			}
 		}
+
+		onWebComponentReady(document.querySelector('kom-remote'), function() {
+			connection.open();
+		});
+
+
+	} else if (fakeRobubox == true) {
+
+
+		var myTransportSession = {
+			call: function(rpcMethodName, values) {
+				console.log ('Drive Command >>> ');
+			}
+		};
+
+
+		function onWebComponentReady(element, callback) {
+			if (element.ready) { // already loaded
+				callback.call(element);
+			} else {
+				element.addEventListener('ready', function() {  // wait for ready event
+					callback.call(element);
+				});
+			}
+		}
+
+		// Ensure that kom-remote is ready before start
+		onWebComponentReady(document.querySelector('kom-remote'), function() {
+			$('body').addClass('komcom-connected');
+			this.start({ transportSession: myTransportSession }); // Use your own transport session
+		});
+
+
+
 	}
 
-	onWebComponentReady(document.querySelector('kom-remote'), function() {
-		connection.open();
-	});
+
+
+
+
 
 }
+
+
