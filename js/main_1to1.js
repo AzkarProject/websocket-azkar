@@ -240,11 +240,13 @@ function getLocalConstraint() {
     if (type == "pilote-appelant") camDef = parameters.camDefPilote;
     else if (type == "robot-appelé") camDef = parameters.camDefRobot;
     var maxCamWidth = 100, maxCamHeight = 100;
-    if (camDef == 'VLD') {maxCamWidth = 100; maxCamHeight = 56}
-    else if (camDef == 'LD') {maxCamWidth = 320; maxCamHeight = 180}
-    else if (camDef == 'MD') {maxCamWidth = 640; maxCamHeight = 360}
-    else if (camDef == 'HD') {maxCamWidth = 1280; maxCamHeight = 720}
-    else if (camDef == 'FHD') {maxCamWidth = 1920; maxCamHeight = 1080}
+    if (camDef == 'VLD') {maxCamWidth = 100; maxCamHeight = 52} // 16/9
+    else if (camDef == 'LD') {maxCamWidth = 160; maxCamHeight = 88} // 16/9
+    else if (camDef == 'MD') {maxCamWidth = 320; maxCamHeight = 180} // 16/9 
+    else if (camDef == 'HD') {maxCamWidth = 640; maxCamHeight = 360} // 16/9
+    else if (camDef == 'FHD') {maxCamWidth = 640; maxCamHeight = 480} // 4/3..
+
+    // alert (maxCamWidth+"*"+maxCamHeight);
 
     var framerate = 24;
 
@@ -860,6 +862,16 @@ function onDisconnect(peerCnxId) {
     if (isStarted == false) return;
 
 
+    if (!!localStream) {
+         video1.src = null;
+         localStream.stop();
+    }
+
+    if (!!remoteStream) {
+         video2.src = null;
+         remoteStream.stop();
+    }
+
     // on retire le flux remoteStream
     video1.src = "";
     video2.src = "";
@@ -1012,7 +1024,8 @@ if (type == "robot-appelé") {
                  source: "Homme-Mort",
                  system: parameters.navSys,
                  // dateA: Date.now(),
-                 dateA: Date.now(ts.now()), // date synchronisée avec le serveur
+                 //dateA: Date.now(ts.now()), // date synchronisée avec le serveur
+                 dateA: ServerDate.now(), // date synchronisée avec le serveur
                  command: 'deathMan',
                  aSpeed: 0,
                  lSpeed: 0,
@@ -1021,7 +1034,8 @@ if (type == "robot-appelé") {
 
         if (onMove == true || lastMoveTimeStamp != 0) {
             // var now = Date.now();
-            var now = Date.now(ts.now()); // date synchronisée avec le serveur
+            // var now = Date.now(ts.now()); // date synchronisée avec le serveur
+            var now = ServerDate.now(); // date synchronisée avec le serveur
             var test = now - lastMoveTimeStamp;
             if (test >= 1000 ) {
                robubox.sendDrive(data); // Envoi de la commande a la Robubox
@@ -1086,4 +1100,13 @@ socket.on("piloteOrder", function(data) {
 socket.on('changeNavSystem', function(data) {
    console.log('@changeNavSystem >> ' + data.navSystem);
    parameters.navSys = data.navSystem;
+});
+
+video2.addEventListener("playing", function () {
+    console.log ("RemoteStream dimensions: " + video2.videoWidth + "x" + video2.videoHeight)
+	/*
+    setTimeout(function () {
+        console.log("Stream dimensions: " + video.videoWidth + "x" + video.videoHeight);
+    }, 500);
+    /**/
 });

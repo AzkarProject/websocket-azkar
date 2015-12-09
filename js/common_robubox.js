@@ -23,7 +23,8 @@ exports.sendDrive = function (data){
     var lSpeed = data.lSpeed;
     var dateA = data.dateA;
     // var dateB = Date.now();
-    var dateB = Date.now(ts.now()); // date synchronisée avec le serveur
+    //var dateB = Date.now(ts.now()); // date synchronisée avec le serveur
+    var dateB = ServerDate.now(); // date synchronisée avec le serveur
     var source = data.source;
     var channel = data.channel;
     // var delta = dateB - dateA;
@@ -41,8 +42,8 @@ exports.sendDrive = function (data){
             onMove = true;
             // console.log ("onMove = "+onMove);
             // lastMoveTimeStamp = Date.now(); // MAJ du dernier timestamp mouvement... 
-            lastMoveTimeStamp = Date.now(ts.now()); // date synchronisée avec le serveur
-
+            // lastMoveTimeStamp = Date.now(ts.now()); // date synchronisée avec le serveur
+            lastMoveTimeStamp = ServerDate.now();
         } else if (enable == false){
             onMove = false;
             // console.log ("onMove = "+onMove);

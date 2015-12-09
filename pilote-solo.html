@@ -22,6 +22,54 @@
     <strong><span id="zone_info_server">WebRTC AZKAR</span></strong>
     <hr/>
     
+    <section id="serverDate" class="" style="float:left;width:100%">
+        <!--
+        The precision may improve after a few seconds as a result of clock synchronization and amortization.<BR>
+        Heure Serveur: <span id="server"></span><BR/>
+        Heure Client: <span id="client"></span><BR/>
+        -->
+        Différenc horloge Client/Serveur: <span id="difference"></span><BR/>
+        <script src="/js/lib/ServerDate.js"></script>
+      
+       
+       <SCRIPT>
+            // Display two real time clocks, the server's and the client's, and show the
+            // difference between them in milliseconds.
+            function updateClocks()
+            {
+                var client = new Date();
+
+                // document.getElementById("server").innerHTML = String(ServerDate);
+                // document.getElementById("client").innerHTML = String(client);
+
+                document.getElementById("difference").innerHTML = (ServerDate - client)
+                    + " &plusmn; " + ServerDate.getPrecision() + " ms";
+            }
+
+            // Display the clocks and update them every second.
+            updateClocks();
+            setInterval(updateClocks, 1000);
+        
+
+            // You may then use ServerDate as you would use the Date object or one of its instances, e.g.:
+            // > ServerDate()
+            // "Mon Aug 13 2012 20:26:34 GMT-0300 (ART)"
+            // > ServerDate.now()
+            // 1344900478753
+            // > ServerDate.getMilliseconds()
+            // 22
+            // There is also a new method to get the precision of ServerDate's estimate of the server's clock (in milliseconds):
+            // > ServerDate.toLocaleString() + " ± " + ServerDate.getPrecision() + " ms"
+            // "Tue Aug 14 01:01:49 2012 ± 108 ms"
+
+        </SCRIPT>
+
+
+
+    </section>
+
+
+
     <section id="controlArea" class="fullSizeContainerBox">
 
         <div id="colGaucheUpControlArea" class="floatLeft oneQuarterContainerBox">
@@ -221,11 +269,11 @@
                 &nbsp;&nbsp; || &nbsp;&nbsp;
                 <label for="robot_camdef_select">Camera Resolution &nbsp;&nbsp; </label>
                 <select id="robot_camdef_select">
-                    <option value="VLD">Very Low D (100x56)</option>   
-                    <option value="LD">Low D (320x180)</option> 
-                    <option value="MD">Medium D (640x360)</option> 
-                    <option value="HD" selected="selected">High D (1280x720)</option> 
-                    <option value="FHD" disabled="disabled">Full HD (1920x1080)</option>
+                    <option value="VLD">Very Low (100*52) 16/9</option>   
+                    <option value="LD">Low (160*88) 16/9</option> 
+                    <option value="MD">Medium (320*180) 16/9</option> 
+                    <option value="HD" selected="selected">High (640*360) 16/9</option> 
+                    <option value="FHD">Very Hight (640*480) 4/3</option>
                 </select>
             </span>
             <br/>
@@ -240,11 +288,11 @@
                 &nbsp;&nbsp; || &nbsp;&nbsp;
                     <label for="pilot_camdef_select">Camera Resolution &nbsp;&nbsp; </label>
                     <select id="pilot_camdef_select">
-                    <option value="VLD">Very Low D(100x56)</option>   
-                    <option value="LD">Low D (320x180)</option> 
-                    <option value="MD">Medium D (640x360)</option> 
-                    <option value="HD" selected="selected">High D (1280x720)</option> 
-                    <option value="FHD">Full HD (1920x1080)</option>
+                    <option value="VLD">Very Low (100*52) 16/9</option>   
+                    <option value="LD">Low (160*88) 16/9</option> 
+                    <option value="MD">Medium (320*180) 16/9</option> 
+                    <option value="HD" selected="selected">High (640*360) 16/9</option> 
+                    <option value="FHD">Very Hight (640*480) 4/3</option>
                 </select>
                 </span>
             <hr/>
