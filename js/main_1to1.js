@@ -850,13 +850,34 @@ socket.on("closeConnectionOrder",function(data) {
     }
 });
 
+/*// Réception d'un ordre de déconnexion en provenance du Pilote
+// >> Pour le robot: se déconneter de tous les visiteurs
+// >> Pour tous les visiteurs, se déconnecter du robot Et du pilote
+socket.on("closeAllVisitorsConnectionOrder", function(data) {
 
+        console.log ("------------ >>> closeAllVisitorsConnectionOrder "+data.from.typeClient+"----------");
+        var prefixID = "Robot-To-Visiteur-";
+        var robotPeerCnxID = "Robot-To-Visiteur-"+myPeerID;
+        var pilotePeerCnxID = "Pilote-To-Visiteur-"+myPeerID;
+        // Si robot on vire tous les visiteurs
+        if (type == 'robot-appelé') closeCnxwithAllVisitors("Robot"); 
+        // Si visiteur on vire Pilote et Robot
+        else if (type == 'visiteur-appelé') {
+            onDisconnect_VtoR(robotPeerCnxID);
+            onDisconnect_1toN_VtoP(pilotePeerCnxID);      
+        }
+});
+/**/
 
 // A la déconnection du pair distant:
 function onDisconnect(peerCnxId) {
 
     console.log("@ onDisconnect()");
 
+
+    // Robustesse:
+    if (type == "pilote-appelant") robotDisconnection = "Unexpected";
+    else if (type == "robot-appelé") piloteDisconnection = "Unexpected";
 
     // On vérifie le flag de connexion
     if (isStarted == false) return;

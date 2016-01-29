@@ -7,183 +7,135 @@ if (type == "robot-appelé") {
 }
 
 // 1to1 Pilote+Robot
-if (type == "pilote-appelant" || type == "robot-appelé") {
+onMove = false; // Flag > Si un mouvement est en cours
+//lastMoveTimeStamp =  Date.now(); // Variable globale pour la détection du dernier mouvement (homme mort)...
+lastMoveTimeStamp = 0;
 
-    // 1to1 Pilote+Robot
-    onMove = false; // Flag > Si un mouvement est en cours
-    //lastMoveTimeStamp =  Date.now(); // Variable globale pour la détection du dernier mouvement (homme mort)...
-    lastMoveTimeStamp = 0;
-    
-    // 1to1 Pilote+Robot
-    // Benchmarks Settings Default
-    navSys = 'Robubox';
-    navCh = 'webSocket';
-    lPview = 'show';
-    lRview = 'show';
-    rPview = 'high';
-    rRView = 'show';
-    pStoR = 'open';
-    cartoView = 'hide';
-    cartoChannel = 'webSocket';
-    camDefRobot = 'HD',
-    camDefPilote = 'HD';
+// 1to1 Pilote+Robot
+// Benchmarks Settings Default
+navSys = 'Robubox';
+navCh = 'webSocket';
+lPview = 'show';
+lRview = 'show';
+rPview = 'high';
+rRView = 'show';
+pStoR = 'open';
+cartoView = 'hide';
+cartoChannel = 'webSocket';
+camDefRobot = 'HD',
+camDefPilote = 'HD';
 
 
-    // 1to1 Pilote+Robot
-    // Objet paramètres
-    parameters = {
-        navSys: navSys,
-        navCh: navCh,
-        lPview: lPview,
-        lRview: lRview,
-        rPview: rPview,
-        rRView: rRView,
-        pStoR: pStoR,
-        cartoView: cartoView,
-        cartoChannel: cartoChannel,
-        camDefRobot: camDefRobot,
-        camDefPilote: camDefPilote
-    };
-    
-
-    // 1to1 Pilote+Robot
-    // sélecteurs de micros et caméras
-    local_AudioSelect = document.querySelector('select#local_audioSource');
-    local_VideoSelect = document.querySelector('select#local_videoSource');
-
-    // 1to1 Pilote+Robot
-    // sélecteurs de micros et caméras (robot) affiché coté pilote 
-    remote_AudioSelect = document.querySelector('select#remote_audioSource');
-    remote_VideoSelect = document.querySelector('select#remote_videoSource');
-
-    // 1to1 Pilote+Robot
-    // Pour visualiser toutes les cams dispo coté Robot,
-    // on laisse par défaut l'affichage des devices.
-    local_AudioSelect.disabled = false;
-    local_VideoSelect.disabled = false;
-
-    // 1to1 Pilote seulement
-    // Sélécteurs définition caméra
-    if (type == "pilote-appelant") {
-        robot_camdef_select = document.querySelector('select#robot_camdef_select');
-        pilot_camdef_select = document.querySelector('select#pilot_camdef_select');
-    }
-    /**/
+// 1to1 Pilote+Robot
+// Objet paramètres
+parameters = {
+    navSys: navSys,
+    navCh: navCh,
+    lPview: lPview,
+    lRview: lRview,
+    rPview: rPview,
+    rRView: rRView,
+    pStoR: pStoR,
+    cartoView: cartoView,
+    cartoChannel: cartoChannel,
+    camDefRobot: camDefRobot,
+    camDefPilote: camDefPilote
+};
 
 
-    // 1to1 Pilote+Robot
-    // (pilote-Appelant) > Activation/Désativation préalable 
-    // Du formulaire de sélection des devices locaux et de demande de connexion
-    if (type == "pilote-appelant") {
-        remote_ButtonDevices.disabled = true;
-        local_ButtonDevices.disabled = true;
-        //remote_AudioSelect.disabled = true; 
-        //remote_VideoSelect.disabled = true; 
-        local_AudioSelect.disabled = true;
-        local_VideoSelect.disabled = true;
-    }
+// 1to1 Pilote+Robot
+// sélecteurs de micros et caméras
+local_AudioSelect = document.querySelector('select#local_audioSource');
+local_VideoSelect = document.querySelector('select#local_videoSource');
 
+// 1to1 Pilote+Robot
+// sélecteurs de micros et caméras (robot) affiché coté pilote 
+remote_AudioSelect = document.querySelector('select#remote_audioSource');
+remote_VideoSelect = document.querySelector('select#remote_videoSource');
 
-    
-    // 1to1 Pilote+Robot
-    // Liste des sources cam/micro
-    listeLocalSources = {};
-    listeRemoteSources = {};
-    // flag d'origine des listes (local/remote)
-    origin = null;
+// 1to1 Pilote+Robot
+// Pour visualiser toutes les cams dispo coté Robot,
+// on laisse par défaut l'affichage des devices.
+local_AudioSelect.disabled = false;
+local_VideoSelect.disabled = false;
 
-
-    // 1to1 Pilote+Robot
-    // flag de connexion
-    isStarted = false;
-    
-
-    // 1to1 Pilote+Robot
-    video1 = document.getElementById("1to1_localVideo"); // Sur IHM Robot, pilote, visiteur
-    video2 = document.getElementById("1to1_remoteVideo"); // Sur IHM Robot, pilote, visiteur
-
-
-    // 1to1 Pilote+Robot
-    // RTC DataChannel
-    // Zone d'affichage (textarea)
-    chatlog = document.getElementById("zone_chat_WebRTC");
-    // Zone de saisie (input)
-    message = document.getElementById("input_chat_WebRTC");
-
-   
-    // 1to1 pilote + Robot
-    peerCnx1to1 = "Pilote-to-Robot"; // connexion principale Pilote/Robot
-    peerCnxId = "default"; // Nom par défaut
-
-    
-    // 1to1 pilote + Robot
-    localStream = null;
-    remoteStream = null; // 
-    
-    
-    // 1to1 pilote + Robot
-    // définition de la variable channel
-    channel = null;
-    debugNbConnect = 0;
-
-    // 1to1 pilote + Robot
-    // Si une renégociation à déjas eu lieu
-    // >> pour éviter de réinitialiser +sieurs fois le même écouteur
-    isRenegociate = false; // 1to1 Pilote & robot
-
-    robotCnxStatus = 'new';
-    piloteCnxStatus = 'new';
-} // 1to1 Pilote+Robot
-
-// 1toN Pilote+Visiteur
-if (type == "pilote-appelant" || type == "visiteur-appelé") {
-    
-    // 1toN > Pilote+Visiteur 
-    video1_1toN_VtoP = document.getElementById("1to1_localVideo"); // Sur IHM Robot, pilote, visiteur
-    video2_1toN_VtoP = document.getElementById("1to1_remoteVideo"); // Sur IHM Robot, pilote, visiteur
-    /*
-    if (type == "pilote-appelant") {
-    videoVisitor1 = document.getElementById("1toN_remoteVideos"); // Vue des visiteurs sur IHM Pilote
-    videoVisitor2 = document.getElementById("1toN_remoteVideos2"); // Vue des visiteurs sur IHM Pilote
-    videoVisitor3 = document.getElementById("1toN_remoteVideos3"); // Vue des visiteurs sur IHM Pilote
-    videoVisitor4 = document.getElementById("1toN_remoteVideos4"); // Vue des visiteurs sur IHM Pilote
-    videoVisitor5 = document.getElementById("1toN_remoteVideos3"); // Vue des visiteurs sur IHM Pilote
-    videoVisitor6 = document.getElementById("1toN_remoteVideos4"); // Vue des visiteurs sur IHM Pilote
-
-    //video3 = document.getElementById("1toN_remoteVideos"); // Vue des visiteurs sur IHM Pilote
-    //video4 = document.getElementById("1toN_remoteVideoRobot"); // Vue du Robot sur IHM Visiteur
-    } 
-    /**/
-
-    prefix_peerCnx_1toN_VtoP = "Pilote-to-Visiteur-"; // connexion principale Pilote/Robot
-    peerCnxId_1toN_VtoP = "default"; // Nom par défaut
-
-    localStream_1toN_VtoP = null;
-    remoteStream_1toN_VtoP = null; // remoteStream 1to
-    remoteStreamCollection_1toN_VtoP = {}; // 1toN > Tableau des remoteStreams visiteurs
-    
-    debugNbConnect_1toN_VtoP = 0;
-    
-    // Si une renégociation à déja eu lieu
-    // >> pour éviter de réinitialiser +sieurs fois le même écouteur
-    isRenegociate_1toN_VtoP = false;
-} // 1toN Pilote+Visiteur   
-    
-
-// 1toN Pilote seulement
+// 1to1 Pilote seulement
+// Sélécteurs définition caméra
 if (type == "pilote-appelant") {
-    
-    remoteStreamCollection = {}; // 1toN > liste des remoteStreams visiteurs
-    visitorStatusCollection = {}; // 1toN > Liste des status de connexions des visiteurs
-} // 1toN Pilote seulement  
+    robot_camdef_select = document.querySelector('select#robot_camdef_select');
+    pilot_camdef_select = document.querySelector('select#pilot_camdef_select');
+}
+/**/
 
-// 1toN visiteur seulement
-if (type == "visiteur-appelé") {
-    isStarted_1toN_VtoP = false;
-    video3_VtoR = document.getElementById("1toN_remoteVideoRobot"); 
-} // 1toN visiteur seulement
 
-// --------------------------  Communs 1to1 & 1toN (Robot, pilote, visiteurs)
+// 1to1 Pilote+Robot
+// (pilote-Appelant) > Activation/Désativation préalable 
+// Du formulaire de sélection des devices locaux et de demande de connexion
+if (type == "pilote-appelant") {
+    remote_ButtonDevices.disabled = true;
+    local_ButtonDevices.disabled = true;
+    //remote_AudioSelect.disabled = true; 
+    //remote_VideoSelect.disabled = true; 
+    local_AudioSelect.disabled = true;
+    local_VideoSelect.disabled = true;
+}
+
+
+
+// 1to1 Pilote+Robot
+// Liste des sources cam/micro
+listeLocalSources = {};
+listeRemoteSources = {};
+// flag d'origine des listes (local/remote)
+origin = null;
+
+
+// 1to1 Pilote+Robot
+// flag de connexion
+isStarted = false;
+
+
+// 1to1 Pilote+Robot
+video1 = document.getElementById("1to1_localVideo"); // Sur IHM Robot, pilote, visiteur
+video2 = document.getElementById("1to1_remoteVideo"); // Sur IHM Robot, pilote, visiteur
+
+
+// 1to1 Pilote+Robot
+// RTC DataChannel
+// Zone d'affichage (textarea)
+chatlog = document.getElementById("zone_chat_WebRTC");
+// Zone de saisie (input)
+message = document.getElementById("input_chat_WebRTC");
+
+
+// 1to1 pilote + Robot
+peerCnx1to1 = "Pilote-to-Robot"; // connexion principale Pilote/Robot
+peerCnxId = "default"; // Nom par défaut
+
+
+// 1to1 pilote + Robot
+localStream = null;
+remoteStream = null; // 
+
+
+// 1to1 pilote + Robot
+// définition de la variable channel
+channel = null;
+debugNbConnect = 0;
+
+// 1to1 pilote + Robot
+// Si une renégociation à déjas eu lieu
+// >> pour éviter de réinitialiser +sieurs fois le même écouteur
+isRenegociate = false; // 1to1 Pilote & robot
+
+robotCnxStatus = 'new';
+piloteCnxStatus = 'new';
+
+// Robustesse: Flags de déconnexions volontaires
+// valeurs possibles: Forced , Unexpected
+robotDisconnection = "Forced";
+piloteDisconnection = "Forced";
+
 
 // Tableau des connexions WebRTC
 peerCnxCollection = {};
@@ -311,11 +263,3 @@ function getCibleFromPeerConnectionID(peerCnxId, prefix) {
 };
 
 
-/*// Idem mais retourne l'ID du client
-function getIdFromPeerConnectionID(peerCnxId, prefix) {
-    var cibleID = peerCnxId;
-    cibleID = cibleID.replace(prefix, "");
-    //cible = getClientBy('id',cibleID); 
-    return cibleID;
-};
-/**/

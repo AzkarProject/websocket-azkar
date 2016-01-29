@@ -343,7 +343,7 @@ socket.on('visitorCnxPiloteStatus', function(data) {
 
 // Réception d'un ordre de déconnexion en provenance du Pilote
 // >> Pour le robot: se déconneter de tous les visiteurs
-// >> Pour tous les visiteurs, se déconnecter du robot Et du pilote
+/*// >> Pour tous les visiteurs, se déconnecter du robot Et du pilote
 socket.on("closeAllVisitorsConnectionOrder", function(data) {
 
         console.log ("------------ >>> closeAllVisitorsConnectionOrder "+data.from.typeClient+"----------");
