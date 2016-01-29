@@ -180,25 +180,26 @@ io.on('connection', function(socket, pseudo) {
     }
     /**/
 
-    // Ping server
-	socket.on('ping', function() {
-	    io.to(socket.id).emit('pong');
-	});
+    
+    if (settings.isBenchmark() == true ) {
+
+        // Ping server
+    	socket.on('ping', function() {
+    	    io.to(socket.id).emit('pong');
+    	});
 
 
-    // Synchronisation Horloge
-    socket.on('timesync', function (data) {
-        // console.log('message', data);
-        // socket.emit('timesync', {
-        io.to(socket.id).emit('timesync', {
-          id: data && 'id' in data ? data.id : null,
-          result: Date.now()
-        });
-      });
-
-
-
-
+        // Synchronisation Horloge
+        socket.on('timesync', function (data) {
+            // console.log('message', data);
+            // socket.emit('timesync', {
+            io.to(socket.id).emit('timesync', {
+              id: data && 'id' in data ? data.id : null,
+              result: Date.now()
+            });
+          });
+    
+    }
 
 
     // Bouton ejection de tous les clients robot/Pilote et visiteurs

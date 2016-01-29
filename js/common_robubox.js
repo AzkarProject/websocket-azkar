@@ -6,6 +6,8 @@
 exports.sendDrive = function (data){        
         
     var isRobubox = settings.isRobubox();
+    var isBenchmark = settings.isBenchmark();
+
     console.log ("robubox.sendDrive_01("+isRobubox+")");
     // console.log(data);
     
@@ -21,18 +23,22 @@ exports.sendDrive = function (data){
     var enable = data.enable;
     var aSpeed = data.aSpeed;
     var lSpeed = data.lSpeed;
-    var dateA = data.dateA;
-    // var dateB = Date.now();
-    //var dateB = Date.now(ts.now()); // date synchronisée avec le serveur
-    var dateB = ServerDate.now(); // date synchronisée avec le serveur
-    var source = data.source;
-    var channel = data.channel;
-    // var delta = dateB - dateA;
-    //var msg = '['+data.channel+']['+data.system+']['+data.command+'][AtoB>'+delta+' ms]';
-    //insereMessage3("",msg);
-    //console.log(data);
+    
+    if (isBenchmark == true ) {
 
+        var dateA = data.dateA;
+        // var dateB = Date.now();
+        //var dateB = Date.now(ts.now()); // date synchronisée avec le serveur
+        var dateB = ServerDate.now(); // date synchronisée avec le serveur
+        var source = data.source;
+        var channel = data.channel;
+        // var delta = dateB - dateA;
+        //var msg = '['+data.channel+']['+data.system+']['+data.command+'][AtoB>'+delta+' ms]';
+        //insereMessage3("",msg);
+        //console.log(data);
+    }
 
+    
     if (isRobubox == true) {
 
         // var toto = "robubox.sendDrive(1) >> enable:"+enable+" onMove:"+onMove+" "+"lastMoveTimeStamp:"+lastMoveTimeStamp;
@@ -60,7 +66,7 @@ exports.sendDrive = function (data){
 
                 //console.log (">>>>>>>>>>>>>> Send Drive To Robubox");
                 // var url = 'http://localhost:50000/api/drive';
-                //var url = "http://127.0.0.1:8080/127.0.0.1:50000/api/drive" ; // CORS-ANYWHERE
+                // var url = "http://127.0.0.1:8080/127.0.0.1:50000/api/drive" ; // CORS-ANYWHERE
                 var url = "https://127.0.0.1:443/http://127.0.0.1:50000/api/drive" ; // CORS-ANYWHERE
 
                 // function sendDrive(url, enable, aSpeed,lSpeed) {
@@ -81,34 +87,31 @@ exports.sendDrive = function (data){
             } else if (parameters.navSys == 'KomNAV') {
                 //console.log (">>>>>>>>>>>>>> Send Drive To KomNav");
 
+                var rpcMethod = 'com.thaby.drive';
                 var values = [];
                 values[0] = lSpeed;
                 values[1] = aSpeed;
                 
-                values[2] = source; // source
-                values[3] = channel; // channel
-
-                values[4] = dateA;
-                values[5] = dateB;
-
-                var rpcMethod = 'com.thaby.drive';
-
-                var rpcMethod2 = 'com.thaby.drive.benchmark';      
+                if (isBenchmark == true ) {
+                    values[2] = source; // source
+                    values[3] = channel; // channel
+                    values[4] = dateA;
+                    values[5] = dateB;
+                rpcMethod = 'com.thaby.drive.benchmark'; 
+                }   
                 
-                SESSION.call(rpcMethod2, values);
+                SESSION.call(rpcMethod, values);
 
             }
 
         } else if (fakeRobubox == true) {
-            var aToB = dateB-dateA;
-            /*
-            var msg = "Commande: "+source;
-            msg += " Channel: "+channel;
-            msg += " AtoB: "+aToB;
-            console.log (msg);
-            /**/
-            var text = dateA+";"+dateB+";"+dateB+";"+source+";"+channel+";"+aToB+";;;"+'\n';
-            insereMessage3('', text)
+            
+            if (isBenchmark == true ) {
+                var aToB = dateB-dateA;
+                var text = dateA+";"+dateB+";"+dateB+";"+source+";"+channel+";"+aToB+";;;"+'\n';
+                insereMessage3('', text)
+            }
+
 
         }
         

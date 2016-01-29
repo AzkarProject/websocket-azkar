@@ -471,7 +471,7 @@ function initLocalMedia(peerCnxId) {
         console.log(" >>>> @  navigator.getUserMedia(constraint, function(stream)");
         console.log(stream);    
 
-        /*// Pour évire la perte de caméras en cas de changement de constraints
+        /*// Pour éviter la perte de caméras en cas de changement de constraints
         //// PUTAIN  DE BUG DE MERDE !!!!!!!!!!! ---- Michel, il marche pas ton code !!!!!!!
         // J'ai encore les cam du pc pilote complètement HS !!!!!!!!!!!!!!!!
         // WTF ...@%§!/@..
@@ -1019,13 +1019,18 @@ if (type == "robot-appelé") {
     
         //console.log("@ deathMan() >> onMove:"+onMove+" "+"lastMoveTimeStamp:"+lastMoveTimeStamp);          
 
+         var dateA = Date.now();
+         // if (settings.isBenchmark() == true ) dateA = Date.now(ts.now()), // date synchronisée avec le serveur (V1 timesync.js)
+         if (settings.isBenchmark() == true ) dateA = ServerDate.now(); // date synchronisée avec le serveur (V2 ServerDate.js)
+
          var data = {
                  channel: "Local-Robot",
                  source: "Homme-Mort",
                  system: parameters.navSys,
                  // dateA: Date.now(),
-                 //dateA: Date.now(ts.now()), // date synchronisée avec le serveur
-                 dateA: ServerDate.now(), // date synchronisée avec le serveur
+                 // dateA: Date.now(ts.now()), // date synchronisée avec le serveur (V1 timesync.js)
+                 // dateA: ServerDate.now(), // date synchronisée avec le serveur (V2 ServerDate.js)
+                 dateA: dateA,
                  command: 'deathMan',
                  aSpeed: 0,
                  lSpeed: 0,
@@ -1033,9 +1038,10 @@ if (type == "robot-appelé") {
              }
 
         if (onMove == true || lastMoveTimeStamp != 0) {
-            // var now = Date.now();
-            // var now = Date.now(ts.now()); // date synchronisée avec le serveur
-            var now = ServerDate.now(); // date synchronisée avec le serveur
+            var now = Date.now();
+            // if (settings.isBenchmark() == true )  now = Date.now(ts.now()); // date synchronisée avec le serveur (V1 timesync.js)
+            if (settings.isBenchmark() == true ) now = ServerDate.now(); // date synchronisée avec le serveur (V2 ServerDate.js)
+            
             var test = now - lastMoveTimeStamp;
             if (test >= 1000 ) {
                robubox.sendDrive(data); // Envoi de la commande a la Robubox
@@ -1056,12 +1062,14 @@ socket.on("piloteOrder", function(data) {
     
     if (type == "robot-appelé") {
         
-
-
         if (data.command == "onDrive") {
             // Flags homme mort
             onMove = true;
             lastMoveTimeStamp = Date.now(); // on met a jour le timestamp du dernier ordre de mouvement...
+            // if (settings.isBenchmark() == true )  lastMoveTimeStamp = Date.now(ts.now()); // date synchro serveur (V1 timesync.js)
+            if (settings.isBenchmark() == true ) lastMoveTimeStamp = ServerDate.now(); // date synchroserveur (V2 ServerDate.js)
+
+
             // Envoi commande Robubox
             // robubox.sendDrive(data.enable, data.aSpeed, data.lSpeed);
             robubox.sendDrive(data);
@@ -1104,9 +1112,4 @@ socket.on('changeNavSystem', function(data) {
 
 video2.addEventListener("playing", function () {
     console.log ("RemoteStream dimensions: " + video2.videoWidth + "x" + video2.videoHeight)
-	/*
-    setTimeout(function () {
-        console.log("Stream dimensions: " + video.videoWidth + "x" + video.videoHeight);
-    }, 500);
-    /**/
 });

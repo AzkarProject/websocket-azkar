@@ -5,16 +5,16 @@ $(document).ready(function() {
 
     // Titi: offsets du point 0,0 de localisation de la carte
     // -- Récupérés manuellement avec GIMP sur copie d'écran tailel réelle de la carte
-    //var offsetWidth = 1308; // Version carte I3S
-    //var offsetHeight = 861; // Version carte I3S
-    var offsetWidth = 594; // Version carte Robosoft
-    var offsetHeight = 470; // Version carte Robosoft
+    // var offsetWidth = 1308; // Version carte I3S
+    // var offsetHeight = 861; // Version carte I3S
+    //var offsetWidth = 594; // Version carte Robosoft
+    //var offsetHeight = 470; // Version carte Robosoft
 
     
     // Titi: Image BackGround aux dimensions du Canvas
     var backGroundMap = new Image();
-    // backGroundMap.src = '/images/mapOriginale.png'; // Version carte I3S
-    backGroundMap.src = '/images/mapRobosoft.png'; // Version carte I3S
+    backGroundMap.src = '/images/mapOriginale.png'; // Version carte I3S
+    // backGroundMap.src = '/images/mapRobosoft.png'; // Version carte Robosoft
 
     // Titi:  délai de rafraichissement carto en ms
     var refreshDelay = 100; // 100ms (600ms ca saccade un peu) 
@@ -35,6 +35,10 @@ $(document).ready(function() {
     if (fakeRobubox == true) {  
         dataMap = getFakeDataMap();
         robotInfo = getFakeRobotInfo();
+        console.log ("-----fakeRobubox == true-----");
+        console.log (dataMap);
+        console.log (robotInfo);
+        console.log ("-----------------------------");
     }
 
     // Titi: Rebond proxy en https(Client Robot) > Http(Robubox)
@@ -130,7 +134,7 @@ $(document).ready(function() {
 
     function init(callback, typeUser) {
 
-        // console.log('@ init(callback)');
+        console.log('@ init(callback)');
         
         if (fakeRobubox == true) {
             
@@ -221,14 +225,15 @@ $(document).ready(function() {
 	            // Titi:
 	            // si échange Robot/Pilote de données carto activé
 	            if ( isOnePilot == true) commandes.sendToPilote("robot_localization", robotInfo);
-
+                /*
 	            context.clearRect(0, 0, canvasMap.width, canvasMap.height);
 	            
 	            // Add titi:
 	            // context.drawImage(backGroundMap, 0,0); // Image taille non resizée 
 	            context.drawImage(backGroundMap, 0,0, mapSize.width, mapSize.height); // Image taille resizée avec ratio
-	            
 	            drawRobot();
+                /**/
+                reDraw();
 
 	        }, refreshDelay); // 600
     	
@@ -238,9 +243,12 @@ $(document).ready(function() {
     			if (dataMap == null) socket.emit("pilotGetNav",{message:"getNavInfos"});
 
     			if (dataMap != null) {
-	    			context.clearRect(0, 0, canvasMap.width, canvasMap.height);
+	    			/*
+                    context.clearRect(0, 0, canvasMap.width, canvasMap.height);
 	    			context.drawImage(backGroundMap, 0,0, mapSize.width, mapSize.height); // Image taille resizée avec ratio
 	    			drawRobot();
+                    /**/
+                    reDraw();
 	    		}
     			/**/
     	}
@@ -249,6 +257,20 @@ $(document).ready(function() {
 
 
     }
+
+    
+    function reDraw() {
+        
+        //context.clearRect(-1000, -1000, 1171, 2384);
+        context.clearRect(-10000, -10000, 100000, 1000000);
+
+        //context.clearRect(0, 0, canvasMap.width, canvasMap.height);
+        context.drawImage(backGroundMap, 0,0, mapSize.width, mapSize.height); // Image taille resizée avec ratio
+        drawRobot();
+    }
+
+
+
 
     function drawRobot() {
         
@@ -284,6 +306,14 @@ $(document).ready(function() {
         // var newOffset = resizeOffset (offsetWidth,offsetHeight,dataMap.Width, dataMap.Height, mapSize.width,mapSize.height);
         context.translate(newOffset.width,newOffset.height);
         
+        // ADD Zoom carto (le 29/01/16)
+        // Valeur absolue du point 0.0 ??? 
+        // Mémo: function drawArrow(ctx, fromx, fromy, tox, toy, arrowWidth, color)
+        //drawArrow(context, 0, 0, 0, -50, 1, "green"); // axe Y
+        //drawArrow(context, 0, 0, 50, 0, 1, "red"); // axe X
+
+
+
         /*// Titi: Conversion de la position du robot avec la fonction Robosoft:
         var geoloc = worldToMap(robotInfo.Pose.Position, dataMap);
         geoloc.Z = -robotInfo.Pose.Orientation.Z;
@@ -297,22 +327,15 @@ $(document).ready(function() {
         if (Math.round(Math.abs(robotInfo.Pose.Position.Y)) === 0) var ry = 0;
         else if (robotInfo.Pose.Position.Y > 0) ry = -robotInfo.Pose.Position.Y /0.02  ; // BUG
         else ry = robotInfo.Pose.Position.Y / 0.02; // BUG Idem
-        //else  ry = -robotInfo.Pose.Position.Y /0.02  ; // Fix Titi
-
-        // BUG au passage de l'équateur...  
-        if (Math.round(Math.abs(robotInfo.Pose.Position.X)) === 0) var rx = 0;
-        else if (robotInfo.Pose.Position.X < 0) rx = -robotInfo.Pose.Position.X / 0.02; // BUG
-        else rx = robotInfo.Pose.Position.X /0.02; // BUG Idem
-        //else rx = -robotInfo.Pose.Position.X / 0.02; // Fix Titi
+        //else  ry = -robotInfo.Pose.Position.Y /0.02  ; // Test Fix Titi 
         /**/
-
-        // Fix Titi:
+        // Fix Titi (BUG passage de l'équateur):
         var ry = -robotInfo.Pose.Position.Y /0.02
         var rx = -robotInfo.Pose.Position.X / 0.02
         var qz = robotInfo.Pose.Orientation.Z;
 
-        //console.log("X --> ", rx);
-        //console.log("Y --> ", ry);
+        // console.log("X --> ", rx);
+        // console.log("Y --> ", ry);
         
         // Titi: 
         // Inversion des axes d'orientation (Carte en horizontal)
@@ -322,18 +345,19 @@ $(document).ready(function() {
         rx = rx*drawRatio;
         ry = ry*drawRatio;
 
-
-
+        // Valeur absolue du point 0.0 ???
+        // Désactivation le 29/01/16 pour tests ZOOM CARTO - A réactiver.
         drawArrow(context, 0, 0, 0, -50, 1, "green"); // axe Y
         drawArrow(context, 0, 0, 50, 0, 1, "red"); // axe X
+
         // circleWithDirection(ry, rx, 0, "blue", 3, 2); // Michael
-        
         // Titi: Ajout du paramètre QZ pour l'orientation du robot et inversion des axes X,Y...
-        if (fakeRobubox == true) circleWithDirection(0, 0, qz, "blue", 3, 2);
-        //else circleWithDirection(rx, -ry, qz, "blue", 3, 2);// OK sur I3S/: Inversion XY chez Robosoft...
-        // else circleWithDirection(rx, ry, qz, "blue", 3, 2);// OK sur I3S
-        // else circleWithDirection(geoloc.X, geoloc.Y, geoloc.Z, "blue", 3, 2);// OK sur I3S/: Inversion XY chez Robosoft...
-        else circleWithDirection(-rx, ry, qz, "blue", 3, 2);// OK sur I3S/: Inversion XY chez Robosoft...
+        // if (fakeRobubox == true) circleWithDirection(145, -10, qz, "blue", 3, 2);
+        // if (fakeRobubox == true) circleWithDirection(-rx, ry, qz, "blue", 3, 2);
+        // circleWithDirection(rx, -ry, qz, "blue", 3, 2);// OK sur I3S/: Inversion XY chez Robosoft...
+        // circleWithDirection(rx, ry, qz, "blue", 3, 2);// OK sur I3S
+        // circleWithDirection(geoloc.X, geoloc.Y, geoloc.Z, "blue", 3, 2);// OK sur I3S/: Inversion XY chez Robosoft...
+        circleWithDirection(-rx, ry, qz, "blue", 1, 1); // OK sur I3S/: Inversion XY chez Robosoft...
 
         // Titi: RAZ du context pour éviter la surimpression d'image décalée... 
         context.restore();
@@ -353,8 +377,8 @@ $(document).ready(function() {
         context.lineWidth = 2;
         context.strokeStyle = "black";
         context.stroke();
-        x2 = x + Math.cos(theta) * 15;
-        y2 = y + Math.sin(theta) * 15;
+        x2 = x + Math.cos(theta) * 8;
+        y2 = y + Math.sin(theta) * 8;
         context.closePath();
         context.beginPath();
         context.moveTo(x, y);
@@ -401,6 +425,117 @@ $(document).ready(function() {
         //draws the paths created above
         ctx.stroke();
         ctx.restore();
+    }
+
+
+
+    // Titi: Intégration ZOOM et translations à la souris
+    // Adapté de http://phrogz.net/tmp/canvas_zoom_to_cursor.html
+      
+    trackTransforms(context);  
+       
+    var lastX=canvasMap.width/2, lastY=canvasMap.height/2;
+    var dragStart,dragged;
+    
+    canvasMap.addEventListener('mousedown',function(evt){
+        document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none';
+        lastX = evt.offsetX || (evt.pageX - canvasMap.offsetLeft);
+        lastY = evt.offsetY || (evt.pageY - canvasMap.offsetTop);
+        dragStart = context.transformedPoint(lastX,lastY);
+        dragged = false;
+    },false);
+        
+    canvasMap.addEventListener('mousemove',function(evt){
+        lastX = evt.offsetX || (evt.pageX - canvasMap.offsetLeft);
+        lastY = evt.offsetY || (evt.pageY - canvasMap.offsetTop);
+        dragged = true;
+        if (dragStart){
+            var pt = context.transformedPoint(lastX,lastY);
+            context.translate(pt.x-dragStart.x,pt.y-dragStart.y);
+            reDraw();
+        }
+    },false);
+    
+    canvasMap.addEventListener('mouseup',function(evt){
+        dragStart = null;
+        if (!dragged) zoom(evt.shiftKey ? -1 : 1 );
+    },false);
+
+    var scaleFactor = 1.1;
+        
+    var zoom = function(clicks){
+        var pt = context.transformedPoint(lastX,lastY);
+        context.translate(pt.x,pt.y);
+        var factor = Math.pow(scaleFactor,clicks);
+        context.scale(factor,factor);
+        context.translate(-pt.x,-pt.y);
+        reDraw();
+    }
+
+    var handleScroll = function(evt){
+        var delta = evt.wheelDelta ? evt.wheelDelta/40 : evt.detail ? -evt.detail : 0;
+        if (delta) zoom(delta);
+        return evt.preventDefault() && false;
+    };
+    canvasMap.addEventListener('DOMMouseScroll',handleScroll,false);
+    canvasMap.addEventListener('mousewheel',handleScroll,false);
+
+    // Adds ctx.getTransform() - returns an SVGMatrix
+    // Adds ctx.transformedPoint(x,y) - returns an SVGPoint
+    function trackTransforms(ctx){
+        var svg = document.createElementNS("http://www.w3.org/2000/svg",'svg');
+        var xform = svg.createSVGMatrix();
+        ctx.getTransform = function(){ return xform; };
+        
+        var savedTransforms = [];
+        var save = context.save;
+        ctx.save = function(){
+            savedTransforms.push(xform.translate(0,0));
+            return save.call(context);
+        };
+        var restore = context.restore;
+        context.restore = function(){
+            xform = savedTransforms.pop();
+            return restore.call(context);
+        };
+
+        var scale = context.scale;
+        context.scale = function(sx,sy){
+            xform = xform.scaleNonUniform(sx,sy);
+            return scale.call(context,sx,sy);
+        };
+        var rotate = context.rotate;
+        context.rotate = function(radians){
+            xform = xform.rotate(radians*180/Math.PI);
+            return rotate.call(context,radians);
+        };
+        var translate = context.translate;
+        context.translate = function(dx,dy){
+            xform = xform.translate(dx,dy);
+            return translate.call(context,dx,dy);
+        };
+        var transform = context.transform;
+        ctx.transform = function(a,b,c,d,e,f){
+            var m2 = svg.createSVGMatrix();
+            m2.a=a; m2.b=b; m2.c=c; m2.d=d; m2.e=e; m2.f=f;
+            xform = xform.multiply(m2);
+            return transform.call(context,a,b,c,d,e,f);
+        };
+        var setTransform = context.setTransform;
+        ctx.setTransform = function(a,b,c,d,e,f){
+            xform.a = a;
+            xform.b = b;
+            xform.c = c;
+            xform.d = d;
+            xform.e = e;
+            xform.f = f;
+            return setTransform.call(context,a,b,c,d,e,f);
+        };
+        var pt  = svg.createSVGPoint();
+        ctx.transformedPoint = function(x,y){
+            pt.x=x; pt.y=y;
+            return pt.matrixTransform(xform.inverse());
+        }
     }
 
 

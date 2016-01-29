@@ -37,8 +37,5 @@ Livrable base 1toN:
         - [x] Tchat
         - [ ] Bloc Uploaded Files
 
-- [ ] Tests Fonctionnels
-
-
 
 

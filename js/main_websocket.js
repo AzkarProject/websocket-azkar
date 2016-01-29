@@ -88,15 +88,20 @@ var myPeerID;
 
 
 // Ping serveur:
-setInterval(function() {
-  startTime = Date.now();
-  socket.emit('ping');
-}, 2000);
 
-socket.on('pong', function() {
-  latency = Date.now() - startTime;
-  inserePings(latency)
-});
+if (settings.isBenchmark() == true ) {
+
+  setInterval(function() {
+    startTime = Date.now();
+    socket.emit('ping');
+  }, 2000);
+
+  socket.on('pong', function() {
+    latency = Date.now() - startTime;
+    inserePings(latency)
+  });
+
+}
 
 
 
@@ -343,12 +348,14 @@ function insereMessage3(objUser, message) {
     if ( $('#zone_chat_1toN_visitor') )  $('#zone_chat_1toN_visitor').prepend(text);
 }
 
-// Affiche les PINGS
-function inserePings(ping) {
-    
-   var text = typeClient+";"+ping+'\n';
-    
-    $('#zone_chat_websocket').prepend(text);
-    if ( $('#zone_chat_1toN') )  $('#zone_chat_1toN').prepend(text);
-    if ( $('#zone_chat_1toN_visitor') )  $('#zone_chat_1toN_visitor').prepend(text);
+// Affiche les PINGS (mode Benchmarks)
+if (settings.isBenchmark() == true ) {
+  function inserePings(ping) {
+      
+     var text = typeClient+";"+ping+'\n';
+      
+      $('#zone_chat_websocket').prepend(text);
+      if ( $('#zone_chat_1toN') )  $('#zone_chat_1toN').prepend(text);
+      if ( $('#zone_chat_1toN_visitor') )  $('#zone_chat_1toN_visitor').prepend(text);
+  }
 }
