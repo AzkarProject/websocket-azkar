@@ -1,120 +1,41 @@
 
-# 1to1 V 0.7.4.2
+# 1to1-refacto (1to1 Refactorisé > 1toN)
 ------------------------------------------------------------
 
 ### TODO's
 
-[ ] STEP 1 >> 1to1
-- [x] LocalStream
-- [x] Pré-Signalig (Select Devices)
-- [x] Signaling Websocket
-- [x] RemoteStream
-- [x] Paths Pilotes/Robots
-- [X] Websocket
-- [X] RTCdataChannel
-- [x] Gest° Déco/Reco           
-- [ ] Intégra° Commandes & Carto (Michael)
-    - [ ] Switch WebSocket/WebRTC
-    - [ ] >> Commandes Drive
-        - [!] GamePad
-        - [X] Sécurité Homme/mort coté serveur
-        - [X] Inversion Axes
-    - [ ] Cartographie
-        - [x] Chargement & mise à l'échelle 
-        - [!] Affichage Pos Robot en Tps Réel
-        - [ ] Affichage télémétrie en tps réel (optionnel)
-    - [ ] Navigation 
-        - [ ] Go > liste Points d'intérêts (Goto)
-        - [ ] Go > Clic Cartographie (Clic and Go)
-    - [ ] Commandes Steps
-        - [ ] Switch Ecran/Clavier
-- [ ] IHMs (Accueil/Pilote/Robot)
-    - [x] IHM Accueil
-    - [ ] IHM Pilote
-        - [x] CSS MookUps 
-        - [x] Contrôle d'accès
-        - [x] Bloc Robot Devices
-        - [x] Bloc Pilot Devices
-        - [x] Bloc robot View
-        - [ ] Bloc robot controls 
-        - [ ] Bloc robot informations
-            - [ ] Charge Batterie
-        - [x] Bloc tchat websocket
-        - [X] Bloc logs webRTC
-        - [X] Bloc Settings 
-    - [ ] IHM Robot
-        - [X] CSS Mookups
-        - [x] Contrôle d'accès
-        - [X] Bloc Logs WebSocket/WebRTC
-        - [ ] Bloc Settings > Activer Gest° Volume
-- [ ] Factorisation Main.js
-- [ ] Tests fonctionnels
+Livrable base 1toN:
 
-- [ ] Récuperation des données
-    - [x] proxy pour eviter le cross domaine origine
-        - [x] GET
-        - [x] POST
-    - [ ] informations de la cartographie
-        - [x] carte en format image
-        - [x] recupération des données de la carte (long , larg , resolution , offsetX , offsetY)
-        - [ ] traitement des données de la carte
-        - [ ] récupération de la position du robot sur la carte
-        - [ ] affichage de la position du robot 
-    - [x] information de la baterrie
-        - [x] récupération des informations via proxy 
-        - [x] traitement des informations
-        - [x] Affichage dans IHM pilote 
-
-[ ] STEP 2 >>> Livrable base 1toN:
-- [x] Gestion des connectés
-	- [X] Transformer les Users en "objet"
-	- [x] Passer liste Users coté client
-- [ ] Reviews Projets Miage + multiStream Plan B
-- [ ] Refactorisa°
-    - [ ] Main.js
-    - [ ] Pilote.js
-    - [ ] Robot.js
-    - [ ] Visiteur.js
-- [ ] (option 1 Full Mesh) 1toN Bas niveau
-    - [ ] Signaling & Peers Pilote > Visiteurs
+- [ ] 1toN Bas niveau
+    - [x] 1to1 Pilote<>Robot
+    - [x] 1toN Pilote<>Visiteurs(S)
+    - [ ] 1toN 1-Robot > 1-Pilote > N-Visiteurs(S) - (option1 - BroadCast)
+        - [ ] Fix Bug Stream Audio
+    - [x] 1toN 1-Robot > N-Visiteurs(S) - (option2 - full Mesh)
     - [ ] Transfert fichiers Pilote > Visiteurs
-    - [ ] (option 1) Inclusion Stream Robot > Pilote > Visiteur
-    - [ ] (option 2) Signaling & Peers Robot > Visiteurs
-- [ ] (option 2 Lib) 1toN lib RTCMulticonnection.js
-    - [ ] Refactorisa° >>> All .js
+    - [X] Implémentation gestion des Visiteurs (droits, etc...)
+
+
 - [ ] IHMs (Pilote/Robot/Visiteur)
-    - [ ] Contrôle d'accès Pilote + Robot
-    - [ ] IHM Accueil
     - [ ] IHM Pilote 
-        - [ ] CSS Mookups
+        - [X] CSS
         - [x] bloc Cam Pilote
-        - [ ] bloc Cam Visiteurs
+        - [x] bloc Cam Visiteurs
         - [x] bloc Tchat
-        - [ ] bloc Manage Visiteurs
+        - [x] bloc Manage Visiteurs
+        - [x] bloc cartographie
         - [ ] bloc Manage Files
     - [ ] IHM Robot 
         - [ ] CSS
         - [x] bloc pilot camera
-        - [ ] bloc Liste visiteurs
+        - [x] bloc cartographie
     - [ ] IHM Visiteur 
-        - [ ] CSS
-        - [ ] Cam Pilote
-        - [ ] Cam Visiteur
-        - [ ] Cam Robot
-        - [ ] Tchat
+        - [x] CSS
+        - [x] Cam Pilote
+        - [x] Cam Visiteur
+        - [x] Cam Robot
+        - [x] Tchat
         - [ ] Bloc Uploaded Files
-- [ ] Tests Fonctionnels
-
-[ ] STEP 3 >>> Livrable base NtoN
-- [ ] Websocket gestion des rooms
-- [ ] Intégration full-mesh (bas niveau ou librairie ??)
-
-[ ] STEP 4 >>> Adapta° Benchmarking (1to1 - 1toN - NtoN)
-- [ ] Implémentations outils de test
-- [ ] Constraints paramétrables
-- [ ] Intégration webComponents caméra
-- [ ] Interception ICE candidate actif
-- [ ] Forcer le choix Host/Stun/Turn
 
 
 

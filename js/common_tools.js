@@ -25,7 +25,7 @@ exports.sourceDevice = function sourcedevice (id,kind,label,facing){
 }
 
 
-// Objet client ( Robot, Pilote, Visiteur, Patient, ect... )
+/*// Objet client ( Robot, Pilote, Visiteur, Patient, ect... )
 exports.client = function client (id,pseudo,placeliste,typeClient,connectionDate,disConnectionDate){
   this.id = id;
   this.pseudo = pseudo;
@@ -34,8 +34,20 @@ exports.client = function client (id,pseudo,placeliste,typeClient,connectionDate
   this.connectionDate = connectionDate;
   this.disConnectionDate = disConnectionDate;
 }
+/**/
 
- 
+// Objet client ( Robot, Pilote, Visiteur, Patient, ect... )
+exports.client = function client (id,pseudo,placeliste,typeClient,connectionDate){
+  this.id = id;
+  this.pseudo = pseudo;
+  this.placeliste = placeliste;
+  this.typeClient = typeClient;
+  this.connectionDate = connectionDate;
+  this.disConnectionDate = null;
+  this.peerCnxCollection = null;
+}
+
+
 // ---------------------------------
 // Fonctions utiles (génériques)
 // ---------------------------------
@@ -60,23 +72,23 @@ exports.client = function client (id,pseudo,placeliste,typeClient,connectionDate
   // Fonctions temporelles
   // ---------------------------
   
-  // >>> Fct Spécifiques aAZKAR
-  // Retourne une date now préformatée formatée [E-12:30:00:00:00]
+  // Retourne un timestamp formaté [E-123456789123]
   // Paramètre: flag pour la première lettre...
   exports.dateER = function (flag){
-    /*
+    return '['+flag+'-'+ Date.now() +']';
+    
+    }
+
+  // Retourne une date préformatée [E-12:30:00:00:00]
+  // Paramètre: flag pour la première lettre...
+  exports.humanDateER = function (flag){
     var theDate = new Date();
-    //return '['+flag+'-'+theDate+']';
     var h = theDate.getHours();
     var m = theDate.getMinutes();
     var s = theDate.getSeconds();
     var ms = theDate.getMilliseconds();
     return '['+flag+'-'+h+":"+m+":"+s+":"+ms+']';
-    /**/
-    //var theDate = Date.now();
-    return '['+flag+'-'+ Date.now() +']';
-    
-    }
+    }   
 
 
   // Retourne un crhono brut
@@ -184,12 +196,13 @@ exports.client = function client (id,pseudo,placeliste,typeClient,connectionDate
   // - value > Valeur à rechercher
   // - typeReturn > boolean ou count
   exports.searchInObjects = function (hashTable,key,value,typeReturn){
+    console.log("@ searchInObjects");
     var returnValue = false;
     var nbr = 0;
     //console.log(">>>>>>>>>> " + hashTable +" / " + key + " / " + value + " / " + typeReturn );
     for (i in hashTable) {
-        //console.log(">>>>>>>>>> " + i );
-        //console.log(">>>>>>>>>> " + hashTable[i][key]);        
+        // console.log(">>>>>>>>>> " + i );
+        // console.log(">>>>>>>>>> " + hashTable[i][key]);        
         if (hashTable[i][key] == value) {
             returnValue = true;
             if (typeReturn == "boolean" ) {
@@ -232,8 +245,21 @@ exports.toObject = function  (arr) {
   return rv;
 }
 
+// ----------------- Objets
 
 
+// Copie profonde d'un objet
+exports.deepClone = function  (obj) {
+    console.log("tools.deepClone(obj)")
+    try{
+        var copy = JSON.parse(JSON.stringify(obj));
+    } catch(ex){
+        alert("Vous utilisez un vieux navigateur bien pourri, qui n'est pas pris en charge par ce site");
+    }
+    return copy;
+}
+
+ 
  // Fonctions de débuggage
  // ---------------------------
 
@@ -272,97 +298,95 @@ exports.toObject = function  (arr) {
    
     this.dumpLayer(obj);
     this.showResult();
-  }
-
-
-    // variante AlertObjectDump mais en console.log avec un timestamp 
-   exports.traceObjectDump = function  (obj, name) {
-      this.result = "[ " + name + " ]\n";
-      this.indent = 0;
-      this.dumpLayer = function(obj) {
-        this.indent += 2;
-        for (var i in obj) {
-          if(typeof(obj[i]) == "object") {
-            // alert ('typeof(obj[i]) == "object"'));
-            this.result += "\n" +
-              "              ".substring(0,this.indent) + i +
-              ": " + "\n";
-            this.dumpLayer(obj[i]);
-          
-          } else {
-            this.result +=
-              "              ".substring(0,this.indent) + i +
-              ": " + obj[i] + "\n";
-          }
-        }
-        this.indent -= 2;
-      }
-      this.dumpLayer(obj);
-      console.log((performance.now() / 1000).toFixed(3) + ": " + this.result);
-      // this.showResult();
-      // return this.result;
-    }
-
-    // 2eme variante AlertObjectDump mais retourne un string
-    exports.stringObjectDump = function  (obj, name) {
-      this.result = "[ " + name + " ]\n";
-      this.indent = 0;
-      
-      this.dumpLayer = function(obj) {
-        this.indent += 2;
-        
-        for (var i in obj) {
-          if(typeof(obj[i]) == "object") {
-            // alert ('typeof(obj[i]) == "object"'));
-            this.result += "\n" +
-              "              ".substring(0,this.indent) + i +
-              ": " + "\n";
-            this.dumpLayer(obj[i]);
-          
-          } else {
-            this.result +=
-              "              ".substring(0,this.indent) + i +
-              ": " + obj[i] + "\n";
-          }
-        }
-        this.indent -= 2;
-      }
-      
-      this.dumpLayer(obj);
-      return this.result;
-    
-    }
-
-
-    // Affiche les objets sous format json
-    exports.testObject = function (obj){
-      // var toto = JSON.stringify(obj, null, 4);
-      var toto = JSON.stringify(obj);
-      console.log(toto);
-      return toto;
-    }
-
-   
-    // retourne le nombre de propriétés d'un objet
-    exports.lenghtObject = function (obj){
-          var j = 0;
-          for (var i in obj) {
-              j += 1;
-            }
-          return j;
-    }
-
-    // Vérivie qu'un String est un JSON 
-    exports.isJson = function (str) {
-      try {
-          JSON.parse(str);
-      } catch (e) {
-          return false;
-      }
-      return true;
 }
 
 
+// variante AlertObjectDump mais en console.log avec un timestamp 
+exports.traceObjectDump = function  (obj, name) {
+  this.result = "[ " + name + " ]\n";
+  this.indent = 0;
+  this.dumpLayer = function(obj) {
+    this.indent += 2;
+    for (var i in obj) {
+      if(typeof(obj[i]) == "object") {
+        // alert ('typeof(obj[i]) == "object"'));
+        this.result += "\n" +
+          "              ".substring(0,this.indent) + i +
+          ": " + "\n";
+        this.dumpLayer(obj[i]);
+      
+      } else {
+        this.result +=
+          "              ".substring(0,this.indent) + i +
+          ": " + obj[i] + "\n";
+      }
+    }
+    this.indent -= 2;
+  }
+  this.dumpLayer(obj);
+  console.log((performance.now() / 1000).toFixed(3) + ": " + this.result);
+  // this.showResult();
+  // return this.result;
+}
+
+// 2eme variante AlertObjectDump mais retourne un string
+exports.stringObjectDump = function  (obj, name) {
+  this.result = "[ " + name + " ]\n";
+  this.indent = 0;
+  
+  this.dumpLayer = function(obj) {
+    this.indent += 2;
+    
+    for (var i in obj) {
+      if(typeof(obj[i]) == "object") {
+        // alert ('typeof(obj[i]) == "object"'));
+        this.result += "\n" +
+          "              ".substring(0,this.indent) + i +
+          ": " + "\n";
+        this.dumpLayer(obj[i]);
+      
+      } else {
+        this.result +=
+          "              ".substring(0,this.indent) + i +
+          ": " + obj[i] + "\n";
+      }
+    }
+    this.indent -= 2;
+  }
+  
+  this.dumpLayer(obj);
+  return this.result;
+
+}
+
+
+// Affiche les objets sous format json
+exports.testObject = function (obj){
+  // var toto = JSON.stringify(obj, null, 4);
+  var toto = JSON.stringify(obj);
+  console.log(toto);
+  return toto;
+}
+
+   
+// retourne le nombre de propriétés d'un objet
+exports.lenghtObject = function (obj){
+      var j = 0;
+      for (var i in obj) {
+          j += 1;
+        }
+      return j;
+}
+
+// Vérivie qu'un String est un JSON 
+exports.isJson = function (str) {
+  try {
+      JSON.parse(str);
+  } catch (e) {
+      return false;
+  }
+  return true;
+}
 
 
 })(typeof exports === 'undefined'? this['tools']={}: exports);

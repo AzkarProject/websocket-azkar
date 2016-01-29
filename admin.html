@@ -11,57 +11,17 @@
     <meta name='viewport' content='width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1'>
     <link rel="stylesheet" href="/css/style.css" />
     <script src='/js/lib/jquery-1.11.3.min.js'></script>
-    <link rel="import" href="/web_kom-remote/kom-remote.html">
+    
 
-
-    <title>AZKAR 1toN</title>
+    <title>AZKAR ADMIN</title>
 </head>
 
-<body class="ihmPilote">
+<body class="ihmAdmin">
     
     <strong><span id="zone_info_server">WebRTC AZKAR</span></strong>
     <hr/>
     
- <!--    <section id="serverDate" class="" style="float:left;width:100%">
-        Différenc horloge Client/Serveur: <span id="difference"></span><BR/>
-        <script src="/js/lib/ServerDate.js"></script>
-      
-       
-       <SCRIPT>
-            // Display two real time clocks, the server's and the client's, and show the
-            // difference between them in milliseconds.
-            function updateClocks()
-            {
-                var client = new Date();
 
-                //document.getElementById("server").innerHTML = String(ServerDate);
-                //document.getElementById("client").innerHTML = String(client);
-
-                document.getElementById("difference").innerHTML = (ServerDate - client)
-                    + " &plusmn; " + ServerDate.getPrecision() + " ms";
-            }
-
-            // Display the clocks and update them every second.
-            updateClocks();
-            setInterval(updateClocks, 1000);
-        
-
-            // You may then use ServerDate as you would use the Date object or one of its instances, e.g.:
-            // > ServerDate()
-            // "Mon Aug 13 2012 20:26:34 GMT-0300 (ART)"
-            // > ServerDate.now()
-            // 1344900478753
-            // > ServerDate.getMilliseconds()
-            // 22
-            // There is also a new method to get the precision of ServerDate's estimate of the server's clock (in milliseconds):
-            // > ServerDate.toLocaleString() + " ± " + ServerDate.getPrecision() + " ms"
-            // "Tue Aug 14 01:01:49 2012 ± 108 ms"
-
-        </SCRIPT>
-
-
-
-    </section> -->
     
     <section id="controlArea" class="fullSizeContainerBox">
 
@@ -403,8 +363,8 @@
 
 
     <script>
-    var type = "pilote-appelant";
-    var proto = "1toN";
+    var type = "admin";
+    var proto = "All";
     </script>
     
     
@@ -413,31 +373,33 @@
     <script src='/js/lib/adapter.js'></script>
     <script src="/js/lib/gamepad.js"></script>
     <script src="/js/lib/FileSaver.js"></script>
-<!--     <script src="/js/lib/timesync.js"></script> -->
     <!--<script src="https://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>-->
     <script src="/js/lib/autobahn.min.jgz"></script>
     
     <script src="/js/common_tools.js"></script>
+    <!--
     <script src="/js/common_settings.js"></script>    
     <script src='/js/module_commands.js'></script>
+    -->
     
 
     <script src='/js/main_websocket.js'></script>
     <script src='/js/main_settings.js'></script>
-    <script src="/js/module_timesync.js"></script>
+    
+    <!--
     <script src='/js/main_1to1.js'></script>
     <script src='/js/main_1toN_Visiteur.js'></script>
     
     <script src='/js/module_komnav_pilote.js'></script>
     <script src='/js/module_settings.js'></script>
-    <script src='/js/module_battery.js'></script>
+    <script src='/js/module_infos.js'></script>
     <script src='/js/module_managevisitors.js'></script>
-    <script src='/js/module_streamrelay.js'></script>
     <script src='/js/module_multiview.js'></script>
     
     <script src='/js/module_gamepad.js'></script>
     <script src='/js/module_navigation.js'></script>
     <script src="/js/module_logs.js"></script>
+    -->
     
     
 

@@ -2,192 +2,62 @@
 // https://developer.mozilla.org/fr/docs/Web/Guide/API/WebRTC/WebRTC_basics
 // Source github : https://github.com/louisstow/WebRTC/blob/master/media.html
 
-// Initialisation des variables, objets et paramètres du script
-// NB toutes les variables sont déclarées en global...
-function mainSettings() {
-    console.log("@mainSettings()");
-    
-    onMove = false; // Flag > Si un mouvement est en cours
-    //lastMoveTimeStamp =  Date.now(); // Variable globale pour la détection du dernier mouvement (homme mort)...
-    lastMoveTimeStamp = 0;
-    
-    // Benchmarks Settings Default
-    navCh = 'webSocket';
-    lPview = 'show';
-    lRview = 'show';
-    rPview = 'high';
-    rRView = 'show';
-    pStoR = 'open';
+//------ PHASE 1 : Pré-signaling ----------------------------------------------------------
 
-    // Objet paramètres
-    parameters = {
-        navCh: navCh,
-        lPview: lPview,
-        lRview: lRview,
-        rPview: rPview,
-        rRView: rRView,
-        pStoR: pStoR
-    };
-    
-
-    // pré-signaling -------------------------------------------------
-
-    // sélecteurs de micros et caméras
-    local_AudioSelect = document.querySelector('select#local_audioSource');
-    local_VideoSelect = document.querySelector('select#local_videoSource');
-
-    // sélecteurs de micros et caméras (robot) affiché coté pilote 
-    remote_AudioSelect = document.querySelector('select#remote_audioSource');
-    remote_VideoSelect = document.querySelector('select#remote_videoSource');
-
-    // Pour visualiser toutes les cams dispo coté Robot,
-    // on laisse par défaut l'affichage des devices.
-    local_AudioSelect.disabled = false;
-    local_VideoSelect.disabled = false;
-
-    // (pilote-Appelant) > Activation/Désativation préalable 
-    // Du formulaire de sélection des devices locaux et de demande de connexion
-    if (type == "pilote-appelant") {
-        remote_ButtonDevices.disabled = true;
-        local_ButtonDevices.disabled = true;
-        //remote_AudioSelect.disabled = true; 
-        //remote_VideoSelect.disabled = true; 
-        local_AudioSelect.disabled = true;
-        local_VideoSelect.disabled = true;
-    }
-
-    // Liste des sources cam/micro
-    listeLocalSources = {};
-    listeRemoteSources = {};
-    // flag d'origine des listes (local/remote)
-    origin = null;
-
-    // webRTC -------------------------------
-
-    // flag de connexion
-    isStarted = false;
-    // console.log("isStarted = "+ isStarted);
-
-    // shims!
-    PeerConnection = window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
-    SessionDescription = window.mozRTCSessionDescription || window.RTCSessionDescription;
-    IceCandidate = window.mozRTCIceCandidate || window.RTCIceCandidate;
-    navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || navigator.webkitGetUserMedia;
-
-
-    // Eléments videos du document html
-    video1 = document.getElementById("video");
-    video2 = document.getElementById("otherPeer");
-
-
-    // RTC DataChannel
-    // Zone d'affichage (textarea)
-    chatlog = document.getElementById("zone_chat_WebRTC");
-    // Zone de saisie (input)
-    message = document.getElementById("input_chat_WebRTC");
-
-    // options pour l'objet PeerConnection
-    server = {
-        'iceServers': [{
-            'url': 'stun:23.21.150.121'
-        }]
-    };
-    server.iceServers.push({
-        url: 'stun:stun.l.google.com:19302'
-    });
-    server.iceServers.push({
-        url: 'stun:stun.anyfirewall.com:3478'
-    });
-    server.iceServers.push({
-        url: 'stun:turn1.xirsys.com'
-    });
-    // Ajout de serveurs TURN
-    server.iceServers.push({
-        url: "turn:turn.bistri.com:80",
-        credential: "homeo",
-        username: "homeo"
-    });
-    server.iceServers.push({
-        url: 'turn:turn.anyfirewall.com:443?transport=tcp',
-        credential: 'webrtc',
-        username: 'azkarproject'
-    });
-    server.iceServers.push({
-        url: "turn:numb.viagenie.ca",
-        credential: "webrtcdemo",
-        username: "temp20fev2015@gmail.com"
-    });
-    server.iceServers.push({
-        url: "turn:turn.anyfirewall.com:443?transport=tcp",
-        credential: "webrtc",
-        username: "webrtc"
-    });
-    server.iceServers.push({
-        url: "turn:turn1.xirsys.com:443?transport=tcp",
-        credential: "b8631283-b642-4bfc-9222-352d79e2d793",
-        username: "e0f4e2b6-005f-440b-87e7-76df63421d6f"
-    });
-    // TODO: Tester les TURNS individuelements pour déterminer celui qui fonctionne le mieux
-
-
-    // TODO:
-    options = {
-        optional: [{
-                DtlsSrtpKeyAgreement: true
-            }, {
-                RtpDataChannels: true
-            } //required for Firefox
-        ]
-    }
-
-
-    // Création de l'objet PeerConnection (CAD la session de connexion WebRTC)
-    pc = new PeerConnection(server, options);
-    localStream = null;
-    remoteStream = null;
-    // var ws_remoteStream = null; // Stream transmit par websocket...
-
-    // Constraints de l'offre SDP. 
-    // TODO: Tester d'autres résolutions pour voir l'impact sur les délais de transmission
-    constraints = {
-        mandatory: {
-            OfferToReceiveAudio: true,
-            OfferToReceiveVideo: true
-        }
-    };
-
-    // définition de la variable channel
-    channel = null;
-    debugNbConnect = 0;
-
-    // Si une renégociation à déjas eu lieu
-    // >> pour éviter de réinitialiser +sieurs fois le même écouteur
-    isRenegociate = false;
-
-    // Etat des clients pour le signaling
-    piloteCnxStatus = pc.iceConnectionState;
-    robotCnxStatus = pc.iceConnectionState;
-
-
-
-    // console.log ("!!! pc.iceConnectionState >>>>>> " + pc.iceConnectionState);
-
-}
-mainSettings();
-
-//------ Phase 1 Pé-signaling ----------------------------------------------------------
-
-// rejectConnexion', message:message, url:indexUrl);
+// ---- > Ecouteurs webSocket 
+// Messages d'erreur et contrôles d'accès
 socket.on('error', errorHandler);
 socket.on('rejectConnexion', function(data) {
     alertAndRedirect(data.message, data.url)
 })
 
+// ----- Variables globales Robot/Pilote
+
+audioSource = local_AudioSelect.value;
+videoSource = local_VideoSelect.value;
+constraint = null;
+
+if (type == "pilote-appelant" && proto == "1to1") {
+    robotCamDef = robot_camdef_select.value;
+    piloteCamDef = pilot_camdef_select.value;
+}
+
+// -----------------------------
+
+// Constraints de l'offre SDP. 
+robotConstraints = {
+    mandatory: {
+        OfferToReceiveAudio: true,
+        OfferToReceiveVideo: true
+    }
+};
+
+// Constraints de l'offre SDP. 
+piloteConstraints = {
+    mandatory: {
+        OfferToReceiveAudio: true,
+        OfferToReceiveVideo: true
+    }
+};
+
+//console.log (robotConstraints);
+//console.log (piloteConstraints);
+
+
+// Lancement de la récupération des Devices disponibles
+if (typeof MediaStreamTrack === 'undefined') {
+    alert('This browser does not support MediaStreamTrack.\n\nTry Chrome.');
+} else {
+    origin = "local"; // On prévient la fonction apellée que la source sera locale
+    MediaStreamTrack.getSources(gotSources);
+}
+
+// IHM Pilote & Robot
 // Génération des listes de sélection sources (cam/micro) 
 // disponibles localement et a distance
 function gotSources(sourceInfos) {
 
-    console.log("@gotSources(sourceInfos)");
+    console.log("@ gotSources()");
     //console.log(sourceInfos);
 
     // Si sources locales (pilote)
@@ -273,18 +143,9 @@ function gotSources(sourceInfos) {
     origin = null;
 }
 
-// Lancement de la récupération des Devices disponibles
-if (typeof MediaStreamTrack === 'undefined') {
-    alert('This browser does not support MediaStreamTrack.\n\nTry Chrome.');
-} else {
-    origin = "local"; // On prévient la fonction apellée que la source sera locale
-    MediaStreamTrack.getSources(gotSources);
-}
-
-
 // IHM Pilote
-// Ouverture du premier des formulaires de selection des devices
-// Et par conséquence dévérouillage du lancement de la connexion
+// Dévérouillage formulaires selection caméras Robot
+// Animation d'invite
 function activeManageDevices() {
 
     // On active les sélecteurs de listes
@@ -296,11 +157,10 @@ function activeManageDevices() {
     document.getElementById("robotDevices").className = "insideFlex oneQuarterbox robot shadowGreen devicesInvite";
 }
 
-
 // IHM Pilote:
-// Traitement du formulaire de selection des devices du robot
-// et ouverture du formulaire de selection des devices du pilote 
-// Avec animation CSS d'invite du formulaire
+// Traitement du formulaire de selection caméras du robot
+// Dévérouillage du formulaire de selection des devices du pilote 
+// et invite lancement processus connexion 1to1 pilote/robot
 function remoteManageDevices() {
 
     console.log("@ remoteManageDevices()");
@@ -349,6 +209,13 @@ function localManageDevices() {
         var selectList = {
             selectAudio, selectVideo
         };
+        
+        if (type == "pilote-appelant" && proto == "1to1") {
+            // Récupérations sélections définition caméras
+            parameters.camDefRobot = robot_camdef_select.value;
+            parameters.camDefPilote = pilot_camdef_select.value;
+        }
+
         var appSettings = parameters;
         // socket.emit("selectedRemoteDevices", selectList); Ancienne version
         // Coté serveur >> socket.broadcast.emit('selectedRemoteDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
@@ -363,55 +230,86 @@ function localManageDevices() {
     }
 }
 
-// -- > ecouteurs webSocket de pré-signaling
+// IHM Pilote & Robot: 
+// Construction des constrain locale (affectation des devices sélectionnées)
+function getLocalConstraint() {
+	audioSource = local_AudioSelect.value;
+	videoSource = local_VideoSelect.value;
+	
+    var camDef = "HD";
+    if (type == "pilote-appelant") camDef = parameters.camDefPilote;
+    else if (type == "robot-appelé") camDef = parameters.camDefRobot;
+    var maxCamWidth = 100, maxCamHeight = 100;
+    if (camDef == 'VLD') {maxCamWidth = 100; maxCamHeight = 52} // 16/9
+    else if (camDef == 'LD') {maxCamWidth = 160; maxCamHeight = 88} // 16/9
+    else if (camDef == 'MD') {maxCamWidth = 320; maxCamHeight = 180} // 16/9 
+    else if (camDef == 'HD') {maxCamWidth = 640; maxCamHeight = 360} // 16/9
+    else if (camDef == 'FHD') {maxCamWidth = 640; maxCamHeight = 480} // 4/3..
 
-// Ecouteurs Websockets exclusifs au Pilote (appelant)
-if (type == "pilote-appelant") {
+    // alert (maxCamWidth+"*"+maxCamHeight);
 
-    // Reception de la liste des Devices du Robot V2 (version objet)
-    // coté serveur >> socket.broadcast.emit('remoteListDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
-    socket.on('remoteListDevices', function(data) {
-        console.log(">> socket.on('remoteListDevices',...");
+    var framerate = 24;
 
-        // console.log(data.listeDevices);
-        // console.log("--------------------------------------");
+    var testConstraints = { 
+            audio: { optional: [{sourceId: audioSource}] },
+            video: {
+                optional: [{sourceId: videoSource}],   
+                mandatory: { maxWidth: maxCamWidth, maxHeight: maxCamHeight }
+                // mandatory: { width: { ideal: 100 }, height: { ideal: 100 } } // BUG: Ca plante complètement sous Chrome...
+            }
+        }
+    /**/
 
-        // On renseigne  le flag d'ogigine
+
+    var sourcedConstraints = {    
+       audio: {optional: [{sourceId: audioSource}]},
+       video: {optional: [{sourceId: videoSource}]}   
+    }
+
+    //var localConstraint = sourcedConstraints;
+    var localConstraint = testConstraints;
+
+
+
+	return localConstraint;
+} 
+
+
+
+
+
+
+// ---- > Ecouteurs webSocket de pré-signaling
+
+// Pilote: Reception de la liste des Devices du Robot V2 (version objet)
+// coté serveur >> socket.broadcast.emit('remoteListDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
+socket.on('remoteListDevices', function(data) {
+    console.log(">> socket.on('remoteListDevices',...");
+    // On renseigne  le flag d'ogigine
+    if (type == "pilote-appelant") {
         origin = "remote";
-
         // On alimente les listes de micro/caméra distantes
         gotSources(data.listeDevices);
+    }
+})
 
-    })
-
-    // Reception du signal de fin pré-signaling
-    socket.on("readyForSignaling", function(data) {
-        console.log(">> socket.on('readyForSignaling',...");
-
+// Pilote: Reception du signal de fin pré-signaling
+socket.on("readyForSignaling", function(data) {
+    console.log(">> socket.on('readyForSignaling',...");
+    if (type == "pilote-appelant") {
         if (data.message == "ready") {
-            initLocalMedia();
+            // initLocalMedia(peerCnxId); 
+            initLocalMedia(peerCnx1to1);
         }
-    })
+    }
+})
 
+// Robot: Reception cam et micro selectionnés par le pilote (apellant)
+// Coté serveur >> socket.broadcast.emit('selectedRemoteDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
+socket.on('selectedRemoteDevices', function(data) {
+    console.log(">> socket.on('selectedRemoteDevices',...");
 
-    // Reception du statut de connexion du robot
-    socket.on("robotCnxStatus", function(data) {
-        robotCnxStatus = data.message;
-        // On vérifie l'état de sa propre connexion et de celle du robot
-        if (piloteCnxStatus == 'new' && robotCnxStatus == 'new') {
-            activeManageDevices(); // On acive les formulaires permettant de relancer la connexion
-        }
-    });
-}
-
-// Ecouteurs Websockets exclusifs au Robot (appelé)
-if (type == "robot-appelé") {
-
-    // Reception cam et micro selectionnés par le pilote (apellant) V2 Objet
-    // Coté serveur >> socket.broadcast.emit('selectedRemoteDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
-    socket.on('selectedRemoteDevices', function(data) {
-        console.log(">> socket.on('selectedRemoteDevices',...");
-
+    if (type == "robot-appelé") {
         // On rebalance au formulaire les caméras/micros choisies par le pilote
         document.getElementById(data.listeDevices.selectAudio).selected = "selected";
         document.getElementById(data.listeDevices.selectVideo).selected = "selected";
@@ -425,16 +323,16 @@ if (type == "robot-appelé") {
         //console.log(debugg);
         //console.log(data);
 
-        // On lance l'initlocalmedia
-        initLocalMedia();
 
-        // var infoMessage = "<strong> Micro/Camera -- Activés</strong>"
-        // document.getElementById("messageDevicesState").innerHTML = infoMessage;
 
         var infoMicro = "<strong> Micro Activé </strong>"
         var infoCam = "<strong> Caméra Activée </strong>"
         document.getElementById("messageDevicesStateMicro").innerHTML = infoMicro;
         document.getElementById("messageDevicesStateCams").innerHTML = infoCam;
+
+        // On lance l'initlocalmedia
+        initLocalMedia(peerCnx1to1);
+
 
         // On rebalance au pilote-appelant le top-départ pour 
         // qu'il lance un intilocalMedia de son coté....
@@ -443,120 +341,181 @@ if (type == "robot-appelé") {
         // Fix Bug renégociation > On vérifie que c'est une renégo et
         // si c'est le cas, on attend d'avoir l'état du statut webRTC ps iceConnexionXtate à "new"
         // pour lancer le message de fin de pré-signaling . A faire ds l'écouteur idoine...
-        socket.emit('readyForSignaling', {
+        /*socket.emit('readyForSignaling', {
             objUser: localObjUser,
             message: "ready"
         }); // Version objet
-    })
-
-    // Reception du statut de connexion du pilote
-    socket.on("pilotetCnxStatus", function(data) {
-        piloteCnxStatus = data.message;
-    });
+/**/
+    }
+})
 
 
-    // Reception d'une commande pilote
-    // On la renvoie au client robot qui exécuté sur la même machine que la Robubox.
-    // Il pourra ainsi faire un GET ou un POST de la commande à l'aide d'un proxy et éviter le Cross Origin 
-    socket.on("piloteOrder", function(data) {
-        //console.log('@onPiloteOrder >> command:' + data.command);
-        //if (data.command == "onDrive" && data.command == "onStop") sendCommandDriveInterface(data.command,data.enable, data.aSpeed, data.lSpeed);
-        /*
-        if (data.command == "onStop") {};
-        if (data.command == "onStep") {};
-        if (data.command == "onGoto") {};
-        if (data.command == "onClicAndGo") {};
-        /**/
-        sendCommandDriveInterface(data.command,data.enable, data.aSpeed, data.lSpeed);
-    });
+// ---- Ecouteurs Websockets communs au pilote et robot
 
-}
+// Reception du statut de connexion du pilote
+socket.on("piloteCnxStatus", function(data) {
+    console.log('>> socket.on("piloteCnxStatus" , '+data.message);
+    piloteCnxStatus = data.message;
+});
+/**/
 
-// Quand on reçoit une mise à jour de la liste 
-// des connectés de cette session websocket
-// C.A.D un nouvel arrivant...
+// Reception du statut de connexion du robot
+socket.on("robotCnxStatus", function(data) {
+    console.log('socket.on("robotCnxStatus" , '+data.message);
+    robotCnxStatus = data.message;
+
+    // Version 1to1
+    // Si on est le pilote, on vérifie sa propre connexion et celle du robot
+    // si tout est propre, on active le formulaire de lancement (Selection des caméras du robot à activer...)
+    if (type == "pilote-appelant") {
+        
+        // On force la mise à jour de la liste utilisateurs coté Pilote
+        updateListUsers ();
+
+        // Si le robot à une nouvelle connexion principale
+        // on lance le processus préparatoire à une reconnexion
+        if (robotCnxStatus == 'new') onDisconnect(peerCnx1to1);
+
+        // Si les 2 pairs principales sont claires de toute connexion
+        if (piloteCnxStatus == 'new' && robotCnxStatus == 'new') {
+            if (type == "pilote-appelant") activeManageDevices(); 
+        }
+    }
+    
+});
+
+// Quand on reçoit un update de la liste des clients websockets 
+// C.A.D à chaque nouveln arrivant... 
 socket.on('updateUsers', function(data) {
 
     console.log(">> socket.on('updateUsers',...");
     // On met à jour la liste locale des connectés...
-    // console.log(data);
+    oldUsers = users;
     users = data;
     //var debug = tools.stringObjectDump(users,"users");
     //console.log(debug);
 
     // si on est l'apellé  (Robot)
     // On renvoie à l'autre pair la liste de ses devices
+    // Et on met à jour le flag isOnePilot (pour ouvrir le canal d'infos de cartographie)
     if (type == "robot-appelé") {
+        // isOnePilot = tools.searchInObjects(users, "typeClient", "Pilote", "boolean");
+        isOnePilot = tools.searchInObjects(users.listUsers, "typeClient", "Pilote", "boolean");
+        
+        console.log ("isOnePilot ="+ isOnePilot);
         socket.emit('remoteListDevices', {
             objUser: localObjUser,
             listeDevices: listeLocalSources
         });
-        // On lui envoie ensuite son etat de connexion
-        robotCnxStatus = pc.iceConnectionState;
+        
+        // On envoie ensuite son etat de connexion - Version 1to1
+        if ( ! peerCnxCollection[peerCnx1to1] ) robotCnxStatus = 'new'; 
+        else robotCnxStatus = peerCnxCollection[peerCnx1to1].iceConnectionState; 
         socket.emit("robotCnxStatus", robotCnxStatus);
+        
     }
 
-    // si on est l'apellant (Pilote)
+    // si on est le pilote, 
     // ... En cas de besoin...
     if (type == "pilote-appelant") {
-        // 1 on vérifie l'état de sa propre connexion
+        // on met à jour son status de connexion
+        if ( ! peerCnxCollection[peerCnx1to1] ) piloteCnxStatus = 'new'; 
+        else piloteCnxStatus = peerCnxCollection[peerCnx1to1].iceConnectionState; 
+        socket.emit("piloteCnxStatus", piloteCnxStatus);
+        console.log (users);
+        updateListUsers(); // Appel à la fonction du module manageVisitors
     }
 })
 
+// Reception du niveau de la batterie
+socket.on("battery_level", function(data) {
+   // console.log('objet Batterie percentage ' + data.percentage);
+    refreshJaugeBattery(data.percentage) // redessiner la jauge au niveau de l'ihm pilote
+});
 
-// ---- Phase 2 Signaling --------------------------------------------------
+// ------------ Ajouts 1toN -------------------------
+
+
+// Reception d'une demande de clearance
+socket.on('requestClearance', function(data) {
+    console.log (">> socket.on('requestClearance',...");
+    //console.log (visitor);
+    // Si la connexion avec le Robot est déja initialisée
+    if (isStarted == true) { // False pour tests...
+        socket.emit('responseClearance', {
+            from: localObjUser,
+            cible: data.from,
+            message: "ready"
+        }); 
+    }
+});
+
+// ---- PHASE 2 : Signaling --------------------------------------------------
 
 // initialisation du localStream et appel connexion
-function initLocalMedia() {
+function initLocalMedia(peerCnxId) {
 
-    console.log("@ initLocalMedia()");
-    // Récupération des caméras et micros selectionnés  
-    var audioSource = local_AudioSelect.value;
-    var videoSource = local_VideoSelect.value;
+    console.log("@ initLocalMedia("+peerCnxId+")");
 
-    var constraint = {
-        audio: {
-            optional: [{
-                sourceId: audioSource
-            }]
-        },
+    peerCnxCollection[peerCnxId] =new PeerConnection(server, options);
+    console.log("new peerCnxCollection["+peerCnxId+"]"); 
+    console.log(peerCnxCollection); 
 
-        video: {
-            optional: [{
-                sourceId: videoSource
-            }]
-        }
-    }
+    // Récupération et affectation des caméras et micros selectionnés  
+    constraint = getLocalConstraint();
 
     // Initialisation du localStream et lancement connexion
     navigator.getUserMedia(constraint, function(stream) {
 
-        //console.log(parameters.lRview);
+        
+        console.log(" >>>> @  navigator.getUserMedia(constraint, function(stream)");
+        console.log(stream);    
+
+        /*// Pour éviter la perte de caméras en cas de changement de constraints
+        //// PUTAIN  DE BUG DE MERDE !!!!!!!!!!! ---- Michel, il marche pas ton code !!!!!!!
+        // J'ai encore les cam du pc pilote complètement HS !!!!!!!!!!!!!!!!
+        // WTF ...@%§!/@..
+        if (!!stream) {
+            video1.src = null;
+            stream.stop();
+        }
+        /**/
+        // alert(stream);
+
+
+        //console.log(parameters.lRview)
         localStream = stream;
+
+
+
         var showLocalVideo = true;
         if (type == "pilote-appelant") {
             if (parameters.lPview != 'show') showLocalVideo = false;
         } else if (type == "robot-appelé") {
             // alert("local view: " +parameters.lRview);
             if (parameters.lRview != 'show') showLocalVideo = false;
+        	// On prévient l'autre pair qu'il peut lui aussi ouvrir sa caméra
+            socket.emit('readyForSignaling', {
+	            objUser: localObjUser,
+	            message: "ready"
+			});
+			/**/
         }
         if (showLocalVideo == true) video1.src = URL.createObjectURL(localStream);
-        pc.addStream(localStream);
-        connect();
-
-
-
-
+        
+        peerCnxCollection[peerCnxId].addStream(localStream);
+        connect(peerCnxId);
     }, errorHandler);
 };
 
 // initialisation de la connexion
-function connect() {
+function connect(peerCnxId) {
 
     //console.log ("@ connect()");
     debugNbConnect += 1;
-    console.log("@ connect(" + debugNbConnect + ") > rôle: " + type);
+    console.log("@ connect("+peerCnxId+") n°"+debugNbConnect+"> rôle: " + type);
     isStarted = true;
+    // if (type == "pilote-appelant") updateListUsers(); // Rafraichissement de la liste des visiteurs
 
     // Ecouteurs communs apellant/apellé
     // ---------------------------------
@@ -564,235 +523,354 @@ function connect() {
     // Ecouteurs de l'API WebRTC -----------------
 
     // Ecouteur déclenché à la génération d'un candidate 
-    pc.onicecandidate = function(e) {
-        //console.log("@ pc.onicecandidate > timestamp:" + Date.now());
+    peerCnxCollection[peerCnxId].onicecandidate = function(e) {
+        //console.log("@ pc["+peerCnxId+"].onicecandidate > timestamp:" + Date.now());
         // vérifie que le candidat ne soit pas nul
         if (!e.candidate) {
             // console.log("  > !e.candidate): return ");
             return;
         }
-        // Réinitialise l'écouteur "candidate" de la connexion courante
-        // pc.onicecandidate = null; // Provoque un BUG sur Openshift ! 
-        // >>>>>> Et si on teste sans ???
-        // >>>>>> en local > OK, c'est juste plus long... 
-        // >>>>>> en ligne > OK en filaire... 
-        // conclusion: La réinitialisation n'a d'intéret 
-        // que pour réduire les délais de signaling des tests locaux
-        // -----------------------------------------
-        // Envoi du candidate généré à l'autre pair
-        socket.emit("candidate", e.candidate);
+    
+        var cible = ""; 
+        // Si on est bien dans la peerConnection principale (Pilote <> Robot)
+        if (peerCnxId == peerCnx1to1) {
+            if (type === "pilote-appelant" ) cible = getClientBy('typeClient','Robot');
+            else if ( type === "robot-appelé") cible = getClientBy('typeClient','Pilote');
+        
+        } 
+        console.log ("------------ Candidate to >>> "+cible.typeClient+"----------");
+        var data = {from: localObjUser, message: e.candidate, cible: cible, peerCnxId: peerCnxId}
+        // console.log (data);
+        socket.emit("candidate2", data);
+    
     };
 
 
     // Ecouteur déclenché a la reception d'un remoteStream
-    pc.onaddstream = function(e) {
+    peerCnxCollection[peerCnxId].onaddstream = function(e) {
+        console.log("@ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+        console.log("@ pc["+peerCnxId+"].onaddstream > timestamp:" + Date.now());
+        console.log(e);
 
-        console.log("@ pc.onaddstream > timestamp:" + Date.now());
-        remoteStream = e.stream;
-        //video2.src = URL.createObjectURL(remoteStream);
+
         var showRemoteVideo = true;
+        
+        // Version 1to1
+        remoteStream = e.stream;
+
         if (type == "pilote-appelant") {
             if (parameters.rPview == 'hide') showRemoteVideo = false;
             // showRemoteVideo = false;
+
+            // Add version 1toN
+            /*if (originStream != "Visiteur") remoteStream = e.stream;*/
+        
         } else if (type == "robot-appelé") {
             if (parameters.rRView == 'hide') showRemoteVideo = false;
         }
-        if (showRemoteVideo == true) video2.src = URL.createObjectURL(remoteStream);
+        
+        // Version 1to1
+		if (showRemoteVideo == true) video2.src = URL.createObjectURL(remoteStream);
 
     };
 
 
     // Ecouteurs de changement de statut de connexion
-    // Permet de déterminer si le pair distant s'est déconnecté.
-    pc.oniceconnectionstatechange = function(e) {
+    // Permet de déterminer si le pair distant s'est déconnecté. (Version 1to1)
+    peerCnxCollection[peerCnxId].oniceconnectionstatechange = function(e) {
 
-        //var newDate = tools.dateNowInMs();
-        var dateE = tools.dateER('E');
-        console.log("@ pc.oniceconnectionstatechange > " + dateE);
+        //var dateE = tools.dateER('E');
+        var dateE = tools.humanDateER("E");
+        console.log("@ pc["+peerCnxId+"].oniceconnectionstatechange > " + dateE);
+
+        //console.log(">>> stateConnection Event > " + peerCnxCollection[peerCnxId].iceConnectionState);
+        //$(chatlog).prepend(dateE + ' [stateConnection Event] ' + peerCnxCollection[peerCnxId].iceConnectionState + '\n');
+
+        console.log(">>> pc["+peerCnxId+"] stateConnection Event > " + peerCnxCollection[peerCnxId].iceConnectionState);
+        $(chatlog).prepend(dateE + ' pc['+peerCnxId+'] stateConnection Event: ' + peerCnxCollection[peerCnxId].iceConnectionState + '\n');
 
 
-        console.log(">>> stateConnection Event > " + pc.iceConnectionState);
-        $(chatlog).prepend(dateE + ' [stateConnection Event] ' + pc.iceConnectionState + '\n');
+        // Si la connexion est neuve, on remet le flag de renégo à sa position par défaut...
+        if ( peerCnxCollection[peerCnxId].iceConnectionState == 'new') isRenegociate = false; 
 
-        // On informe l'autre pair de son statut de connexion   
-        if (type == 'pilote-appelant') {
-            piloteCnxStatus = pc.iceConnectionState;
-            socket.emit("piloteCnxStatus", piloteCnxStatus);
-            // Si on change de status suite à une déco du robot
-            // On redéclenche l'ouverture des formulaires de connexion 
-            // a la condition que le robot soit lui aussi prêt a se reconnecter... (new...)
-            if (piloteCnxStatus == 'new' && robotCnxStatus == 'new') {
-                activeManageDevices(); // On active les formulaires permettant de relancer la connexion
+        // Si on est dans la peerConnection principale (Pilote <> Robot)
+        if (peerCnxId == peerCnx1to1) {
+
+            // On informe l'autre pair de son statut de connexion   
+            if (type == 'pilote-appelant') {
+                piloteCnxStatus = peerCnxCollection[peerCnxId].iceConnectionState;
+
+                socket.emit("piloteCnxStatus", piloteCnxStatus);
+                // Si on change de status suite à une déco du robot
+                // On redéclenche l'ouverture des formulaires de connexion 
+                // a la condition que le robot soit lui aussi prêt a se reconnecter... (new...)
+                if (piloteCnxStatus == 'new' && robotCnxStatus == 'new') {
+                    activeManageDevices(); // On active les formulaires permettant de relancer la connexion
+                }
+
+
+            } else if (type == 'robot-appelé') {
+                robotCnxStatus = peerCnxCollection[peerCnxId].iceConnectionState;
+                socket.emit("robotCnxStatus", robotCnxStatus);
+            }
+     
+            // si le pair distant (Robot ou Pilote) est déconnecté en WebRTC,
+            if (peerCnxCollection[peerCnxId].iceConnectionState == 'disconnected') {   
+                
+                // A tous les Visiteurs: Signal de perte de la connexion WebRTC principale (Pilote <> Robot)
+                socket.emit('closeMasterConnection','disconnected')
+                
+                // on lance le processus préparatoire a une reconnexion
+                onDisconnect(peerCnxId);
             }
 
-        } else if (type == 'robot-appelé') {
-            robotCnxStatus = pc.iceConnectionState;
-            socket.emit("robotCnxStatus", robotCnxStatus);
-        }
-        /**/
-
-        // On lance le processus de décoonnexion pour préparer une reconnexion
-        if (pc.iceConnectionState == 'disconnected') {
-            onDisconnect();
-        }
-
-        // Si 
-
-        // Fix Bug renégociation > Coté Robot on attend d'avoir 
-        // l'état du statut pc.iceConnectionState à "new"
-        /*// pour lancer le message de fin de pré-signaling. 
-        if ( pc.iceConnectionState == 'new' && type == "robot-appelé") {
-            alert (">> Send Msg WS readyForSignaling")
-            socket.emit('readyForSignaling', {objUser:localObjUser,message:"ready"});
-        }
-        /**/
-
-
-        // console.log(">>> isStarted = "+ isStarted);
-        /**/
-        // Statut connected: env 1 seconde de latence
-        // Statut completed: env 13 secondes de latence
-        // Statut deconnected: env 7 secondes de latence
-        // Par contre, coté websocket, on est informé immédiatement d'une décco...
-        // En utilisant l'ecouteur coté serveur. DONC : 
-        // PLAN B > Utiliser Websocket +tôt que l'écouteur webRTC
-        // Because c'est nettement plus rapide et réactif...
-
-        // TEST: A la reception d'un statut "completed"
-        // On vide les IceCandidates...
-
+        } // endif connexion principale (Pilote <> Robot)
 
     };
 
-    // Ecouteur ... // OK instancié...
-    pc.onremovestream = function(e) {
-        console.log("@ pc.onremovestream(e) > timestamp:" + Date.now());
+    // Ecouteur ... Todo...
+    peerCnxCollection[peerCnxId].onremovestream = function(e) {
+        console.log("@ pc["+peerCnxId+"].onremovestream(e) > timestamp:" + Date.now());
         console.log(e);
     }
 
-    // Ecouteurs de l'API websocket -----------------
-
-    // Réception d'un ICE Candidate
-    socket.on("candidate", function(data) {
-        console.log(">> socket.on('candidate',...");
-        // TODO : ici intercepter et filter le candidate
-        // >> ex >>> if (candidate == stun) {addIceCandidate} else {return;}
-        //console.log( ">>> candidate from ("+data.placeListe+")"+data.pseudo);    
-        // console.log(data);
-        pc.addIceCandidate(new IceCandidate(data.message)); // OK
-    });
-
-    // Réception d'une réponse à une offre
-    socket.on("answer", function(data) {
-        // console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-        console.log(">> socket.on('answer',...");
-        //console.log( ">>> answer from ("+data.placeListe+")"+data.pseudo); 
-        //console.log(data.message);
-        pc.setRemoteDescription(new SessionDescription(data.message));
-    });
-
-
-    /*// BUG Qd le client n'as pas encore connecté...
-    // On déplace vers ws_manager...
-    // Réception d'une info de deconnexion 
-    // >>> plus réactif que l'écouteur de l'API WebRTC
-    socket.on("disconnected", function(data) { 
-        console.log(">> socket.on('disconnected',...");
-        // On met à jour la liste des cliens connectés
-        var users = data;
-        var debug = tools.stringObjectDump(users,"users");
-        console.log(debug); 
-
-        // On lance la méthode de préparatoire a la renégo
-        onDisconnect();
-    });
-    /**/
-
-    // Fonctions communes apellant/apellé
-
-    function doAnswer(sessionDescription) {
-
-        // Hack > correction Bub de renégo
-        // objet MediaStream du sdp est vide si renégo
-        // Plan B >> passer par websocket +tôt que par l'API WebRTC
-        // Pour faire passer le localStram de l'apellé à l'apellant
-        // socket.emit("stream", localStream);
-        // ------------
-        // 
-        pc.setLocalDescription(sessionDescription);
-        socket.emit("answer", sessionDescription);
-    }
-
-
-    function doOffer(sessionDescription) {
-        pc.setLocalDescription(sessionDescription);
-        socket.emit("offer", sessionDescription);
-    }
-
-
-    // Si on est l'apellant
+    
+    // CreateOffer - Si on est l'apellant (Pilote)
     if (type === "pilote-appelant") {
-        //console.log("+++++++++ apellant ++++++++++++++ ");
+        
+        // Si on est dans la peerConnection principale (Pilote <> Robot)
+        if (peerCnxId == peerCnx1to1) {
 
-        // l'apellant crée un dataChannel
-        channel = pc.createDataChannel("mychannel", {});
-        // can bind events right away
-        bindEvents();
+            
+	        // Bug: l'objet RTCDataChannel de l'apellé est null 
+	        // si le createDataChannel de l'apellant est activé sous Chrome Version 46.0.2490.71 m
+	        // Bug de recession Release Chrome du 15/16 Oct(11) 2015...
+	        // Tentative de contournement: Envoi de l'objet RTCDatachannel par websocket...
 
-        // création de l'offre SDP
-        pc.createOffer(doOffer, errorHandler, constraints);
+            /*// l'apellant crée un dataChannel
+            channel = peerCnxCollection[peerCnxId].createDataChannel("mychannel", {});
+            var tStp = tools.humanDateER("date");
+            console.log ("peerCnxCollection[peerCnxId].createDataChannel("+tStp+")");
+            /**/
+            
+
+            /*function setupDC1() {
+			    try {
+			        console.log("+++++++++++++++++++++++++++++++++++++")
+			    	console.log(channel);
+			        channel = peerCnxCollection[peerCnxId].createDataChannel("1to1_PtoR", {reliable: false});
+            		var tStp = tools.humanDateER("date");
+            		console.log ("peerCnxCollection[peerCnxId].createDataChannel("+tStp+")");
+			        console.log(channel);
+			        console.log("+++++++++++++++++++++++++++++++++++++");
+
+			        //var data = {from: localObjUser, channel: channel.toJSON()};
+			        //console.log (data);
+			        var data = tools.deepClone(channel);
+			        socket.emit("channelObject", data);
+
+			    } catch (e) { console.warn("No data channel (peerCnxCollection[peerCnxId])", e); }
+			}
+
+			/**/// setupDC1();
 
 
-        // Sinon si on est l'apellé (Robot)
+					console.log("+++++++++++++++++++++++++++++++++++++")
+			    	console.log(channel);
+			        channel = peerCnxCollection[peerCnxId].createDataChannel("1to1_PtoR", {reliable: false});
+            		var tStp = tools.humanDateER("date");
+            		console.log ("peerCnxCollection[peerCnxId].createDataChannel("+tStp+")");
+			        console.log(channel);
+			        console.log("+++++++++++++++++++++++++++++++++++++");
+
+			        //var data = {from: localObjUser, channel: channel.toJSON()};
+			        //console.log (data);
+			        // -----------------------------------------
+			        // var data = tools.deepClone(channel);
+			        // socket.emit("channelObject", data);
+
+
+
+            // et on peut maintenant lancer l'écouteur d'évènement sur le datachannel
+            bindEvents();
+
+            // création et envoi de l'offre SDP
+            var cible = getClientBy('typeClient','Robot');
+            peerCnxCollection[peerCnxId].createOffer(function(sdp){
+                        peerCnxCollection[peerCnxId].setLocalDescription(sdp);
+                        console.log ("------------ offer >>> to "+cible.typeClient+"----------");
+                        var data = {from: localObjUser, message: sdp, cible: cible, peerCnxId: peerCnxId}
+                        // console.log (data.message.sdp);
+                        socket.emit("offer2", data);
+                    }
+                    , errorHandler, 
+                    constraints // Pilote
+                    // piloteConstraints
+                );
+
+        } 
+
+    // Sinon CreateAnswer si on est l'apellé (Robot)
     } else if (type === "robot-appelé") {
-        //console.log("+++++++++ appelé ++++++++++++++ ");
-        // dataChannel
-        // answerer must wait for the data channel
+        
+        // Si on est dans la peerConnection principale (Pilote <> Robot)
+        if (peerCnxId == peerCnx1to1) {
+            var tStp1 = tools.humanDateER("date");
+            console.log ("@ ondatachannel = function(e) {... "+tStp1)
 
-        //console.log("channel: "+channel);
-        // Ecouteur d'ouverture d'un data channel
-        pc.ondatachannel = function(e) {
-            channel = e.channel;
-            console.log("pc.ondatachannel(e)... ");
-            //console.log("channel: "+channel);
-            bindEvents(); //now bind the events
-        };
+            // bindEvents(); //now bind the events
+            // l'appelé doit attendre l'ouverture d'un dataChannel pour lancer son écouteur d'èvènement data...
+            // Ecouteur d'ouverture d'un data channel
+            peerCnxCollection[peerCnxId].ondatachannel = function(e) {
+                console.log("+++++++++++++++++++++++++++++++++++++")
+                var tStp2 = tools.humanDateER("date");
+            	console.log ("peerCnxCollection[peerCnxId].ondatachannel("+tStp2+")");
+            	console.log(e);
+                console.log("+++++++++++++++++++++++++++++++++++++")
+
+                channel = e.channel;
+                bindEvents(); //now bind the events
+            };
+            /**/
+        } // endif connexion principale (Pilote <> Robot)
         /**/
-
-        // L'apellé doit attendre de recevoir une offre SDP
-        // avant de générer une réponse SDP
-        // ---------------------------------
-        // Ok au premier passage
-        // BUG a la renégo > ne déclenches plus le onAddStream... 
-        // FIX: réinstancier onAddStream après reinstanciation PeerConnection
-        // BUG a la renégo > Envoie 2 answers...
-        // Cause: L'écouteur de reception "offer"est instancié 2 fois...
-        // FIX: ajout d'un flag "isRenegociate = false;" 
-        if (isRenegociate == false) {
-            socket.on("offer", function(data) {
-                //console.log("(apellé)>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-                console.log(">>> offer from (" + data.placeListe + ")" + data.pseudo);
-                //console.log (data.message);
-                pc.setRemoteDescription(new SessionDescription(data.message));
-                // Une foi l'offre reçue et celle-ci enregistrée
-                // dans un setRemoteDescription, on peu enfin générer
-                // une réponse SDP
-                pc.createAnswer(doAnswer, errorHandler, constraints);
-            });
-        }
-
     }
 }
 
+
+// Ecouteurs Signaling de l'API websocket -----------------
+
+
+// L'apellé doit attendre de recevoir une offre SDP
+// avant de générer une réponse SDP
+// ---------------------------------
+// Ok au premier passage
+// BUG a la renégo > ne déclenches plus le onAddStream... 
+// FIX: réinstancier onAddStream après reinstanciation PeerConnection
+// BUG a la renégo > Envoie 2 answers...
+// Cause: L'écouteur de reception "offer"est instancié 2 fois...
+// FIX: ajout d'un flag "isRenegociate = false;" 
+socket.on("offer", function(data) {
+    
+    if (data.cible.id == myPeerID) {
+        
+    	var tStp = tools.humanDateER("R");
+		console.log ("------------ >>> offer from "+data.from.typeClient+" "+tStp);
+       
+
+
+        if (isRenegociate == false) {            
+
+            //console.log("(apellé)>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+            //peerCnxCollection[peerCnxId].setRemoteDescription(new SessionDescription(data.message));
+            //peerCnxCollection[peerCnxId].createAnswer(doAnswer, errorHandler, constraints);           
+
+            // ------------- Version 1toN
+            var offer = new SessionDescription(data.message);
+            
+            //console.log("- Offer From: " + data.from.pseudo +"("+data.from.id+")");
+            //console.log("- Cible: " + data.cible.pseudo +"("+data.cible.id+")");
+            //console.log("- peerconnection: " + data.peerCnxId);
+            //console.log (offer);
+            peerCnxCollection[data.peerCnxId].setRemoteDescription(offer); 
+            
+            // Une foi l'offre reçue et celle-ci enregistrée dans un setRemoteDescription,
+            // on peu enfin générer une réponse SDP 
+            var cible = getClientBy('id', data.from.id);
+            var idPeerConnection = data.peerCnxId;
+
+            // création de l'offre SDP
+            peerCnxCollection[idPeerConnection].createAnswer(function(sdp){
+                    peerCnxCollection[idPeerConnection].setLocalDescription(sdp);
+                    console.log ("------------ Answer to >>> "+cible.typeClient+"----------");
+                    var data = {from: localObjUser, message: sdp, cible: cible, peerCnxId: idPeerConnection}
+                    //console.log (data);
+                    socket.emit("answer2", data);
+                }
+                , errorHandler, 
+                constraints // Robot
+                //robotConstraints
+            );
+        }
+    }
+});
+/**/
+
+
+// Réception d'une réponse à une offre
+socket.on("answer", function(data) {
+    if (data.cible.id == myPeerID) {
+        var tStp = tools.humanDateER("R");
+		console.log ("------------ >>> answer from "+data.from.typeClient+" "+tStp);
+        //console.log("- Answer From: " + data.from.pseudo +"("+data.from.id+")");
+        //console.log("- Cible: " + data.cible.pseudo +"("+data.cible.id+")");
+        //console.log("- peerconnection: " + data.peerCnxId);
+        //console.log (data.message);
+        peerCnxCollection[data.peerCnxId].setRemoteDescription(new SessionDescription(data.message));
+    }
+});
+
+// Réception d'un ICE Candidate
+socket.on("candidate", function(data) {
+    if (data.cible.id == myPeerID) {
+        console.log ("------------ >>>> Candidate from "+data.from.typeClient+"----------");
+        //console.log("- candidate From: " + data.from.pseudo +"("+data.from.id+")");
+        //console.log("- Cible: " + data.cible.pseudo +"("+data.cible.id+")");
+        //console.log("- peerconnection: " + data.peerCnxId);
+        //console.log (data.message);
+        // TODO : ici intercepter et filter le candidate
+        // console.log (data.message);
+        peerCnxCollection[data.peerCnxId].addIceCandidate(new IceCandidate(data.message)); // OK
+    }
+});
+
+// tentative contournement BUG createDataChannel sous Chrome
+socket.on("channelObject", function(data) {
+	var tStp = tools.humanDateER("R");
+	console.log ("------------ >>> channelObject ");
+	console.log (data);
+	// channel = peerCnxCollection[peerCnx1to1].createDataChannel(data, {reliable: false});
+	// channel = data;
+    // bindEvents(); //now bind the events
+});
+/**/
+
+
+
 // ----- Phase 3 Post-Signaling --------------------------------------------
 
+
+// Réception d'un ordre de déconnexion
+socket.on("closeConnectionOrder",function(data) {
+    if (data.cible.id == myPeerID) {
+        // A priori on est dans la peerConnection principale (Pilote <> Robot) >> peerCnx1to1
+        console.log ("------------ >>> closeConnectionOrder "+data.from.typeClient+"----------");
+        // on lance le processus préparatoire à une reconnexion
+        onDisconnect(peerCnx1to1);
+    }
+});
+
+
+
 // A la déconnection du pair distant:
-function onDisconnect() {
+function onDisconnect(peerCnxId) {
 
     console.log("@ onDisconnect()");
 
+
     // On vérifie le flag de connexion
     if (isStarted == false) return;
+
+
+    if (!!localStream) {
+         video1.src = null;
+         localStream.stop();
+    }
+
+    if (!!remoteStream) {
+         video2.src = null;
+         remoteStream.stop();
+    }
 
     // on retire le flux remoteStream
     video1.src = "";
@@ -806,36 +884,41 @@ function onDisconnect() {
     channel = null;
 
     // On vide et on ferme la connexion courante
-    // pc.onicecandidate = null;
-    pc.close();
-    pc = null;
+    // pc["+peerCnxId+"].onicecandidate = null;
+    //pc["+peerCnxId+"].close();
+    //pc = null;
 
-    stopAndStart();
+    peerCnxCollection[peerCnxId].close();
+    peerCnxCollection[peerCnxId] = null;
+    stopAndStart(peerCnxId);
 }
 
 // Fermeture et relance de la connexion p2p par l'apellé (Robot)
-function stopAndStart() {
+function stopAndStart(peerCnxId) {
 
-    console.log("@stopAndStart()");
+    console.log("@ stopAndStart()");
+    
+    if (type == "pilote-appelant") updateListUsers(); // Rafraichissement de la liste des visiteurs
     input_chat_WebRTC.disabled = true;
     input_chat_WebRTC.placeholder = "RTCDataChannel close";
     env_msg_WebRTC.disabled = true;
 
-    pc = new PeerConnection(server, options);
+    peerCnxCollection[peerCnxId] = new PeerConnection(server, options);
+    
+
     // console.log("------pc = new PeerConnection(server, options);-----");
 
     // On informe la machine à état que c'est une renégociation
     isRenegociate = true;
-
-    // On relance le processus
-    // initLocalMedia();
-    // connect();
 };
 
 // -------------------- Méthodes RTCDataChannel ----------------------
 
 // bind the channel events
 function bindEvents() {
+
+    // alert ("@ bindEvents()");
+    console.log("@ bindEvents()");
 
     // écouteur d'ouverture
     channel.onopen = function() {
@@ -850,54 +933,72 @@ function bindEvents() {
 
     // écouteur de reception message
     channel.onmessage = function(e) {
-        // add the message to the chat log
-        //var dateR = tools.dateER('R');
         var dateR = Date.now();
-        //console.log("@ channel.onmessage");
         // si c'est u message string
         if (tools.isJson(e.data) == false) {
             $(chatlog).prepend(dateR + ' ' + e.data + "\n");
         }
-        // sinon si c'est un objet Json
+        
+        // sinon si c'est un objet Json 
         else if (tools.isJson(e.data) == true || type == "robot-appelé"){
             var cmd = e.data;
             cmd = JSON.parse(cmd);
+            // S'il existe une propriété "command" (commande via webRTC))
             if (cmd.command) {
-                var delta = dateR-cmd.dateE;
-                //$(chatlog).prepend(cmd.dateE +' ' +dateR + ' ' + cmd.command + "\n");
-                $(chatlog).prepend('[ ' +delta+' ms ] ' + cmd.command + "\n");
-                //if (type == "robot-appelé") {
-                    if (cmd.command == "onDrive") robubox.sendDrive(cmd.enable, cmd.aSpeed, cmd.lSpeed);
-                    else if (cmd.command == "onStop") robubox.sendDrive(cmd.enable, cmd.aSpeed, cmd.lSpeed);
-                    // ...
-                //}
+                
+                // Affiche la trace de la commande dans le chatlog webRTC
+                // var delta = dateR-cmd.dateE;
+                // $(chatlog).prepend('[' +delta+' ms] ' + cmd.command + "\n");
+                
+                // Envoi de la commande à la Robubox...
+                if (cmd.command == "onDrive") {
+                    // Flags homme mort
+                    onMove = true;
+                    lastMoveTimeStamp = Date.now(); // on met a jour le timestamp du dernier ordre de mouvement...
+                    // Envoi commande  
+                    // robubox.sendDrive(cmd.enable, cmd.aSpeed, cmd.lSpeed);
+                    robubox.sendDrive(cmd);
+                }
+                
+                else if (cmd.command == "onStop") {
+                    // Flags homme mort
+                    onMove = false;
+                    lastMoveTimeStamp = 0;
+                    // Envoi commande    
+                    //robubox.sendDrive(cmd.enable, cmd.aSpeed, cmd.lSpeed);
+                    robubox.sendDrive(cmd);
+                }
+                
+                else if (cmd.command == "onStep") {
+                    robubox.sendStep(cmd.typeMove,cmd.distance,cmd.MaxSpeed) ;
+                }
             }
         }
-        /**/
     };
 }
 
-// envoi message par WebRTC
+// Robot & Pilote: envoi d'un message par WebRTC
 function sendMessage() {
     var dateE = tools.dateER('E');
     var msgToSend = dateE + ' [' + localObjUser.typeClient + '] ' + message.value;
     channel.send(msgToSend);
     message.value = "";
-    // Affiche le message dans le chatlog websocket
+    // Affiche trace du message dans le chatlog websocket local
     $(chatlog).prepend(msgToSend + "\n");
 }
 
-// envoi commande par WebRTC
+// Pilote: Envoi au robot d'une commande par WebRTC
 function sendCommand(commandToSend) {
-    //var dateE = tools.dateER('E');
-    var dateE = Date.now()
-    commandToSend.dateE = dateE;
-    //tools.traceObjectDump(commandToSend,'commandToSend');
-     $(chatlog).prepend(dateE + " "+commandToSend.command + "\n");
-    commandToSend = JSON.stringify(commandToSend);
-    //console.log('toto');
-    channel.send(commandToSend);
+    console.log ("@ sendCommand("+commandToSend.command+")");
+
+    // Affiche trace de la commande dans le chatlog webRTC local
+    //var dateE = Date.now()
+    //commandToSend.dateE = dateE;
+    // $(chatlog).prepend(commandToSend.dateA + " SEND "+commandToSend.command + "\n");
     
+    // sérialisation et envoi de la commande au robot via WebRTC
+    commandToSend = JSON.stringify(commandToSend);
+    channel.send(commandToSend);
 }
 
 
@@ -912,58 +1013,103 @@ $('#formulaire_chat_webRTC').submit(function() {
 
 // --------------------- Gestion des commandes du robot -------------------
 
-// fonction homme mort...
+// Robot: fonction homme mort...
 if (type == "robot-appelé") {
     function deathMan(){
+    
+        //console.log("@ deathMan() >> onMove:"+onMove+" "+"lastMoveTimeStamp:"+lastMoveTimeStamp);          
+
+         var dateA = Date.now();
+         // if (settings.isBenchmark() == true ) dateA = Date.now(ts.now()), // date synchronisée avec le serveur (V1 timesync.js)
+         if (settings.isBenchmark() == true ) dateA = ServerDate.now(); // date synchronisée avec le serveur (V2 ServerDate.js)
+
+         var data = {
+                 channel: "Local-Robot",
+                 source: "Homme-Mort",
+                 system: parameters.navSys,
+                 // dateA: Date.now(),
+                 // dateA: Date.now(ts.now()), // date synchronisée avec le serveur (V1 timesync.js)
+                 // dateA: ServerDate.now(), // date synchronisée avec le serveur (V2 ServerDate.js)
+                 dateA: dateA,
+                 command: 'deathMan',
+                 aSpeed: 0,
+                 lSpeed: 0,
+                 enable: false
+             }
+
         if (onMove == true || lastMoveTimeStamp != 0) {
             var now = Date.now();
+            // if (settings.isBenchmark() == true )  now = Date.now(ts.now()); // date synchronisée avec le serveur (V1 timesync.js)
+            if (settings.isBenchmark() == true ) now = ServerDate.now(); // date synchronisée avec le serveur (V2 ServerDate.js)
+            
             var test = now - lastMoveTimeStamp;
             if (test >= 1000 ) {
-               sendCommandDriveInterface('onStop',false,0,0) 
+               robubox.sendDrive(data); // Envoi de la commande a la Robubox
+               //console.log("@ >> deathMan() ---> STOP");
             }
-        
         }
-        setTimeout(deathMan,1000); /* rappel après 100 millisecondes */
+        setTimeout(deathMan,1000); /* rappel après 1000 millisecondes */
     }
     deathMan();
 }
 
 
-function sendCommandDriveInterface(command,enable,aSpeed,lSpeed) {
-        // onMove = false; // Flag > Si un mouvement est en cours
-        // lastMoveTimeStamp =  Date.now(); // on met a jour le timestamp du dernier ordre de mouvement...
-        if (command == "onDrive") {
+// Robot: Reception webSocket d'une commande pilote
+// On la renvoie au client robot qui exécuté sur la même machine que la Robubox.
+// Il pourra ainsi faire un GET ou un POST de la commande à l'aide d'un proxy et éviter le Cross Origin 
+socket.on("piloteOrder", function(data) {
+    // console.log('@onPiloteOrder >> command:' + data.command);
+    
+    if (type == "robot-appelé") {
+        
+        if (data.command == "onDrive") {
+            // Flags homme mort
             onMove = true;
             lastMoveTimeStamp = Date.now(); // on met a jour le timestamp du dernier ordre de mouvement...
-            robubox.sendDrive(enable, aSpeed, lSpeed); // Et on envoie le mouvement
-        }
-        if (command == "onStop") {
+            // if (settings.isBenchmark() == true )  lastMoveTimeStamp = Date.now(ts.now()); // date synchro serveur (V1 timesync.js)
+            if (settings.isBenchmark() == true ) lastMoveTimeStamp = ServerDate.now(); // date synchroserveur (V2 ServerDate.js)
+
+
+            // Envoi commande Robubox
+            // robubox.sendDrive(data.enable, data.aSpeed, data.lSpeed);
+            robubox.sendDrive(data);
+        } else if (data.command == "onStop") {
+            // Flags homme mort
             onMove = false;
             lastMoveTimeStamp = 0;
-            robubox.sendDrive(enable, aSpeed, lSpeed); // Et on envoie le mouvement
-        };
-        /*
-        if (command == "onStep") {};
-        if (command == "onGoto") {};
-        if (command == "onClicAndGo") {};
+            // Envoi commande Robubox
+            // robubox.sendDrive(data.enable, data.aSpeed, data.lSpeed);
+            robubox.sendDrive(data);
+        
+
+        } else if (data.command == 'onStep') {
+            robubox.sendStep(data.typeMove,data.distance,data.MaxSpeed) ;
+        }
+        
+        /*// Envoi d'une trace au log WebSocket de l'IHM robot
+        var dateB = Date.now();
+        var delta = dateB-data.dateA;
+        var msg = '[' +delta+' ms] ' +data.command;
+        insereMessage3("",msg);
         /**/
-    
-  
+        /*
+        if (data.command == "onStop") {};
+        if (data.command == "onStep") {};
+        if (data.command == "onGoto") {};
+        if (data.command == "onClicAndGo") {};
+        /**/
+        
+    }
+});
 
-}
 
+// Robot: Selection du système embarqué (Robubox ou KomNAV)
+// pour l'exécution des commandes reçues en WebRTC et webSocket
+socket.on('changeNavSystem', function(data) {
+   console.log('@changeNavSystem >> ' + data.navSystem);
+   parameters.navSys = data.navSystem;
+});
 
-
-
-// --------------------- Gestion des messages d'erreur ------------------
-
-function errorHandler(err) {
-    console.log("ON-ERROR");
-    console.error(err);
-}
-
-function alertAndRedirect(message, url) {
-    //alert (message);
-    window.alert(message)
-    window.location.href = url;
-}
+video2.addEventListener("playing", function () {
+    console.log ("RemoteStream dimensions: " + video2.videoWidth + "x" + video2.videoHeight)
+});

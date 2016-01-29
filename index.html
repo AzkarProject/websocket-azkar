@@ -20,14 +20,48 @@
     <strong><info id="zone_info_server"></info></strong>
     <hr/>
     
-    <p><a href="/pilote/"> >>> Pilote</a></p>
     <p><a href="/robot/"> >>> Robot</a></p>
-    <p><a href="/cartographie/"> >>> cartographie</a></p>
-    <!--<p><a href="/visiteur/">Vous êtes un visiteur</a></p>-->
+    <p><a href="/pilote-solo/"> >>> Pilote 1to1</a></p>
+
+    <p><a href="/pilote/"> >>> Pilote 1toN</a></p>
+    <p><a href="/visiteur/"> >>> Visiteur 1toN</a></p>
+
+
+   
     
-    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <span id="openConnection">
+        <button class="shadowBlack" id="index_RazConnexion" onclick="razConnexions()">
+            RAZ Connexions
+        </button>
+ 	</span>
+
+    <script>
+    var type = null;
+    </script>
+
+    <script src='/js/lib/jquery-1.10.1.min.js'></script>
     <script src="/js/common_settings.js"></script>
+	<script src="/js/common_tools.js"></script>
+
+	<script src="/socket.io/socket.io.js"></script>
+    
+    <!--
+    <script src='/js/main_websocket.js'></script>
+    -->
+
+
 	<script>                    
+            
+
+			// Initialisation du canal de signalisation
+			var socket = io.connect(); 
+
+			function razConnexions() {
+				socket.emit('razConnexions',""); // Ordonne au serveur de virer tous les connectés
+				alert ("connexions virées");
+			}
+
+
             // On récupère depuis nodejs le nom de la machine serveur
             // en passant par de l'AJAX plutôt que par websocket....
             hostName = "???";    
@@ -36,6 +70,8 @@
               infoServerTxt = settings.appBranch() + ' - ' + settings.appName() + " V " + settings.appVersion()+ " ("+hostName+")";
               if (hostName != "???" ) $('#zone_info_server').replaceWith(infoServerTxt);
             });
+    
     </script>	
+
 </body>
 </html>

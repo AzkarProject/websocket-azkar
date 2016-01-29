@@ -1,110 +1,153 @@
 <html>
-<head>
 
-	
+<head>
 </head>
 
-    <head>
-        <meta charset="utf-8" />
-        <meta name='keywords' content='WebRTC, HTML5, JavaScript' />
-		<meta name='description' content='WebRTC benchmarks base for AZKAR project' />
-		<!-- viewport sert a controler la mise en page sur les appareils mobiles -->
-		<meta name='viewport' content='width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1'>
-		<link rel="stylesheet" href="/css/style.css" />
-        <title>WebRTC AZKAR</title>
-    </head>
+<head>
+    <meta charset="utf-8" />
+    <meta name='keywords' content='WebRTC, HTML5, JavaScript' />
+    <meta name='description' content='WebRTC benchmarks base for AZKAR project' />
+    <!-- viewport sert a controler la mise en page sur les appareils mobiles -->
+    <meta name='viewport' content='width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1'>
+    <link rel="stylesheet" href="/css/style.css" />
+    <script src='/js/lib/jquery-1.11.3.min.js'></script>
+    <title>WebRTC AZKAR</title>
+</head>
 
-
-<body>
-
-    <strong>Base 1TON Visiteur side</strong> v 0.5.1
-    <br/><info id="zone_info_server"></info>
+<body class="ihmVisiteur">
+    
+    <strong><span id="zone_info_server">WebRTC AZKAR</span></strong>
     <hr/>
+    
+    <section id="visitArea" class="fullSizeContainerBox">
 
-		
-	<ul class="flex-container wrap">
-  
-	    <section class="robotVideos" class="largeVideos">
-		    <li class="flex-item yourvideo robot shadow-black">
-			    <strong> WebRTC remoteVideo (Robot)</strong>
-				<hr/>
-			    <!--<div id="infoIceCandidateReceived">???</div>-->
-			    <video id='otherPeer' autoplay muted controls="controls" ></video>
-	  	 	</li>
-	  	 </section>
-
-	    <section id="piloteVideo" class="smallVideo">
-		    <li class="flex-item myvideo pilote shadow-black">
-			    <strong> WebRTC localVideo (Pilote)</strong>
-				<hr/>
-			    <!--<div id="infoIceCandidateSended">???</div>-->
-			    <video id='video' autoplay muted controls="controls"></video>
-			</li>
-	    </section>
-
-	    <section id="visiteurVideo" class="smallVideo">
-		    <li class="flex-item myvideo pilote shadow-black">
-			    <strong> WebRTC localVideo (Pilote)</strong>
-				<hr/>
-			    <!--<div id="infoIceCandidateSended">???</div>-->
-			    <video id='video' autoplay muted controls="controls"></video>
-			</li>
-	    </section>
-	    
-	     
-
-	  	<section id="websocket_chat">
-			 <li class="flex-item myvideo pilote shadow-black">
-		        
-				<strong> Websocket Chat Test </strong>
-				<hr/>
-		        <form action="/" method="post" id="formulaire_chat_websoket">
-		            <input type="text" name="message" id="message" placeholder="Votre message..." size="28" autofocus />
-		            <input type="submit" id="envoi_message" value="Envoyer" />
-		        </form>
-	       	 	<hr/>
-			 	<div id="zone_chat_websocket"></div>
-
-	       	 </li>
-        </section>
-
-		
-		<section id="chat">
-		  
-			<li class="flex-item pilote shadow-black">
-				
-				<div id='textareas'>
-					<strong> WebRTC dataChannel Test </strong>
-					<hr/>
-					<button id="sendButton" disabled onclick="sendMessage()">WebRTC dataChannel Send</button>
-					<br/>
-					<textarea id="dataChannelSend" disabled placeholder="Waiting open channel..."></textarea>
-					<hr/> 
-					<!--
-					<textarea id="dataChannelReceive" disabled placeholder="Waiting WebRTC datas..."></textarea>
-					-->
-					<div id="chatlog">Waiting open channel...</div>
-				</div>
-		
-	  		</li>
-	  	
-	  	</section>
+        <div id="colGaucheUpVisitlArea" class="floatLeft oneQuarterContainerBox">
+            
+            <div id="piloteCamera" class="insideFlex oneQuarterbox pilote shadowBlack device">
+                <strong> Pilote view</strong>
+                <hr/>
+                <div class = "videosContainer">
+                    <!--<video id='otherPeer' autoplay muted controls="controls"></video>-->
+                    <!--<video id='1toN_remoteVideoPilote' class="" autoplay muted controls="controls"></video>-->
+                    <video id='1to1_remoteVideo' class="" autoplay muted controls="controls"></video>
+                </div>
+            </div>
 
 
-		<script>	  	 
-		//var type = "appelant";
-		//var otherType = "appelé";
-		var type = "visiteur";
+            <div id="visitorDevices" class="insideFlex oneQuarterbox visiteur shadowBlack devicesDisabled ">
+                <strong> Visitor view</strong>
+                <hr/>
+                <div class = "videosContainer">
+                    <!-- <video id='video' autoplay muted controls="controls"></video> -->
+                    <!--<video id='1toN_localVideoVisitor' autoplay muted controls="controls"></video>-->
+                    <video id='1to1_localVideo' autoplay muted controls="controls"></video>
+                </div>
+<!--                 <hr/>
+                <div class="select">
+                    <label for="local_audioSource">Audio: </label>
+                    <select id="local_audioSource"></select>
+                </div>
+                <div class="select">
+                    <label for="local_videoSource">Video: </label>
+                    <select id="local_videoSource"></select>
+                </div>
+                <hr/>
+                <button class="shadowBlack" id="local_ButtonDevices" onclick="onSubmitVisitordevices()">Ouvrir la connexion</button> -->
+            </div>
+            
+        </div>
+   
+    
+        <div id="colDroiteUpControlArea" class="floatRight tripleQuarterBox">
+            
+            <div id="remoteVideoAreaVisitor" class="insideFlex robot tripleQuarterBox shadowBlack floatRight">
+                <strong> Robot View</strong>
+                <hr/>
+                <div class = "videosContainer">
+                    <!--<video id='otherPeer2' class="" autoplay muted controls="controls"></video>-->
+                    <video id='1toN_remoteVideoRobot' class="" autoplay muted controls="controls"></video>
+                    
 
-		</script>
-        
-        <script src="/js/lib/jquery.js"></script>
-        <script src="/socket.io/socket.io.js"></script>
-        <script src="/js/common.js"></script>
-        <script src='/js/adapter.js'></script>
-        <script src='/js/ws_manager.js'></script>
-		<script src='/js/main.js'></script>
 
+
+                </div>
+            </div>
+        </div>
+
+
+
+
+    </section>
+
+    <section id="bloc_1toN_messages" class="fullSizeContainerBox">
+                
+
+            <div id="OneToNChat_visitor" class="insideFlex visiteur shadowBlack floatLeft doubleQuarterBox">
+                <strong> 1toN Messages & Chat</strong>
+                <hr/>
+                <form action="/" method="post" id="formulaire_chat_1toN_visitor">
+                    <input type="text4" name="message4" id="message4" placeholder="Votre message..." size="28" autofocus />
+                    <button id="envoi_message4" type="submit">Envoyer</button>
+                </form>
+                <hr class="hrForm">
+                <textarea class="input" id="zone_chat_1toN_visitor" placeholder="Once upon a time..."></textarea>
+                
+
+                <form id="text-options4">
+                    <label>Filename:
+                        <input type="text4" class="filename" id="text-filename4" placeholder="1toN_chat_visitor" />.txt</label>
+                    <button id="saveLogs_1toN_visitor" type="submit" value="Save" />Save</button>
+                </form>
+            </div>  
+
+
+            <div id="uploadedFiles" class="insideFlex visiteur shadowBlack floatLeft doubleQuarterBox"> 
+                <strong> Uploaded Files</strong>
+                <hr/>
+                TODO...   
+            </div>
+
+
+        </section>  
+
+
+    <script>
+    var type = "visiteur-appelé";
+    // var otherType = "pilote-apellant";
+    </script>
+    <!--
+    <script src='/js/lib/jquery-1.10.1.min.js'></script>
+    -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src='/js/lib/adapter.js'></script>
+    <script src="/js/lib/FileSaver.js"></script>
+    
+    <script src="/js/common_tools.js"></script>
+    <script src="/js/common_settings.js"></script>
+    <script src='/js/common_robubox.js'></script>
+
+    <script src='/js/main_websocket.js'></script>
+    <script src='/js/main_settings.js'></script>
+    <script src='/js/main_1toN_Visiteur.js'></script>
+    <script src='/js/main_1toN_Robot.js'></script>
+    
+    <script src="/js/module_logs.js"></script>
+
+    
+   
+
+    <script>                    
+            // On récupère depuis nodejs le nom de la machine serveur
+            // en passant par de l'AJAX plutôt que par websocket....
+            hostName = "???";    
+            $.get( "/getvar", function( data ) {
+              hostName = data.hostName;
+              //if (hostName != "???" ) $('#zone_info_server').replaceWith(settings.appName() + " V " + settings.appVersion()+ " ("+hostName+")");
+              infoServerTxt = settings.appBranch() + ' - ' + settings.appName() + " V " + settings.appVersion()+ " ("+hostName+")";
+              if (hostName != "???" ) $('#zone_info_server').replaceWith(infoServerTxt);
+            });
+    </script>   
 
 </body>
+
 </html>

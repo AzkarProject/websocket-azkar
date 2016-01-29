@@ -5,13 +5,15 @@
 </head>
 
     <head>
-        <meta charset="utf-8" />
-        <meta name='keywords' content='WebRTC, HTML5, JavaScript' />
-		<meta name='description' content='WebRTC benchmarks base for AZKAR project' />
-		<!-- viewport sert a controler la mise en page sur les appareils mobiles -->
-		<meta name='viewport' content='width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1'>
-		<link rel="stylesheet" href="/css/style.css" />
-        <title>WebRTC AZKAR</title>
+    <meta charset="utf-8" />
+    <meta name='keywords' content='WebRTC, HTML5, JavaScript' />
+    <meta name='description' content='WebRTC benchmarks base for AZKAR project' />
+    <!-- viewport sert a controler la mise en page sur les appareils mobiles -->
+    <meta name='viewport' content='width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1'>
+    <link rel="stylesheet" href="/css/style.css" />
+    <script src='/js/lib/jquery-1.11.3.min.js'></script>
+    <link rel="import" href="/web_kom-remote/kom-remote.html">
+	<title>WebRTC AZKAR</title>
     </head>
 
 
@@ -19,8 +21,49 @@
 
     <strong><span id="zone_info_server">WebRTC AZKAR</span></strong>
     <hr/>
-		
-		<section id="bloc_1to1_messages" class="fullSizeContainerBox">
+
+<!--     <section id="serverDate" class="" style="float:left;width:100%">
+		Différence horloge Client/Serveur: <span id="difference"></span><BR/>
+        <script src="/js/lib/ServerDate.js"></script>
+      
+       
+       <SCRIPT>
+			// Display two real time clocks, the server's and the client's, and show the
+			// difference between them in milliseconds.
+			function updateClocks()
+			{
+			    var client = new Date();
+
+			    // document.getElementById("server").innerHTML = String(ServerDate);
+			    // document.getElementById("client").innerHTML = String(client);
+
+			    document.getElementById("difference").innerHTML = (ServerDate - client)
+			        + " &plusmn; " + ServerDate.getPrecision() + " ms";
+			}
+
+			// Display the clocks and update them every second.
+			updateClocks();
+			setInterval(updateClocks, 1000);
+        
+
+			// You may then use ServerDate as you would use the Date object or one of its instances, e.g.:
+			// > ServerDate()
+			// "Mon Aug 13 2012 20:26:34 GMT-0300 (ART)"
+			// > ServerDate.now()
+			// 1344900478753
+			// > ServerDate.getMilliseconds()
+			// 22
+			// There is also a new method to get the precision of ServerDate's estimate of the server's clock (in milliseconds):
+			// > ServerDate.toLocaleString() + " ± " + ServerDate.getPrecision() + " ms"
+			// "Tue Aug 14 01:01:49 2012 ± 108 ms"
+
+        </SCRIPT>
+
+
+
+    </section> -->
+
+	<section id="bloc_1to1_messages" class="" style="float:left;width:1300px">
 				
 			<div id="websocketChat" class="insideFlex robot shadowBlack floatLeft doubleQuarterBox">  
 				
@@ -55,20 +98,30 @@
 	      		
 
 	      	</div>
-
-
-		</section>		
+	</section>		
 				
-
-
-
-		<section id="bloc_1toN" class="fullSizeContainerBox">
+	<section id="bloc_1toN" class="" style="float:left">
 			
+
+			<div  class="floatLeft doubleQuarterContainerBox">
+				<div id="remoteCanvasArea" class="insideFlex robot shadowBlack">
+		            <strong> Navigation</strong>
+		            <hr/>
+					<canvas id="myCanvas" width="500" height="140" style=""></canvas>
+	        	</div>
+        	</div>
+
+			
+
+
 			<div  class="floatLeft oneQuarterContainerBox">
 				<div id="piloteCam" class="insideFlex pilote shadowBlack">
 				    <strong> Pilot Camera</strong>
 				    <hr/>
-				    <video id='otherPeer' autoplay muted controls="controls" ></video>
+				    <div class = "videosContainer">
+				    	<!-- <video id='otherPeer' autoplay muted controls="controls" ></video> -->
+				    	<video id='1to1_remoteVideo' class="" autoplay muted controls="controls"></video>
+				    </div>
 		  	 	</div>
 			</div>
 		
@@ -77,98 +130,88 @@
 				<div id="robotCam" class="insideFlex robot shadowBlack">
 				    <strong> Robot Camera</strong>
 				    <hr/>
-				    <video id='video' autoplay muted controls="controls"></video>
-		  	 	</div>
-			</div>
-
-
-
-			<div  class="floatLeft doubleQuarterContainerBox">
-				<div id="visitorsList" class="insideFlex robot shadowBlack">
-						<strong>Visitor's List</strong>
-						<hr/>
-						BOOOOO
-		  	 	</div>
-			</div>
-
-		</section>
-
-		<section id="bloc_1to1_settings" class="fullSizeContainerBox">
-				
-
-				<div id="robotSettings" class="insideFlex robot shadowBlack floatLeft oneThirdContainerBox alignCenter">
-						
-					<!--
-					<strong><span id="Settings Devices Settings">Volume HP </span></strong>
-					 &nbsp;&nbsp;&nbsp;&nbsp;
-					
-					<meter id="meter2" value="75" min="0" max="100" low="20" high="80" optimum="100"></meter> 
-  					<output id="meter2val" for="meter2range">75</output>%
-
-					<hr/>
-
-					
-					<input min="0" max="100"   value="75" id="meter2range" oninput="effect('meter2', 'meter2range')" type="range"> 
-					
-  					
-  
-					 <script>
-					 function effect(meter, meterrange) {
-						var currVal = document.getElementById(meterrange).value;
-						document.getElementById(meter).value =  currVal;
-						document.getElementById(meter+ "val").innerHTML = currVal;
-					 }
-					 </script>
-					 -->
-					<div class="jauge">
-                   		<label for="battery_level">Battery Level:</label>
-                    	<progress id="battery_level" class="floatRight" max="100"></progress>
+				    <div class = "videosContainer">
+				    	<!-- <video id='video' autoplay muted controls="controls"></video>-->
+                		<video id='1to1_localVideo' autoplay muted controls="controls"></video>
                 	</div>
-	      		
-	      		</div>
+		  	 	</div>
+			</div>
+	</section>
 
+	<section id="bloc_1to1_commands" class="" style="float:left;width:1300px">
+		
 
-				<div id="selectionMicros" class="insideFlex robot shadowBlack floatLeft oneThirdContainerBox"> 
+		<div  class="floatLeft oneQuarterContainerBox">
+					<div id="Command_PAD" class="insideFlex robot shadowBlack">
+						<kom-remote class="kom-remote"></kom-remote>
+		  	 	</div>
+			</div>
+
+			
+			<div class="floatLeft oneQuarterContainerBox">
+									
+				<div class="jauge insideFlex robot shadowBlack">
+	           		<label for="battery_level">Battery Level:</label>
+	            	<progress id="battery_level" class="floatRight" max="100"></progress>
+	        	</div>
+	      	
+	      	</div>
+
+	      	<div class="floatLeft oneQuarterContainerBox">
+			
+				<div id="selectionMicros" class="insideFlex robot shadowBlack"> 
 				  	<span id="messageDevicesStateMicro"> Micros disponibles</span>
 					<hr/>
 					<div class="select">
 						<select id="local_audioSource"></select>
 					</div>
 				</div>	
+			</div>
 
-
-				<div id="selectionCams" class="insideFlex robot shadowBlack floatLeft oneThirdContainerBox"> 
+			<div class="floatLeft oneQuarterContainerBox">
+			
+				<div id="selectionCams" class="insideFlex robot shadowBlack"> 
 				  	<span id="messageDevicesStateCams"> Caméras disponibles</span>
 					<hr/>
 					<div class="select">
 					   	<select id="local_videoSource"></select>
 					</div>
-				</div>
-
-		</section>
-
+				</div>	
+			</div>
+	</section>
 		
-	
+
        	<script>	  	 
-		var otherType = "pilote-appelant";
 		var type = "robot-appelé";
 		</script>
 
-		<!--
-         <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-         -->
-        <script src='/js/lib/jquery-1.10.1.min.js'></script>
+
         <script src="/socket.io/socket.io.js"></script>
         <script src='/js/lib/adapter.js'></script>
 		<script src="/js/lib/FileSaver.js"></script>
+		<!-- <script src="/js/lib/timesync.js"></script> -->
+		<!--<script src="https://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>-->
+    	<script src="/js/lib/autobahn.min.jgz"></script>
         
-        <script src="/js/common_tools.js"></script>
+		<script src="/js/common_tools.js"></script>
         <script src="/js/common_settings.js"></script>
+		<script src="/js/module_timesync.js"></script>
+		<script src='/js/module_fake_robubox.js'></script>
+        <script src='/js/module_commands.js'></script>
+        
         <script src='/js/common_robubox.js'></script>
+        
 
  		<script src='/js/main_websocket.js'></script>
+ 		<script src='/js/main_settings.js'></script>
  		<script src='/js/main_1to1.js'></script>
-		
+		<script src='/js/module_komnav_robot.js'></script>
+
+		<script src='/js/main_1toN_Robot.js'></script>
+		<script src='/js/module_carto.js'></script>
+		<script src='/js/module_battery.js'></script>
+ 		
+		<script src='/js/module_managevisitors.js'></script>
 		<script src="/js/module_logs.js"></script>
 
 
