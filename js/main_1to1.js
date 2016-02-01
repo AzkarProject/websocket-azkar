@@ -876,8 +876,17 @@ function onDisconnect(peerCnxId) {
 
 
     // Robustesse:
-    if (type == "pilote-appelant") robotDisconnection = "Unexpected";
-    else if (type == "robot-appelé") piloteDisconnection = "Unexpected";
+    if (type == "pilote-appelant") {
+        // si la déconnexion n'est pas volontaire
+        // On relance le processus automatiquement
+        if (robotDisconnection == "Unexpected") localManageDevices(); 
+        // On remet le flag de déconnexion à "involontaire"
+        robotDisconnection = "Unexpected";
+        
+    
+    } else if (type == "robot-appelé") {
+        piloteDisconnection = "Unexpected";
+    }
 
     // On vérifie le flag de connexion
     if (isStarted == false) return;
@@ -897,18 +906,11 @@ function onDisconnect(peerCnxId) {
     video1.src = "";
     video2.src = "";
 
-    //videoElement.src = null;
-    //window.stream.stop();
-
     // on coupe le RTC Data channel
     if (channel) channel.close();
     channel = null;
 
     // On vide et on ferme la connexion courante
-    // pc["+peerCnxId+"].onicecandidate = null;
-    //pc["+peerCnxId+"].close();
-    //pc = null;
-
     peerCnxCollection[peerCnxId].close();
     peerCnxCollection[peerCnxId] = null;
     stopAndStart(peerCnxId);
@@ -926,9 +928,6 @@ function stopAndStart(peerCnxId) {
 
     peerCnxCollection[peerCnxId] = new PeerConnection(server, options);
     
-
-    // console.log("------pc = new PeerConnection(server, options);-----");
-
     // On informe la machine à état que c'est une renégociation
     isRenegociate = true;
 };

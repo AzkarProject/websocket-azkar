@@ -34,14 +34,15 @@ function closeCnxwith(userID) {
 function isRobotConnected(peerCnxCollection) {
 	console.log ("@ isRobotConnected()");
 	var isConnected = false;
+	//closeConnectionButton("deactivate",null);
 	if (peerCnxCollection[peerCnx1to1]) {
 
 		if (peerCnxCollection[peerCnx1to1].iceConnectionState != "new" ) isConnected = true;
 	 	
 	 }
 	if (peerCnxCollection[peerCnx1to1] == null) {
-		var buttonClose1to1 = '';
-		document.getElementById('closeConnection').innerHTML = buttonClose1to1;
+		// On désactive le bouton de fermeture de la connexion principale
+		closeConnectionButton("deactivate",null);
 	}
 	return isConnected;
 }
@@ -51,10 +52,14 @@ function isRobotConnected(peerCnxCollection) {
 function updateListUsers() {
         console.log ("@ updateListUsers()");
         console.log ("robotCnxStatus >>>>> "+robotCnxStatus);
+        
+
+        // closeConnectionButton("deactivate",null);
+
         // console.log (users);
         var blabla = "";
         var i = null;
-        
+
 		// Si connexion principale p2p active entre robot et pilote
     	var active1to1Cnx = false;
     	active1to1Cnx = isRobotConnected (peerCnxCollection);
@@ -62,8 +67,8 @@ function updateListUsers() {
         
     	// Elements HTML des boutons
     	var HButton
-
-
+    	
+    	var isRobotInThelist = false;
         // On boucle sur la liste des clients connectés
         for (i in users.listUsers) {
 		    var oneUser = users.listUsers[i];
@@ -73,9 +78,23 @@ function updateListUsers() {
 		    if (oneUser.typeClient == "Robot" )
 		    	if (robotCnxStatus != "new") {
 		    		// On active le bouton de fermeture de la connexion principale
-		    		var buttonClose1to1 = '<button class="shadowBlack txtRed" id="openCnx'+oneUser.id+'" onclick="closeCnxwith(\''+oneUser.id+'\')">Fermer la connexion</button>';
-		    		document.getElementById('closeConnection').innerHTML = buttonClose1to1;
+		    		closeConnectionButton("activate",oneUser.id);
+		    		isRobotInThelist = true;
 		    	}
         
         } // end For  
+        if (isRobotInThelist == false) closeConnectionButton("deactivate",null);
+}
+
+// Activation/désactivation du bouton de fermeture de connexion
+function closeConnectionButton(order,userID){
+	console.log ("closeConnectionButton("+order+")");
+	if (order == "activate") {
+		var buttonClose1to1 = '<button class="shadowBlack txtRed" id="openCnx'+userID+'" onclick="closeCnxwith(\''+userID+'\')">Fermer la connexion</button>';
+		document.getElementById('closeConnection').innerHTML = buttonClose1to1;
+	} else if (order == "deactivate") {
+		var buttonClose1to1 = '';
+		document.getElementById('closeConnection').innerHTML = buttonClose1to1;
+	}
+
 }
