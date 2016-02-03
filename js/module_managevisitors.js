@@ -23,7 +23,9 @@ function closeCnxwith(userID) {
     	
 	// Robustesse: 
 	// On remet le flag de déconnexion du robot à "Forced" pour empécher une reconnexion automatique...
+	// Et on remet le flag de session webRTC a zéro.
 	robotDisconnection = "Forced";
+	sessionConnection = "Pending"
 
 	// On vire le bouton de fermeture de la connexion principale
 	var buttonClose1to1 = "";

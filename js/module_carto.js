@@ -347,8 +347,8 @@ $(document).ready(function() {
 
         // Valeur absolue du point 0.0 ???
         // Désactivation le 29/01/16 pour tests ZOOM CARTO - A réactiver.
-        drawArrow(context, 0, 0, 0, -50, 1, "green"); // axe Y
-        drawArrow(context, 0, 0, 50, 0, 1, "red"); // axe X
+        // drawArrow(context, 0, 0, 0, -50, 1, "green"); // axe Y
+        // drawArrow(context, 0, 0, 50, 0, 1, "red"); // axe X
 
         // circleWithDirection(ry, rx, 0, "blue", 3, 2); // Michael
         // Titi: Ajout du paramètre QZ pour l'orientation du robot et inversion des axes X,Y...

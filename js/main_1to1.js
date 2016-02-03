@@ -52,6 +52,41 @@ if (typeof MediaStreamTrack === 'undefined') {
     MediaStreamTrack.getSources(gotSources);
 }
 
+
+    /*// Activation formulaire Devices Robot...
+    document.getElementById("robotDevices").className = "insideFlex oneQuarterbox robot shadowGreen devicesInvite";
+
+    // Activation formulaire Devices & Connexion  Pilote...
+    document.getElementById("piloteDevices").className = "insideFlex oneQuarterbox pilote devices shadowGreen devicesInvite";
+
+    // Désactivation formulaire Devices robot...
+    document.getElementById("robotDevices").className = "insideFlex oneQuarterbox  robot devices shadowBlack device";
+
+    // Désactivation formulaire Devices & Connexion  Pilote...
+    document.getElementById("piloteDevices").className = "insideFlex oneQuarterbox pilote devices shadowBlack device";
+    /**/
+
+
+function manageSubmitForm(cibleForm,status){
+    var cssClass = "insideFlex oneQuarterbox devices ";
+    var cibleColor = " ";
+    var shadowColor = " shadowGreen"
+    var animation = " devicesInvite";
+    if (cibleForm == "robotDevices") cibleColor += "robot";
+    else if (cibleForm == "piloteDevices") cibleColor += "pilote";
+    
+    if (status == "deactivate") {
+        shadowColor = " shadowBlack"
+        animation = ""; 
+
+    } 
+    // document.getElementById(cible+"Devices").className = "insideFlex oneQuarterbox pilote devices shadowGreen devicesInvite";
+    document.getElementById(cibleForm).className = cssClass+cibleColor+shadowColor+animation;
+}
+
+
+
+
 // IHM Pilote & Robot
 // Génération des listes de sélection sources (cam/micro) 
 // disponibles localement et a distance
@@ -154,7 +189,8 @@ function activeManageDevices() {
     remote_VideoSelect.disabled = false;
 
     // Une petite animation CSS pour visualiser l'invite de formulaire...
-    document.getElementById("robotDevices").className = "insideFlex oneQuarterbox robot shadowGreen devicesInvite";
+    // document.getElementById("robotDevices").className = "insideFlex oneQuarterbox robot shadowGreen devicesInvite";
+    manageSubmitForm("robotDevices","activate");
 }
 
 // IHM Pilote:
@@ -172,7 +208,8 @@ function remoteManageDevices() {
     local_VideoSelect.disabled = false;
 
     // Invite de formulaire...
-    document.getElementById("piloteDevices").className = "insideFlex oneQuarterbox pilote devices shadowGreen devicesInvite";
+    //document.getElementById("piloteDevices").className = "insideFlex oneQuarterbox pilote devices shadowGreen devicesInvite";
+    manageSubmitForm("piloteDevices","activate");
 }
 
 // IHM Pilote:
@@ -196,7 +233,8 @@ function localManageDevices() {
     remote_VideoSelect.disabled = true;
 
     // Animation CSS de désactivation du formulaire devices robot...
-    document.getElementById("robotDevices").className = "insideFlex oneQuarterbox  robot devices shadowBlack device";
+    // document.getElementById("robotDevices").className = "insideFlex oneQuarterbox  robot devices shadowBlack device";
+    manageSubmitForm("robotDevices","deactivate");
 
     // On balance au robot les paramètres de benchmarkings 
     // socket.emit('settingBenchmarks', {objUser:localObjUser,listeDevices:selectList}); // Version Objet
@@ -226,7 +264,8 @@ function localManageDevices() {
         }); // Version Objet
 
         // Animation CSS de désactivation du formulaire devices pilote...
-        document.getElementById("piloteDevices").className = "insideFlex oneQuarterbox pilote devices shadowBlack device";
+        // document.getElementById("piloteDevices").className = "insideFlex oneQuarterbox pilote devices shadowBlack device";
+        manageSubmitForm("piloteDevices","deactivate");
     }
 }
 
@@ -289,7 +328,9 @@ socket.on('remoteListDevices', function(data) {
     if (type == "pilote-appelant") {
         origin = "remote";
         // On alimente les listes de micro/caméra distantes
-        gotSources(data.listeDevices);
+        // Sauf dans le cas d'une déconnexion involontaire du robot
+        // ou on dois garder la liste et la séléction en cours...
+        if (robotDisconnection != "Unexpected") gotSources(data.listeDevices);
     }
 })
 
@@ -463,6 +504,11 @@ function initLocalMedia(peerCnxId) {
 
     // Récupération et affectation des caméras et micros selectionnés  
     constraint = getLocalConstraint();
+
+    
+    // On renseigne le Flag d'ouverture de session webRTC
+    sessionConnection = "Launched";
+
 
     // Initialisation du localStream et lancement connexion
     navigator.getUserMedia(constraint, function(stream) {
@@ -877,11 +923,24 @@ function onDisconnect(peerCnxId) {
 
     // Robustesse:
     if (type == "pilote-appelant") {
-        // si la déconnexion n'est pas volontaire
-        // On relance le processus automatiquement
-        if (robotDisconnection == "Unexpected") localManageDevices(); 
+
+        
+        // On referme le formulaire sélection des cams du robot
+        manageSubmitForm("robotDevices","deactivate");
+
+        // Pour éviter un lancement intempestif de la connexion webRTC
+        // si coté pilote la session de connexion webRTC nest pas ouverte
+        // on teste le dabord Flag d'ouverture de session webRTC coté pilote
+        // Valeurs possibles: Pending (par défaut), Launched
+        if ( sessionConnection != "Pending") {
+            // si la déconnexion du robot est involontaire
+            // On relance le processus de connexion automatiquement
+            if (robotDisconnection == "Unexpected") localManageDevices(); 
+        }
+        
         // On remet le flag de déconnexion à "involontaire"
         robotDisconnection = "Unexpected";
+
         
     
     } else if (type == "robot-appelé") {

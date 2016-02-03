@@ -131,11 +131,14 @@ isRenegociate = false; // 1to1 Pilote & robot
 robotCnxStatus = 'new';
 piloteCnxStatus = 'new';
 
-// Robustesse: Flags de déconnexions volontaires
-// valeurs possibles: Forced , Unexpected
+// Robustesse -----------------
+// Flags de types de déconnexions (volontaires/involontaires)
+// valeurs possibles: Forced (par défaut), Unexpected
 robotDisconnection = "Forced";
 piloteDisconnection = "Forced";
-
+// Flag d'ouverture de session webRTC coté pilote
+// Valeurs possibles: Pending (par défaut), Launched
+sessionConnection = "Pending";
 
 // Tableau des connexions WebRTC
 peerCnxCollection = {};

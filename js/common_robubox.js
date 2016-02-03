@@ -49,7 +49,11 @@ exports.sendDrive = function (data){
             // console.log ("onMove = "+onMove);
             // lastMoveTimeStamp = Date.now(); // MAJ du dernier timestamp mouvement... 
             // lastMoveTimeStamp = Date.now(ts.now()); // date synchronisée avec le serveur
-            lastMoveTimeStamp = ServerDate.now();
+            if (isBenchmark == true ) lastMoveTimeStamp = ServerDate.now();
+            else lastMoveTimeStamp = Date.now();
+        
+
+
         } else if (enable == false){
             onMove = false;
             // console.log ("onMove = "+onMove);
