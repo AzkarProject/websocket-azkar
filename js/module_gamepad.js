@@ -9,6 +9,8 @@ var btHommeMort = 'false';
 // Michael & Thierry ------------
 function gamePadController() {
 
+    
+    // détection connection du Gamepad
     gamepad.bind(Gamepad.Event.CONNECTED, function(device) {
 
 
@@ -20,15 +22,19 @@ function gamePadController() {
          mainWrap.append('<ul id="states-' + device.index + '"></ul>');
          statesWrap = $('#states-' + device.index)
 
+         // Bouton 0
          enable = device.state["FACE_1"];
          statesWrap.append("<li>Bouton A" + ': <span id="state-' + device.index + '-' + "FACE_1" + '">' + enable + '</span></li>');
 
+         // Bouton 7
          targetLinearSpeedNeg = device.state["LEFT_BOTTOM_SHOULDER"];
          statesWrap.append('<li>Bouton Bas Droite' + ': <span id="state-' + device.index + '-' + "LEFT_BOTTOM_SHOULDER" + '">' + targetLinearSpeedNeg + '</span></li>');
 
+         // Bouton 6
          targetLinearSpeedPos = device.state["RIGHT_BOTTOM_SHOULDER"];
          statesWrap.append('<li>Bouton Bas Gauche' + ': <span id="state-' + device.index + '-' + "RIGHT_BOTTOM_SHOULDER" + '">' + targetLinearSpeedPos + '</span></li>');
 
+         // 
          targetAngularSpeed = device.axes[0];
          statesWrap.append('<li>Axe Horizontal ' + 0 + ': <span id="axis-' + device.index + '-' + 0 + '">' + targetAngularSpeed + '</span></li>');
 
@@ -82,14 +88,16 @@ function gamePadController() {
                  var TargetLinearSpeedNeg = gamepad.state["LEFT_BOTTOM_SHOULDER"]; // vitesse marche arrière
                  var aSpeed = gamepad.axes[0]; // vitesse angulaire
 
-                 TargetLinearSpeedNeg = TargetLinearSpeedNeg * -1; // changement de signe de la vitesse car marche arrière
-                 var lSpeed = TargetLinearSpeedPos + TargetLinearSpeedNeg; // Mixage des 2 variables linearspeed pour marche avant et neglinearspeed pour marche arrière...
-
-
-                 var deadzoneX = 0.20; // zone +/- en dessous de laquelle la commande angulaire vaut 0 
-
-                 aSpeed = (Math.abs(aSpeed) < deadzoneX ? 0 : aSpeed); // test d'ajustement pour la dead zone 
-                 aSpeed = (lSpeed >= 0 ? -aSpeed : aSpeed); // changement de sens dans l'orientation en cas de marche avant
+                 // changement de signe de la vitesse car marche arrière
+                 TargetLinearSpeedNeg = TargetLinearSpeedNeg * -1;
+                 // Mixage des 2 variables linearspeed pour marche avant et neglinearspeed pour marche arrière...
+                 var lSpeed = TargetLinearSpeedPos + TargetLinearSpeedNeg; 
+                 // zone +/- en dessous de laquelle la commande angulaire vaut 0
+                 var deadzoneX = 0.20;  
+                 // test d'ajustement pour la dead zone 
+                 aSpeed = (Math.abs(aSpeed) < deadzoneX ? 0 : aSpeed); 
+                 // changement de sens dans l'orientation en cas de marche avant
+                 aSpeed = (lSpeed >= 0 ? -aSpeed : aSpeed); 
 
 
                  // TODO: Switcher entre webSockets et WebRTCdatachannel selon paramètrages du pilote - OK
@@ -118,6 +126,7 @@ function gamePadController() {
                  commandes.sendToRobot("", "", "Gamepad",driveCommand);
              
              } else {
+                 
                  if (btHommeMort) {
                      
                      var driveStop = {
@@ -135,7 +144,7 @@ function gamePadController() {
                      commandes.sendToRobot("", "", "Gamepad",driveStop);
                      btHommeMort = false;
                      $('#step-commands').show();
-             		     $('#drive-commands').hide();
+             		 $('#drive-commands').hide();
                  }
 
              }

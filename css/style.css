@@ -356,3 +356,37 @@ button:hover{
   filter: drop-shadow(10px 10px 10px red);/* OK sous firefox 35.0.1*/
 }
 
+/* Reset the default appearance */
+progress[value] { 
+  -webkit-appearance: none;
+   appearance: none;
+}
+
+/* Fond de la barre de progression*/
+progress[value]::-webkit-progress-bar {
+  background-color: #eee;
+  border-radius: 2px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
+}
+
+/* valeur de la barre de progression */
+progress[value]::-webkit-progress-value {
+    border-radius: 2px; 
+    background-size: 35px 20px, 100% 100%, 100% 100%;
+}
+
+.red[value]::-webkit-progress-value { 
+  background-color:red;
+}
+
+.blue[value]::-webkit-progress-value { 
+  background-color:blue;
+}
+
+.green[value]::-webkit-progress-value { 
+  background-color:green;
+}
+
+.grey[value]::-webkit-progress-value { 
+  background-color:grey;
+}

@@ -6,13 +6,20 @@
 
 - [ ] BUG STUN/TURN (15jh)
     - [x] Do: Déterminer configurations réseaux STUN ou TURN (1jh) 
-    - [x] Do: Tests Host VM2 (2jh)
-    - [x] Do: Tests Host OVH (0,5 jh)
-    - [ ] > Todo: Tests Host Livebox (1jh)
-    - [x] Do: Tests serveur Reciprocate (1jh)
-    - [x] Do: Tests serveur Restund (2jh)
-    - [ ] > Todo: Test Serveur rfc-5766-turnServer (1jh)
-    - [ ] > Todo: Test Serveur Coturn (1jh)
+    - [x] Do: Tests serveur "Reciprocate" (3jh) - Hs
+        - [x] Sur Host VM2 > HS
+    - [x] Do: Tests serveur "Restund" (3jh) - Hs
+        - [x] Sur Host VM2 > HS
+        - [X] Sur Host OVH > HS
+        - [ ] Sur host Livebox 
+    - [ ] > Todo: Test Serveur "rfc-5766-turnServer" (3jh)
+        - [ ] Sur Host VM2  
+        - [ ] Sur Host OVH 
+        - [ ] Sur host Livebox 
+    - [ ] > Todo: Test Serveur "Coturn" (3jh)
+        - [ ] Sur Host VM2 
+        - [ ] Sur Host OVH 
+        - [ ] Sur host Livebox 
     - [ ] > Todo: Test Solution commerciale anyfirewall.com (1jh)
     - [ ] > Todo: Test Solution commerciale xirsys.com (1jh)
 
@@ -36,12 +43,13 @@
         - [ ] > Todo: Switch mode Suivi/Statique (0,5jh)
     - [ ] Télémétrie (5jh)
 
-- [ ] Module Commande > Gamepad (6jh)
-    - [ ] > Todo: Reprendre librairie ((2jh) 
-    - [ ] > Todo: Définir Comportement Gamepad (0,5jh)
-    - [ ] > Todo: Implémenter Mode Précision (0,5jh)
-    - [ ] > Todo: Implémenter Mode déco/Reco (0,5jh)
-    - [ ] > Todo: Implémenter Cycle selection Définitions (0.5jh)
+- [ ] Module Commande > Gamepad (3jh)
+    - [x] > Do: Reprendre librairie (1jh) 
+    - [x] > Do: Définir Comportement Gamepad (0,25jh)
+    - [x] > Do: Implémenter bouton mode Précision (0,25jh)
+    - [ ] > Todo: Implémenter bouton switch déco/Reco (0,5jh)
+    - [ ] > Todo: Implémenter Sélection caméra (0,5jh)
+    - [ ] > Todo: Implémenter Sélection définition (0,5jh)
 
 - [ ] Systême (9,5jh)
     - [ ] Optimisations (2,5jh)

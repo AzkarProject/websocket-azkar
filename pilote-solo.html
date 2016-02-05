@@ -132,13 +132,13 @@
                 <hr/>
 
                 
-                <span id="systemSetting" class="">
+                <span id="systemSetting" style="text-align:center;">
                 System: 
                     <input type="radio" name="controlSystem" value="Robubox" id="Robubox" onclick="setNavSystem('Robubox')" checked /> <label for="Robubox">Robubox</label>
                     <input type="radio" name="controlSystem" value="KomNAV" id="KomNAV" onclick="setNavSystem('KomNAV')"/> <label for="KomNAV">KomNAV</label>
                 </span>
                 <br/>
-                <span id="dataChannelSetting" class="">
+                <span id="dataChannelSetting" style="text-align:center;">
                 Channel: 
                     <input type="radio" name="controlChannel" value="webSocket" id="webSocket" onclick="setNavChannel('webSocket')" checked /> <label for="webSocket">webSocket</label>
                     <input type="radio" name="controlChannel" value="webRTC" id="webRTC" onclick="setNavChannel('webRTC')"/> <label for="webRTC">webRTC</label>
@@ -150,8 +150,21 @@
                     <kom-remote class="kom-remote"></kom-remote>
                 </div>
 
-                <div id="drive-commands" style="display:none; overflow: scroll; height:150px">
-                    <ul id="gamepads"></ul>
+                <!--<div id="drive-commands" style="display:none; overflow: scroll; height:150px">-->
+                <div id="drive-commands" style="display:none; text-align:center; height:150px">    
+                    
+                    <b>Direction</b><br/>
+                    <progress id="leftRight" value=1 max=2></progress><br><br/>
+
+                    <b>Speed</b><br/>
+                     Avance:<br/><progress  id="advanceValue" value=0 min=0 max=1></progress>
+                     <br/>
+                     Reverse:<br/><progress id="reverseValue" value=0 min=0 max=1></progress>
+                    <br/>
+                    <br/>
+                    <b>Commande</b><br/>
+                    <div id="buttonStatus"></div>
+                   
                 </div>
             
             </div> <!-- id="robotCommands" -->
@@ -161,9 +174,9 @@
             <div id="robotInfos" class="insideFlex robot oneQuarterbox shadowBlack device floatLeft" style="height:60px">
                 <strong> Robot Informations</strong>
                 <hr/>
-                <div class="jauge"style="width:300px">
+                <div class="jauge" style="width:300px; text-align:center;">
                     <label for="battery_level">Battery Level:</label>
-                    <progress id="battery_level" class="floatRight" max="100" style="width:100px"></progress>
+                    <progress id="battery_level" max="100" style="width:100px"></progress>
                 </div>
             </div>
         </div>
@@ -307,7 +320,7 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script src='/js/lib/adapter.js'></script>
-    <script src="/js/lib/gamepad.js"></script>
+    <!--<script src="/js/lib/gamepad.js"></script>-->
     <script src="/js/lib/FileSaver.js"></script>
     <!-- <script src="/js/lib/timesync.js"></script> -->
     <!--<script src="https://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>-->
@@ -335,7 +348,7 @@
     <script src='/js/module_managevisitors.js'></script>
     
    
-    <script src='/js/module_gamepad.js'></script>
+    <script src='/js/module_gamepad2.js'></script>
     <!--<script src='/js/module_navigation.js'></script>-->
     <script src="/js/module_logs.js"></script>
     
