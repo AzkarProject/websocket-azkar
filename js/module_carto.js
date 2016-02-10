@@ -35,10 +35,12 @@ $(document).ready(function() {
     if (fakeRobubox == true) {  
         dataMap = getFakeDataMap();
         robotInfo = getFakeRobotInfo();
+        /*
         console.log ("-----fakeRobubox == true-----");
         console.log (dataMap);
         console.log (robotInfo);
         console.log ("-----------------------------");
+        /**/
     }
 
     // Titi: Rebond proxy en https(Client Robot) > Http(Robubox)
@@ -134,7 +136,7 @@ $(document).ready(function() {
 
     function init(callback, typeUser) {
 
-        console.log('@ init(callback)');
+        // console.log('@ init(callback)');
         
         if (fakeRobubox == true) {
             
@@ -199,7 +201,7 @@ $(document).ready(function() {
         corrOffestX = dataMap.Height - (offsetX / dataMap.Resolution);
         corrOffestY = dataMap.Width - (offsetY / dataMap.Resolution);         
 
-        console.log ('then call refresh function'); 
+        // console.log ('then call refresh function'); 
         refresh();
     }
 

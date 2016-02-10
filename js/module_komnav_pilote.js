@@ -5,7 +5,7 @@
 //global.DEBUG = true; // Uncomment to log values
 // global.DEBUG_SAFE = true; // Uncomment to prevent sending values to komcom
 
-console.log('Sample without KomCom');
+// console.log('Sample without KomCom');
 
 var myTransportSession = {
 	call: function(rpcMethodName, values) {

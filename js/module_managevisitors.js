@@ -1,4 +1,10 @@
 
+// Globale: flag de connexion webRTC active 
+// Pour gérer les conflits entre les commandes déco/reco
+// issues de l'interface et celles issues du Gamepad
+
+IS_WebRTC_Connected = false;
+
 function openCnxwith(userID) {
     console.log("@ openCnxwith("+userID+")");
     
@@ -38,9 +44,7 @@ function isRobotConnected(peerCnxCollection) {
 	var isConnected = false;
 	//closeConnectionButton("deactivate",null);
 	if (peerCnxCollection[peerCnx1to1]) {
-
 		if (peerCnxCollection[peerCnx1to1].iceConnectionState != "new" ) isConnected = true;
-	 	
 	 }
 	if (peerCnxCollection[peerCnx1to1] == null) {
 		// On désactive le bouton de fermeture de la connexion principale
@@ -68,7 +72,7 @@ function updateListUsers() {
 
         
     	// Elements HTML des boutons
-    	var HButton
+    	// var HButton
     	
     	var isRobotInThelist = false;
         // On boucle sur la liste des clients connectés
@@ -88,6 +92,18 @@ function updateListUsers() {
         if (isRobotInThelist == false) closeConnectionButton("deactivate",null);
 }
 
+function getUserID(type) {
+		var userID = null;
+		console.log (users);
+		for (i in users.listUsers) {
+			    var oneUser = users.listUsers[i];
+			    if (oneUser.typeClient === type ) userID = oneUser.id;
+	        } 
+	    return userID;    
+}
+
+
+
 // Activation/désactivation du bouton de fermeture de connexion
 function closeConnectionButton(order,userID){
 	console.log ("closeConnectionButton("+order+")");
@@ -99,4 +115,26 @@ function closeConnectionButton(order,userID){
 		document.getElementById('closeConnection').innerHTML = buttonClose1to1;
 	}
 
+}
+
+
+// Fonctions passerelles
+
+function closeRobotConnexion() {
+		if (IS_WebRTC_Connected == false ) {
+			alert ("la connexion est déjas fermée");
+			return;
+		}
+		var userID = getUserID('Robot');
+		// alert (userID);
+		closeCnxwith(userID);
+}
+
+
+function openRobotConnexion() {
+		if (IS_WebRTC_Connected == true ) {
+			alert ("la connexion est déjas ouverte");
+			return;
+		}
+		localManageDevices();
 }

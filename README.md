@@ -43,13 +43,16 @@
         - [ ] > Todo: Switch mode Suivi/Statique (0,5jh)
     - [ ] Télémétrie (5jh)
 
-- [ ] Module Commande > Gamepad (3jh)
-    - [x] > Do: Reprendre librairie (1jh) 
-    - [x] > Do: Définir Comportement Gamepad (0,25jh)
+- [ ] Module Commande > Gamepad (3,5jh)
+    - [x] > Do: Reprendre librairie (1jh)
+    - [x] > Do: Définir affectations boutons (0,25jh) 
     - [x] > Do: Implémenter bouton mode Précision (0,25jh)
-    - [ ] > Todo: Implémenter bouton switch déco/Reco (0,5jh)
+    - [x] > Do: Implémenter bouton switch déco/Reco (0,5jh)
+    - [x] > Do: Systeme de notification (0,25jh)
+    - [ ] > Todo: Implémenter switch FullScreen (0,50jh)
     - [ ] > Todo: Implémenter Sélection caméra (0,5jh)
     - [ ] > Todo: Implémenter Sélection définition (0,5jh)
+
 
 - [ ] Systême (9,5jh)
     - [ ] Optimisations (2,5jh)

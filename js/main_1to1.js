@@ -15,6 +15,7 @@ socket.on('rejectConnexion', function(data) {
 
 audioSource = local_AudioSelect.value;
 videoSource = local_VideoSelect.value;
+
 constraint = null;
 
 if (type == "pilote-appelant" && proto == "1to1") {
@@ -53,21 +54,9 @@ if (typeof MediaStreamTrack === 'undefined') {
 }
 
 
-    /*// Activation formulaire Devices Robot...
-    document.getElementById("robotDevices").className = "insideFlex oneQuarterbox robot shadowGreen devicesInvite";
-
-    // Activation formulaire Devices & Connexion  Pilote...
-    document.getElementById("piloteDevices").className = "insideFlex oneQuarterbox pilote devices shadowGreen devicesInvite";
-
-    // Désactivation formulaire Devices robot...
-    document.getElementById("robotDevices").className = "insideFlex oneQuarterbox  robot devices shadowBlack device";
-
-    // Désactivation formulaire Devices & Connexion  Pilote...
-    document.getElementById("piloteDevices").className = "insideFlex oneQuarterbox pilote devices shadowBlack device";
-    /**/
-
-
 function manageSubmitForm(cibleForm,status){
+    console.log("@ manageSubmitForm()");
+
     var cssClass = "insideFlex oneQuarterbox devices ";
     var cibleColor = " ";
     var shadowColor = " shadowGreen"
@@ -80,7 +69,6 @@ function manageSubmitForm(cibleForm,status){
         animation = ""; 
 
     } 
-    // document.getElementById(cible+"Devices").className = "insideFlex oneQuarterbox pilote devices shadowGreen devicesInvite";
     document.getElementById(cibleForm).className = cssClass+cibleColor+shadowColor+animation;
 }
 
@@ -99,7 +87,7 @@ function gotSources(sourceInfos) {
     if (origin == "local") {
         listeLocalSources = sourceInfos;
 
-        // Si sources distantes (Robot)
+    // Si sources distantes (Robot)
     } else if (origin == "remote") {
         listeRemoteSources = sourceInfos;
 
@@ -109,6 +97,7 @@ function gotSources(sourceInfos) {
     // FIX ==> On vide la liste du formulaire de ses options.
     // Comment ==> En supprimant tous les enfants du nœud
     if (origin == "remote") {
+        
         // On supprime tous les enfants du noeud précédent...
         while (remote_AudioSelect.firstChild) {
             // La liste n'étant pas une copie, elle sera réindexée à chaque appel
@@ -120,6 +109,9 @@ function gotSources(sourceInfos) {
         }
     }
 
+
+
+
     for (var i = 0; i !== sourceInfos.length; ++i) {
 
         var sourceInfo = sourceInfos[i];
@@ -129,7 +121,7 @@ function gotSources(sourceInfos) {
 
         // Reconstruction de l'objet javascript natif sourceInfo:
         // Quand il est construit sous chromium et transmit par websocket
-        // vers Chrome impossible d'accéder à ses attributs une foi transmit... 
+        // vers Chrome impossible d'accéder à ses attributs une foi transmi... 
         // Ce qui est bizarre, c'est que l'objet natif semble tout à fait normal avant transmission.
         // Par contre, R.A.S quand on le transmet de Chrome à Chrome ou de Chromium à chromium.
         var sourceDevice = new tools.sourceDevice();
@@ -140,8 +132,8 @@ function gotSources(sourceInfos) {
         sourceInfos[i] = sourceDevice;
 
         // Conflit webcam Chromium/Chrome si même device choisi sur le PC local
-        // >>> L'ID fournie par L'API MediaStreamTrack.getSources est différente
-        // selon le navigateur et ne permet pas de différencier cams et micros correctement
+        // >>> L'ID fournie par L'API MediaStreamTrack.getSources est différente selon le navigateur
+        // >>> Donc ne permet pas de différencier cams et micros correctement
         // TODO: Trouver une solution de contournement pour les tests interNavigateurs sur une même machine
 
         if (sourceInfo.kind === 'audio') {
@@ -183,13 +175,14 @@ function gotSources(sourceInfos) {
 // Animation d'invite
 function activeManageDevices() {
 
+     console.log("@ activeManageDevices()");
+
     // On active les sélecteurs de listes
     remote_ButtonDevices.disabled = false;
     remote_AudioSelect.disabled = false;
     remote_VideoSelect.disabled = false;
 
     // Une petite animation CSS pour visualiser l'invite de formulaire...
-    // document.getElementById("robotDevices").className = "insideFlex oneQuarterbox robot shadowGreen devicesInvite";
     manageSubmitForm("robotDevices","activate");
 }
 
@@ -208,7 +201,6 @@ function remoteManageDevices() {
     local_VideoSelect.disabled = false;
 
     // Invite de formulaire...
-    //document.getElementById("piloteDevices").className = "insideFlex oneQuarterbox pilote devices shadowGreen devicesInvite";
     manageSubmitForm("piloteDevices","activate");
 }
 
@@ -221,6 +213,9 @@ function remoteManageDevices() {
 function localManageDevices() {
 
     console.log("@ localManageDevices()");
+
+    IS_WebRTC_Connected = true;
+
     if (type == "pilote-appelant") {
         local_ButtonDevices.disabled = true;
     }
@@ -233,11 +228,7 @@ function localManageDevices() {
     remote_VideoSelect.disabled = true;
 
     // Animation CSS de désactivation du formulaire devices robot...
-    // document.getElementById("robotDevices").className = "insideFlex oneQuarterbox  robot devices shadowBlack device";
     manageSubmitForm("robotDevices","deactivate");
-
-    // On balance au robot les paramètres de benchmarkings 
-    // socket.emit('settingBenchmarks', {objUser:localObjUser,listeDevices:selectList}); // Version Objet
 
     // On balance coté robot les devices sélectionnés...
     // ... Et les Settings de canal/caméra du benchmarking...
@@ -255,8 +246,6 @@ function localManageDevices() {
         }
 
         var appSettings = parameters;
-        // socket.emit("selectedRemoteDevices", selectList); Ancienne version
-        // Coté serveur >> socket.broadcast.emit('selectedRemoteDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
         socket.emit('selectedRemoteDevices', {
             objUser: localObjUser,
             listeDevices: selectList,
@@ -264,7 +253,6 @@ function localManageDevices() {
         }); // Version Objet
 
         // Animation CSS de désactivation du formulaire devices pilote...
-        // document.getElementById("piloteDevices").className = "insideFlex oneQuarterbox pilote devices shadowBlack device";
         manageSubmitForm("piloteDevices","deactivate");
     }
 }
@@ -272,6 +260,9 @@ function localManageDevices() {
 // IHM Pilote & Robot: 
 // Construction des constrain locale (affectation des devices sélectionnées)
 function getLocalConstraint() {
+	
+	console.log("@ getLocalConstraint()");
+	
 	audioSource = local_AudioSelect.value;
 	videoSource = local_VideoSelect.value;
 	
@@ -285,32 +276,17 @@ function getLocalConstraint() {
     else if (camDef == 'HD') {maxCamWidth = 640; maxCamHeight = 360} // 16/9
     else if (camDef == 'FHD') {maxCamWidth = 640; maxCamHeight = 480} // 4/3..
 
-    // alert (maxCamWidth+"*"+maxCamHeight);
-
     var framerate = 24;
 
-    var testConstraints = { 
+    var localConstraints = { 
             audio: { optional: [{sourceId: audioSource}] },
             video: {
                 optional: [{sourceId: videoSource}],   
                 mandatory: { maxWidth: maxCamWidth, maxHeight: maxCamHeight }
-                // mandatory: { width: { ideal: 100 }, height: { ideal: 100 } } // BUG: Ca plante complètement sous Chrome...
             }
         }
-    /**/
-
-
-    var sourcedConstraints = {    
-       audio: {optional: [{sourceId: audioSource}]},
-       video: {optional: [{sourceId: videoSource}]}   
-    }
-
-    //var localConstraint = sourcedConstraints;
-    var localConstraint = testConstraints;
-
-
-
-	return localConstraint;
+    
+	return localConstraints;
 } 
 
 
@@ -359,7 +335,7 @@ socket.on('selectedRemoteDevices', function(data) {
         parameters = data.appSettings;
         // alert("Parameters: " +data.appSettings.lRview);
 
-        console.log(data); 
+        // console.log(data); 
         //var debugg = tools.stringObjectDump(data,"selectedRemoteDevice")
         //console.log(debugg);
         //console.log(data);
@@ -428,8 +404,7 @@ socket.on("robotCnxStatus", function(data) {
 // Quand on reçoit un update de la liste des clients websockets 
 // C.A.D à chaque nouveln arrivant... 
 socket.on('updateUsers', function(data) {
-
-    console.log(">> socket.on('updateUsers',...");
+	console.log(">> socket.on('updateUsers',...");
     // On met à jour la liste locale des connectés...
     oldUsers = users;
     users = data;
@@ -443,7 +418,7 @@ socket.on('updateUsers', function(data) {
         // isOnePilot = tools.searchInObjects(users, "typeClient", "Pilote", "boolean");
         isOnePilot = tools.searchInObjects(users.listUsers, "typeClient", "Pilote", "boolean");
         
-        console.log ("isOnePilot ="+ isOnePilot);
+        // console.log ("isOnePilot ="+ isOnePilot);
         socket.emit('remoteListDevices', {
             objUser: localObjUser,
             listeDevices: listeLocalSources
@@ -463,13 +438,14 @@ socket.on('updateUsers', function(data) {
         if ( ! peerCnxCollection[peerCnx1to1] ) piloteCnxStatus = 'new'; 
         else piloteCnxStatus = peerCnxCollection[peerCnx1to1].iceConnectionState; 
         socket.emit("piloteCnxStatus", piloteCnxStatus);
-        console.log (users);
+        // console.log (users);
         updateListUsers(); // Appel à la fonction du module manageVisitors
     }
 })
 
 // Reception du niveau de la batterie
 socket.on("battery_level", function(data) {
+	console.log('onBattery_level >>');
    // console.log('objet Batterie percentage ' + data.percentage);
     refreshJaugeBattery(data.percentage) // redessiner la jauge au niveau de l'ihm pilote
 });
@@ -479,7 +455,7 @@ socket.on("battery_level", function(data) {
 
 // Reception d'une demande de clearance
 socket.on('requestClearance', function(data) {
-    console.log (">> socket.on('requestClearance',...");
+	console.log (">> socket.on('requestClearance',...");
     //console.log (visitor);
     // Si la connexion avec le Robot est déja initialisée
     if (isStarted == true) { // False pour tests...
@@ -499,8 +475,8 @@ function initLocalMedia(peerCnxId) {
     console.log("@ initLocalMedia("+peerCnxId+")");
 
     peerCnxCollection[peerCnxId] =new PeerConnection(server, options);
-    console.log("new peerCnxCollection["+peerCnxId+"]"); 
-    console.log(peerCnxCollection); 
+    // console.log("new peerCnxCollection["+peerCnxId+"]"); 
+    // console.log(peerCnxCollection); 
 
     // Récupération et affectation des caméras et micros selectionnés  
     constraint = getLocalConstraint();
@@ -514,26 +490,11 @@ function initLocalMedia(peerCnxId) {
     navigator.getUserMedia(constraint, function(stream) {
 
         
-        console.log(" >>>> @  navigator.getUserMedia(constraint, function(stream)");
-        console.log(stream);    
+        // console.log(" >>>> @  navigator.getUserMedia(constraint, function(stream)");
+        // console.log(stream);    
 
-        /*// Pour éviter la perte de caméras en cas de changement de constraints
-        //// PUTAIN  DE BUG DE MERDE !!!!!!!!!!! ---- Michel, il marche pas ton code !!!!!!!
-        // J'ai encore les cam du pc pilote complètement HS !!!!!!!!!!!!!!!!
-        // WTF ...@%§!/@..
-        if (!!stream) {
-            video1.src = null;
-            stream.stop();
-        }
-        /**/
-        // alert(stream);
-
-
-        //console.log(parameters.lRview)
         localStream = stream;
-
-
-
+        
         var showLocalVideo = true;
         if (type == "pilote-appelant") {
             if (parameters.lPview != 'show') showLocalVideo = false;
@@ -557,11 +518,10 @@ function initLocalMedia(peerCnxId) {
 // initialisation de la connexion
 function connect(peerCnxId) {
 
-    //console.log ("@ connect()");
+    console.log ("@ connect()");
     debugNbConnect += 1;
-    console.log("@ connect("+peerCnxId+") n°"+debugNbConnect+"> rôle: " + type);
+    // console.log("@ connect("+peerCnxId+") n°"+debugNbConnect+"> rôle: " + type);
     isStarted = true;
-    // if (type == "pilote-appelant") updateListUsers(); // Rafraichissement de la liste des visiteurs
 
     // Ecouteurs communs apellant/apellé
     // ---------------------------------
@@ -584,7 +544,7 @@ function connect(peerCnxId) {
             else if ( type === "robot-appelé") cible = getClientBy('typeClient','Pilote');
         
         } 
-        console.log ("------------ Candidate to >>> "+cible.typeClient+"----------");
+        // console.log ("------------ Candidate to >>> "+cible.typeClient+"----------");
         var data = {from: localObjUser, message: e.candidate, cible: cible, peerCnxId: peerCnxId}
         // console.log (data);
         socket.emit("candidate2", data);
@@ -594,9 +554,9 @@ function connect(peerCnxId) {
 
     // Ecouteur déclenché a la reception d'un remoteStream
     peerCnxCollection[peerCnxId].onaddstream = function(e) {
-        console.log("@ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-        console.log("@ pc["+peerCnxId+"].onaddstream > timestamp:" + Date.now());
-        console.log(e);
+        // console.log("@ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+        // console.log("@ pc["+peerCnxId+"].onaddstream > timestamp:" + Date.now());
+        // console.log(e);
 
 
         var showRemoteVideo = true;
@@ -625,14 +585,8 @@ function connect(peerCnxId) {
     // Permet de déterminer si le pair distant s'est déconnecté. (Version 1to1)
     peerCnxCollection[peerCnxId].oniceconnectionstatechange = function(e) {
 
-        //var dateE = tools.dateER('E');
         var dateE = tools.humanDateER("E");
-        console.log("@ pc["+peerCnxId+"].oniceconnectionstatechange > " + dateE);
-
-        //console.log(">>> stateConnection Event > " + peerCnxCollection[peerCnxId].iceConnectionState);
-        //$(chatlog).prepend(dateE + ' [stateConnection Event] ' + peerCnxCollection[peerCnxId].iceConnectionState + '\n');
-
-        console.log(">>> pc["+peerCnxId+"] stateConnection Event > " + peerCnxCollection[peerCnxId].iceConnectionState);
+        // console.log(">>> pc["+peerCnxId+"] stateConnection Event > " + peerCnxCollection[peerCnxId].iceConnectionState);
         $(chatlog).prepend(dateE + ' pc['+peerCnxId+'] stateConnection Event: ' + peerCnxCollection[peerCnxId].iceConnectionState + '\n');
 
 
@@ -676,8 +630,8 @@ function connect(peerCnxId) {
 
     // Ecouteur ... Todo...
     peerCnxCollection[peerCnxId].onremovestream = function(e) {
-        console.log("@ pc["+peerCnxId+"].onremovestream(e) > timestamp:" + Date.now());
-        console.log(e);
+        //console.log("@ pc["+peerCnxId+"].onremovestream(e) > timestamp:" + Date.now());
+        //console.log(e);
     }
 
     
@@ -688,52 +642,19 @@ function connect(peerCnxId) {
         if (peerCnxId == peerCnx1to1) {
 
             
-	        // Bug: l'objet RTCDataChannel de l'apellé est null 
-	        // si le createDataChannel de l'apellant est activé sous Chrome Version 46.0.2490.71 m
-	        // Bug de recession Release Chrome du 15/16 Oct(11) 2015...
-	        // Tentative de contournement: Envoi de l'objet RTCDatachannel par websocket...
+			//console.log("+++++++++++++++++++++++++++++++++++++")
+	    	//console.log(channel);
+	        channel = peerCnxCollection[peerCnxId].createDataChannel("1to1_PtoR", {reliable: false});
+    		var tStp = tools.humanDateER("date");
+    		//console.log ("peerCnxCollection[peerCnxId].createDataChannel("+tStp+")");
+	        //console.log(channel);
+	        //console.log("+++++++++++++++++++++++++++++++++++++");
 
-            /*// l'apellant crée un dataChannel
-            channel = peerCnxCollection[peerCnxId].createDataChannel("mychannel", {});
-            var tStp = tools.humanDateER("date");
-            console.log ("peerCnxCollection[peerCnxId].createDataChannel("+tStp+")");
-            /**/
-            
-
-            /*function setupDC1() {
-			    try {
-			        console.log("+++++++++++++++++++++++++++++++++++++")
-			    	console.log(channel);
-			        channel = peerCnxCollection[peerCnxId].createDataChannel("1to1_PtoR", {reliable: false});
-            		var tStp = tools.humanDateER("date");
-            		console.log ("peerCnxCollection[peerCnxId].createDataChannel("+tStp+")");
-			        console.log(channel);
-			        console.log("+++++++++++++++++++++++++++++++++++++");
-
-			        //var data = {from: localObjUser, channel: channel.toJSON()};
-			        //console.log (data);
-			        var data = tools.deepClone(channel);
-			        socket.emit("channelObject", data);
-
-			    } catch (e) { console.warn("No data channel (peerCnxCollection[peerCnxId])", e); }
-			}
-
-			/**/// setupDC1();
-
-
-					console.log("+++++++++++++++++++++++++++++++++++++")
-			    	console.log(channel);
-			        channel = peerCnxCollection[peerCnxId].createDataChannel("1to1_PtoR", {reliable: false});
-            		var tStp = tools.humanDateER("date");
-            		console.log ("peerCnxCollection[peerCnxId].createDataChannel("+tStp+")");
-			        console.log(channel);
-			        console.log("+++++++++++++++++++++++++++++++++++++");
-
-			        //var data = {from: localObjUser, channel: channel.toJSON()};
-			        //console.log (data);
-			        // -----------------------------------------
-			        // var data = tools.deepClone(channel);
-			        // socket.emit("channelObject", data);
+	        //var data = {from: localObjUser, channel: channel.toJSON()};
+	        //console.log (data);
+	        // -----------------------------------------
+	        // var data = tools.deepClone(channel);
+	        // socket.emit("channelObject", data);
 
 
 
@@ -744,7 +665,7 @@ function connect(peerCnxId) {
             var cible = getClientBy('typeClient','Robot');
             peerCnxCollection[peerCnxId].createOffer(function(sdp){
                         peerCnxCollection[peerCnxId].setLocalDescription(sdp);
-                        console.log ("------------ offer >>> to "+cible.typeClient+"----------");
+                        //console.log ("------------ offer >>> to "+cible.typeClient+"----------");
                         var data = {from: localObjUser, message: sdp, cible: cible, peerCnxId: peerCnxId}
                         // console.log (data.message.sdp);
                         socket.emit("offer2", data);
@@ -762,17 +683,17 @@ function connect(peerCnxId) {
         // Si on est dans la peerConnection principale (Pilote <> Robot)
         if (peerCnxId == peerCnx1to1) {
             var tStp1 = tools.humanDateER("date");
-            console.log ("@ ondatachannel = function(e) {... "+tStp1)
+            //console.log ("@ ondatachannel = function(e) {... "+tStp1)
 
             // bindEvents(); //now bind the events
             // l'appelé doit attendre l'ouverture d'un dataChannel pour lancer son écouteur d'èvènement data...
             // Ecouteur d'ouverture d'un data channel
             peerCnxCollection[peerCnxId].ondatachannel = function(e) {
-                console.log("+++++++++++++++++++++++++++++++++++++")
+                //console.log("+++++++++++++++++++++++++++++++++++++")
                 var tStp2 = tools.humanDateER("date");
-            	console.log ("peerCnxCollection[peerCnxId].ondatachannel("+tStp2+")");
-            	console.log(e);
-                console.log("+++++++++++++++++++++++++++++++++++++")
+            	//console.log ("peerCnxCollection[peerCnxId].ondatachannel("+tStp2+")");
+            	//console.log(e);
+                //console.log("+++++++++++++++++++++++++++++++++++++")
 
                 channel = e.channel;
                 bindEvents(); //now bind the events
@@ -797,11 +718,11 @@ function connect(peerCnxId) {
 // Cause: L'écouteur de reception "offer"est instancié 2 fois...
 // FIX: ajout d'un flag "isRenegociate = false;" 
 socket.on("offer", function(data) {
-    
+    console.log (">> socket.on('offer',...");
     if (data.cible.id == myPeerID) {
         
     	var tStp = tools.humanDateER("R");
-		console.log ("------------ >>> offer from "+data.from.typeClient+" "+tStp);
+		//console.log ("------------ >>> offer from "+data.from.typeClient+" "+tStp);
        
 
 
@@ -828,7 +749,7 @@ socket.on("offer", function(data) {
             // création de l'offre SDP
             peerCnxCollection[idPeerConnection].createAnswer(function(sdp){
                     peerCnxCollection[idPeerConnection].setLocalDescription(sdp);
-                    console.log ("------------ Answer to >>> "+cible.typeClient+"----------");
+                    //console.log ("------------ Answer to >>> "+cible.typeClient+"----------");
                     var data = {from: localObjUser, message: sdp, cible: cible, peerCnxId: idPeerConnection}
                     //console.log (data);
                     socket.emit("answer2", data);
@@ -845,9 +766,10 @@ socket.on("offer", function(data) {
 
 // Réception d'une réponse à une offre
 socket.on("answer", function(data) {
+    console.log (">> socket.on('Answer',...");
     if (data.cible.id == myPeerID) {
         var tStp = tools.humanDateER("R");
-		console.log ("------------ >>> answer from "+data.from.typeClient+" "+tStp);
+		//console.log ("------------ >>> answer from "+data.from.typeClient+" "+tStp);
         //console.log("- Answer From: " + data.from.pseudo +"("+data.from.id+")");
         //console.log("- Cible: " + data.cible.pseudo +"("+data.cible.id+")");
         //console.log("- peerconnection: " + data.peerCnxId);
@@ -858,8 +780,9 @@ socket.on("answer", function(data) {
 
 // Réception d'un ICE Candidate
 socket.on("candidate", function(data) {
+    console.log (">> socket.on('Candidate',...");
     if (data.cible.id == myPeerID) {
-        console.log ("------------ >>>> Candidate from "+data.from.typeClient+"----------");
+        //console.log ("------------ >>>> Candidate from "+data.from.typeClient+"----------");
         //console.log("- candidate From: " + data.from.pseudo +"("+data.from.id+")");
         //console.log("- Cible: " + data.cible.pseudo +"("+data.cible.id+")");
         //console.log("- peerconnection: " + data.peerCnxId);
@@ -870,11 +793,11 @@ socket.on("candidate", function(data) {
     }
 });
 
-// tentative contournement BUG createDataChannel sous Chrome
+/*// tentative contournement BUG createDataChannel sous Chrome
 socket.on("channelObject", function(data) {
 	var tStp = tools.humanDateER("R");
-	console.log ("------------ >>> channelObject ");
-	console.log (data);
+	//console.log ("------------ >>> channelObject ");
+	//console.log (data);
 	// channel = peerCnxCollection[peerCnx1to1].createDataChannel(data, {reliable: false});
 	// channel = data;
     // bindEvents(); //now bind the events
@@ -888,9 +811,10 @@ socket.on("channelObject", function(data) {
 
 // Réception d'un ordre de déconnexion
 socket.on("closeConnectionOrder",function(data) {
+   console.log (">> socket.on('closeConnectionOrder',...");
     if (data.cible.id == myPeerID) {
         // A priori on est dans la peerConnection principale (Pilote <> Robot) >> peerCnx1to1
-        console.log ("------------ >>> closeConnectionOrder "+data.from.typeClient+"----------");
+        //console.log ("------------ >>> closeConnectionOrder "+data.from.typeClient+"----------");
         // on lance le processus préparatoire à une reconnexion
         onDisconnect(peerCnx1to1);
     }
@@ -924,6 +848,7 @@ function onDisconnect(peerCnxId) {
     // Robustesse:
     if (type == "pilote-appelant") {
 
+    	IS_WebRTC_Connected = false;
         
         // On referme le formulaire sélection des cams du robot
         manageSubmitForm("robotDevices","deactivate");
@@ -996,7 +921,6 @@ function stopAndStart(peerCnxId) {
 // bind the channel events
 function bindEvents() {
 
-    // alert ("@ bindEvents()");
     console.log("@ bindEvents()");
 
     // écouteur d'ouverture
@@ -1058,6 +982,7 @@ function bindEvents() {
 
 // Robot & Pilote: envoi d'un message par WebRTC
 function sendMessage() {
+    console.log ("@ sendMessage()");
     var dateE = tools.dateER('E');
     var msgToSend = dateE + ' [' + localObjUser.typeClient + '] ' + message.value;
     channel.send(msgToSend);
@@ -1096,7 +1021,7 @@ $('#formulaire_chat_webRTC').submit(function() {
 if (type == "robot-appelé") {
     function deathMan(){
     
-        //console.log("@ deathMan() >> onMove:"+onMove+" "+"lastMoveTimeStamp:"+lastMoveTimeStamp);          
+         console.log("@ deathMan() >> onMove:"+onMove+" "+"lastMoveTimeStamp:"+lastMoveTimeStamp);          
 
          var dateA = Date.now();
          // if (settings.isBenchmark() == true ) dateA = Date.now(ts.now()), // date synchronisée avec le serveur (V1 timesync.js)
@@ -1137,8 +1062,8 @@ if (type == "robot-appelé") {
 // On la renvoie au client robot qui exécuté sur la même machine que la Robubox.
 // Il pourra ainsi faire un GET ou un POST de la commande à l'aide d'un proxy et éviter le Cross Origin 
 socket.on("piloteOrder", function(data) {
-    // console.log('@onPiloteOrder >> command:' + data.command);
-    
+    //console.log('onPiloteOrder >> command:' + data.command);
+    console.log (">> socket.on('piloteOrder',...");
     if (type == "robot-appelé") {
         
         if (data.command == "onDrive") {
@@ -1185,10 +1110,42 @@ socket.on("piloteOrder", function(data) {
 // Robot: Selection du système embarqué (Robubox ou KomNAV)
 // pour l'exécution des commandes reçues en WebRTC et webSocket
 socket.on('changeNavSystem', function(data) {
-   console.log('@changeNavSystem >> ' + data.navSystem);
+   console.log (">> socket.on('changeNavSystem',...");	
+   //console.log('onChangeNavSystem >> ' + data.navSystem);
    parameters.navSys = data.navSystem;
 });
 
 video2.addEventListener("playing", function () {
     console.log ("RemoteStream dimensions: " + video2.videoWidth + "x" + video2.videoHeight)
 });
+
+
+/*
+function fullscreen(){
+	console.log('fullScreen()');
+	video2.width = window.innerWidth;
+	video2.height = window.innerHeight;
+}
+/**/
+
+
+
+
+function toggleFullScreen(){
+	console.log('@ toggleFullScreen()');
+	if(video2.requestFullScreen){
+		video2.requestFullScreen();
+	} else if(video2.webkitRequestFullScreen){
+		video2.webkitRequestFullScreen();
+	} else if(vid.mozRequestFullScreen){
+		video2.mozRequestFullScreen();
+	}
+}
+
+document.addEventListener("keydown", function(e) {
+  if (e.keyCode == 13) {
+    toggleFullScreen();
+  } 
+}, false);
+/**/
+

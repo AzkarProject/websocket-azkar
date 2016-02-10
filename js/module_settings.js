@@ -66,7 +66,14 @@ if (proto == "1to1") {
 }
 
 
-
+// Génère les options des résolution
+var listOptionsDefinition = '<option value="VLD" selected="selected" >Very Low (100*52) 16/9</option>';   
+listOptionsDefinition += '<option value="LD">Low (160*88) 16/9</option>'; 
+listOptionsDefinition += '<option value="MD">Medium (320*180) 16/9</option>';
+listOptionsDefinition += '<option value="HD">High (640*360) 16/9</option>'; 
+listOptionsDefinition += '<option value="FHD">Very Hight (640*480) 4/3</option>';
+$('#robot_camdef_select').html(listOptionsDefinition); 
+$('#pilot_camdef_select').html(listOptionsDefinition); 
 
 
 // --------------- Ecouteurs des formulaires HTML
@@ -117,21 +124,3 @@ function setRobotStreamToVisitor(vRStream) {
     parameters.rStoV = vRStream;
 }
 
-
-
-/*               
-<span id="systemSetting" class="">
-System: 
-    <input type="radio" name="controlSystem" value="Robubox" id="Robubox" onclick="setNavSystem('Robubox')" checked /> <label for="Robubox">Robubox</label>
-    <input type="radio" name="controlSystem" value="KomNAV" id="webRTC" onclick="setNavSystem('KomNAV')"/> <label for="KomNAV">KomNAV</label>
-</span>
-<br/>
-<span id="dataChannelSetting" class="">
-Channel: 
-    <input type="radio" name="controlChannel" value="webSocket" id="webSocket" onclick="setNavChannel('webSocket')" checked /> <label for="webSocket">webSocket</label>
-    <input type="radio" name="controlChannel" value="webRTC" id="webRTC" onclick="setNavChannel('webRTC')"/> <label for="webRTC">webRTC</label>
-    
-</span>
-<hr/>
-
-*/

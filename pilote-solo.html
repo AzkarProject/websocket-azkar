@@ -257,16 +257,6 @@
         <div id="colFullTopSettingsArea" class="insideFlex colorSettings shadowBlack floatLeft " style="width:1248px">
             <strong> Settings </strong>
             <hr/>
-            <!--
-            <span id="CameraSettings" class="">
-                Cameras Resolutions:
-                 <input type="radio" name="CamSetting" value="VLD" id="CamVeryLow" onclick="setCamDefinition('VLD')" /> <label for="CamVeryLow">Very Low (100x56)</label>
-                <input type="radio" name="CamSetting" value="LD" id="CamLow" onclick="setCamDefinition('LD')" /> <label for="CamLow">Low (320x180)</label>
-                <input type="radio" name="CamSetting" value="MD" id="CamMedium" onclick="setCamDefinition('MD')"/> <label for="CamMedium">Medium (640x360)</label>
-                <input type="radio" name="CamSetting" value="HD" id="CamHight" onclick="setCamDefinition('HD')"/> <label for="CamHight">High (1280x720)</label>
-            </span>
-            <br/>
-            -->
 
             <span id="robotVideoSetting" class="">
                 IHM Robot - Local view: 
@@ -277,13 +267,7 @@
                 <input type="radio" name="RRVidSetting" value="hide" id="RRVhide" onclick="setRemoteRobotView('hide')"/> <label for="RRVhide">Hide</label>
                 &nbsp;&nbsp; || &nbsp;&nbsp;
                 <label for="robot_camdef_select">Camera Resolution &nbsp;&nbsp; </label>
-                <select id="robot_camdef_select">
-                    <option value="VLD">Very Low (100*52) 16/9</option>   
-                    <option value="LD">Low (160*88) 16/9</option> 
-                    <option value="MD">Medium (320*180) 16/9</option> 
-                    <option value="HD" selected="selected">High (640*360) 16/9</option> 
-                    <option value="FHD">Very Hight (640*480) 4/3</option>
-                </select>
+                <select id="robot_camdef_select"></select>
             </span>
             <br/>
             
@@ -296,26 +280,47 @@
                 <input type="radio" name="PRVidSetting" value="hide" id="PRVhide" onclick="setRemotePiloteView('hide')"/> <label for="PRVhide">Hide</label>
                 &nbsp;&nbsp; || &nbsp;&nbsp;
                     <label for="pilot_camdef_select">Camera Resolution &nbsp;&nbsp; </label>
-                    <select id="pilot_camdef_select">
-                    <option value="VLD">Very Low (100*52) 16/9</option>   
-                    <option value="LD">Low (160*88) 16/9</option> 
-                    <option value="MD">Medium (320*180) 16/9</option> 
-                    <option value="HD" selected="selected">High (640*360) 16/9</option> 
-                    <option value="FHD">Very Hight (640*480) 4/3</option>
-                </select>
-                </span>
+                    <select id="pilot_camdef_select"></select>
+            </span>
             <hr/>
         </div>
     </section>
 
+    <section>
+            
+
+
+
+            
+            <div id='infoMessage' class="info message">
+            </div>
+
+            <div id='errorMessage' class="error message">
+            </div>
+
+            <div id='warningMessage' class="warning message">
+            </div>
+
+            <div id='sucessMessage' class="success message">
+            </div>
+            
+
+            <!--
+            <ul id="trigger-list">
+                     <li><a href="#" class="trigger info-trigger">Info</a></li>
+                     <li><a href="#" class="trigger error-trigger">Error</a></li>
+                     <li><a href="#" class="trigger warning-trigger">Warning</a></li>
+                     <li><a href="#" class="trigger success-trigger">Success</a></li>
+            </ul>
+            -->
+    
+
+    </section>
 
     <script>
         var type = "pilote-appelant";
         var proto = "1to1";
     </script>
-
-
-    
     
 
     <script src="/socket.io/socket.io.js"></script>
@@ -336,7 +341,7 @@
     <script src="/js/module_timesync.js"></script>
     <script src='/js/main_1to1.js'></script>
 
-    
+    <script src='/js/module_notifications.js'></script>
     <script src='/js/module_komnav_pilote.js'></script>
     <!--<script src='/js/module_robustesse.js'></script>-->
     <script src='/js/module_settings.js'></script>

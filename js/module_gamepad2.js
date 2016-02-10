@@ -9,14 +9,17 @@ var buttonY = null; // 1
 var buttonB = null; // 2
 var buttonX = null; // 3
 
-var cycleLeft = null; // 4
-var cycleRight = null; // 5
+var	buttonLB = null; // 4
+var buttonRB = null; // 5
 
-var reverseButton = null; // 6
-var advanceButton = null; // 7
+//var reverseButton = null; // 6
+//var advanceButton = null; // 7
 
-var backButton = null; // 8
-var startButton = null; // 9
+var	buttonLT = null; // 6
+var buttonRT = null; // 7
+
+var buttonBack = null; // 8
+var buttonStart = null; // 9
 
 var crossUp = null; // 12
 var crossDown = null; // 13
@@ -28,6 +31,7 @@ var activeGamePad = false;
 var connectedGamePad = false;
 var btHommeMort = false;
 var onMove = false;
+var onMessage = false;
 // Dernier bouton activé
 var lastButtonName = "";
 
@@ -142,9 +146,11 @@ function checkButtons(gamepad) {
 	for (var i = 0; i < gamepad.buttons.length; i++) {  
 	 var b = gamepad.buttons[i];
 	 if(b.pressed) {
+	   alert ("Button " + i + " is pressed");
 	   atLeastOneButtonPressed = true;
 	   buttonStatusDiv.innerHTML = 
 	    "Button " + i + " is pressed<br>";
+	   
 	   if(b.value !== undefined)
 	    analogicValueProgressBar.value = b.value;
 	 }
@@ -166,17 +172,18 @@ function checkButtons(gamepad) {
 	buttonY = gamepad.buttons[3]; 
 
 	// frontal droit - Cycle sélection caméra distante up + connexion
-	cycleLeft = gamepad.buttons[4]; 
+	buttonLB = gamepad.buttons[4]; 
+	// LB_LastState = false;
 	// frontal gauche - Cycle définition caméra robot up + connexion
-	cycleRight = gamepad.buttons[5]; 
+	buttonRB = gamepad.buttons[5]; 
 
 	// gachette gauche - marche arrière
-	reverseButton = gamepad.buttons[6]; 
+	buttonLT = gamepad.buttons[6]; 
 	// gachette droite - marche avant
-	advanceButton = gamepad.buttons[7]; 
+	buttonRT = gamepad.buttons[7]; 
 
-	backButton = gamepad.buttons[8]; // non utilisé
-	startButton = gamepad.buttons[9]; // non utilisé
+	buttonBack = gamepad.buttons[8]; // efface les notifications
+	buttonStart = gamepad.buttons[9]; // non utilisé
 
 	crossUp = gamepad.buttons[12]; // non utilisé
 	crossDown = gamepad.buttons[13]; // non utilisé
@@ -190,8 +197,7 @@ function checkButtons(gamepad) {
 	    // console.log('A');
 	    atLeastOneButtonPressed = true;
 	    buttonStatusDiv.innerHTML = "(A) Drive mode standard";
-	    // 
-	    prepareDriveCommand(gamepad, advanceButton.value, reverseButton.value,"standard","onDrive" );
+	    prepareDriveCommand(gamepad, buttonRT.value, buttonLT.value,"standard","onDrive" );
 	    btHommeMort = true;
 	    onMove = true;
 	    lastButtonName = "buttonA";
@@ -204,7 +210,7 @@ function checkButtons(gamepad) {
 	   // console.log('X');
 	    atLeastOneButtonPressed = true;
 	    buttonStatusDiv.innerHTML = " (X) Drive mode précision";
-	    prepareDriveCommand(gamepad, advanceButton.value, reverseButton.value,"precision","onDrive" )
+	    prepareDriveCommand(gamepad, buttonRT.value, buttonLT.value,"precision","onDrive" )
 	    btHommeMort = true;
 	    onMove = true;
 	    lastButtonName = "buttonX";
@@ -224,39 +230,105 @@ function checkButtons(gamepad) {
 
 		// Ouverture connexion
 		if (buttonY.pressed) {
-		      //checkAxes(gamepad,"precision");
-		      driveCommandBlock('open')
+		      // empécher l'appui continu sur la même touche 
+		      if (lastButtonName == "buttonY" ) return
+		      if (IS_WebRTC_Connected == true ) {
+		      	writeMessage ("warning","GAMEPAD","(Y) Connexion déjà ouverte ! ",3000)
+		      	return;
+		      }
+		      //driveCommandBlock('open')
+		      //buttonStatusDiv.innerHTML = "(Y) Ouverture connexion";
 		      atLeastOneButtonPressed = true;
-		      buttonStatusDiv.innerHTML = "(Y) Ouverture connexion";
 		      lastButtonName = "buttonY";
+		      writeMessage ("success","GAMEPAD","(Y) Ouverture connexion",3000)
+		  	  spawnNotification("GAMEPAD","(Y) Ouverture connexion",3000)
+		  	  openRobotConnexion();
+		      
 		      onMove = false;
 		      return;
 		      // Todo: connexion
 		
 		// Fermeture connexion
 		} else if (buttonB.pressed) {
-			  driveCommandBlock('open')
-		      //checkAxes(gamepad,"precision");
+
+			  // empécher l'appui continu sur la même touche 
+			  if (lastButtonName == "buttonB" ) return;
+			  if (IS_WebRTC_Connected == false ) {
+			  	writeMessage ("warning","GAMEPAD","(B) Connexion déjà fermée ! ",3000)
+			  	return;
+			  }	
+			  //driveCommandBlock('open')
+		      //buttonStatusDiv.innerHTML = "(B) Fermeture connexion<br>";
 		      atLeastOneButtonPressed = true;
-		      buttonStatusDiv.innerHTML = "(B) Fermeture connexion<br>";
+		      lastButtonName = "buttonB";
+		      writeMessage ("error","GAMEPAD","(B) Fermeture connexion",3000)
+		      spawnNotification("GAMEPAD","(B) Fermeture connexion",3000)
+		      closeRobotConnexion();
 		      lastButtonName = "buttonB";
 		      onMove = false;
 		      return;
-		      // Todo: deconnexion
 
-		// Cycle select caméra
-		} /* else if () {
-		 	// todo select camera
-		 	// todo connexion/reconnexion
-		
-		// Cycle select définitions
-		} /* else if ()  {
-			// todo select défitiion
-			// todo connexion/reconnexion
-		} 
-		/**/
-		
 
+		// Cycle sélection caméra
+		} else if (buttonLB.pressed) {
+			
+			 
+			if (IS_WebRTC_Connected == true ) {
+		      	writeMessage ("warning","GAMEPAD (LB) ","Sélection caméra impossible !</br/> Veuillez dabord déconnecter le robot !! ",500)
+		      	return;
+		      }
+
+		     // Ralentir l'appui continu sur la même touche
+		     var newTimer = Date.now();
+		     if (lastButtonName == "buttonLB" ) {
+		     	var testDelay = newTimer - lastTimer;
+		     	if ( testDelay < 500 ) return
+		     } lastTimer = newTimer;
+
+
+		    lastButtonName = "buttonLB";
+		    atLeastOneButtonPressed = true;
+		    
+		    var idSelect = '#remote_videoSource';
+		    var textCounter = 'Caméras robot disponibles: ';
+		    var selectCamText =  incrementSelectList(idSelect,textCounter)
+		    	  
+		  	writeMessage ("info","GAMEPAD (LB)", selectCamText);
+
+			return;
+			
+		// Cycle selection définitions
+		} else if (buttonRB.pressed)  {
+			
+			if (IS_WebRTC_Connected == true ) {
+		      	writeMessage ("warning","GAMEPAD (RB) ","Settings Impossibles !</br/> Veuillez dabord déconnecter le robot !! ",500)
+		      	return;
+		      }
+		    
+		     // Ralentir l'appui continu sur la même touche
+		     var newTimer = Date.now();
+		     if (lastButtonName == "buttonRB" ) {
+		     	var testDelay = newTimer - lastTimer;
+		     	if ( testDelay < 500 ) return
+		     } lastTimer = newTimer;
+
+		    atLeastOneButtonPressed = true;
+		    lastButtonName = "buttonRB";
+		    
+		    var idSelect = '#robot_camdef_select';
+		    var textCounter = 'Définitions caméras robot disponibles: ';
+		    var selectDefText =  incrementSelectList(idSelect,textCounter)		  
+		  	writeMessage ("info","GAMEPAD (RB)", selectDefText);
+
+			return;
+		// Ferme toutes les notifications
+		} else if (buttonBack.pressed)  {
+			
+		    atLeastOneButtonPressed = true;
+		    lastButtonName = "buttonBack";
+			hideAllMessages();
+
+		}
   }
 
   if(!atLeastOneButtonPressed) {
@@ -269,9 +341,37 @@ function checkButtons(gamepad) {
   }
 
 }
+// Titi: 
+function incrementSelectList(idSelect,textCounter) {
 
+			var nbSelect = $(idSelect+'>option').length;
+		    //var nameSelect = $(idSelect+'option:selected').text();
+		    //var valueSelect = $(idSelect+' option:selected').val();
+		    var indexSelect = $(idSelect+" option:selected").prevAll().size();
+		    
+		    // Pour selectionner automatiquement l'option suivante:
+		    // On récupère l'index sélectionné et on l'incrémente de 1
+		    // s'il est égal au nombre total d'options (-1) on remet le selecteur a l'index 0...
+		    var newIndex = indexSelect + 1;
+		    var lastIndex = nbSelect - 1;
+		    if (indexSelect == lastIndex) newIndex = 0;
+        	$(idSelect+' option').eq(newIndex).prop('selected',true);
+		    
+			// Affichage de la nouvelle sélection
+			var selectText = textCounter+nbSelect+"<hr/>";
+			var prefix = "  ", selectClass = ""
+		    $(idSelect+" > option").each(function() {
+    			if(this.selected) {
+    				prefix = ">> ", selectClass = "selected";
+    			}
+    			selectText += "<br><span class ='"+selectClass+"'>"+ prefix + " " + this.text;
+    			prefix = "  ", selectClass = "";
+			});
 
-// Construction & envoi de la commande Drive
+			return selectText
+
+}
+// titi: Construction & envoi de la commande Drive
 function prepareDriveCommand(gamepad, speedPos, speedNeg, mode, command ) {
 
     if(gamepad === undefined) return;
