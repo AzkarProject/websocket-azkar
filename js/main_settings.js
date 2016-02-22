@@ -158,8 +158,8 @@ server.iceServers.push({ url: 'stun:stun.l.google.com:19302'});
 // Celui là fonctionnait encore le 23/11/2015
 server.iceServers.push({url: "turn:turn.anyfirewall.com:443?transport=tcp",credential: "webrtc",username: "webrtc"});
 // TURN maison - Ne fonctionne pas sous wifi unice/Eduroam
-server.iceServers.push({url: "turn:134.59.130.142:3478?transport=tcp",credential: "robosoft",username: "robosoft"});
-server.iceServers.push({url: "turn:134.59.130.142:3478?transport=udp",credential: "robosoft",username: "robosoft"});
+server.iceServers.push({url: "turn:134.59.130.142:3478?transport=tcp",credential: "azkar",username: "azkar"});
+server.iceServers.push({url: "turn:134.59.130.142:3478?transport=udp",credential: "azkar",username: "azkar"});
 
 
 
