@@ -1,6 +1,8 @@
-// Script inspiré de l'article suivant:
+// Auteur: Thierry
+// Sources originales:
 // https://developer.mozilla.org/fr/docs/Web/Guide/API/WebRTC/WebRTC_basics
-// Source github : https://github.com/louisstow/WebRTC/blob/master/media.html
+// https://github.com/louisstow/WebRTC/blob/master/media.html
+
 
 //------ PHASE 1 : Pré-signaling ----------------------------------------------------------
 

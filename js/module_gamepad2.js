@@ -341,7 +341,9 @@ function checkButtons(gamepad) {
   }
 
 }
-// Titi: 
+
+
+// Thierry: 
 function incrementSelectList(idSelect,textCounter) {
 
 			var nbSelect = $(idSelect+'>option').length;
@@ -371,7 +373,9 @@ function incrementSelectList(idSelect,textCounter) {
 			return selectText
 
 }
-// titi: Construction & envoi de la commande Drive
+
+
+// Thierry: Construction & envoi de la commande Drive
 function prepareDriveCommand(gamepad, speedPos, speedNeg, mode, command ) {
 
     if(gamepad === undefined) return;
@@ -451,7 +455,7 @@ function prepareDriveCommand(gamepad, speedPos, speedNeg, mode, command ) {
 
 }
 
-
+// Thierry
 function Jauges(speedPos,speedNeg,axes,jaugeClass) {
 	advanceValueBar.setAttribute("class", jaugeClass)
 	advanceValueBar.value = speedPos;
@@ -463,7 +467,7 @@ function Jauges(speedPos,speedNeg,axes,jaugeClass) {
 }
 
 
-
+// Thierry
 function driveCommandBlock(order){
 	
 	if ( order == 'open' ) {

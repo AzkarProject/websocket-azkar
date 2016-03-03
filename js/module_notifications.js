@@ -29,7 +29,11 @@ $(document).ready(function(){
 		 
 });       
 
-// ajout titi:
+
+
+
+
+// author titi:
 // Variable globale de notification en cours
 // pour éviter les doubles affichages...
 activeNotification = false;
@@ -42,9 +46,7 @@ function set_IS_Notify (value) {
 	IS_Notify = value;
 }
 
-
-
-// Ajout Titi: 
+// author Titi: 
 // Le parametre duration permet de temporiser
 // La fermeture du message.
 // 4 types possibles: 'info','warning','error','success'
@@ -74,14 +76,9 @@ function writeMessage (type,title,body,duration,notification){
 
 }
 
-/*
-var testTitle = "Hello";
-var testBody = "I have a big body";
-writeMessage ('info',testTitle,testBody,3000);
-/**/
 
 //-----Notifications Desktop -------------------------------------------------------------------------
-
+// source: https://developer.mozilla.org/fr/docs/Web/API/notification
 
 function notifyMe() {
   // Voyons si le navigateur supporte les notifications
@@ -117,6 +114,8 @@ function notifyMe() {
   // il n'y a pas besoin de l'ennuyer à nouveau.
 }
 
+
+// source: https://developer.mozilla.org/fr/docs/Web/API/notification
 function spawnNotification(title,body,duration) {
   
   if (activeNotification == false) {

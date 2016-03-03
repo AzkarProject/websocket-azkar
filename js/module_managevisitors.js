@@ -1,3 +1,7 @@
+// Auteur: Thierry
+// Source : Aucune
+// -----------------------------------
+
 
 // Globale: flag de connexion webRTC active 
 // Pour gérer les conflits entre les commandes déco/reco

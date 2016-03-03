@@ -1,3 +1,6 @@
+// Author Thierry Bergeron
+// Source: Aucune
+
 
 /*// mémo Default Benchmarks Settings
 navSys = 'Robubox'; // 'KomNAV'
