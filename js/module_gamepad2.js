@@ -100,7 +100,8 @@ window.addEventListener("gamepadconnected", function(e) {
    
    // alert(msg)
    connectedGamePad = true;
-   $('#connect-notice').replaceWith(" <span id ='connect-notice'>  -- Gamepad activé !</span>");
+   //$('#connect-notice').replaceWith(" <span id ='connect-notice'>  -- Gamepad activé !</span>");
+   ihm.driveConnectNotice("  -- Gamepad activé !");
 });
 
 
@@ -110,8 +111,9 @@ window.addEventListener("gamepaddisconnected", function(e) {
    // console.log("Gamepad No " + index + " has been disconnected");
    // alert("Gamepad No " + index + " has been disconnected")
    connectedGamePad = false;
-   $('#connect-notice').replaceWith(" <span id ='connect-notice'>  -- Gamepad déconnecté !</span>");
-   driveCommandBlock('close')
+   //$('#connect-notice').replaceWith(" <span id ='connect-notice'>  -- Gamepad déconnecté !</span>");
+   ihm.driveConnectNotice("  -- Gamepad déconnecté !");
+   ihm.driveCommandBlock('close')
 });
 
 function scangamepads() {
@@ -127,7 +129,8 @@ function scangamepads() {
   // Donc il faut utiliser un flag d'état.
   if ( connectedGamePad == false ) {
   	if (gamepads[0]) {
-  		$('#connect-notice').replaceWith(" <span id ='connect-notice'>  -- Gamepad connecté !</span>");
+  		//$('#connect-notice').replaceWith(" <span id ='connect-notice'>  -- Gamepad connecté !</span>");
+  		ihm.driveConnectNotice("  -- Gamepad connecté !");
   	}
  
   }
@@ -201,7 +204,7 @@ function checkButtons(gamepad) {
 	    btHommeMort = true;
 	    onMove = true;
 	    lastButtonName = "buttonA";
-	    driveCommandBlock('open')
+	    ihm.driveCommandBlock('open')
 	    return;
 
 	// Bouton Homme mort avec vitesses en mode précision
@@ -214,7 +217,7 @@ function checkButtons(gamepad) {
 	    btHommeMort = true;
 	    onMove = true;
 	    lastButtonName = "buttonX";
-	    driveCommandBlock('open')
+	    ihm.driveCommandBlock('open')
 	    return;
 	
 	// Si bouton homme mort non activés, on traite les autres commandes
@@ -333,10 +336,10 @@ function checkButtons(gamepad) {
 
   if(!atLeastOneButtonPressed) {
     buttonStatusDiv.innerHTML = "";
-    Jauges(0,0,0,'grey');
+    ihm.driveJauges(0,0,0,'grey');
 	if (activeGamePad == true ) {
 		// console.log ('CLOSE');
-		driveCommandBlock('close');
+		ihm.driveCommandBlock('close');
 	}
   }
 
@@ -385,7 +388,7 @@ function prepareDriveCommand(gamepad, speedPos, speedNeg, mode, command ) {
 
     if (command == 'onStop') {
     	jaugeClass = 'red';
-    	Jauges(0,0,0,jaugeClass);
+    	ihm.driveJauges(0,0,0,jaugeClass);
     	// console.log ('onStop');
     	
 		var driveStop = {
@@ -400,7 +403,7 @@ function prepareDriveCommand(gamepad, speedPos, speedNeg, mode, command ) {
 			enable: 'false'
 		}
 		     
-		commandes.sendToRobot("", "", "Gamepad",driveStop);
+		navigation_datas.sendToRobot("", "", "Gamepad",driveStop);
 		btHommeMort = false;
     
     } else if (command == 'onDrive'){
@@ -435,7 +438,7 @@ function prepareDriveCommand(gamepad, speedPos, speedNeg, mode, command ) {
 
        	}
 
-       	Jauges(speedPos,speedNeg,gamepad.axes[0],jaugeClass)
+       	ihm.driveJauges(speedPos,speedNeg,gamepad.axes[0],jaugeClass)
 
 	    // envoi de l'ordre
 	     var driveCommand = {
@@ -449,13 +452,13 @@ function prepareDriveCommand(gamepad, speedPos, speedNeg, mode, command ) {
 	         lSpeed: lSpeed,
 	         enable: 'true'
 	     }             
-	    commandes.sendToRobot("", "", "Gamepad",driveCommand);
+	    navigation_datas.sendToRobot("", "", "Gamepad",driveCommand);
 	}
 
 
 }
 
-// Thierry
+/*// Thierry
 function Jauges(speedPos,speedNeg,axes,jaugeClass) {
 	advanceValueBar.setAttribute("class", jaugeClass)
 	advanceValueBar.value = speedPos;
@@ -480,6 +483,7 @@ function driveCommandBlock(order){
    		$('#drive-commands').hide(); 
 	}
 }
+/**/
 
 
 

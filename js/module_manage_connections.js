@@ -52,7 +52,7 @@ function isRobotConnected(peerCnxCollection) {
 	 }
 	if (peerCnxCollection[peerCnx1to1] == null) {
 		// On désactive le bouton de fermeture de la connexion principale
-		closeConnectionButton("deactivate",null);
+		ihm.closeConnectionButton("deactivate",null);
 	}
 	return isConnected;
 }
@@ -88,12 +88,12 @@ function updateListUsers() {
 		    if (oneUser.typeClient == "Robot" )
 		    	if (robotCnxStatus != "new") {
 		    		// On active le bouton de fermeture de la connexion principale
-		    		closeConnectionButton("activate",oneUser.id);
+		    		ihm.closeConnectionButton("activate",oneUser.id);
 		    		isRobotInThelist = true;
 		    	}
         
         } // end For  
-        if (isRobotInThelist == false) closeConnectionButton("deactivate",null);
+        if (isRobotInThelist == false) ihm.closeConnectionButton("deactivate",null);
 }
 
 function getUserID(type) {
@@ -108,7 +108,7 @@ function getUserID(type) {
 
 
 
-// Activation/désactivation du bouton de fermeture de connexion
+/*// Activation/désactivation du bouton de fermeture de connexion
 function closeConnectionButton(order,userID){
 	console.log ("closeConnectionButton("+order+")");
 	if (order == "activate") {
@@ -120,6 +120,7 @@ function closeConnectionButton(order,userID){
 	}
 
 }
+/**/
 
 
 // Fonctions passerelles

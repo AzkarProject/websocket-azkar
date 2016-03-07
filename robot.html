@@ -196,22 +196,25 @@
 		<script src="/js/common_tools.js"></script>
         <script src="/js/common_settings.js"></script>
 		<!--<script src="/js/module_timesync.js"></script>-->
+		<script src='/js/module_ihm.js'></script>
 		<script src='/js/module_fake_robubox.js'></script>
-        <script src='/js/module_commands.js'></script>
+        <script src='/js/module_navigation_datas.js'></script>
         
-        <script src='/js/common_robubox.js'></script>
-        
+        <!--<script src='/js/common_robubox.js'></script>-->
+        <script src='/js/module_komcom.js'></script>
 
- 		<script src='/js/main_websocket.js'></script>
- 		<script src='/js/main_settings.js'></script>
- 		<script src='/js/main_1to1.js'></script>
-		<script src='/js/module_komnav_robot.js'></script>
+ 		<script src='/js/1to1_websocket.js'></script>
+ 		<script src='/js/1to1_settings.js'></script>
+ 		<script src='/js/1to1_pre_signaling.js'></script>
+ 		<script src='/js/1to1_main.js'></script>
+ 		<script src='/js/1to1_post_signaling.js'></script>
+		<script src='/js/module_komremote_robot.js'></script>
 
 		<!--<script src='/js/main_1toN_Robot.js'></script>-->
 		<script src='/js/module_carto.js'></script>
-		<script src='/js/module_battery.js'></script>
+		
  		
-		<script src='/js/module_managevisitors.js'></script>
+		<script src='/js/module_manage_connections.js'></script>
 		<script src="/js/module_logs.js"></script>
 
 
@@ -228,7 +231,7 @@
             });
     	
 			// On lance l'utilitaire de récupération de la batterie
-			robubox.getBattery();
+			komcom.getBattery();
 		</script>
 
 </body>

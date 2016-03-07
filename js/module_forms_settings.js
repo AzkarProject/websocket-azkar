@@ -15,6 +15,19 @@ cartoView = 'hide'; // 'show'
 cartoChannel = 'webSocket'; // 'webRTC'
 /**/
 
+
+// Génère les options des résolution
+var listOptionsDefinition = '<option value="VLD" selected="selected" >Very Low (100*52) 16/9</option>';   
+listOptionsDefinition += '<option value="LD">Low (160*88) 16/9</option>'; 
+listOptionsDefinition += '<option value="MD">Medium (320*180) 16/9</option>';
+listOptionsDefinition += '<option value="HD">High (640*360) 16/9</option>'; 
+listOptionsDefinition += '<option value="FHD">Very Hight (640*480) 4/3</option>';
+$('#robot_camdef_select').html(listOptionsDefinition); 
+$('#pilot_camdef_select').html(listOptionsDefinition); 
+
+
+
+
 // Formulaire de sélection systeme embarqué
 selectSystemRobubox = document.querySelector('input#Robubox');
 selectSystemKomNAV = document.querySelector('input#KomNAV');
@@ -69,14 +82,7 @@ if (proto == "1to1") {
 }
 
 
-// Génère les options des résolution
-var listOptionsDefinition = '<option value="VLD" selected="selected" >Very Low (100*52) 16/9</option>';   
-listOptionsDefinition += '<option value="LD">Low (160*88) 16/9</option>'; 
-listOptionsDefinition += '<option value="MD">Medium (320*180) 16/9</option>';
-listOptionsDefinition += '<option value="HD">High (640*360) 16/9</option>'; 
-listOptionsDefinition += '<option value="FHD">Very Hight (640*480) 4/3</option>';
-$('#robot_camdef_select').html(listOptionsDefinition); 
-$('#pilot_camdef_select').html(listOptionsDefinition); 
+
 
 
 // --------------- Ecouteurs des formulaires HTML

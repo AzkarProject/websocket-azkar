@@ -89,7 +89,7 @@ $(document).ready(function() {
     	socket.on("pilotGetNav", function(data) {
     		if (data = "getNavInfos") {
     			// pilotGetNav = true;
-    			commandes.sendToPilote("map_parameters", dataMap);
+    			navigation_datas.sendToPilote("map_parameters", dataMap);
     		}
     	});
     }
@@ -226,7 +226,7 @@ $(document).ready(function() {
 
 	            // Titi:
 	            // si échange Robot/Pilote de données carto activé
-	            if ( isOnePilot == true) commandes.sendToPilote("robot_localization", robotInfo);
+	            if ( isOnePilot == true) navigation_datas.sendToPilote("robot_localization", robotInfo);
                 /*
 	            context.clearRect(0, 0, canvasMap.width, canvasMap.height);
 	            

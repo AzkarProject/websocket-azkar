@@ -166,8 +166,6 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || 
  }
 
 
-
-
 // options pour l'objet PeerConnection
 server = {'iceServers': []}; // OK sur même réseau...
 //server.iceServers.push({ url: 'stun:stun.l.google.com:19302'});
@@ -230,7 +228,39 @@ constraints = {
     }
 };
 
-// --------- contrôle d'accès websocket...
+
+// ----- Variables globales Robot/Pilote
+
+audioSource = local_AudioSelect.value;
+videoSource = local_VideoSelect.value;
+
+constraint = null;
+
+if (type == "pilote-appelant" && proto == "1to1") {
+    robotCamDef = robot_camdef_select.value;
+    piloteCamDef = pilot_camdef_select.value;
+}
+
+// -----------------------------
+
+// Constraints de l'offre SDP. 
+robotConstraints = {
+    mandatory: {
+        OfferToReceiveAudio: true,
+        OfferToReceiveVideo: true
+    }
+};
+
+// Constraints de l'offre SDP. 
+piloteConstraints = {
+    mandatory: {
+        OfferToReceiveAudio: true,
+        OfferToReceiveVideo: true
+    }
+};
+
+
+// --------- contrôle d'accès via websocket...
 
 // rejectConnexion', message:message, url:indexUrl);
 socket.on('error', errorHandler);
@@ -242,6 +272,8 @@ socket.on('razConnexion', function(data) {
     console.log(">> socket.on('razConnexion',...");
     forceRedirect(data.url)
 })
+
+
 // --------------------- Gestion des messages d'erreur ------------------
 
 function errorHandler(err) {

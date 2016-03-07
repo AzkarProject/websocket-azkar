@@ -80,4 +80,4 @@ exports.sendToPilote = function (typeData, data){
 };
 
 
-})(typeof exports === 'undefined'? this['commandes']={}: exports);
+})(typeof exports === 'undefined'? this['navigation_datas']={}: exports);

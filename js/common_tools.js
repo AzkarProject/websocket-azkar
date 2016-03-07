@@ -248,16 +248,7 @@ exports.toObject = function  (arr) {
 // ----------------- Objets
 
 
-// Copie profonde d'un objet
-exports.deepClone = function  (obj) {
-    console.log("tools.deepClone(obj)")
-    try{
-        var copy = JSON.parse(JSON.stringify(obj));
-    } catch(ex){
-        alert("Vous utilisez un vieux navigateur bien pourri, qui n'est pas pris en charge par ce site");
-    }
-    return copy;
-}
+
 
  
  // Fonctions de débuggage
@@ -386,6 +377,26 @@ exports.isJson = function (str) {
       return false;
   }
   return true;
+}
+
+// Vérifie qu'un objet est vide
+exports.isEmpty = function (obj) {
+  for(var prop in obj) {
+      if(obj.hasOwnProperty(prop))
+          return false;
+  }
+  return true;
+}
+
+// clonage d'objet 
+// Source: http://www.finalclap.com/faq/371-javascript-clone-dupliquer-objet
+exports.cloneObject = function (obj){
+  try{
+      var copy = JSON.parse(JSON.stringify(obj));
+  } catch(ex){
+      alert("Vous utilisez un vieux navigateur bien pourri, qui n'est pas pris en charge par ce site");
+  }
+  return copy;
 }
 
 

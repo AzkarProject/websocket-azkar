@@ -2,7 +2,7 @@
 var tools = require('./js/common_tools'); // méthodes génériques & objets
 var settings = require('./js/common_settings'); // paramètres de configuration
 //var devSettings = require('./js/common_devSettings'); // Nom de la branche gitHub
-var robubox = require('./js/common_robubox'); // Fonctions de communication avec la Robubox
+//var robubox = require('./js/common_robubox'); // Fonctions de communication avec la Robubox
 
 
 deathManTimeStamp = new Date().getTime(); // TimeStamp en variable globale pour implémenter une sécurité homme/mort...
@@ -536,11 +536,20 @@ io.on('connection', function(socket, pseudo) {
 
     // Robot >> Pilote: Offre des cams/micros disponibles coté robot
     socket.on('remoteListDevices', function(data) {
+        
+        /*
         console.log(tools.humanDateER('R') + " @ remoteListDevices >>>> (from "+data.objUser.pseudo+" id:"+data.objUser.id+")");
         socket.broadcast.emit('remoteListDevices', {
             objUser: data.objUser,
             listeDevices: data.listeDevices
         });
+        /**/
+
+
+        socket.broadcast.emit('remoteListDevices', data);
+
+
+
     });
 
     // Pilote >> Robot: cams/micros sélectionnés par le Pilote

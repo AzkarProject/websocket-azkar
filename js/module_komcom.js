@@ -257,9 +257,9 @@ exports.getBattery = function (){
                     thenum = batteryInfo.Remaining ;
                     percentage = (thenum <= 100) ? thenum : 100; // 6- 
                     // rafraichissement de la jauge sur l'IHM Robot
-                    refreshJaugeBattery(percentage);
+                    ihm.refreshJaugeBattery(percentage);
                     // envoi des valeurs au pilote via le serveur
-                    commandes.sendToPilote("battery_level",percentage)
+                    navigation_datas.sendToPilote("battery_level",percentage)
                  }, delay);
                 
 
@@ -288,9 +288,10 @@ exports.getBattery = function (){
     	                percentage = (thenum <= 100) ? thenum : 100; // 6- 
     	            });
                     // rafraichissement de la jauge sur l'IHM Robot
-                    refreshJaugeBattery(percentage);
+                    ihm.refreshJaugeBattery(percentage);
                     // envoi des valeurs au pilote via le serveur
-                    commandes.sendToPilote("battery_level",percentage)
+                    //commandes.sendToPilote("battery_level",percentage)
+                    navigation_datas.sendToPilote("battery_level",percentage)
 
     	        }, delay);
 
@@ -310,4 +311,4 @@ exports.getBattery = function (){
 
 
 
-})(typeof exports === 'undefined'? this['robubox']={}: exports);
+})(typeof exports === 'undefined'? this['komcom']={}: exports);

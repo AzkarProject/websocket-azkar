@@ -9,19 +9,6 @@ var nbUsers = 0;
 // Initialisation du canal de signalisation
 var socket = io.connect(); 
 
-// Sur OpenShift, il faut passer par le proxy...
-// On récupère l'URL complète du client
-// On regarde si l'url contient la chaine "rhcloud.com"
-// var currentUrl = window.location.href; 
-// var pIoConnect = ''; // local: pas de proxy particulier
-// var isOpenShift = currentUrl.indexOf("rhcloud.com") > -1;
-// if (isOpenShift) {pIoConnect = 'http://'+settings.appHostName()+'.rhcloud.com:8000'} // proxy Openshift.
-// var socket = io.connect(pIoConnect); 
-
-
-
-
-
 var typeClient = null;
 if (type == "pilote-appelant") {typeClient = "Pilote";
 } else if (type == "robot-appelé") { typeClient = "Robot";
@@ -69,12 +56,6 @@ function checkCookie(pseudo) {
     return pseudo;
 }
 
-
-// if (!pseudo) { pseudo = typeClient;}
-// document.title = pseudo + ' - ' + document.title;
-
-// socket.emit('nouveau_client', pseudo); // Version 1
-//console.log ("socket.emit('nouveau_client2', {pseudo: "+pseudo+", typeClient: "+typeClient+"t});")
 socket.emit('nouveau_client2', {pseudo: pseudo, typeClient: typeClient}); // Version objet
 
 // liste des users connectés
@@ -85,24 +66,6 @@ var localObjUser;
 var myPlaceListe;
 var myPeerID;
 // ------------------------------------------------------
-
-
-// Ping serveur:
-
-if (settings.isBenchmark() == true ) {
-
-  setInterval(function() {
-    startTime = Date.now();
-    socket.emit('ping');
-  }, 2000);
-
-  socket.on('pong', function() {
-    latency = Date.now() - startTime;
-    inserePings(latency)
-  });
-
-}
-
 
 
 // Updater le titre de la page (pour le fun...)
@@ -121,8 +84,6 @@ socket.on('position_liste2', function(objUser) {
     myPeerID = objUser.id;
     console.log ('myPeerID: '+myPeerID)
 
-    //console.log ("Ordre d'arrivée dans la session websocket: "+placeListe);
-    //document.title = "("+myPlaceListe+") " + document.title;
 })
 
 // Fonctions websocket dédiées au tchat ---------------------------
@@ -134,7 +95,8 @@ socket.on('nouveau_client2', function(objUser) {
     console.log(dateR+">> socket.on('nouveau_client2', objUser");
     //var message = dateR + " à rejoint le Tchat";
     var message = dateR + " > Connexion entrante";
-    insereMessage3(objUser,message);
+    //insereMessage3(objUser,message);
+    ihm.insertWsMessage(objUser,message);
 
 })
 
@@ -147,48 +109,18 @@ function isInPeerCnxCollection(peerCnxID ){
 
 
 
-// Réception d'une info de deconnexion 
-// >>> plus réactif que l'écouteur de l'API WebRTC
-// >>> On déplace ici l'écouteur au cas où la fonction
-// >>> Connect de webRTC n'as pas encore été instanciée.
+// Réception d'une info de deconnexion:
+// Plus réactif que l'écouteur de l'API WebRTC !
+// On déplace ici l'écouteur au cas où la fonction
+// connect() de webRTC n'as pas encore été instanciée.
 socket.on("disconnected", function(data) { 
   console.log(">> socket.on('webSocket-disconnected',...");
 
   var dateR = tools.dateER('R');
   var msg = dateR+' '+data.message;
-  insereMessage3(data.objUser,msg); // Plante puisque no data.objUser  !!!
-
-  // On met à jour la liste des cliens connectés
-  //var users = data;
-  //var debug = tools.stringObjectDump(users,"users");
-  // console.log(debug); 
-
-  //if (!data.objUser) alert ("!data.objUser");
+  ihm.insertWsMessage(data.objUser,msg);
   if (!data.objUser) return;
   
-  
- // TODO: déplacer à la réception de l'event webRTC "disconnected"
- // Et si besoin factoriser ca en méthode genres 
- // common.removeRtc(collection,peercnxID) 
- // pour éviter d'avoir a retaper le même code sur les 3 mains
- /*
- var oldPeerCnx = "......";
- console.log(oldPeerCnx);
- for (var key in peerCnxCollection) {
-      oldPeerCnx = key.indexOf(data.objUser.id);
-      //console.log(key);
-      console.log(peerCnxCollection[key]);
-      if (oldPeerCnx != -1) {
-        console.log("----------------------------");
-        peerCnxCollection[key] = null;
-        console.log(peerCnxCollection);
-        console.log("----------------------------");
-      }  
-  }
- /**/
-
-  
-
   
   var testPeerCnxId = "";
   var isAPeerCnxID = false;
@@ -249,44 +181,28 @@ socket.on("disconnected", function(data) {
       }
   }
 
-  // On lance la méthode de préparatoire à la renégo WebRTC
-  // Todo >>>> Tester déclenchement a la detection WebRTC...
-  // Pour voir si ca résoud le problème de déco intempestive sur openShift
-  // onDisconnect();
-  // >>>> Tests en local: renégo webSoket et WebRTC OK
-  // >>>> Todo >> Tests en ligne sur OpenShift...
 });
   
-// >> V2 User en version Objet
 
-// Quand on reçoit un message, on l'insère dans la page
+// Quand on reçoit un message WS, on l'insère dans la page
 socket.on('message2', function(data) {
     var dateR = tools.dateER('R');
     var msg = dateR+' '+data.message;
-    insereMessage3(data.objUser,msg);
+    ihm.insertWsMessage(data.objUser,msg);
 })
 
-// Quand on reçoit une nouvelle commande de déplacement, on l'insère dans la page
-/*// piloteOrder
-socket.on('piloteOrder', function(data) {
-    var dateR = tools.dateER('R');
-    var msg = dateR+' '+data.message;
-    insereMessage3(data.objUser, msg);
-})
-/**/
 
 
-
-// Quand on reçoit un message de service
+// Quand on reçoit un message WS de service
 socket.on('service2', function(data) {
     var dateR = tools.dateER('R');
     var msg = dateR+' '+data.message;
-    insereMessage3(data.objUser,msg);
+    ihm.insertWsMessage(data.objUser,msg);
 })
 
 
 
-// ----------- Méthodes jquery d'affichage du tchat ------------------------------
+// ----------- Méthodes jquery d'affichage du tchat WS ------------------------------
 
 // Lorsqu'on envoie le formulaire, on transmet le message et on l'affiche sur la page
 // Bloc de tchat principal des IHM Pilote et Robot
@@ -296,66 +212,9 @@ $('#formulaire_chat_websoket').submit(function () {
     var dateE = '[E-'+tools.dateNowInMs()+']';
     message = dateE + ' '+message;
     socket.emit('message2', {objUser:localObjUser,message:message}); // Transmet le message aux autres
-    insereMessage3(localObjUser, message); // Affiche le message aussi sur notre page
+    // insereMessage3(localObjUser, message); // Affiche le message aussi sur notre page
+    ihm.insertWsMessage(localObjUser, message);
     $('#message').val('').focus(); // Vide la zone de Chat et remet le focus dessus
     return false; // Permet de bloquer l'envoi "classique" du formulaire
 });
 
-// ------------ ADD version 1toN
-// Bloc de tchatt secondaire de l'IHM pilote (s'affiche dans le bloc 1toN) 
-$('#formulaire_chat_1toN').submit(function () {
-    //console.log ("WWWWWWWWWWWWW");
-    var message = $('#message3').val();
-    // On ajoute la dateE au message
-    var dateE = '[E-'+tools.dateNowInMs()+']';
-    message = dateE + ' '+message;
-    socket.emit('message2', {objUser:localObjUser,message:message}); // Transmet le message aux autres
-    insereMessage3(localObjUser, message); // Affiche le message aussi sur notre page
-    $('#message3').val('').focus(); // Vide la zone de Chat et remet le focus dessus
-    return false; // Permet de bloquer l'envoi "classique" du formulaire
-});
-
-// Bloc de tchat principal de l'IHM Visiteur
-$('#formulaire_chat_1toN_visitor').submit(function () {
-    //console.log ("WWWWWWWWWWWWW");
-    var message = $('#message4').val();
-    // On ajoute la dateE au message
-    var dateE = '[E-'+tools.dateNowInMs()+']';
-    message = dateE + ' '+message;
-    socket.emit('message2', {objUser:localObjUser,message:message}); // Transmet le message aux autres
-    insereMessage3(localObjUser, message); // Affiche le message aussi sur notre page
-    $('#message4').val('').focus(); // Vide la zone de Chat et remet le focus dessus
-    return false; // Permet de bloquer l'envoi "classique" du formulaire
-});
-/**/ // ------------- / Version 1toN
-
-
-
-
-// Affiche le message ds le tchat
-function insereMessage3(objUser, message) {
-    
-    var text;
-    if (objUser){
-      text = '['+objUser.typeClient+'] '+ message;
-    } else {
-      text = message;
-    }
-    text += '\n';
-    
-    $('#zone_chat_websocket').prepend(text);
-    if ( $('#zone_chat_1toN') )  $('#zone_chat_1toN').prepend(text);
-    if ( $('#zone_chat_1toN_visitor') )  $('#zone_chat_1toN_visitor').prepend(text);
-}
-
-// Affiche les PINGS (mode Benchmarks)
-if (settings.isBenchmark() == true ) {
-  function inserePings(ping) {
-      
-     var text = typeClient+";"+ping+'\n';
-      
-      $('#zone_chat_websocket').prepend(text);
-      if ( $('#zone_chat_1toN') )  $('#zone_chat_1toN').prepend(text);
-      if ( $('#zone_chat_1toN_visitor') )  $('#zone_chat_1toN_visitor').prepend(text);
-  }
-}
