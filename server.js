@@ -1,6 +1,6 @@
 // ------------------------ Elements communs client/serveur
 var tools = require('./js/common_tools'); // méthodes génériques & objets
-var settings = require('./js/common_settings'); // paramètres de configuration
+var appSettings = require('./js/common_app_settings'); // paramètres de configuration
 //var devSettings = require('./js/common_devSettings'); // Nom de la branche gitHub
 //var robubox = require('./js/common_robubox'); // Fonctions de communication avec la Robubox
 
@@ -42,7 +42,7 @@ else if (hostName == "AZKAR-2") ipaddress = "134.59.130.142"; // IP statique de 
 
 console.log("***********************************");
 console.log('');
-console.log('(' + settings.appBranch() + ') ' + settings.appName() + " V " + settings.appVersion());
+console.log('(' + appSettings.appBranch() + ') ' + appSettings.appName() + " V " + appSettings.appVersion());
 console.log('');
 console.log("***********************************");
 console.log("Serveur sur machine: " + hostName);
@@ -181,7 +181,7 @@ io.on('connection', function(socket, pseudo) {
     /**/
 
     
-    if (settings.isBenchmark() == true ) {
+    if (appSettings.isBenchmark() == true ) {
 
         // Ping server
     	socket.on('ping', function() {

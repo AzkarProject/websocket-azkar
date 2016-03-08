@@ -7,7 +7,7 @@ var KOMCOM_SERVER = '127.0.0.1', // wss://127.0.0.1
 	KOMNAV_METHOD_DRIVE = KOMCOM_REALM + '.drive',
 	connection = new autobahn.Connection({ url: 'wss://' + KOMCOM_SERVER, realm: KOMCOM_REALM });
 
-var isRobubox = settings.isRobubox();
+var isRobubox = appSettings.isRobubox();
 
 
 if (isRobubox == true) {

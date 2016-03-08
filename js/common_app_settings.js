@@ -33,4 +33,4 @@ exports.isRobubox = function(){
 };
 
 
-})(typeof exports === 'undefined'? this['settings']={}: exports);
+})(typeof exports === 'undefined'? this['appSettings']={}: exports);

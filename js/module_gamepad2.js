@@ -236,15 +236,18 @@ function checkButtons(gamepad) {
 		      // empécher l'appui continu sur la même touche 
 		      if (lastButtonName == "buttonY" ) return
 		      if (IS_WebRTC_Connected == true ) {
-		      	writeMessage ("warning","GAMEPAD","(Y) Connexion déjà ouverte ! ",3000)
+		      	// writeMessage ("warning","GAMEPAD","(Y) Connexion déjà ouverte ! ",3000)
+		      	notifications.writeMessage ("warning","GAMEPAD","(Y) Connexion déjà ouverte ! ",3000)
 		      	return;
 		      }
 		      //driveCommandBlock('open')
 		      //buttonStatusDiv.innerHTML = "(Y) Ouverture connexion";
 		      atLeastOneButtonPressed = true;
 		      lastButtonName = "buttonY";
-		      writeMessage ("success","GAMEPAD","(Y) Ouverture connexion",3000)
-		  	  spawnNotification("GAMEPAD","(Y) Ouverture connexion",3000)
+		      //writeMessage ("success","GAMEPAD","(Y) Ouverture connexion",3000)
+		  	  //spawnNotification("GAMEPAD","(Y) Ouverture connexion",3000)
+		  	  notifications.writeMessage ("success","GAMEPAD","(Y) Ouverture connexion",3000)
+		  	  notifications.spawnNotification("GAMEPAD","(Y) Ouverture connexion",3000)
 		  	  openRobotConnexion();
 		      
 		      onMove = false;
@@ -257,15 +260,17 @@ function checkButtons(gamepad) {
 			  // empécher l'appui continu sur la même touche 
 			  if (lastButtonName == "buttonB" ) return;
 			  if (IS_WebRTC_Connected == false ) {
-			  	writeMessage ("warning","GAMEPAD","(B) Connexion déjà fermée ! ",3000)
+			  	notifications.writeMessage ("warning","GAMEPAD","(B) Connexion déjà fermée ! ",3000)
 			  	return;
 			  }	
 			  //driveCommandBlock('open')
 		      //buttonStatusDiv.innerHTML = "(B) Fermeture connexion<br>";
 		      atLeastOneButtonPressed = true;
 		      lastButtonName = "buttonB";
-		      writeMessage ("error","GAMEPAD","(B) Fermeture connexion",3000)
-		      spawnNotification("GAMEPAD","(B) Fermeture connexion",3000)
+		      //writeMessage ("error","GAMEPAD","(B) Fermeture connexion",3000)
+		      //spawnNotification("GAMEPAD","(B) Fermeture connexion",3000)
+		      notifications.writeMessage ("error","GAMEPAD","(B) Fermeture connexion",3000)
+		      notifications.spawnNotification("GAMEPAD","(B) Fermeture connexion",3000)
 		      closeRobotConnexion();
 		      lastButtonName = "buttonB";
 		      onMove = false;
@@ -277,7 +282,8 @@ function checkButtons(gamepad) {
 			
 			 
 			if (IS_WebRTC_Connected == true ) {
-		      	writeMessage ("warning","GAMEPAD (LB) ","Sélection caméra impossible !</br/> Veuillez dabord déconnecter le robot !! ",500)
+		      	//writeMessage ("warning","GAMEPAD (LB) ","Sélection caméra impossible !</br/> Veuillez dabord déconnecter le robot !! ",500)
+		      	notifications.writeMessage ("warning","GAMEPAD (LB) ","Sélection caméra impossible !</br/> Veuillez dabord déconnecter le robot !! ",500)
 		      	return;
 		      }
 
@@ -296,7 +302,8 @@ function checkButtons(gamepad) {
 		    var textCounter = 'Caméras robot disponibles: ';
 		    var selectCamText =  incrementSelectList(idSelect,textCounter)
 		    	  
-		  	writeMessage ("info","GAMEPAD (LB)", selectCamText);
+		  	//writeMessage ("info","GAMEPAD (LB)", selectCamText);
+		  	notifications.writeMessage ("info","GAMEPAD (LB)", selectCamText);
 
 			return;
 			
@@ -304,7 +311,8 @@ function checkButtons(gamepad) {
 		} else if (buttonRB.pressed)  {
 			
 			if (IS_WebRTC_Connected == true ) {
-		      	writeMessage ("warning","GAMEPAD (RB) ","Settings Impossibles !</br/> Veuillez dabord déconnecter le robot !! ",500)
+		      	//writeMessage ("warning","GAMEPAD (RB) ","Settings Impossibles !</br/> Veuillez dabord déconnecter le robot !! ",500)
+		      	notifications.writeMessage ("warning","GAMEPAD (RB) ","Settings Impossibles !</br/> Veuillez dabord déconnecter le robot !! ",500)
 		      	return;
 		      }
 		    
@@ -321,7 +329,8 @@ function checkButtons(gamepad) {
 		    var idSelect = '#robot_camdef_select';
 		    var textCounter = 'Définitions caméras robot disponibles: ';
 		    var selectDefText =  incrementSelectList(idSelect,textCounter)		  
-		  	writeMessage ("info","GAMEPAD (RB)", selectDefText);
+		  	//writeMessage ("info","GAMEPAD (RB)", selectDefText);
+		  	notifications.writeMessage ("info","GAMEPAD (RB)", selectDefText);
 
 			return;
 		// Ferme toutes les notifications
@@ -329,8 +338,25 @@ function checkButtons(gamepad) {
 			
 		    atLeastOneButtonPressed = true;
 		    lastButtonName = "buttonBack";
-			hideAllMessages();
+			// hideAllMessages();
+			notifications.hideAllMessages();
+		
+		// Switche mode embed/plein écran
+		} else if (buttonStart.pressed)  {
 
+			 // Ralentir l'appui continu sur la même touche
+		     var newTimer = Date.now();
+		     if (lastButtonName == "buttonStart" ) {
+		     	var testDelay = newTimer - lastTimer;
+		     	if ( testDelay < 500 ) return
+		     } lastTimer = newTimer;
+			
+		    atLeastOneButtonPressed = true;
+		    lastButtonName = "buttonStart";
+			// hideAllMessages();
+			// notifications.hideAllMessages();
+			ihm.toggleFullScreen();
+			ihm.navigationView('center','bottom');
 		}
   }
 
@@ -458,32 +484,7 @@ function prepareDriveCommand(gamepad, speedPos, speedNeg, mode, command ) {
 
 }
 
-/*// Thierry
-function Jauges(speedPos,speedNeg,axes,jaugeClass) {
-	advanceValueBar.setAttribute("class", jaugeClass)
-	advanceValueBar.value = speedPos;
-    reverseValueBar.setAttribute("class", jaugeClass)
-    reverseValueBar.value = speedNeg;
-    leftRightValueBar.innerHTML = 0 + ": " + axes.toFixed(4);
-    leftRightValueBar.setAttribute("class", jaugeClass)
-    leftRightValueBar.setAttribute("value", axes + 1);
-}
 
-
-// Thierry
-function driveCommandBlock(order){
-	
-	if ( order == 'open' ) {
-		activeGamePad = true;
-		$('#step-commands').hide();
-		$('#drive-commands').show();
-	} else if ( order == 'close' ) {
-		activeGamePad = false;
-		$('#step-commands').show();
-   		$('#drive-commands').hide(); 
-	}
-}
-/**/
 
 
 

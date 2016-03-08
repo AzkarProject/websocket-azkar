@@ -5,8 +5,8 @@
 //exports.sendDrive = function (enable, aSpeed,lSpeed){
 exports.sendDrive = function (data){        
         
-    var isRobubox = settings.isRobubox();
-    var isBenchmark = settings.isBenchmark();
+    var isRobubox = appSettings.isRobubox();
+    var isBenchmark = appSettings.isBenchmark();
 
     console.log ("robubox.sendDrive_01("+isRobubox+")");
     // console.log(data);
@@ -198,7 +198,7 @@ exports.sendDrive2 = function (enable, aSpeed,lSpeed){
 exports.sendStep = function (typeMove,dist, MaxSpeed){
         
         
-    var isRobubox = settings.isRobubox();
+    var isRobubox = appSettings.isRobubox();
     console.log ("robubox.sendStep("+isRobubox+")");
     
     
@@ -238,7 +238,7 @@ exports.sendStep = function (typeMove,dist, MaxSpeed){
 exports.getBattery = function (){
         
         
-    var isRobubox = settings.isRobubox();
+    var isRobubox = appSettings.isRobubox();
     //var isRobubox = false;
     // console.log ("robubox.getBattery("+isRobubox+")");
     

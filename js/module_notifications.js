@@ -1,11 +1,31 @@
+
+(function(exports){
+
 // Cool Notifications 
 // source: http://red-team-design.com/cool-notification-messages-with-css3-jquery/
 
 // define the messages types	
 var myMessages = ['info','warning','error','success']; 	 
 
-function hideAllMessages()
-{
+// Variable globale de notification en cours
+// pour éviter les doubles affichages...
+activeNotification = false;
+IS_Notify = false;
+
+$(document).ready(function(){
+		 
+		 // Initially, hide them all
+		 notifications.hideAllMessages();
+
+		 // When message is clicked, hide it
+		 $('.message').click(function(){			  
+				  $(this).animate({top: -$(this).outerHeight()}, 500);
+		  });		 
+		 
+}); 
+
+
+exports.hideAllMessages = function() {
 		 // this array will store height for each
 		 var messagesHeights = new Array(); 
 	 
@@ -17,31 +37,12 @@ function hideAllMessages()
 		 }
 }
 
-$(document).ready(function(){
-		 
-		 // Initially, hide them all
-		 hideAllMessages();
+      
 
-		 // When message is clicked, hide it
-		 $('.message').click(function(){			  
-				  $(this).animate({top: -$(this).outerHeight()}, 500);
-		  });		 
-		 
-});       
-
-
-
-
-
-// author titi:
-// Variable globale de notification en cours
-// pour éviter les doubles affichages...
-activeNotification = false;
-IS_Notify = false;
 
 // Setter sous forme de fonction
 // pour être apellé dans un setimeout
-function set_IS_Notify (value) {
+exports.set_IS_Notify = function (value) {
 	// alert (IS_Notify);
 	IS_Notify = value;
 }
@@ -50,17 +51,12 @@ function set_IS_Notify (value) {
 // Le parametre duration permet de temporiser
 // La fermeture du message.
 // 4 types possibles: 'info','warning','error','success'
-function writeMessage (type,title,body,duration,notification){
-	
-	// Pour éviter les notifications en cascade...
-	//if (IS_Notify == true) return;
-
-	//IS_Notify = true;
+exports.writeMessage = function (type,title,body,duration,notification){
 
 	titleMessage = '<h3>'+title+'</h3>';
 	var textMessage = titleMessage+'<p>'+body+'</p>';
 	$('.'+type).html(textMessage);
-	hideAllMessages();				  
+	notifications.hideAllMessages();				  
 	$('.'+type).animate({top:"0"}, 500);
 	
 	
@@ -72,7 +68,7 @@ function writeMessage (type,title,body,duration,notification){
 	} else IS_Notify = false;
 
 	// Et une notification de type desktop....
-	if (notification) spawnNotification(title,body,duration)
+	if (notification) notifications.spawnNotification(title,body,duration)
 
 }
 
@@ -80,7 +76,7 @@ function writeMessage (type,title,body,duration,notification){
 //-----Notifications Desktop -------------------------------------------------------------------------
 // source: https://developer.mozilla.org/fr/docs/Web/API/notification
 
-function notifyMe() {
+exports.notifyMe = function() {
   // Voyons si le navigateur supporte les notifications
   if (!("Notification" in window)) {
     alert("Ce navigateur ne supporte pas les notifications desktop");
@@ -116,7 +112,7 @@ function notifyMe() {
 
 
 // source: https://developer.mozilla.org/fr/docs/Web/API/notification
-function spawnNotification(title,body,duration) {
+exports.spawnNotification = function (title,body,duration) {
   
   if (activeNotification == false) {
 		  activeNotification = true;
@@ -131,4 +127,4 @@ function spawnNotification(title,body,duration) {
 	} else return
 }
 
-/**/
+})(typeof exports === 'undefined'? this['notifications']={}: exports);

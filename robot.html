@@ -194,7 +194,7 @@
     	<script src="/js/lib/autobahn.min.jgz"></script>
         
 		<script src="/js/common_tools.js"></script>
-        <script src="/js/common_settings.js"></script>
+        <script src="/js/common_app_settings.js"></script>
 		<!--<script src="/js/module_timesync.js"></script>-->
 		<script src='/js/module_ihm.js'></script>
 		<script src='/js/module_fake_robubox.js'></script>
@@ -226,7 +226,7 @@
             $.get( "/getvar", function( data ) {
               hostName = data.hostName;
               //if (hostName != "???" ) $('#zone_info_server').replaceWith(settings.appName() + " V " + settings.appVersion()+ " ("+hostName+")");
-              infoServerTxt = settings.appBranch() + ' - ' + settings.appName() + " V " + settings.appVersion()+ " ("+hostName+")";
+              infoServerTxt = appSettings.appBranch() + ' - ' + appSettings.appName() + " V " + appSettings.appVersion()+ " ("+hostName+")";
               if (hostName != "???" ) $('#zone_info_server').replaceWith(infoServerTxt);
             });
     	

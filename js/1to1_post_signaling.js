@@ -235,7 +235,7 @@ if (type == "robot-appelé") {
 
          var dateA = Date.now();
          // if (settings.isBenchmark() == true ) dateA = Date.now(ts.now()), // date synchronisée avec le serveur (V1 timesync.js)
-         if (settings.isBenchmark() == true ) dateA = ServerDate.now(); // date synchronisée avec le serveur (V2 ServerDate.js)
+         if (appSettings.isBenchmark() == true ) dateA = ServerDate.now(); // date synchronisée avec le serveur (V2 ServerDate.js)
 
          var data = {
                  channel: "Local-Robot",
@@ -254,7 +254,7 @@ if (type == "robot-appelé") {
         if (onMove == true || lastMoveTimeStamp != 0) {
             var now = Date.now();
             // if (settings.isBenchmark() == true )  now = Date.now(ts.now()); // date synchronisée avec le serveur (V1 timesync.js)
-            if (settings.isBenchmark() == true ) now = ServerDate.now(); // date synchronisée avec le serveur (V2 ServerDate.js)
+            if (appSettings.isBenchmark() == true ) now = ServerDate.now(); // date synchronisée avec le serveur (V2 ServerDate.js)
             
             var test = now - lastMoveTimeStamp;
             if (test >= 1000 ) {
@@ -281,7 +281,7 @@ socket.on("piloteOrder", function(data) {
             onMove = true;
             lastMoveTimeStamp = Date.now(); // on met a jour le timestamp du dernier ordre de mouvement...
             // if (settings.isBenchmark() == true )  lastMoveTimeStamp = Date.now(ts.now()); // date synchro serveur (V1 timesync.js)
-            if (settings.isBenchmark() == true ) lastMoveTimeStamp = ServerDate.now(); // date synchroserveur (V2 ServerDate.js)
+            if (appSettings.isBenchmark() == true ) lastMoveTimeStamp = ServerDate.now(); // date synchroserveur (V2 ServerDate.js)
 
 
             // Envoi commande Robubox
@@ -340,7 +340,7 @@ function fullscreen(){
 
 
 
-
+/*
 function toggleFullScreen(){
     console.log('@ toggleFullScreen()');
     if(video2.requestFullScreen){
@@ -352,9 +352,12 @@ function toggleFullScreen(){
     }
 }
 
+
+
 document.addEventListener("keydown", function(e) {
   if (e.keyCode == 13) {
-    toggleFullScreen();
+    //ihm.toggleFullScreen();
+    toggleFullScreen()
   } 
 }, false);
 /**/

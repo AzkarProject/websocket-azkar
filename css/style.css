@@ -25,6 +25,10 @@ form {margin-bottom: 9px;}
 .visiteur { background: #9C9BB0;}
 .colorSettings { background: #cccccc}
 
+/* Animations */
+.visible { visibility:visible; }
+.cache  { visibility:hidden; }
+
 
 /* Size Box deprecated -- A virer IHM Robot */
 .halfBox {
@@ -51,6 +55,7 @@ form {margin-bottom: 9px;}
 
 .oneQuarterContainerBox {
     width: 325px;
+
     min-width:325px;
 }
 
@@ -129,12 +134,30 @@ form {margin-bottom: 9px;}
   transition: all 2s;
 }
 
+
 video {
   transform:rotate(0deg);
-  position:absolute;
-  /*border:1px solid black;*/
+  z-index:99999;
+  /*position:absolute;*/
   transition: all 1s;
+  background:grey;
 }
+
+
+#remoteVideoArea video {
+  height:380px; 
+  width:600px;
+  min-width:600px;
+}
+
+
+#NavigationArea  {
+  height:200px; 
+  width:600px;
+  min-width:600px;
+}
+
+
 /*----*/
 
 /* hauteur des blocs */

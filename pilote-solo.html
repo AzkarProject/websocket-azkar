@@ -22,49 +22,6 @@
     <strong><span id="zone_info_server">WebRTC AZKAR</span></strong>
     <hr/>
     
- <!--    <section id="serverDate" class="" style="float:left;width:100%">    
-        
-        Différence horloge Client/Serveur: <span id="difference"></span><BR/>
-        <script src="/js/lib/ServerDate.js"></script>
-      
-       
-       <SCRIPT>
-            // Display two real time clocks, the server's and the client's, and show the
-            // difference between them in milliseconds.
-            function updateClocks()
-            {
-                var client = new Date();
-
-                // document.getElementById("server").innerHTML = String(ServerDate);
-                // document.getElementById("client").innerHTML = String(client);
-
-                document.getElementById("difference").innerHTML = (ServerDate - client)
-                    + " &plusmn; " + ServerDate.getPrecision() + " ms";
-            }
-
-            // Display the clocks and update them every second.
-            updateClocks();
-            setInterval(updateClocks, 1000);
-        
-
-            // You may then use ServerDate as you would use the Date object or one of its instances, e.g.:
-            // > ServerDate()
-            // "Mon Aug 13 2012 20:26:34 GMT-0300 (ART)"
-            // > ServerDate.now()
-            // 1344900478753
-            // > ServerDate.getMilliseconds()
-            // 22
-            // There is also a new method to get the precision of ServerDate's estimate of the server's clock (in milliseconds):
-            // > ServerDate.toLocaleString() + " ± " + ServerDate.getPrecision() + " ms"
-            // "Tue Aug 14 01:01:49 2012 ± 108 ms"
-
-        </SCRIPT>
-
-
-
-    </section> -->
-
-
 
     <section id="controlArea" class="fullSizeContainerBox">
 
@@ -121,13 +78,15 @@
                 <strong> Robot Camera View</strong>
                 <hr/>
                 <div class = "videosContainer" style="height:300px; width:300px;min-width:300px">
-                    <video id='1to1_remoteVideo' class="" autoplay muted controls="controls" style="height:380px; width:600px;min-width:600px"></video>
-                    <!--<video id='1to1_remoteVideo' class="" autoplay muted controls="controls"></video>-->
+                    <!--
+                    <video id='1to1_remoteVideo' class="embedRemoteVideo" autoplay muted controls="controls" style="height:380px; width:600px;min-width:600px"></video>
+                    -->
+                    <video id='1to1_remoteVideo' class="embedRemoteVideo" autoplay muted controls="controls"></video>
                 </div>
             </div>
         
 
-            <div id="robotCommands" class="insideFlex oneQuarterbox robot shadowBlack device" style="height:333px">
+            <div id="robotCommands" class="insideFlex oneQuarterbox robot shadowBlack device" style="height:333px; z-index:-100">
                 <strong>Robot controls</strong> <span id="connect-notice"></span>
                 <hr/>
 
@@ -332,7 +291,7 @@
     <script src="/js/lib/autobahn.min.jgz"></script>
     
     <script src="/js/common_tools.js"></script>
-    <script src="/js/common_settings.js"></script>    
+    <script src="/js/common_app_settings.js"></script>    
     <script src='/js/module_navigation_datas.js'></script>
     <script src='/js/module_ihm.js'></script>
 
@@ -368,7 +327,7 @@
             $.get( "/getvar", function( data ) {
               hostName = data.hostName;
               //if (hostName != "???" ) $('#zone_info_server').replaceWith(settings.appName() + " V " + settings.appVersion()+ " ("+hostName+")");
-              infoServerTxt = settings.appBranch() + ' - ' + settings.appName() + " V " + settings.appVersion()+ " ("+hostName+")";
+              infoServerTxt = appSettings.appBranch() + ' - ' + appSettings.appName() + " V " + appSettings.appVersion()+ " ("+hostName+")";
               if (hostName != "???" ) $('#zone_info_server').replaceWith(infoServerTxt);
             });
     </script> 
