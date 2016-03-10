@@ -1,4 +1,4 @@
-$(document).ready(function() {
+//$(document).ready(function() {
     
 
     // var fakeRobubox = true;
@@ -10,6 +10,8 @@ $(document).ready(function() {
     //var offsetWidth = 594; // Version carte Robosoft
     //var offsetHeight = 470; // Version carte Robosoft
 
+    var modeTraking = false;
+
     
     // Titi: Image BackGround aux dimensions du Canvas
     var backGroundMap = new Image();
@@ -19,15 +21,23 @@ $(document).ready(function() {
     // Titi:  délai de rafraichissement carto en ms
     var refreshDelay = 100; // 100ms (600ms ca saccade un peu) 
 
-    var dataMap, // height , width , offset (x,y) , resolution
-        dataLocalization, //
+    // Datamap et robotInfo en variable globales...
+    dataMap = null; // height , width , offset (x,y) , resolution
+    robotInfo = null;    
+
+    var dataLocalization, 
         offsetX,
         offsetY,
         corrOffestX,
-        corrOffestY,
-        robotInfo;
+        corrOffestY;
+        
     var canvasMap = document.getElementById('myCanvas');
     var context = canvasMap.getContext('2d');
+    var originalContext = context;
+
+    //console.log ("-------datamap-------");
+    //console.log (dataMap);
+
     // var urlP = 'http://127.0.0.1:8080/127.0.0.1:50000/nav/maps/parameters';
     // var urlRobotPosition = 'http://127.0.0.1:8080/127.0.0.1:50000/lokarria/localization';
 
@@ -35,17 +45,12 @@ $(document).ready(function() {
     if (fakeRobubox == true) {  
         dataMap = getFakeDataMap();
         robotInfo = getFakeRobotInfo();
-        /*
-        console.log ("-----fakeRobubox == true-----");
-        console.log (dataMap);
-        console.log (robotInfo);
-        console.log ("-----------------------------");
-        /**/
     }
+    /**/
 
     // Titi: Rebond proxy en https(Client Robot) > Http(Robubox)
-    var urlP = 'https://127.0.0.1:443/http://127.0.0.1:50000/nav/maps/parameters';
-    var urlRobotPosition = 'https://127.0.0.1:443/http://127.0.0.1:50000/lokarria/localization';
+    // var urlP = 'https://127.0.0.1:443/http://127.0.0.1:50000/nav/maps/parameters';
+    // var urlRobotPosition = 'https://127.0.0.1:443/http://127.0.0.1:50000/lokarria/localization';
 
     // Titi: 
     // Resize width et Height en conservant le ratio
@@ -74,7 +79,7 @@ $(document).ready(function() {
     
     // Titi:
     // Flags et Ecouteurs pilote/robot pour l'échange des protocoles d'infos de navigation
-    // var pilotGetNav = false; // Flag d'échande par défaut.  
+    // var pilotGetNav = false; // Flag d'échange par défaut.  
     // si c'est un pilote qui éxécute le script
     // Il prévient le robot qu'il doit lui envoyer ses infos de navigation.
     if (type == "pilote-appelant") {
@@ -101,7 +106,9 @@ $(document).ready(function() {
     		if (data.command == "map_parameters") {
     			 dataMap = data.dataMap;
     			 mapSize = resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
-    		} else if (data.command == "robot_localization") {
+    		
+
+            } else if (data.command == "robot_localization") {
     			 robotInfo = data.robotInfo;
     			 refresh();
     		}
@@ -136,17 +143,57 @@ $(document).ready(function() {
 
     function init(callback, typeUser) {
 
-        // console.log('@ init(callback)');
+        console.log('@ init(callback)');
+       
         
+        //komcom.getDataMap();
+        //komcom.getRobotInfo();
+        //mapSize = resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
+        //callback();
+        /**/
+
+        //console.log ("-------dataMap-------");
+        //console.log (dataMap);
+
+        
+        /*
         if (fakeRobubox == true) {
             
+            
+            
+            
+
             mapSize = resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
             callback();
+        
+
 
         } else {
+        /**/
         
-            if (type == "robot-appelé") {
+            
 
+            if (type == "pilote-appelant") {
+
+                // komcom.getDataMap();
+                // komcom.getRobotInfo();
+                // mapSize = resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
+                // callback();
+
+            } else  if (type == "robot-appelé") {
+
+                komcom.getDataMap();
+                komcom.getRobotInfo();
+                mapSize = resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
+                callback();
+                /*
+                komcom.getDataMap();
+                
+                mapSize = resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
+                callback();
+                
+                /*
+                
                 var d1 = $.Deferred();
                 var d2 = $.Deferred();
 
@@ -154,8 +201,11 @@ $(document).ready(function() {
                     callback();
                 });
 
+                
                 console.log ('get map informations');
-                $.get(urlP, function(rep) { // Les informations de la carte 
+               
+
+               $.get(urlP, function(rep) { // Les informations de la carte 
                     if (!rep)
                         return;
                     dataMap = rep;
@@ -176,6 +226,8 @@ $(document).ready(function() {
                 });
 
                 console.log ('get robot position');
+                
+
                 $.get(urlRobotPosition, function(dataLocalization) { // la localisation du robot sur la carte
                     robotInfo = JSON.parse(dataLocalization);
                     console.log('robotInfo -->', robotInfo);
@@ -185,10 +237,13 @@ $(document).ready(function() {
                     console.log ('then, call load function')
                     d2.resolve();
                 });
+                
+                /**/
+
 
             } // endif (type == "robot-appelé")
         
-        } // endif fakeRobubox else
+        //} // endif fakeRobubox else
 
     }
 
@@ -206,23 +261,36 @@ $(document).ready(function() {
     }
 
 
+    
+
+
+
     function refresh() {
         
         if (type == "robot-appelé") {
 	        
 	        setInterval(function() {
 
-	        	// console.log("@ refresh()");
+	        	// komcom.getRobotInfo();
+
+                if (fakeRobubox == true) simulateRobotMove();
+                else komcom.getRobotInfo();
+                
+                /*// console.log("@ refresh()");;
+
                 if (fakeRobubox == true) {
                     robotInfo.Pose.Orientation.Z += 0.05;
                     //robotInfo.Pose.Orientation.Z = robotInfo.Pose.Orientation.Z+0.20
                 
                 } else {
+                    
                     $.get(urlRobotPosition, function(dataLocalization) {
                         robotInfo = JSON.parse(dataLocalization);
                         //console.log('robotInfo -->', robotInfo);
                     });
+                    
                 }
+                /**/
 
 	            // Titi:
 	            // si échange Robot/Pilote de données carto activé
@@ -366,10 +434,17 @@ $(document).ready(function() {
     }
 
 
+    
+
+
+
     //draw a circle with a line     
     function circleWithDirection(x, y, theta, color, size, sizeStroke) {
         
-        // console.log('@ dcircleWithDirection()');
+       // console.log(theta);
+       // if (modeTraking == true ) theta = -1.45;
+
+       // console.log('@ dcircleWithDirection()');
         context.save();
 
         context.beginPath();
@@ -379,8 +454,22 @@ $(document).ready(function() {
         context.lineWidth = 2;
         context.strokeStyle = "black";
         context.stroke();
+        
         x2 = x + Math.cos(theta) * 8;
         y2 = y + Math.sin(theta) * 8;
+        
+        /*
+        if (modeTraking == false ) {
+            x2 = x + Math.cos(theta) * 8;
+            y2 = y + Math.sin(theta) * 8;
+        } else {
+            x2 = x*8;
+            y2 = y*8;
+        }
+        /**/
+        
+
+
         context.closePath();
         context.beginPath();
         context.moveTo(x, y);
@@ -396,38 +485,49 @@ $(document).ready(function() {
     // Borrowed and adapted from : http://stackoverflow.com/questions/808826/draw-arrow-on-canvas-tag
     function drawArrow(ctx, fromx, fromy, tox, toy, arrowWidth, color) {
         
+        
+            //console.log('@ drawArrow()');
+            //variables to be used when creating the arrow
+            var headlen = 10;
+            var angle = Math.atan2(toy - fromy, tox - fromx);
 
-        //console.log('@ drawArrow()');
-        //variables to be used when creating the arrow
-        var headlen = 10;
-        var angle = Math.atan2(toy - fromy, tox - fromx);
+            ctx.save();
+            ctx.strokeStyle = color;
 
-        ctx.save();
-        ctx.strokeStyle = color;
+            //starting path of the arrow from the start square to the end square and drawing the stroke
+            ctx.beginPath();
+            ctx.moveTo(fromx, fromy);
+            ctx.lineTo(tox, toy);
+            ctx.lineWidth = arrowWidth;
+            ctx.stroke();
 
-        //starting path of the arrow from the start square to the end square and drawing the stroke
-        ctx.beginPath();
-        ctx.moveTo(fromx, fromy);
-        ctx.lineTo(tox, toy);
-        ctx.lineWidth = arrowWidth;
-        ctx.stroke();
+            //starting a new path from the head of the arrow to one of the sides of the point
+            ctx.beginPath();
+            ctx.moveTo(tox, toy);
+            ctx.lineTo(tox - headlen * Math.cos(angle - Math.PI / 7), toy - headlen * Math.sin(angle - Math.PI / 7));
 
-        //starting a new path from the head of the arrow to one of the sides of the point
-        ctx.beginPath();
-        ctx.moveTo(tox, toy);
-        ctx.lineTo(tox - headlen * Math.cos(angle - Math.PI / 7), toy - headlen * Math.sin(angle - Math.PI / 7));
+            //path from the side point of the arrow, to the other side point
+            ctx.lineTo(tox - headlen * Math.cos(angle + Math.PI / 7), toy - headlen * Math.sin(angle + Math.PI / 7));
 
-        //path from the side point of the arrow, to the other side point
-        ctx.lineTo(tox - headlen * Math.cos(angle + Math.PI / 7), toy - headlen * Math.sin(angle + Math.PI / 7));
+            //path from the side point back to the tip of the arrow, and then again to the opposite side point
+            ctx.lineTo(tox, toy);
+            ctx.lineTo(tox - headlen * Math.cos(angle - Math.PI / 7), toy - headlen * Math.sin(angle - Math.PI / 7));
 
-        //path from the side point back to the tip of the arrow, and then again to the opposite side point
-        ctx.lineTo(tox, toy);
-        ctx.lineTo(tox - headlen * Math.cos(angle - Math.PI / 7), toy - headlen * Math.sin(angle - Math.PI / 7));
-
-        //draws the paths created above
-        ctx.stroke();
-        ctx.restore();
+            //draws the paths created above
+            ctx.stroke();
+            ctx.restore();
+ 
     }
+
+
+
+    function simulateRobotMove() {
+        //robotInfo.Pose.Orientation.Z += 0.02;
+        robotInfo.Pose.Position.X += 0.01;               
+        robotInfo.Pose.Position.Y += 0.01;
+    }
+
+
 
 
 
@@ -438,40 +538,65 @@ $(document).ready(function() {
        
     var lastX=canvasMap.width/2, lastY=canvasMap.height/2;
     var dragStart,dragged;
+
+    // Add Titi
+    var lastDragStart,lastDragged;
+
     
     canvasMap.addEventListener('mousedown',function(evt){
+        // console.log("mousedown");
         document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none';
         lastX = evt.offsetX || (evt.pageX - canvasMap.offsetLeft);
         lastY = evt.offsetY || (evt.pageY - canvasMap.offsetTop);
         dragStart = context.transformedPoint(lastX,lastY);
         dragged = false;
+        // Add titi pour le RAZ
+        lastDragStart = context.transformedPoint(lastX,lastY); 
+       
     },false);
         
     canvasMap.addEventListener('mousemove',function(evt){
+        // console.log("mousemove");
         lastX = evt.offsetX || (evt.pageX - canvasMap.offsetLeft);
         lastY = evt.offsetY || (evt.pageY - canvasMap.offsetTop);
         dragged = true;
         if (dragStart){
             var pt = context.transformedPoint(lastX,lastY);
             context.translate(pt.x-dragStart.x,pt.y-dragStart.y);
+            
             reDraw();
         }
     },false);
     
     canvasMap.addEventListener('mouseup',function(evt){
+        // console.log("mouseup");
         dragStart = null;
         if (!dragged) zoom(evt.shiftKey ? -1 : 1 );
     },false);
 
+ 
+
     var scaleFactor = 1.1;
+    var zoomLevel = 0; // Add titi
         
-    var zoom = function(clicks){
+    var zoom = function(clicks,reset){
+        
+        var factor = Math.pow(scaleFactor,clicks);        
         var pt = context.transformedPoint(lastX,lastY);
         context.translate(pt.x,pt.y);
-        var factor = Math.pow(scaleFactor,clicks);
         context.scale(factor,factor);
         context.translate(-pt.x,-pt.y);
-        reDraw();
+        
+        // Add Titi pour mémoriser le niveau de Zoom courant
+        // afin de faire un R.A.Z du Zoom à son niveau d'origine (0)
+        if (clicks) zoomLevel = zoomLevel + clicks;
+        else if (reset == 'reset') zoomLevel = 0;
+        else zoomLevel = zoomLevel + 1;
+        // console.log ("clicks =" +clicks)
+        // console.log ("zoomLevel =" +zoomLevel)
+
+        reDraw();        
+
     }
 
     var handleScroll = function(evt){
@@ -541,4 +666,72 @@ $(document).ready(function() {
     }
 
 
-});
+    // Adss Titi --------------------------------
+
+   
+    // Add Titi: resetZoom
+    function resetZoom() {
+        console.log("resetZoom()")
+        zoom(-zoomLevel,'reset');
+        //zoomLevel = 0;       
+
+    }
+
+    function resetPosition() {
+        console.log("resetPosition()")
+        
+        var pt = context.transformedPoint(0,0);
+        var defaultX = pt.x-lastDragStart.x;
+        var defaultY = pt.y-lastDragStart.y
+        context.translate( defaultX , defaultY );
+        reDraw();
+
+        if (dragStart){
+
+        }
+        // Add titi pour le RAZ
+        // lastDragStart = context.transformedPoint(lastX,lastY); 
+        lastDragStart = null; 
+
+        reDraw();       
+
+    }
+
+    // Add Titi: Recentrage général de la cartographie
+    function resetCanvas() {
+        resetZoom();
+        resetPosition();       
+        // reset positions
+    }
+
+
+
+
+
+   // Add Titi pour translations à incrément fixe:
+    function canvasMove(direction) {
+       var pt = context.transformedPoint(lastX,lastY);
+       var hOffset = 0;
+       var vOffset = 0;
+       
+       vOffset = -1;
+
+
+    /*
+       if (direction == "Up") {
+            vOffset = 10;
+       } else if (direction == "Down"){
+             vOffset = -10;
+       } else if (direction == "Right"){
+            hOffset = 1;
+       } else if (direction == "Left"){
+            hOffset = -1;
+       }
+       /**/
+       context.translate(pt.x-vOffset,pt.y-hOffset);
+       reDraw();
+
+    }
+
+
+//});

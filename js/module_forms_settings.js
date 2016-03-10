@@ -58,30 +58,33 @@ function raZNavChannel() {
 raZNavChannel();
 
 
-// Formulaires settings cartographie
-selectCartoShow = document.querySelector('input#CartoShow');
-selectCartoHide = document.querySelector('input#CartoHide');
-selectCartoWs = document.querySelector('input#CartoChannelWs');
-selectCartoWebRTC = document.querySelector('input#CartoChannelWebRTC');
 
 
-if (proto == "1to1") {
 
-    // Raz du selecteur de systeme embarqué
-    function raZCarto() {
-        // selectSystemKomNAV.disabled = true;
-        selectCartoShow.checked = false;
-        selectCartoHide.checked = true;
-        selectCartoWs.checked = true;
-        selectCartoWebRTC.checked = false;
-        selectCartoWebRTC.disabled = true;
-        //parameters.navSys = "Robubox";
-    }
-    raZCarto();
 
+
+
+
+
+// ----- Navigation --------
+
+
+// Boutons de zoom + & -
+function zoomCarto(inOut) {
+    var delta = 1;
+    if (inOut == 'Out') delta = -1
+    zoom(delta);
 }
 
+function translationMap(direction) {
+    console.log (direction);
+    canvasMove(direction);
+}
 
+function resetMap() {
+    // console.log("resetMp");
+    resetCanvas();
+}
 
 
 

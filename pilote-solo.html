@@ -173,14 +173,20 @@
         
             <div id="NavigationArea" class="insideFlex robot tripleQuarterBox shadowBlack floatRight" style="height:200px; width:600px;min-width:600px">
                     <strong> Localisation</strong>
-                    <input type="radio" name="CartoSetting" value="show" id="CartoShow" checked onclick="setCarto('show')"> <label for="CartoShow">Show</label>
-                    <input type="radio" name="CartoSetting" value="hide" id="CartoHide" onclick="setCarto('hide')"/> <label for="CartoHide">Hide</label>
-                    &nbsp;&nbsp; || &nbsp;&nbsp;
-                    <input type="radio" name="CartoChannel" value="websocket" id="CartoChannelWs" checked onclick="setCartoChannel('webSocket')"> <label for="CartoChannelWs">Websocket</label>
-                    <input type="radio" name="CartoChannel" value="webRTC" id="CartoChannelWebRTC" onclick="setCartoChannel('webRTC')"/> <label for="CartoChannelWebRTC">WebRTC</label>
-
+                    <button id="zoomIn" onclick="zoomCarto('In')">Zoom +</button>
+                    <button id="zoomOut" onclick="zoomCarto('Out')">Zoom -</button>
+                    <button id="translateLeft" onclick="translationMap('Left')">Left</button>
+                    <button id="translateUp" onclick="translationMap('Up')">Up</button>
+                    <button id="translateDown" onclick="translationMap('Down')">Down</button>
+                    <button id="translateRight" onclick="translationMap('Right')">Right</button>
+                     / 
+                    <button id="trackingMode" onclick="trakingMode()">Tracking</button>
+                     - 
+                    <button id="resetMap" onclick="resetMap()">Reset</button>
+                    
+                    
                     <hr/>
-                    <canvas id="myCanvas" width="500" height="160" style=""></canvas>
+                    <canvas id="myCanvas" width="590" height="160" style=""></canvas>    
             </div>
 
 
@@ -302,13 +308,15 @@
     <script src='/js/1to1_main.js'></script>
     <script src='/js/1to1_post_signaling.js'></script>
     
+    <script src='/js/module_fake_robubox.js'></script>
+    <script src='/js/module_carto.js'></script>
+
     <script src='/js/module_notifications.js'></script>
     <script src='/js/module_komremote_pilote.js'></script>
     <!--<script src='/js/module_robustesse.js'></script>-->
     <script src='/js/module_forms_settings.js'></script>
     
-    <script src='/js/module_fake_robubox.js'></script>
-    <script src='/js/module_carto.js'></script>
+
    
     
     <script src='/js/module_manage_connections.js'></script>

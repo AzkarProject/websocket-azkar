@@ -24,6 +24,44 @@ exports.sendDrive = function (data){
     var aSpeed = data.aSpeed;
     var lSpeed = data.lSpeed;
     
+    
+    /*// Todo >>> /* A adapter a Komcom
+    
+    // Flags Homme mort:  
+    if (enable != false) {
+        onMove = true;
+        // console.log ("onMove = "+onMove);
+        // lastMoveTimeStamp = Date.now(); // MAJ du dernier timestamp mouvement... 
+        // lastMoveTimeStamp = Date.now(ts.now()); // date synchronisée avec le serveur
+        if (isBenchmark == true ) lastMoveTimeStamp = ServerDate.now();
+        else lastMoveTimeStamp = Date.now();
+    
+    } else if (enable == false){
+        onMove = false;
+        // console.log ("onMove = "+onMove);
+        lastMoveTimeStamp = 0;
+    }
+
+    var rpcMethod = 'com.thaby.drive';
+    var values = [];
+    values[0] = lSpeed;
+    values[1] = aSpeed;
+    
+    if (isBenchmark == true ) {
+        values[2] = source; // source
+        values[3] = channel; // channel
+        values[4] = dateA;
+        values[5] = dateB;
+    rpcMethod = 'com.thaby.drive.benchmark'; 
+    }   
+    
+    SESSION.call(rpcMethod, values);
+	/**/ // End Todo komcom
+
+
+
+
+	// Todo >>> /*Disable after refacto
     if (isBenchmark == true ) {
 
         var dateA = data.dateA;
@@ -120,9 +158,111 @@ exports.sendDrive = function (data){
         }
         
     }
-    /**/
-      
+    /**/     
 }
+
+
+exports.getRobotInfo = function (){
+
+	
+	console.log ('get robot position');
+	// Titi: Rebond proxy en https(Client Robot) > Http(Robubox)
+	var urlRobotPosition = 'https://127.0.0.1:443/http://127.0.0.1:50000/lokarria/localization';
+
+	if (fakeRobubox == true) {  
+       // dataMap = getFakeDataMap();
+       robotInfo = getFakeRobotInfo();
+       console.log(robotInfo);
+    } else {
+    	
+    	$.get(urlRobotPosition, function(dataLocalization) { // la localisation du robot sur la carte
+        robotInfo = JSON.parse(dataLocalization);
+        console.log('robotInfo -->', robotInfo);
+        console.log(robotInfo);
+        var debug = tools.stringObjectDump(robotInfo,"robotInfo");
+        console.log(debug);
+        console.log ('then, call load function')
+    
+    	});
+
+    }
+	
+}
+
+
+exports.getDataMap = function (){
+	
+	console.log ('get map informations');
+	// Titi: Rebond proxy en https(Client Robot) > Http(Robubox)
+    var url = 'https://127.0.0.1:443/http://127.0.0.1:50000/nav/maps/parameters';
+    if (fakeRobubox == true) {  
+        
+        dataMap = getFakeDataMap();
+        console.log(dataMap);
+    
+    } else {
+        
+        $.get(url, function(rep) { // Les informations de la carte 
+		    if (!rep) return;
+		    dataMap = rep;
+    	});  
+    }   
+}
+
+// Fonction qui permet de recupérer le niveau de la  la batterie et de l'afficher dans le progress bar
+// elle interroge chaque 1000ms le robot via url et retourne le niveau de la batterie en pourcentage
+exports.getBattery = function (){
+        
+    // Todo /* >>>>  A remplacer après refacto  
+    var isRobubox = appSettings.isRobubox();
+    //var isRobubox = false;
+    // console.log ("robubox.getBattery("+isRobubox+")");
+    
+    
+    if (isRobubox == true) {
+
+        
+    	//if (parameters.navSys == 'Robubox') {
+
+	         var delay = 1000; // l'interval de temps au bout du quel on envoi une autre requete pour rafraichir les information
+             var dataJson, remaining, percentage, dataString, thenum, progressBar;
+
+             if (fakeRobubox == true) {
+                batteryInfo = getFakeBattery();
+                setInterval(function() {
+                    thenum = batteryInfo.Remaining ;
+                    percentage = (thenum <= 100) ? thenum : 100; // 6- 
+                    // rafraichissement de la jauge sur l'IHM Robot
+                    ihm.refreshJaugeBattery(percentage);
+                    // envoi des valeurs au pilote via le serveur
+                    navigation_datas.sendToPilote("battery_level",percentage)
+                 }, delay);
+                
+
+             } else {
+
+                var url = "https://127.0.0.1:443/http://127.0.0.1:50000/lokarria/battery" ; // CORS-ANYWHERE	         
+    	                
+    	        setInterval(function() {
+    	            $.get(url, function(data) { // 1 -  et 2- 
+    	               batteryInfo = JSON.parse(data);
+    	                thenum = batteryInfo.Remaining ;
+    	                // console.log('thenum -->', thenum);
+    	                percentage = (thenum <= 100) ? thenum : 100; // 6- 
+    	            });
+                    // rafraichissement de la jauge sur l'IHM Robot
+                    ihm.refreshJaugeBattery(percentage);
+                    // envoi des valeurs au pilote via le serveur
+                    //commandes.sendToPilote("battery_level",percentage)
+                    navigation_datas.sendToPilote("battery_level",percentage)
+
+    	        }, delay);
+
+            } 
+
+    }
+    /**/                 
+} // End getBattery
 
 /*// Envoi d'une commande de type "Drive" au robot
 exports.sendDrive2 = function (enable, aSpeed,lSpeed){
@@ -194,7 +334,7 @@ exports.sendDrive2 = function (enable, aSpeed,lSpeed){
 /**/
 
 
-// Envoi d'une commande de type "Step" au robot avec une "promize"
+/*// Envoi d'une commande de type "Step" au robot avec une "promize"
 exports.sendStep = function (typeMove,dist, MaxSpeed){
         
         
@@ -228,87 +368,10 @@ exports.sendStep = function (typeMove,dist, MaxSpeed){
             
 
     }
-    /**/
+    
 
 }
-
-
-// Fonction qui permet de recupérer le niveau de la  la batterie et de l'afficher dans le progress bar
-// elle interroge chaque 1000ms le robot via url et retourne le niveau de la batterie en pourcentage
-exports.getBattery = function (){
-        
-        
-    var isRobubox = appSettings.isRobubox();
-    //var isRobubox = false;
-    // console.log ("robubox.getBattery("+isRobubox+")");
-    
-    
-    if (isRobubox == true) {
-
-        
-    	//if (parameters.navSys == 'Robubox') {
-
-	         var delay = 1000; // l'interval de temps au bout du quel on envoi une autre requete pour rafraichir les information
-             var dataJson, remaining, percentage, dataString, thenum, progressBar;
-
-             if (fakeRobubox == true) {
-                batteryInfo = getFakeBattery();
-                setInterval(function() {
-                    thenum = batteryInfo.Remaining ;
-                    percentage = (thenum <= 100) ? thenum : 100; // 6- 
-                    // rafraichissement de la jauge sur l'IHM Robot
-                    ihm.refreshJaugeBattery(percentage);
-                    // envoi des valeurs au pilote via le serveur
-                    navigation_datas.sendToPilote("battery_level",percentage)
-                 }, delay);
-                
-
-             } else {
-
-                var url = "https://127.0.0.1:443/http://127.0.0.1:50000/lokarria/battery" ; // CORS-ANYWHERE
-    	        //var delay = 1000; // l'interval de temps au bout du quel on envoi une autre requete pour rafraichir les information
-    	        //var dataJson, remaining, percentage, dataString, thenum, progressBar;
-
-    	       
-    	        //    1- envoyer toutes les "delay"  ms  une requete get sur "url" 
-    	        //    2- le resultat  data  est en application/XML 
-    	        //    3- on serialise data en string 
-    	        //    4- on recupère la balise remaining 
-    	        //    5- on recupère le nombre qui est dans la balise remaining
-    	        //    6- on la converti en %
-    	        //    7- on recupère id du progressBar 
-    	        //    8- on attribue la value du pourcentage à la propriété value du progress bar  , avec un arondi
-    	         
-    	                
-    	        setInterval(function() {
-    	            $.get(url, function(data) { // 1 -  et 2- 
-    	               batteryInfo = JSON.parse(data);
-    	                thenum = batteryInfo.Remaining ;
-    	                // console.log('thenum -->', thenum);
-    	                percentage = (thenum <= 100) ? thenum : 100; // 6- 
-    	            });
-                    // rafraichissement de la jauge sur l'IHM Robot
-                    ihm.refreshJaugeBattery(percentage);
-                    // envoi des valeurs au pilote via le serveur
-                    //commandes.sendToPilote("battery_level",percentage)
-                    navigation_datas.sendToPilote("battery_level",percentage)
-
-    	        }, delay);
-
-            } // end if (fakeRobubox == true) else
-       	
-        //} else if (parameters.navSys == 'KomNAV') {
-
-       		// TODO
-
-       	//}
-
-    }
-    /**/
-        
-                 
-} // End getBattery
-
+/**/
 
 
 })(typeof exports === 'undefined'? this['komcom']={}: exports);
