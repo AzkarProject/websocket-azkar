@@ -43,10 +43,14 @@
 - [ ] Module Navigation
     - [ ] Cartographie
         - [x] Do: Zoom & translation (Souris)
-        - [ ] > ToDo: Zoom & translation (Boutons)
-        - [ ] > Todo: Centrage Caméra sur Robot
-        - [ ] > Todo: Rotation Carte autour Robot
-        - [ ] > Todo: Switch mode Suivi/Statique
+        - [x] Do: Zoom (boutons)
+        - [x] Do: restZoom (boutons)
+        - [ ] > Todo: position (Boutons)
+        - [ ] > ToDo: resetPosition (boutons)
+        - [ ] > Todo: mode Tracking
+        - [ ] > Todo: Zoom & position (Gamepad)
+        
+        - [ ] > Todo: mode TRacking
     - [ ] Télémétrie
 
 - [x] Module Commande > Gamepad
@@ -59,17 +63,17 @@
     - [x] Do: Implémenter Sélection caméra
     - [x] Do: Implémenter Sélection définition
 
-- [ ] Optimisations
-    - [ ] > Todo: Passer recup carto par KomNav 
-    - [ ] > Todo: Passer récup battery par KomNav
-    - [ ] > Todo: (IHM robot) Modifier système création liste caméras
-    - [ ] > Todo: Version compatible Firefox
-        - [ ] > Todo: Intégrer modifs 1to1-basic
+- [x] Optimisations
+    - [x] Do: Passer recup carto > komcom
+    - [x] Do: Passer récup battery > komcom
+    - [x] Do: (IHM robot) Modifier système création liste caméras
+    - [x] Do: Version compatible Firefox
+    - [x] Do: Intégrer modifs 1to1-basic
     
 - [ ] > Refactorisation
     - [x] Do: Merge  1to1-refacto /Master
-    - [ ] > Todo: Filtrer fonctions 1to1/1toN
-    - [ ] > Todo: Revoir convention nommage Fichiers
+    - [x] Do: Filtrer fonctions 1to1/1toN
+    - [x] Do: Revoir nommage Fichiers
     - [ ] > Todo: Passer tous les modules en mode encapsulé (export)
     - [ ] > Todo: Séparer algo fichier Main > Atomisation modules
     - [ ] > Todo: Factoriser settings
