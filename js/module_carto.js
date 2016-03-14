@@ -1,16 +1,7 @@
-//$(document).ready(function() {
+ (function(exports){
+   
+
     
-
-    // var fakeRobubox = true;
-
-    // Titi: offsets du point 0,0 de localisation de la carte
-    // -- Récupérés manuellement avec GIMP sur copie d'écran tailel réelle de la carte
-    // var offsetWidth = 1308; // Version carte I3S
-    // var offsetHeight = 861; // Version carte I3S
-    //var offsetWidth = 594; // Version carte Robosoft
-    //var offsetHeight = 470; // Version carte Robosoft
-
-    var modeTraking = false;
 
     
     // Titi: Image BackGround aux dimensions du Canvas
@@ -23,7 +14,7 @@
 
     // Datamap et robotInfo en variable globales...
     dataMap = null; // height , width , offset (x,y) , resolution
-    robotInfo = null;    
+    robotInfo = null;   
 
     var dataLocalization, 
         offsetX,
@@ -33,24 +24,6 @@
         
     var canvasMap = document.getElementById('myCanvas');
     var context = canvasMap.getContext('2d');
-    var originalContext = context;
-
-    //console.log ("-------datamap-------");
-    //console.log (dataMap);
-
-    // var urlP = 'http://127.0.0.1:8080/127.0.0.1:50000/nav/maps/parameters';
-    // var urlRobotPosition = 'http://127.0.0.1:8080/127.0.0.1:50000/lokarria/localization';
-
-    // Titi: Mode fakeRobubox pour simuler les infos en provenance de Pure
-    if (fakeRobubox == true) {  
-        dataMap = getFakeDataMap();
-        robotInfo = getFakeRobotInfo();
-    }
-    /**/
-
-    // Titi: Rebond proxy en https(Client Robot) > Http(Robubox)
-    // var urlP = 'https://127.0.0.1:443/http://127.0.0.1:50000/nav/maps/parameters';
-    // var urlRobotPosition = 'https://127.0.0.1:443/http://127.0.0.1:50000/lokarria/localization';
 
     // Titi: 
     // Resize width et Height en conservant le ratio
@@ -95,6 +68,7 @@
     		if (data = "getNavInfos") {
     			// pilotGetNav = true;
     			navigation_datas.sendToPilote("map_parameters", dataMap);
+                //navigation_datas.sendToPilote("map_parameters", DATAMAP);
     		}
     	});
     }
@@ -106,7 +80,9 @@
     		if (data.command == "map_parameters") {
     			 dataMap = data.dataMap;
     			 mapSize = resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
-    		
+                 console.log (mapSize)
+    		     //DATAMAP = data.dataMap;
+                 //mapSize = resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
 
             } else if (data.command == "robot_localization") {
     			 robotInfo = data.robotInfo;
@@ -139,118 +115,28 @@
     /* START */
     /* call init() then load() and finaly refresh() with setInterval */
     // type = pilote-appelant ou robot-appelé
-    init(load,type);
+    if (type == "robot-appelé") init(load);
 
-    function init(callback, typeUser) {
+    function init(callback) {
 
-        console.log('@ init(callback)');
-       
+    console.log('@ init(callback)');      
         
-        //komcom.getDataMap();
-        //komcom.getRobotInfo();
-        //mapSize = resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
-        //callback();
-        /**/
+            defferedDataMap = $.Deferred();
+            defferedRobotInfo = $.Deferred();
 
-        //console.log ("-------dataMap-------");
-        //console.log (dataMap);
-
-        
-        /*
-        if (fakeRobubox == true) {
-            
-            
-            
-            
-
-            mapSize = resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
-            callback();
-        
-
-
-        } else {
-        /**/
-        
-            
-
-            if (type == "pilote-appelant") {
-
-                // komcom.getDataMap();
-                // komcom.getRobotInfo();
-                // mapSize = resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
-                // callback();
-
-            } else  if (type == "robot-appelé") {
-
-                komcom.getDataMap();
-                komcom.getRobotInfo();
+            $.when(defferedDataMap, defferedRobotInfo).done(function(v1, v2) {
                 mapSize = resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
                 callback();
-                /*
-                komcom.getDataMap();
-                
-                mapSize = resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
-                callback();
-                
-                /*
-                
-                var d1 = $.Deferred();
-                var d2 = $.Deferred();
+            });
 
-                $.when(d1, d2).done(function(v1, v2) {
-                    callback();
-                });
-
-                
-                console.log ('get map informations');
-               
-
-               $.get(urlP, function(rep) { // Les informations de la carte 
-                    if (!rep)
-                        return;
-                    dataMap = rep;
-                    console.log('datamap -->', dataMap);
-                    console.log(dataMap);
-                    var debug = tools.stringObjectDump(dataMap,"dataMap");
-                    console.log(debug);
-                    // Michaël:
-                    //console.log ('get the map width and height to adjust the canvas')
-                    //$('#myCanvas').attr("width", dataMap.Width);
-                    //$('#myCanvas').attr("height", dataMap.Height);
-                    //console.log("Dimension  width : " +  dataMap.Width + " height : " +dataMap.Height ); 
-                    
-                    // Titi: Calcul des W,H et ratio de la carte à redéssiner
-                    mapSize = resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
-
-                    d1.resolve();
-                });
-
-                console.log ('get robot position');
-                
-
-                $.get(urlRobotPosition, function(dataLocalization) { // la localisation du robot sur la carte
-                    robotInfo = JSON.parse(dataLocalization);
-                    console.log('robotInfo -->', robotInfo);
-                    console.log(robotInfo);
-                    var debug = tools.stringObjectDump(robotInfo,"robotInfo");
-                    console.log(debug);
-                    console.log ('then, call load function')
-                    d2.resolve();
-                });
-                
-                /**/
-
-
-            } // endif (type == "robot-appelé")
-        
-        //} // endif fakeRobubox else
-
+            komcom.getRobotInfo();
+            komcom.getDataMap();
     }
 
     function load() {
         
-        // console.log('@ load()');
-       
+        console.log('@ load()');
+        mapSize = resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
         offsetX = dataMap.Offset.X;
         offsetY = dataMap.Offset.Y;
         corrOffestX = dataMap.Height - (offsetX / dataMap.Resolution);
@@ -261,88 +147,149 @@
     }
 
 
-    
-
-
 
     function refresh() {
         
         if (type == "robot-appelé") {
 	        
 	        setInterval(function() {
-
-	        	// komcom.getRobotInfo();
-
                 if (fakeRobubox == true) simulateRobotMove();
                 else komcom.getRobotInfo();
-                
-                /*// console.log("@ refresh()");;
-
-                if (fakeRobubox == true) {
-                    robotInfo.Pose.Orientation.Z += 0.05;
-                    //robotInfo.Pose.Orientation.Z = robotInfo.Pose.Orientation.Z+0.20
-                
-                } else {
-                    
-                    $.get(urlRobotPosition, function(dataLocalization) {
-                        robotInfo = JSON.parse(dataLocalization);
-                        //console.log('robotInfo -->', robotInfo);
-                    });
-                    
-                }
-                /**/
-
-	            // Titi:
-	            // si échange Robot/Pilote de données carto activé
+	            // si Pilote connecté: envoi datas carto Robot >> Pilote activé
 	            if ( isOnePilot == true) navigation_datas.sendToPilote("robot_localization", robotInfo);
-                /*
-	            context.clearRect(0, 0, canvasMap.width, canvasMap.height);
-	            
-	            // Add titi:
-	            // context.drawImage(backGroundMap, 0,0); // Image taille non resizée 
-	            context.drawImage(backGroundMap, 0,0, mapSize.width, mapSize.height); // Image taille resizée avec ratio
-	            drawRobot();
-                /**/
                 reDraw();
-
 	        }, refreshDelay); // 600
     	
-
     	} else if (type = "pilote-appelant") {
-    			
-    			if (dataMap == null) socket.emit("pilotGetNav",{message:"getNavInfos"});
-
-    			if (dataMap != null) {
-	    			/*
-                    context.clearRect(0, 0, canvasMap.width, canvasMap.height);
-	    			context.drawImage(backGroundMap, 0,0, mapSize.width, mapSize.height); // Image taille resizée avec ratio
-	    			drawRobot();
-                    /**/
-                    reDraw();
-	    		}
-    			/**/
+    		
+            if (dataMap == null) socket.emit("pilotGetNav",{message:"getNavInfos"});
+    		else if (dataMap != null) reDraw();
     	}
-
-   
-
 
     }
 
     
+    
+
+    // flags
+    modeTraking = false;
+    var initialContextSaved = false; 
+    var initialX = 0;
+    var initialY = 0;
+
     function reDraw() {
         
-        //context.clearRect(-1000, -1000, 1171, 2384);
-        context.clearRect(-10000, -10000, 100000, 1000000);
+        // Centrage de la Map (Horizontal et Vertical...)
+        // Horizontal:
+        // 1 on prend la moitié du canvas
+        // 2 on lui retire la moitié de la carte
+        var halfCanvasX = canvasWidth/2;
+        var halfMapX = mapSize.width/2;
+        
 
-        //context.clearRect(0, 0, canvasMap.width, canvasMap.height);
-        context.drawImage(backGroundMap, 0,0, mapSize.width, mapSize.height); // Image taille resizée avec ratio
-        drawRobot();
+        initialX = halfCanvasX - halfMapX;
+        //alert (halfCanvasX +" - "+halfMapX+" = "+initialX)
+
+
+
+
+        if (initialContextSaved == false) {           
+            context.save(); // On sauvegarde le contexte initial pour le prochain reset
+            initialContextSaved = true; // On prévient le systeme que le contexte de départ est sauvegardé
+            // modeTraking = false; // On désactive le mode tracking          
+        } 
+
+        if (modeTraking == true) redrawTracking(initialX,initialY)
+        else {
+        context.clearRect(-10000, -10000, 100000, 1000000);
+        context.drawImage(backGroundMap,initialX,initialY, mapSize.width, mapSize.height); // Image taille resizée avec ratio
+        drawRobot(initialX,initialY);
+        }
     }
 
 
 
+    exports.activeTracking = function () {
+        if (modeTraking == true) return // Si le modeTracking est déjà activé
+        modeTraking = true; // Sinon on active le mode tracking
+        initialContextSaved = false; // On prévient le systeme que le contexte de départ doit être réinitialisé
+        context.restore(); // On rétablit contexte de départ
 
-    function drawRobot() {
+    }
+
+
+ function redrawTracking(initialX,initialY) {
+        
+            
+        var halfCanvasX = canvasWidth/2;
+        var halfCanvasY = canvasHeight/2;
+        var halfMapX = mapSize.height/2;
+        var halfMapY = mapSize.height/2;
+
+        var drawRatio = mapSize.ratio;
+        // On essaie de convertir le point 0.0
+        var basePosition = {};
+        basePosition.X = 0;
+        basePosition.Y = 0;
+        var baseAxis = worldToMap(basePosition, dataMap);
+        var newOffset = resizeOffset (baseAxis.X,baseAxis.Y,dataMap.Width, dataMap.Height, mapSize.width,mapSize.height);
+
+        
+        // Fix Titi (BUG passage de l'équateur):
+        var ry = -robotInfo.Pose.Position.Y /0.02
+        var rx = -robotInfo.Pose.Position.X / 0.02
+        var qz = robotInfo.Pose.Orientation.Z;
+       
+        // Titi: 
+        // Inversion des axes d'orientation (Carte en horizontal)
+        // et application du ratio de resize
+        // console.log("z --> ", qz); 
+        qz = - qz;
+        rx = rx*drawRatio;
+        ry = ry*drawRatio;
+        // Décalage du robot pour tenir compte du centrage horizontal
+        //if (initialX) rx = rx-initialX;
+
+        var toto = newOffset.width;
+        var tata = newOffset.height;
+
+        //console.log(rx + "-" + ry)
+       
+        //console.log(newOffset)
+
+        var newX = halfCanvasX-newOffset.width; 
+        var newY = newOffset.height-canvasHeight;
+        console.log(toto + " - " + tata)
+        console.log (newX +" - " + newY)
+
+        var newX = halfCanvasX-toto+rx; 
+        var newY = halfCanvasY-tata-ry;
+        
+        context.clearRect(-10000, -10000, 100000, 1000000);
+        context.drawImage(backGroundMap,newX,newY, mapSize.width, mapSize.height); // Image taille resizée avec ratio
+        // drawRobot(initialX,initialY);
+
+        context.save(); // Sauvegarde du contexte AVANT le contexte Translate..
+        // context.translate(newOffset.width,newOffset.height);
+        var startArrowX = halfCanvasX+rx
+        var startArrowY = halfCanvasY-ry
+        
+        drawArrow(context, startArrowX, startArrowY, startArrowX+25, startArrowY, 1, "red",'X'); // axe X
+        drawArrow(context, startArrowX, startArrowY, startArrowX, startArrowY-25, 1, "green",'Y'); // axe Y
+
+
+
+        //alert (rx +" / "+ ry)
+        circleWithDirection(halfCanvasX,halfCanvasY, qz, "red", 1, 1); 
+        // Titi: RAZ du context pour éviter la surimpression d'image décalée... 
+        context.restore();
+    
+
+    }
+
+
+
+    function drawRobot(initialX,initialY) {
         
         // Michaël...
         // context.translate(1308, 861); // ramener l'origine du repère au point 1308,861
@@ -376,23 +323,6 @@
         // var newOffset = resizeOffset (offsetWidth,offsetHeight,dataMap.Width, dataMap.Height, mapSize.width,mapSize.height);
         context.translate(newOffset.width,newOffset.height);
         
-        // ADD Zoom carto (le 29/01/16)
-        // Valeur absolue du point 0.0 ??? 
-        // Mémo: function drawArrow(ctx, fromx, fromy, tox, toy, arrowWidth, color)
-        //drawArrow(context, 0, 0, 0, -50, 1, "green"); // axe Y
-        //drawArrow(context, 0, 0, 50, 0, 1, "red"); // axe X
-
-
-
-        /*// Titi: Conversion de la position du robot avec la fonction Robosoft:
-        var geoloc = worldToMap(robotInfo.Pose.Position, dataMap);
-        geoloc.Z = -robotInfo.Pose.Orientation.Z;
-        geoloc.Y = geoloc.X*drawRatio;
-        geoloc.Y = geoloc.Y*drawRatio;
-        /**/
-
-
-
         /*// BUG au passage de l'équateur...        
         if (Math.round(Math.abs(robotInfo.Pose.Position.Y)) === 0) var ry = 0;
         else if (robotInfo.Pose.Position.Y > 0) ry = -robotInfo.Pose.Position.Y /0.02  ; // BUG
@@ -415,10 +345,20 @@
         rx = rx*drawRatio;
         ry = ry*drawRatio;
 
+        // Décalage du robot pour tenir compte du centrage horizontal
+        if (initialX) rx = rx-initialX;
+        //
         // Valeur absolue du point 0.0 ???
         // Désactivation le 29/01/16 pour tests ZOOM CARTO - A réactiver.
-        // drawArrow(context, 0, 0, 0, -50, 1, "green"); // axe Y
-        // drawArrow(context, 0, 0, 50, 0, 1, "red"); // axe X
+        //function drawArrow(ctx, fromX, fromY, toX, toY, arrowWidth, color) {
+        var arrowX = 0
+        var arrowY = 0
+        
+        // drawArrow(context, 0, 0, 25, 0, 1, "red"); // axe X
+        // drawArrow(context, 0, 0, 0,-25, 1, "green"); // axe Y
+
+        drawArrow(context, initialX, initialY, initialX+25, initialY, 1, "red",'X'); // axe X
+        drawArrow(context, initialX, initialY, initialX, initialY-25, 1, "green",'Y'); // axe Y
 
         // circleWithDirection(ry, rx, 0, "blue", 3, 2); // Michael
         // Titi: Ajout du paramètre QZ pour l'orientation du robot et inversion des axes X,Y...
@@ -434,7 +374,50 @@
     }
 
 
-    
+     // Borrowed and adapted from : http://stackoverflow.com/questions/808826/draw-arrow-on-canvas-tag
+    function drawArrow(ctx, fromx, fromy, tox, toy, arrowWidth, color, text) {
+        
+        
+            //console.log('@ drawArrow()');
+            //variables to be used when creating the arrow
+            var headlen = 3;
+            var angle = Math.atan2(toy - fromy, tox - fromx);
+
+            ctx.save();
+            ctx.strokeStyle = color;
+
+            //starting path of the arrow from the start square to the end square and drawing the stroke
+            ctx.beginPath();
+            ctx.moveTo(fromx, fromy);
+            ctx.lineTo(tox, toy);
+            ctx.lineWidth = arrowWidth;
+            ctx.stroke();
+
+            //starting a new path from the head of the arrow to one of the sides of the point
+            ctx.beginPath();
+            ctx.moveTo(tox, toy);
+            ctx.lineTo(tox - headlen * Math.cos(angle - Math.PI / 7), toy - headlen * Math.sin(angle - Math.PI / 7));
+
+            //path from the side point of the arrow, to the other side point
+            ctx.lineTo(tox - headlen * Math.cos(angle + Math.PI / 7), toy - headlen * Math.sin(angle + Math.PI / 7));
+
+            //path from the side point back to the tip of the arrow, and then again to the opposite side point
+            ctx.lineTo(tox, toy);
+            ctx.lineTo(tox - headlen * Math.cos(angle - Math.PI / 7), toy - headlen * Math.sin(angle - Math.PI / 7));
+
+            //draws the paths created above
+            ctx.stroke();
+
+            // titi: Nommage des axes
+            if (text){
+                ctx.font = "8px arial";
+                ctx.fillStyle = color;
+                ctx.fillText(text,tox+2,toy+2);
+            }
+
+            ctx.restore();
+ 
+    }
 
 
 
@@ -482,42 +465,7 @@
         context.restore();
     }
 
-    // Borrowed and adapted from : http://stackoverflow.com/questions/808826/draw-arrow-on-canvas-tag
-    function drawArrow(ctx, fromx, fromy, tox, toy, arrowWidth, color) {
-        
-        
-            //console.log('@ drawArrow()');
-            //variables to be used when creating the arrow
-            var headlen = 10;
-            var angle = Math.atan2(toy - fromy, tox - fromx);
-
-            ctx.save();
-            ctx.strokeStyle = color;
-
-            //starting path of the arrow from the start square to the end square and drawing the stroke
-            ctx.beginPath();
-            ctx.moveTo(fromx, fromy);
-            ctx.lineTo(tox, toy);
-            ctx.lineWidth = arrowWidth;
-            ctx.stroke();
-
-            //starting a new path from the head of the arrow to one of the sides of the point
-            ctx.beginPath();
-            ctx.moveTo(tox, toy);
-            ctx.lineTo(tox - headlen * Math.cos(angle - Math.PI / 7), toy - headlen * Math.sin(angle - Math.PI / 7));
-
-            //path from the side point of the arrow, to the other side point
-            ctx.lineTo(tox - headlen * Math.cos(angle + Math.PI / 7), toy - headlen * Math.sin(angle + Math.PI / 7));
-
-            //path from the side point back to the tip of the arrow, and then again to the opposite side point
-            ctx.lineTo(tox, toy);
-            ctx.lineTo(tox - headlen * Math.cos(angle - Math.PI / 7), toy - headlen * Math.sin(angle - Math.PI / 7));
-
-            //draws the paths created above
-            ctx.stroke();
-            ctx.restore();
- 
-    }
+   
 
 
 
@@ -526,7 +474,6 @@
         robotInfo.Pose.Position.X += 0.01;               
         robotInfo.Pose.Position.Y += 0.01;
     }
-
 
 
 
@@ -551,7 +498,7 @@
         dragStart = context.transformedPoint(lastX,lastY);
         dragged = false;
         // Add titi pour le RAZ
-        lastDragStart = context.transformedPoint(lastX,lastY); 
+        // lastDragStart = context.transformedPoint(lastX,lastY); 
        
     },false);
         
@@ -562,8 +509,16 @@
         dragged = true;
         if (dragStart){
             var pt = context.transformedPoint(lastX,lastY);
-            context.translate(pt.x-dragStart.x,pt.y-dragStart.y);
-            
+            var ptX = pt.x-dragStart.x;
+            var ptY = pt.y-dragStart.y;
+            //contextTranslateMemorize(ptX,ptY); // Add Titi
+            context.translate(ptX,ptY);
+            //console.log("context.transformedPoint("+lastX+","+lastY+")");
+            //console.log("context.translate("+ptX+","+ptY+")");
+            //console.log(context);
+
+            //context.translate(pt.x-dragStart.x,pt.y-dragStart.y);
+
             reDraw();
         }
     },false);
@@ -571,29 +526,29 @@
     canvasMap.addEventListener('mouseup',function(evt){
         // console.log("mouseup");
         dragStart = null;
-        if (!dragged) zoom(evt.shiftKey ? -1 : 1 );
+        // if (!dragged) zoom(evt.shiftKey ? -1 : 1 );
     },false);
 
  
 
     var scaleFactor = 1.1;
-    var zoomLevel = 0; // Add titi
+    zoomLevel = 0; // Add titi
         
     var zoom = function(clicks,reset){
         
         var factor = Math.pow(scaleFactor,clicks);        
         var pt = context.transformedPoint(lastX,lastY);
         context.translate(pt.x,pt.y);
+        //contextTranslateMemorize(pt.x,pt.y);// add titi
         context.scale(factor,factor);
         context.translate(-pt.x,-pt.y);
+        //contextTranslateMemorize(-pt.x,-pt.y);// add titi
         
         // Add Titi pour mémoriser le niveau de Zoom courant
         // afin de faire un R.A.Z du Zoom à son niveau d'origine (0)
         if (clicks) zoomLevel = zoomLevel + clicks;
-        else if (reset == 'reset') zoomLevel = 0;
+        else if (reset == true) zoomLevel = 0;
         else zoomLevel = zoomLevel + 1;
-        // console.log ("clicks =" +clicks)
-        // console.log ("zoomLevel =" +zoomLevel)
 
         reDraw();        
 
@@ -666,72 +621,66 @@
     }
 
 
-    // Adss Titi --------------------------------
+    // Adss Titi: pour les commandes par boutons--------
 
    
-    // Add Titi: resetZoom
-    function resetZoom() {
-        console.log("resetZoom()")
-        zoom(-zoomLevel,'reset');
-        //zoomLevel = 0;       
-
+    /*// Add Titi: fonction passerelle
+    // pour mémoriser les différents context.translate
+    // Afin de faire un RAZ de la position de départ...
+    actualPosX = 0;
+    actualPosY = 0;
+    function contextTranslateMemorize(toX,toY) {
+        actualPosX += toX;
+        actualPosY += toY;
     }
+    /**/
 
-    function resetPosition() {
-        console.log("resetPosition()")
-        
-        var pt = context.transformedPoint(0,0);
-        var defaultX = pt.x-lastDragStart.x;
-        var defaultY = pt.y-lastDragStart.y
-        context.translate( defaultX , defaultY );
-        reDraw();
 
-        if (dragStart){
 
-        }
-        // Add titi pour le RAZ
-        // lastDragStart = context.transformedPoint(lastX,lastY); 
-        lastDragStart = null; 
-
-        reDraw();       
-
+    exports.setZoom = function (clicks) {
+        //var reset = false;
+        //if (clicks == 0) zoom(-zoomLevel,reset);
+        zoom(-clicks);
     }
-
-    // Add Titi: Recentrage général de la cartographie
-    function resetCanvas() {
-        resetZoom();
-        resetPosition();       
-        // reset positions
-    }
-
-
-
-
-
-   // Add Titi pour translations à incrément fixe:
-    function canvasMove(direction) {
-       var pt = context.transformedPoint(lastX,lastY);
-       var hOffset = 0;
-       var vOffset = 0;
-       
-       vOffset = -1;
-
 
     /*
-       if (direction == "Up") {
-            vOffset = 10;
-       } else if (direction == "Down"){
-             vOffset = -10;
-       } else if (direction == "Right"){
-            hOffset = 1;
-       } else if (direction == "Left"){
-            hOffset = -1;
-       }
-       /**/
-       context.translate(pt.x-vOffset,pt.y-hOffset);
-       reDraw();
+    exports.resetPosition = function (){
+    //function resetPosition() {
+        context.translate(-actualPosX,-actualPosY);
+        actualPosX = 0;
+        actualPosY = 0;
 
+        //var toZeroX = 300-pt.X;
+        //var toZeroY = 80-pt.y;
+        //context.translate(toZeroX,toZeroY);
+        //reDraw();       
+
+    }
+    /**/
+
+    // Interface de retour aux valeurs par défaut de la carte
+    exports.resetCanvas = function (){ 
+    // function resetCanvas() {
+        // resetZoom();  
+        //resetPosition();  
+        // resetZoom();
+        // initialContext.restore();
+        modeTraking = false; // On reset le mode tracking 
+        initialContextSaved = false; // On prévient le systeme que le contexte de départ doit être réinitialisé
+        context.restore(); // On rétablit contexte de départ
+
+       
     }
 
 
-//});
+   // Interface de translations horizontales et verticales:
+    exports.canvasMove = function (moveX,moveY){ 
+   // function canvasMove(moveX,moveY) {
+        //contextTranslateMemorize(moveX,moveY);
+        context.translate(moveX,moveY);
+        reDraw();
+        // console.log(context);
+    }
+
+
+})(typeof exports === 'undefined'? this['carto']={}: exports);

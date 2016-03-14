@@ -231,7 +231,7 @@ $('#formulaire_chat_webRTC').submit(function() {
 if (type == "robot-appelé") {
     function deathMan(){
     
-         console.log("@ deathMan() >> onMove:"+onMove+" "+"lastMoveTimeStamp:"+lastMoveTimeStamp);          
+         // console.log("@ deathMan() >> onMove:"+onMove+" "+"lastMoveTimeStamp:"+lastMoveTimeStamp);          
 
          var dateA = Date.now();
          // if (settings.isBenchmark() == true ) dateA = Date.now(ts.now()), // date synchronisée avec le serveur (V1 timesync.js)

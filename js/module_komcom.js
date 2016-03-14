@@ -8,7 +8,7 @@ exports.sendDrive = function (data){
     var isRobubox = appSettings.isRobubox();
     var isBenchmark = appSettings.isBenchmark();
 
-    console.log ("robubox.sendDrive_01("+isRobubox+")");
+    // console.log ("robubox.sendDrive_01("+isRobubox+")");
     // console.log(data);
     
      // driveSettings: this.settings.rpcMethod,
@@ -165,24 +165,23 @@ exports.sendDrive = function (data){
 exports.getRobotInfo = function (){
 
 	
-	console.log ('get robot position');
+	// console.log ('get robot position');
 	// Titi: Rebond proxy en https(Client Robot) > Http(Robubox)
 	var urlRobotPosition = 'https://127.0.0.1:443/http://127.0.0.1:50000/lokarria/localization';
 
 	if (fakeRobubox == true) {  
        // dataMap = getFakeDataMap();
        robotInfo = getFakeRobotInfo();
-       console.log(robotInfo);
+       defferedRobotInfo.resolve();
+       // console.log(robotInfo);
     } else {
     	
     	$.get(urlRobotPosition, function(dataLocalization) { // la localisation du robot sur la carte
         robotInfo = JSON.parse(dataLocalization);
-        console.log('robotInfo -->', robotInfo);
-        console.log(robotInfo);
-        var debug = tools.stringObjectDump(robotInfo,"robotInfo");
-        console.log(debug);
-        console.log ('then, call load function')
-    
+        //console.log('robotInfo -->', robotInfo);
+        //console.log(robotInfo);
+        defferedRobotInfo.resolve();
+  
     	});
 
     }
@@ -195,16 +194,19 @@ exports.getDataMap = function (){
 	console.log ('get map informations');
 	// Titi: Rebond proxy en https(Client Robot) > Http(Robubox)
     var url = 'https://127.0.0.1:443/http://127.0.0.1:50000/nav/maps/parameters';
-    if (fakeRobubox == true) {  
-        
-        dataMap = getFakeDataMap();
-        console.log(dataMap);
     
+    if (fakeRobubox == true) {  
+        dataMap = getFakeDataMap();
+        defferedDataMap.resolve();
+        // console.log(dataMap);
     } else {
         
         $.get(url, function(rep) { // Les informations de la carte 
 		    if (!rep) return;
 		    dataMap = rep;
+            //console.log('datamap -->', dataMap);
+            //console.log(dataMap);
+            defferedDataMap.resolve();
     	});  
     }   
 }

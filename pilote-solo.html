@@ -172,21 +172,26 @@
 
         
             <div id="NavigationArea" class="insideFlex robot tripleQuarterBox shadowBlack floatRight" style="height:200px; width:600px;min-width:600px">
-                    <strong> Localisation</strong>
+                    
                     <button id="zoomIn" onclick="zoomCarto('In')">Zoom +</button>
                     <button id="zoomOut" onclick="zoomCarto('Out')">Zoom -</button>
+
+                    ||
                     <button id="translateLeft" onclick="translationMap('Left')">Left</button>
                     <button id="translateUp" onclick="translationMap('Up')">Up</button>
                     <button id="translateDown" onclick="translationMap('Down')">Down</button>
                     <button id="translateRight" onclick="translationMap('Right')">Right</button>
-                     / 
+                    ||
+                    <button id="resetMap" onclick="resetMap()">Reset Map</button>
+                    ||
+                      
                     <button id="trackingMode" onclick="trakingMode()">Tracking</button>
-                     - 
-                    <button id="resetMap" onclick="resetMap()">Reset</button>
+                     
+                   
                     
                     
                     <hr/>
-                    <canvas id="myCanvas" width="590" height="160" style=""></canvas>    
+                    <canvas id="myCanvas" width="600" height="160" style="background-color:#000"></canvas>    
             </div>
 
 
@@ -267,6 +272,9 @@
             </div>
 
             <div id='sucessMessage' class="success message">
+            </div>
+
+            <div id='standardMessage' class="standard message">
             </div>
             
 

@@ -58,35 +58,39 @@ function raZNavChannel() {
 raZNavChannel();
 
 
-
-
-
-
-
-
-
-
 // ----- Navigation --------
 
 
 // Boutons de zoom + & -
 function zoomCarto(inOut) {
+    
     var delta = 1;
-    if (inOut == 'Out') delta = -1
-    zoom(delta);
+    var reset = null;
+    if (inOut == 'Out') delta = 1
+    else if (inOut == "In") delta = -1; 
+    //else if (inOut == "Reset") delta = 0;
+    carto.setZoom(delta);
+    /**/
 }
 
 function translationMap(direction) {
-    console.log (direction);
-    canvasMove(direction);
+    var moveX = 0;
+    var moveY = 0;
+    if (direction == "Up") moveY = -1;
+    else if (direction == "Down") moveY = 1;
+    else if (direction == "Right") moveX = 1;
+    else if (direction == "Left") moveX = -1;
+    carto.canvasMove(moveX,moveY);
 }
 
 function resetMap() {
     // console.log("resetMp");
-    resetCanvas();
+    carto.resetCanvas();
 }
 
-
+function trakingMode() {
+    carto.activeTracking();
+}
 
 // --------------- Ecouteurs des formulaires HTML
 

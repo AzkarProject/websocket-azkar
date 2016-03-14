@@ -5,7 +5,7 @@
 // source: http://red-team-design.com/cool-notification-messages-with-css3-jquery/
 
 // define the messages types	
-var myMessages = ['info','warning','error','success']; 	 
+var myMessages = ['info','warning','error','success','standard']; 	 
 
 // Variable globale de notification en cours
 // pour éviter les doubles affichages...

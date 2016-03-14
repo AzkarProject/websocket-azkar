@@ -757,7 +757,7 @@ socket.on('updateUsers', function(data) {
 
 // Reception du niveau de la batterie
 socket.on("battery_level", function(data) {
-    console.log('onBattery_level >>');
+    // console.log('onBattery_level >>');
    // console.log('objet Batterie percentage ' + data.percentage);
     ihm.refreshJaugeBattery(data.percentage) // redessiner la jauge au niveau de l'ihm pilote
 });

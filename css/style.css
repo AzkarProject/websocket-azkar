@@ -460,6 +460,12 @@ http://red-team-design.com/cool-notification-messages-with-css3-jquery/
      border-color: #55a12c;
 }
 
+
+.standard{
+     background-color: #000;
+     border-color: #fff;
+}
+
 .message h3{
      margin: 0 0 5px 0;                                                  
 }

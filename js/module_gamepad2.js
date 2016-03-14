@@ -237,7 +237,7 @@ function checkButtons(gamepad) {
 		      if (lastButtonName == "buttonY" ) return
 		      if (IS_WebRTC_Connected == true ) {
 		      	// writeMessage ("warning","GAMEPAD","(Y) Connexion déjà ouverte ! ",3000)
-		      	notifications.writeMessage ("warning","GAMEPAD","(Y) Connexion déjà ouverte ! ",3000)
+		      	notifications.writeMessage ("error","GAMEPAD","(Y) Connexion déjà ouverte ! ",3000)
 		      	return;
 		      }
 		      //driveCommandBlock('open')
@@ -246,7 +246,7 @@ function checkButtons(gamepad) {
 		      lastButtonName = "buttonY";
 		      //writeMessage ("success","GAMEPAD","(Y) Ouverture connexion",3000)
 		  	  //spawnNotification("GAMEPAD","(Y) Ouverture connexion",3000)
-		  	  notifications.writeMessage ("success","GAMEPAD","(Y) Ouverture connexion",3000)
+		  	  notifications.writeMessage ("standard","GAMEPAD","(Y) Ouverture connexion",3000)
 		  	  notifications.spawnNotification("GAMEPAD","(Y) Ouverture connexion",3000)
 		  	  openRobotConnexion();
 		      
@@ -260,7 +260,7 @@ function checkButtons(gamepad) {
 			  // empécher l'appui continu sur la même touche 
 			  if (lastButtonName == "buttonB" ) return;
 			  if (IS_WebRTC_Connected == false ) {
-			  	notifications.writeMessage ("warning","GAMEPAD","(B) Connexion déjà fermée ! ",3000)
+			  	notifications.writeMessage ("error","GAMEPAD","(B) Connexion déjà fermée ! ",3000)
 			  	return;
 			  }	
 			  //driveCommandBlock('open')
@@ -269,7 +269,7 @@ function checkButtons(gamepad) {
 		      lastButtonName = "buttonB";
 		      //writeMessage ("error","GAMEPAD","(B) Fermeture connexion",3000)
 		      //spawnNotification("GAMEPAD","(B) Fermeture connexion",3000)
-		      notifications.writeMessage ("error","GAMEPAD","(B) Fermeture connexion",3000)
+		      notifications.writeMessage ("standard","GAMEPAD","(B) Fermeture connexion",3000)
 		      notifications.spawnNotification("GAMEPAD","(B) Fermeture connexion",3000)
 		      closeRobotConnexion();
 		      lastButtonName = "buttonB";
@@ -283,7 +283,7 @@ function checkButtons(gamepad) {
 			 
 			if (IS_WebRTC_Connected == true ) {
 		      	//writeMessage ("warning","GAMEPAD (LB) ","Sélection caméra impossible !</br/> Veuillez dabord déconnecter le robot !! ",500)
-		      	notifications.writeMessage ("warning","GAMEPAD (LB) ","Sélection caméra impossible !</br/> Veuillez dabord déconnecter le robot !! ",500)
+		      	notifications.writeMessage ("error","GAMEPAD (LB) ","Sélection caméra impossible !</br/> Veuillez dabord déconnecter le robot !! ",500)
 		      	return;
 		      }
 
@@ -312,7 +312,7 @@ function checkButtons(gamepad) {
 			
 			if (IS_WebRTC_Connected == true ) {
 		      	//writeMessage ("warning","GAMEPAD (RB) ","Settings Impossibles !</br/> Veuillez dabord déconnecter le robot !! ",500)
-		      	notifications.writeMessage ("warning","GAMEPAD (RB) ","Settings Impossibles !</br/> Veuillez dabord déconnecter le robot !! ",500)
+		      	notifications.writeMessage ("error","GAMEPAD (RB) ","Settings Impossibles !</br/> Veuillez dabord déconnecter le robot !! ",500)
 		      	return;
 		      }
 		    
