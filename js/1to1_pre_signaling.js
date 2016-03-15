@@ -1,156 +1,5 @@
 //------ PHASE 1 : Pré-signaling ----------------------------------------------------------
 
-// ---- > Ecouteurs webSocket 
-/*// Messages d'erreur et contrôles d'accès
-socket.on('error', errorHandler);
-socket.on('rejectConnexion', function(data) {
-    alertAndRedirect(data.message, data.url)
-})
-/**/
-
-/*// ----- Variables globales Robot/Pilote
-
-audioSource = local_AudioSelect.value;
-videoSource = local_VideoSelect.value;
-
-constraint = null;
-
-if (type == "pilote-appelant" && proto == "1to1") {
-    robotCamDef = robot_camdef_select.value;
-    piloteCamDef = pilot_camdef_select.value;
-}
-
-// -----------------------------
-
-// Constraints de l'offre SDP. 
-robotConstraints = {
-    mandatory: {
-        OfferToReceiveAudio: true,
-        OfferToReceiveVideo: true
-    }
-};
-
-// Constraints de l'offre SDP. 
-piloteConstraints = {
-    mandatory: {
-        OfferToReceiveAudio: true,
-        OfferToReceiveVideo: true
-    }
-};
-
-//console.log (robotConstraints);
-//console.log (piloteConstraints);
-/**/
-
-
-// --------------- Replace by 1to1-basic select cam process ------------
-
-/*// Lancement de la récupération des Devices disponibles
-if (typeof MediaStreamTrack === 'undefined') {
-    alert('This browser does not support MediaStreamTrack.\n\nTry Chrome.');
-} else {
-    origin = "local"; // On prévient la fonction apellée que la source sera locale
-    MediaStreamTrack.getSources(gotSources);
-}
-
-
-
-// IHM Pilote & Robot
-// Génération des listes de sélection sources (cam/micro) 
-// disponibles localement et a distance
-function gotSources(sourceInfos) {
-
-    console.log("@ gotSources()");
-    //console.log(sourceInfos);
-
-    // Si sources locales (pilote)
-    if (origin == "local") {
-        listeLocalSources = sourceInfos;
-
-    // Si sources distantes (Robot)
-    } else if (origin == "remote") {
-        listeRemoteSources = sourceInfos;
-
-    }
-
-    // BUG: Double affichage des options remoteDevices en cas de déco/reco du Robot.
-    // FIX ==> On vide la liste du formulaire de ses options.
-    // Comment ==> En supprimant tous les enfants du nœud
-    if (origin == "remote") {
-        
-        // On supprime tous les enfants du noeud précédent...
-        while (remote_AudioSelect.firstChild) {
-            // La liste n'étant pas une copie, elle sera réindexée à chaque appel
-            remote_AudioSelect.removeChild(remote_AudioSelect.firstChild);
-        }
-        // Idem pour le noeud video
-        while (remote_VideoSelect.firstChild) {
-            remote_VideoSelect.removeChild(remote_VideoSelect.firstChild);
-        }
-    }
-
-
-
-
-    for (var i = 0; i !== sourceInfos.length; ++i) {
-
-        var sourceInfo = sourceInfos[i];
-        var option = document.createElement('option');
-        option.id = sourceInfo.id;
-        option.value = sourceInfo.id;
-
-        // Reconstruction de l'objet javascript natif sourceInfo:
-        // Quand il est construit sous chromium et transmit par websocket
-        // vers Chrome impossible d'accéder à ses attributs une foi transmi... 
-        // Ce qui est bizarre, c'est que l'objet natif semble tout à fait normal avant transmission.
-        // Par contre, R.A.S quand on le transmet de Chrome à Chrome ou de Chromium à chromium.
-        var sourceDevice = new tools.sourceDevice();
-        sourceDevice.id = sourceInfo.id;
-        sourceDevice.label = sourceInfo.label;
-        sourceDevice.kind = sourceInfo.kind;
-        sourceDevice.facing = sourceInfo.facing;
-        sourceInfos[i] = sourceDevice;
-
-        // Conflit webcam Chromium/Chrome si même device choisi sur le PC local
-        // >>> L'ID fournie par L'API MediaStreamTrack.getSources est différente selon le navigateur
-        // >>> Donc ne permet pas de différencier cams et micros correctement
-        // TODO: Trouver une solution de contournement pour les tests interNavigateurs sur une même machine
-
-        if (sourceInfo.kind === 'audio') {
-
-            if (origin == "local") {
-                option.text = sourceInfo.label || 'localMicro ' + (local_AudioSelect.length + 1) + ' (ID:' + sourceInfo.id + ')';
-                local_AudioSelect.appendChild(option);
-
-            } else if (origin == "remote") {
-                option.text = sourceInfo.label || 'RemoteMicro ' + (remote_AudioSelect.length + 1) + ' (ID:' + sourceInfo.id + ')';
-                remote_AudioSelect.appendChild(option);
-            }
-
-
-        } else if (sourceInfo.kind === 'video') {
-
-            if (origin == "local") {
-                option.text = sourceInfo.label || 'localCam ' + (local_VideoSelect.length + 1) + ' (ID:' + sourceInfo.id + ')';
-                local_VideoSelect.appendChild(option);
-
-            } else if (origin == "remote") {
-                option.text = sourceInfo.label || 'RemoteCam ' + (remote_VideoSelect.length + 1) + ' (ID:' + sourceInfo.id + ')';
-                remote_VideoSelect.appendChild(option);
-            }
-
-        } else {
-
-            console.log('Some other kind of source: ', sourceInfo);
-
-        }
-    }
-
-    // On fait un RAZ du flag d'origine
-    origin = null;
-}
-
-/**/
 // --------------- ! Replace by 1to1-basic select cam process ------------
 
 // sélecteurs de micros et caméras
@@ -160,23 +9,6 @@ local_VideoSelect = document.querySelector('select#local_videoSource');
 // sélecteurs de micros et caméras (robot) affiché coté pilote 
 remote_AudioSelect = document.querySelector('select#remote_audioSource');
 remote_VideoSelect = document.querySelector('select#remote_videoSource');
-
-/*// Pour visualiser toutes les cams dispo coté Robot,
-// on laisse par défaut l'affichage des devices.
-local_AudioSelect.disabled = false;
-local_VideoSelect.disabled = false;
-
-// (pilote-Appelant) > Activation/Désativation préalable 
-// Du formulaire de sélection des devices locaux et de demande de connexion
-if (type == "pilote-appelant") {
-    remote_ButtonDevices.disabled = true;
-    local_ButtonDevices.disabled = true;
-    //remote_AudioSelect.disabled = true; 
-    //remote_VideoSelect.disabled = true; 
-    local_AudioSelect.disabled = true;
-    local_VideoSelect.disabled = true;
-}
-/**/
 
 // Liste des sources cam/micro
 listeLocalSources = {};
@@ -381,10 +213,6 @@ function populateListDevices(result,sourceDevices) {
 
         });
 
-        // console.log ('XXXXXXXXXXXXXXXXXX')
-        // console.log (result.allMdiaDevices)
-        // console.log (exportMediaDevices);
-
         if (type == "robot-appelé") socket.emit('remoteListDevices', {listeDevices: exportMediaDevices}); 
     
     } 
@@ -451,18 +279,6 @@ getAllAudioVideoDevices(function(result) {
     if (error == null) error = "erreur getAllAudioVideoDevices()";
     alert(error);
 });
-/**/
-
-/*
-function initGetSource (origin){
-    getAllAudioVideoDevices(function(result) {
-        populateListDevices(result,origin);
-    }, function(error) {
-        if (error == null) error = "erreur getAllAudioVideoDevices()";
-        alert(error);
-    });  
-}
-//initGetSource (origin);
 /**/
 
 // ----------------------------- reprise normùale ----------------------
@@ -568,12 +384,26 @@ function getLocalConstraint() {
     if (type == "pilote-appelant") camDef = parameters.camDefPilote;
     else if (type == "robot-appelé") camDef = parameters.camDefRobot;
     var maxCamWidth = 100, maxCamHeight = 100;
+    /*
     if (camDef == 'VLD') {maxCamWidth = 100; maxCamHeight = 52} // 16/9
     else if (camDef == 'LD') {maxCamWidth = 160; maxCamHeight = 88} // 16/9
     else if (camDef == 'MD') {maxCamWidth = 320; maxCamHeight = 180} // 16/9 
     else if (camDef == 'HD') {maxCamWidth = 640; maxCamHeight = 360} // 16/9
-    else if (camDef == 'FHD') {maxCamWidth = 640; maxCamHeight = 480} // 4/3..
+    else if (camDef == 'VHD') {maxCamWidth = 640; maxCamHeight = 480} // 4/3..
+    else if (camDef == '720p') {maxCamWidth = 1280; maxCamHeight = 720} // 16/9..
+    else if (camDef == '1080p') {maxCamWidth = 1920; maxCamHeight = 1200} // 16/9..
+    /**/
 
+
+    if (camDef == 'VLD') {maxCamWidth = 100; maxCamHeight = 52}
+    else if (camDef == '144p') {maxCamWidth = 196; maxCamHeight = 144}
+    else if (camDef == '244p') {maxCamWidth = 350; maxCamHeight = 240}  
+    else if (camDef == '360p') {maxCamWidth = 480; maxCamHeight = 360} 
+    else if (camDef == 'VGA') {maxCamWidth = 640; maxCamHeight = 480}
+    else if (camDef == '858p') {maxCamWidth = 858; maxCamHeight = 480} 
+    else if (camDef == '720p') {maxCamWidth = 1280; maxCamHeight = 720} 
+    else if (camDef == '1080p') {maxCamWidth = 1920; maxCamHeight = 1200} 
+    
     var framerate = 24;
 
     var localConstraints = { 

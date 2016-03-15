@@ -334,7 +334,14 @@ socket.on("candidate", function(data) {
     }
 });
 
+// Pour débugg:
+video1.addEventListener("playing", function () {
+    console.log ("LocalStream dimensions: " + video1.videoWidth + "x" + video1.videoHeight)
+});
 
+video2.addEventListener("playing", function () {
+    console.log ("RemoteStream dimensions: " + video2.videoWidth + "x" + video2.videoHeight)
+});
 
 // ----- Phase 3 Post-Signaling --------------------------------------------
 

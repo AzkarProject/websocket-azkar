@@ -1,12 +1,12 @@
 (function(exports){
 
-
+console.log ("module_komcom chargé");
 // Envoi d'une commande de type "Drive" au robot
 //exports.sendDrive = function (enable, aSpeed,lSpeed){
 exports.sendDrive = function (data){        
         
-    var isRobubox = appSettings.isRobubox();
-    var isBenchmark = appSettings.isBenchmark();
+    //var isRobubox = appSettings.isRobubox();
+    //var isBenchmark = appSettings.isBenchmark();
 
     // console.log ("robubox.sendDrive_01("+isRobubox+")");
     // console.log(data);
@@ -60,7 +60,7 @@ exports.sendDrive = function (data){
 
 
 
-
+    /*
 	// Todo >>> /*Disable after refacto
     if (isBenchmark == true ) {
 
@@ -75,9 +75,10 @@ exports.sendDrive = function (data){
         //insereMessage3("",msg);
         //console.log(data);
     }
+    /**/
 
     
-    if (isRobubox == true) {
+    //if (isRobubox == true) {
 
         // var toto = "robubox.sendDrive(1) >> enable:"+enable+" onMove:"+onMove+" "+"lastMoveTimeStamp:"+lastMoveTimeStamp;
         
@@ -87,8 +88,9 @@ exports.sendDrive = function (data){
             // console.log ("onMove = "+onMove);
             // lastMoveTimeStamp = Date.now(); // MAJ du dernier timestamp mouvement... 
             // lastMoveTimeStamp = Date.now(ts.now()); // date synchronisée avec le serveur
-            if (isBenchmark == true ) lastMoveTimeStamp = ServerDate.now();
-            else lastMoveTimeStamp = Date.now();
+            //if (isBenchmark == true ) lastMoveTimeStamp = ServerDate.now();
+            //else lastMoveTimeStamp = Date.now();
+            lastMoveTimeStamp = Date.now();
         
 
 
@@ -146,7 +148,7 @@ exports.sendDrive = function (data){
 
             }
 
-        } else if (fakeRobubox == true) {
+        } /*else if (fakeRobubox == true) {
             
             if (isBenchmark == true ) {
                 var aToB = dateB-dateA;
@@ -155,9 +157,9 @@ exports.sendDrive = function (data){
             }
 
 
-        }
+        }*/
         
-    }
+    //}
     /**/     
 }
 
@@ -216,12 +218,12 @@ exports.getDataMap = function (){
 exports.getBattery = function (){
         
     // Todo /* >>>>  A remplacer après refacto  
-    var isRobubox = appSettings.isRobubox();
+    //var isRobubox = appSettings.isRobubox();
     //var isRobubox = false;
     // console.log ("robubox.getBattery("+isRobubox+")");
     
     
-    if (isRobubox == true) {
+ //   if (isRobubox == true) {
 
         
     	//if (parameters.navSys == 'Robubox') {
@@ -262,7 +264,7 @@ exports.getBattery = function (){
 
             } 
 
-    }
+//    }
     /**/                 
 } // End getBattery
 

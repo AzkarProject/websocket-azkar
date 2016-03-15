@@ -1,12 +1,12 @@
 // ------------------------ Elements communs client/serveur
 var tools = require('./js/common_tools'); // méthodes génériques & objets
-var appSettings = require('./js/common_app_settings'); // paramètres de configuration
-//var devSettings = require('./js/common_devSettings'); // Nom de la branche gitHub
-//var robubox = require('./js/common_robubox'); // Fonctions de communication avec la Robubox
+var appSettings = require('./js/common_app_settings'); // paramètres de configuration de l'application
 
 
-deathManTimeStamp = new Date().getTime(); // TimeStamp en variable globale pour implémenter une sécurité homme/mort...
+/*// TimeStamp en variable globale pour implémenter une sécurité homme/mort...
+deathManTimeStamp = new Date().getTime(); 
 console.log (deathManTimeStamp);
+/**/
 
 // ------ Variables d'environnement & paramètrages serveurs ------------------
 // Récupération du Nom de la machine 
@@ -42,8 +42,9 @@ else if (hostName == "AZKAR-2") ipaddress = "134.59.130.142"; // IP statique de 
 
 console.log("***********************************");
 console.log('');
-console.log('(' + appSettings.appBranch() + ') ' + appSettings.appName() + " V " + appSettings.appVersion());
-console.log('');
+// console.log('(' + appSettings.appBranch() + ') ' + appSettings.appName() + " V " + appSettings.appVersion());
+console.log(appSettings.appName() + ': ' + appSettings.appBranch() + " (Version " + appSettings.appVersion()+")");
+console.log(appSettings.appCredit());
 console.log("***********************************");
 console.log("Serveur sur machine: " + hostName);
 
@@ -58,7 +59,7 @@ var key = fs.readFileSync('./ssl/hacksparrow-key.pem');
 var cert = fs.readFileSync('./ssl/hacksparrow-cert.pem');
 // A chaque serveur son certificat avec l'URL proprement indiquée
 // pour importer et enregistrer le certificat coté client
-// et ne plus avoir à autoriser la connexion a chaque foi... 
+// et ne plus avoir à autoriser la connexion à chaque foi... 
 if (hostName == "azcary") { 
 	key = fs.readFileSync('./ssl/azcary-key.pem');
 	cert = fs.readFileSync('./ssl/azcary-cert.pem');	
@@ -100,26 +101,6 @@ app.get('/pilote-solo/', function(req, res) {
 });
 
 
-// ------------- 1toN
-
-
-app.get('/pilote/', function(req, res) {
-    res.sendFile(__dirname + '/pilote.html');
-});
-
-
-
-app.get('/visiteur/', function(req, res) {
-    res.sendFile(__dirname + '/visiteur.html');
-});
-
-
-app.get('/admin/', function(req, res) {
-    res.sendFile(__dirname + '/admin.html');
-});
-
-
-
 // On passe la variable hostName en ajax à l'IHM d'accueil
 // puisqu'on ne peux pas passer par websocket...
 app.get("/getvar", function(req, res){
@@ -158,50 +139,10 @@ isServerStarted = false;
 
 io.on('connection', function(socket, pseudo) {
 
-    
-    // console.log(io);
-
     // Ecouteur de connexion entrante
     onSocketConnected(socket);
 
-    /*// Ejection de force de tous les connectés de la précédente session serveur
-    function razConnexions() {
-        var data = { url: indexUrl};  
-        socket.broadcast.emit('razConnexion',data); 
-        console.log ("> socket.broadcast.emit('razConnexion',"+data.url+")");
-        isServerStarted = true;         
-    }
-    
-    // Temporisation avant lancement du RAZconnexion
-    // le temps de laisser au système le délai nécéssaire 
-    // à la découverte des connectés de la session serveur précédente
-    if (isServerStarted == false ) {
-        setTimeout(razConnexions,5000);
-    }
-    /**/
-
-    
-    if (appSettings.isBenchmark() == true ) {
-
-        // Ping server
-    	socket.on('ping', function() {
-    	    io.to(socket.id).emit('pong');
-    	});
-
-
-        // Synchronisation Horloge
-        socket.on('timesync', function (data) {
-            // console.log('message', data);
-            // socket.emit('timesync', {
-            io.to(socket.id).emit('timesync', {
-              id: data && 'id' in data ? data.id : null,
-              result: Date.now()
-            });
-          });
-    
-    }
-
-
+   
     // Bouton ejection de tous les clients robot/Pilote et visiteurs
     socket.on('razConnexions', function(data) {
         var data = { url: indexUrl};  
@@ -447,46 +388,27 @@ io.on('connection', function(socket, pseudo) {
 
     socket.on('offer2', function(data) {
         
-        // console.log("----+offer+----");
-        // console.log(">>>>> Offer From: " + data.from.pseudo +"("+data.from.id+")");
-        // console.log(">>>>> Cible: " + data.cible.pseudo +"("+data.cible.id+")");
-        // console.log(">>>>> peerConnectionID: " + data.peerCnxId);
-        // console.log(data.message);
-        // console.log("----/offer/----");
-        
+       
         var consoleTxt = tools.humanDateER('R') + " @ offer >>>> (SDP from "+ data.from.pseudo +"("+data.from.id+")"
         consoleTxt += " to " + data.cible.pseudo +"("+data.cible.id+") / peerConnectionID: "+ data.peerCnxId;
         console.log(consoleTxt);
 
         socket.broadcast.emit('offer', data);
-        //io.to(data.cible.id).emit('offer', data);
+
     });
 
     socket.on('answer2', function(data) {
         
-        // console.log("----+answer+----");
-        // console.log(">>>>> Answer From: " + data.from.pseudo +"("+data.from.id+")");
-        // console.log(">>>>> Cible: " + data.cible.pseudo +"("+data.cible.id+")");
-        // console.log(">>>>> peerConnectionID: " + data.peerCnxId);
-        // console.log(data.message);
-        // console.log("----/answer/----");
         
         var consoleTxt = tools.humanDateER('R') + " @ answer >>>> (SDP from "+ data.from.pseudo +"("+data.from.id+")"
         consoleTxt += " to " + data.cible.pseudo +"("+data.cible.id+") / peerConnectionID: "+ data.peerCnxId;
         console.log(consoleTxt);
-        // 1toN pilote/Visiteur
-        //if (data.from.typeClient == "Visiteur") socket.broadcast.emit('answerFromVisitor',data);
-        // 1to1 pilote/Robot 
-        //else socket.broadcast.emit('answer',data);
-        
-        //io.to(data.cible.id).emit('answer', data);
         socket.broadcast.emit('answer',data);
     });
 
     socket.on('candidate2', function(data) {
        var consoleTxt = tools.humanDateER('R') + " @ candidate >>>> (from "+data.from.pseudo + " ("+data.from.id+")" ;
         consoleTxt += "to "+data.cible.pseudo +" ("+data.cible.id+") / peerConnectionID: "+ data.peerCnxId;
-        // console.log(consoleTxt);
         socket.broadcast.emit('candidate', data);
     });
 
@@ -498,11 +420,10 @@ io.on('connection', function(socket, pseudo) {
         console.log(consoleTxt);
 
         socket.broadcast.emit('offer_VtoR', data);
-        //io.to(data.cible.id).emit('offer', data);
     });
 
 
-    // tentative contournement BUG createDataChannel sous Chrome
+    /*// tentative contournement BUG createDataChannel sous Chrome
     socket.on("channelObject", function(data) {
         var consoleTxt = tools.humanDateER('R') + " @ channelObject >>>> (RTCdatachannel from Pilote";
         console.log(consoleTxt);
@@ -510,6 +431,7 @@ io.on('connection', function(socket, pseudo) {
         socket.broadcast.emit('channelObject', data);
         //io.to(data.cible.id).emit('offer', data);
     });
+    /**/
     
 
     // ----------------------------------------------------------------------------------
@@ -536,20 +458,7 @@ io.on('connection', function(socket, pseudo) {
 
     // Robot >> Pilote: Offre des cams/micros disponibles coté robot
     socket.on('remoteListDevices', function(data) {
-        
-        /*
-        console.log(tools.humanDateER('R') + " @ remoteListDevices >>>> (from "+data.objUser.pseudo+" id:"+data.objUser.id+")");
-        socket.broadcast.emit('remoteListDevices', {
-            objUser: data.objUser,
-            listeDevices: data.listeDevices
-        });
-        /**/
-
-
         socket.broadcast.emit('remoteListDevices', data);
-
-
-
     });
 
     // Pilote >> Robot: cams/micros sélectionnés par le Pilote
@@ -603,7 +512,7 @@ io.on('connection', function(socket, pseudo) {
     });
 
    
-    // Connexions p2p Robot-visiteur (1toN) --------------
+    /*// Connexions p2p Robot-visiteur (1toN) --------------
     
     socket.on("VtoR_initPreSignaling", function(data) {
         var consoleTxt = tools.humanDateER('R') + " @ VtoR_initPreSignaling >>>> from "+data.from.pseudo+" ("+data.from.id+") ";
@@ -627,7 +536,7 @@ io.on('connection', function(socket, pseudo) {
         console.log(consoleTxt); 
         io.to(data.cible.id).emit('VtoR_ReadyForSignaling', data);
     }); 
-
+    /**/
    // Elements de post-signaling----------------------------------------------------------------------------------
 
     socket.on('closeConnectionOrder', function(data) { 
@@ -637,6 +546,7 @@ io.on('connection', function(socket, pseudo) {
         io.to(data.cible.id).emit('closeConnectionOrder', data);
     }); 
 
+    /*
     socket.on('closeAllVisitorsConnectionOrder', function(data) { 
         var consoleTxt = tools.humanDateER('R') + " @ closeAllVisitorsConnectionOrder >>>> from "+data.from.pseudo+" ("+data.from.id+") ";
         consoleTxt += "to: "+data.cible.pseudo+"("+data.cible.id+")"; 
@@ -644,6 +554,7 @@ io.on('connection', function(socket, pseudo) {
         //io.to(data.cible.id).emit('closeAllVisitorsConnectionOrder', data);
         socket.broadcast.emit('closeAllVisitorsConnectionOrder', data);
     }); 
+    /***/
 
 
     // Pilote/Robot >>> Visiteurs > Signal de perte de la connexion WebRTC principale (Pilote <> Robot)
@@ -672,26 +583,3 @@ function onSocketConnected(socket) {
 }
 
 
-// ----- Contrôles pour débuggage coté serveur
-
-// Contrôle des versions node.modules (Pour debugg sur Openshift)
-var ioVersion = require('socket.io/package').version;
-var expressVersion = require('express/package').version;
-var entVersion = require('ent/package').version;
-//var fsVersion = require('express/package').version;
-//var httpVersion = require('socket.io/package').version;
-//var bodyparserVersion = require('body-parser/package').version;
-//var HttpStatusVersion = require('http-status-codes/package').version;
-//var xhr2Version = require('xhr2/package').version;
-//var QVersion = require('q/package').version;
-
-// Affichage de contrôle coté serveur
-console.log("***********************************");
-console.log("** Socket.IO Version: " + ioVersion);
-console.log("** Express Version: " + expressVersion);
-console.log("** Ent  Version: " + entVersion);
-//console.log("** Body-parser Version: " + bodyparserVersion);
-//console.log("** Http-status-codes Version: " + HttpStatusVersion);
-//nsole.log("** Xhr2 Version: " + xhr2Version);
-//console.log("** Q Version: " + QVersion);
-console.log("***********************************");

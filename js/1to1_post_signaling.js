@@ -235,7 +235,7 @@ if (type == "robot-appelé") {
 
          var dateA = Date.now();
          // if (settings.isBenchmark() == true ) dateA = Date.now(ts.now()), // date synchronisée avec le serveur (V1 timesync.js)
-         if (appSettings.isBenchmark() == true ) dateA = ServerDate.now(); // date synchronisée avec le serveur (V2 ServerDate.js)
+         // if (appSettings.isBenchmark() == true ) dateA = ServerDate.now(); // date synchronisée avec le serveur (V2 ServerDate.js)
 
          var data = {
                  channel: "Local-Robot",
@@ -254,7 +254,7 @@ if (type == "robot-appelé") {
         if (onMove == true || lastMoveTimeStamp != 0) {
             var now = Date.now();
             // if (settings.isBenchmark() == true )  now = Date.now(ts.now()); // date synchronisée avec le serveur (V1 timesync.js)
-            if (appSettings.isBenchmark() == true ) now = ServerDate.now(); // date synchronisée avec le serveur (V2 ServerDate.js)
+            // if (appSettings.isBenchmark() == true ) now = ServerDate.now(); // date synchronisée avec le serveur (V2 ServerDate.js)
             
             var test = now - lastMoveTimeStamp;
             if (test >= 1000 ) {
@@ -280,8 +280,7 @@ socket.on("piloteOrder", function(data) {
             // Flags homme mort
             onMove = true;
             lastMoveTimeStamp = Date.now(); // on met a jour le timestamp du dernier ordre de mouvement...
-            // if (settings.isBenchmark() == true )  lastMoveTimeStamp = Date.now(ts.now()); // date synchro serveur (V1 timesync.js)
-            if (appSettings.isBenchmark() == true ) lastMoveTimeStamp = ServerDate.now(); // date synchroserveur (V2 ServerDate.js)
+            // if (appSettings.isBenchmark() == true ) lastMoveTimeStamp = ServerDate.now(); // date synchroserveur (V2 ServerDate.js)
 
 
             // Envoi commande Robubox
@@ -300,18 +299,6 @@ socket.on("piloteOrder", function(data) {
             komcom.sendStep(data.typeMove,data.distance,data.MaxSpeed) ;
         }
         
-        /*// Envoi d'une trace au log WebSocket de l'IHM robot
-        var dateB = Date.now();
-        var delta = dateB-data.dateA;
-        var msg = '[' +delta+' ms] ' +data.command;
-        insereMessage3("",msg);
-        /**/
-        /*
-        if (data.command == "onStop") {};
-        if (data.command == "onStep") {};
-        if (data.command == "onGoto") {};
-        if (data.command == "onClicAndGo") {};
-        /**/
         
     }
 });
@@ -321,44 +308,10 @@ socket.on("piloteOrder", function(data) {
 // pour l'exécution des commandes reçues en WebRTC et webSocket
 socket.on('changeNavSystem', function(data) {
    console.log (">> socket.on('changeNavSystem',...");  
-   //console.log('onChangeNavSystem >> ' + data.navSystem);
    parameters.navSys = data.navSystem;
 });
 
-video2.addEventListener("playing", function () {
-    console.log ("RemoteStream dimensions: " + video2.videoWidth + "x" + video2.videoHeight)
-});
-
-
-/*
-function fullscreen(){
-    console.log('fullScreen()');
-    video2.width = window.innerWidth;
-    video2.height = window.innerHeight;
-}
-/**/
 
 
 
-/*
-function toggleFullScreen(){
-    console.log('@ toggleFullScreen()');
-    if(video2.requestFullScreen){
-        video2.requestFullScreen();
-    } else if(video2.webkitRequestFullScreen){
-        video2.webkitRequestFullScreen();
-    } else if(vid.mozRequestFullScreen){
-        video2.mozRequestFullScreen();
-    }
-}
-
-
-
-document.addEventListener("keydown", function(e) {
-  if (e.keyCode == 13) {
-    //ihm.toggleFullScreen();
-    toggleFullScreen()
-  } 
-}, false);
-/**/
 

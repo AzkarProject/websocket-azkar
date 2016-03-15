@@ -16,15 +16,21 @@ cartoChannel = 'webSocket'; // 'webRTC'
 /**/
 
 
+
 // Génère les options des résolution
-var listOptionsDefinition = '<option value="VLD" selected="selected" >Very Low (100*52) 16/9</option>';   
-listOptionsDefinition += '<option value="LD">Low (160*88) 16/9</option>'; 
-listOptionsDefinition += '<option value="MD">Medium (320*180) 16/9</option>';
-listOptionsDefinition += '<option value="HD">High (640*360) 16/9</option>'; 
-listOptionsDefinition += '<option value="FHD">Very Hight (640*480) 4/3</option>';
+var listOptionsDefinition = '<option value="VLD" selected="selected" >Very Low: 100*52</option>';   
+listOptionsDefinition += '<option value="144p">144p: 196*144</option>'; 
+listOptionsDefinition += '<option value="244p">244p: 350*240</option>';
+listOptionsDefinition += '<option value="360p">360p: 480*360</option>'; 
+listOptionsDefinition += '<option value="VGA">VGA: 640*480</option>';
+listOptionsDefinition += '<option value="858p">858p: 858*480</option>';
+listOptionsDefinition += '<option value="720p">720p: 1280*720</option>';
+listOptionsDefinition += '<option value="1080p">1080p: 1920*1200</option>';
+
+
+
 $('#robot_camdef_select').html(listOptionsDefinition); 
 $('#pilot_camdef_select').html(listOptionsDefinition); 
-
 
 
 

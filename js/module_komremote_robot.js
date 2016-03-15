@@ -1,5 +1,7 @@
-'use strict';
+// Authors: François Michaudon & Hugo Mallet (53JS)
 
+'use strict';
+console.log ("module_komRemote_Robot chargé");
 var SESSION = null;
 
 var KOMCOM_SERVER = '127.0.0.1', // wss://127.0.0.1
@@ -7,12 +9,12 @@ var KOMCOM_SERVER = '127.0.0.1', // wss://127.0.0.1
 	KOMNAV_METHOD_DRIVE = KOMCOM_REALM + '.drive',
 	connection = new autobahn.Connection({ url: 'wss://' + KOMCOM_SERVER, realm: KOMCOM_REALM });
 
-var isRobubox = appSettings.isRobubox();
+// var isRobubox = appSettings.isRobubox();
 
 
-if (isRobubox == true) {
+// if (isRobubox == true) {
 
-	console.log("module_komnav");
+	
 
 	
 	if (fakeRobubox == false) {
@@ -60,8 +62,9 @@ if (isRobubox == true) {
 
 
 		var myTransportSession = {
+			
 			call: function(rpcMethodName, values) {
-				console.log ('Drive Command >>> ');
+				console.log ('fakeRobubox: KomRemote-Robot Drive Command >>> ');
 			}
 		};
 
@@ -91,6 +94,6 @@ if (isRobubox == true) {
 
 
 
-}
+//}
 
 
