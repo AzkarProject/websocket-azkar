@@ -164,7 +164,7 @@ exports.sendDrive = function (data){
 }
 
 
-exports.getRobotInfo = function (){
+exports.getRobotInfo = function (init){
 
 	
 	// console.log ('get robot position');
@@ -182,7 +182,7 @@ exports.getRobotInfo = function (){
         robotInfo = JSON.parse(dataLocalization);
         //console.log('robotInfo -->', robotInfo);
         //console.log(robotInfo);
-        defferedRobotInfo.resolve();
+        if (init == true) defferedRobotInfo.resolve();
   
     	});
 

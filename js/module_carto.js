@@ -121,6 +121,8 @@
 
     console.log('@ init(callback)');      
         
+            
+
             defferedDataMap = $.Deferred();
             defferedRobotInfo = $.Deferred();
 
@@ -129,8 +131,13 @@
                 callback();
             });
 
-            komcom.getRobotInfo();
+            var init = true;
+            komcom.getRobotInfo(init);
             komcom.getDataMap();
+    
+
+
+
     }
 
     function load() {
