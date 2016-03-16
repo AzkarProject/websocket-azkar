@@ -259,8 +259,8 @@
 
         var newX = halfCanvasX-newOffset.width; 
         var newY = newOffset.height-canvasHeight;
-        console.log(toto + " - " + tata)
-        console.log (newX +" - " + newY)
+        //console.log(toto + " - " + tata)
+        //console.log (newX +" - " + newY)
 
         var newX = halfCanvasX-toto+rx; 
         var newY = halfCanvasY-tata-ry;
