@@ -40,6 +40,7 @@ function getAllAudioVideoDevices(successCallback, failureCallback) {
     if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
         
         // Firefox 38+, Microsoft Edge, and Chrome 44+ seems having support of enumerateDevices
+        //alert ("COOL");
         navigator.enumerateDevices = function(callback) {
             navigator.mediaDevices.enumerateDevices().then(callback);
         };
@@ -177,8 +178,8 @@ function populateListDevices(result,sourceDevices) {
     
     if (sourceDevices == "remote") {
        
-        console.log ('XXXXXXXXXXXXXXXXXX')
-        console.log (result)
+        //console.log ('XXXXXXXXXXXXXXXXXX')
+        //console.log (result)
 
         
         result.forEach(function(sourceInfo) {
@@ -227,7 +228,7 @@ function populateListDevices(result,sourceDevices) {
 function populateFormDevices(device,sourceDevices) {
 
     console.log("populateFormDevices()");
-   // console.log(device);
+    // console.log(device);
 
     var option = document.createElement('option');
     option.id = device.id;
@@ -406,13 +407,29 @@ function getLocalConstraint() {
     
     var framerate = 24;
 
-    var localConstraints = { 
+    var localConstraints;
+    
+    /*// ancienne version. bloquait à 640*480
+    localConstraints = { 
             audio: { optional: [{sourceId: audioSource}] },
             video: {
                 optional: [{sourceId: videoSource}],   
                 mandatory: { maxWidth: maxCamWidth, maxHeight: maxCamHeight }
             }
         }
+    /**/
+
+    // Nouvelle version. Ne passe plus si Chrome > V 46   
+    localConstraints = { 
+        audio: { optional: [{sourceId: audioSource}] },
+        video: {
+                deviceId: videoSource ? {exact: videoSource} : undefined, 
+                width: maxCamWidth, 
+                height: maxCamHeight 
+        }
+    }
+
+    /**/
     
     return localConstraints;
 } 

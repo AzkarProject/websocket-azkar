@@ -168,7 +168,7 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || 
 
 // options pour l'objet PeerConnection
 server = {'iceServers': []}; // OK sur même réseau...
-//server.iceServers.push({ url: 'stun:stun.l.google.com:19302'});
+server.iceServers.push({ url: 'stun:stun.l.google.com:19302'});
 
 server.iceServers.push({urls: "turn:134.59.130.142:3478",credential: TURN_credential ,username: TURN_username}); // rfc5766 sur VM2
 //server.iceServers.push({urls: "turn:134.59.130.142:443",credential: TURN_credential ,username: TURN_username}); // rfc5766 sur VM2
