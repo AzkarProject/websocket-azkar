@@ -1,5 +1,5 @@
 
-fakeRobubox = true;
+fakeRobubox = false;
 
 function getFakeDataMap() {
 	var dataMap = {
