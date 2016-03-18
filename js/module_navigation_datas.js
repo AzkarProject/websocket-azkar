@@ -1,3 +1,10 @@
+/*
+*
+* Authors: Thierry Bergeron, Michel Buffa
+* Copyright : © CNRS (Laboratoire I3S) / université de Nice
+*
+*/
+
 (function(exports){
 
 exports.sendToRobot = function (rpcMethodName, values,controlDevice, driveCommand){     

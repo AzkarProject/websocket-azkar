@@ -1,5 +1,9 @@
-// Author Thierry Bergeron
-// Source: Aucune
+/*
+*
+* Authors: Thierry Bergeron, Michel Buffa
+* Copyright : © CNRS (Laboratoire I3S) / université de Nice
+*
+*/
 
 
 /*// mémo Default Benchmarks Settings

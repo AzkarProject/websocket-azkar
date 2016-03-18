@@ -1,3 +1,10 @@
+/*
+*
+* Authors: Thierry Bergeron, Michel Buffa
+* Copyright : © CNRS (Laboratoire I3S) / université de Nice
+*
+*/
+
 
 (function(exports){
 
@@ -51,7 +58,7 @@ exports.set_IS_Notify = function (value) {
 // Le parametre duration permet de temporiser
 // La fermeture du message.
 // 4 types possibles: 'info','warning','error','success'
-exports.writeMessage = function (type,title,body,duration,notification){
+exports.writeMessage = function (type,title,body,duration,notification,url){
 
 	titleMessage = '<h3>'+title+'</h3>';
 	var textMessage = titleMessage+'<p>'+body+'</p>';

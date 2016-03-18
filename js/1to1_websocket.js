@@ -1,3 +1,10 @@
+/*
+*
+* Authors: Thierry Bergeron, Michel Buffa
+* Copyright : © CNRS (Laboratoire I3S) / université de Nice
+*
+*/
+
 // Fonctions websocket générales -----------------------------
 // Flags divers
 var isServerInfoReceived = false; 
@@ -44,10 +51,14 @@ function getCookie(cname) {
 function checkCookie(pseudo) {
     var user = getCookie("username");
     if (user != "") {
-        // alert("Welcome again " + user);
+        //alert("Welcome again " + user);
+        notifications.writeMessage ("success","Bienvenue " + user,"",3000)
         pseudo = user;
     } else {
-        user = prompt("Please enter your name:", "");
+        user = prompt('Votre pseudo? (par défaut ce sera "'+typeClient+'")');
+        if (!user) {
+           user = typeClient;
+        }       
         if (user != "" && user != null) {
             setCookie("username", user, 365);
             pseudo = user;
@@ -134,7 +145,7 @@ socket.on("disconnected", function(data) {
     // si le déconnecté est un robot
     } else if (data.objUser.typeClient == "Robot") {
       // On lance la procédure de déco/reco 1to1 par défaut
-        onDisconnect(peerCnx1to1); 
+        onDisconnect(peerCnx1to1);
     }
   }
   
@@ -144,6 +155,7 @@ socket.on("disconnected", function(data) {
     if (data.objUser.typeClient == "Pilote") {
         // On lance la procédure de déco/reco 1to1 par défaut
         onDisconnect(peerCnx1to1);
+
     // Si le déconnecté est un visiteur,
     } else if (data.objUser.typeClient == "Visiteur") {
       // On vérifie que la connexion existe bien...

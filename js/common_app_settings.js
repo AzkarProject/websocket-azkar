@@ -1,7 +1,20 @@
+/*
+*
+* Authors: Thierry Bergeron, Michel Buffa
+* Copyright : © CNRS (Laboratoire I3S) / université de Nice
+*
+*/
+
+// return "Copyright © CNRS (Laboratoire I3S) & université de Nice";
+
 (function(exports){
 
 exports.appName = function(){
     return 'AZKAR Project';
+};
+
+exports.appBranch = function(){
+    return '1to1-refacto';
 };
 
 exports.appVersion = function(){
@@ -9,29 +22,16 @@ exports.appVersion = function(){
 };
 
 exports.appCredit = function(){
-    return 'Author: Thierry Bergeron - Copyright : © CNRS / Laboratoire I3S';
+    return 'Copyright © CNRS (Laboratoire I3S) / université de Nice';
 };
 
-/*
-exports.appHostName = function(){
-    return 'websocket-azkar';
-};
-/**/
+exports.appServerIp = function(){
+	return "127.0.0.1";
+}
 
-exports.appBranch = function(){
-    return '1to1-refacto';
-};
-
-
-/*
-exports.isBenchmark = function(){
- 	return false;
-};
-
-exports.isFakeRobubox = function(){
- 	return false;
-};
-
+exports.appServerPort = function(){
+	return 80;
+}
 
 exports.isRobubox = function(){
     var user = getCookie("username");

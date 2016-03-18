@@ -1,3 +1,12 @@
+/*
+*
+* Authors: Thierry Bergeron, Michel Buffa
+* Copyright : © CNRS (Laboratoire I3S) / université de Nice
+*
+*/
+
+
+
 // Initialisation des variables, objets et paramètres du script
 // NB toutes les variables sont déclarées en global...
 
@@ -265,28 +274,59 @@ piloteConstraints = {
 // rejectConnexion', message:message, url:indexUrl);
 socket.on('error', errorHandler);
 socket.on('rejectConnexion', function(data) {
-    alertAndRedirect(data.message, data.url)
+    // alertAndRedirect(data.message, data.url)
+    notifyAndRedirect("error", data.message,data.url)
 })
 
 socket.on('razConnexion', function(data) {
     console.log(">> socket.on('razConnexion',...");
-    forceRedirect(data.url)
+    var message = "Fermeture des connexions webSockets ! "
+    notifyAndRedirect("warning", message, data.url)
+})
+
+socket.on('reloadAllClients', function(data) {
+    
+    console.log(">> socket.on('reloadAllClients',...");
+    var message = "Connexion webSocket réinitialisée ! ";
+    
+    notifyAndRedirect("warning", message, data.url+"/"+localObjUser.typeClient)
 })
 
 
+
+socket.on('reloadClientrobot', function(style,message,url) {
+    console.log(">> socket.on('reloadClient',...");
+    notifications.writeMessage (style,message,"Vous allez être redirigé vers "+ url,3000)
+    setTimeout(function(){
+        window.location.href = url+"/"+"robot"
+    }
+    , 3500); 
+
+
+    // forceRedirect(data.url+"/"+"robot")
+});
+/**/
 // --------------------- Gestion des messages d'erreur ------------------
 
 function errorHandler(err) {
     console.log("ON-ERROR");
     console.error(err);
+    // notifications.writeMessage ("error","ON-ERROR","err",3000)
+
 }
 
 function alertAndRedirect(message, url) {
-    //alert (message);
     window.alert(message)
     window.location.href = url;
 }
 
+function notifyAndRedirect(style, message, url) {
+    notifications.writeMessage (style,message,"Vous allez être redirigé vers "+ url,3000)
+    setTimeout(function(){
+        window.location.href = url
+    }
+    , 3500); 
+}
 
 // ------ fonctions diverses ---------------
 
@@ -294,8 +334,11 @@ function alertAndRedirect(message, url) {
 function forceRedirect(url) {
     console.log("@ forceRedirect("+url+")");
     //alert (message);
-    // window.alert(message)
-    window.location.href = url;
+    // exports.writeMessage = function (type,title,body,duration,notification){
+    //notifications.writeMessage ("info","","message",3000,null)
+    
+    // window.location.href = url;
+    //notifications.writeMessage ("info","","message",3000)
 }
 
 function getClientBy(key,value) {

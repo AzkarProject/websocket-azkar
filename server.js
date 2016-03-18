@@ -1,44 +1,26 @@
 // ------------------------ Elements communs client/serveur
-var tools = require('./js/common_tools'); // méthodes génériques & objets
+var tools = require('./js/common_tools'); // méthodes génériques
+var models = require('./js/common_models'); // objets
 var appSettings = require('./js/common_app_settings'); // paramètres de configuration de l'application
 
-
-/*// TimeStamp en variable globale pour implémenter une sécurité homme/mort...
-deathManTimeStamp = new Date().getTime(); 
-console.log (deathManTimeStamp);
-/**/
 
 // ------ Variables d'environnement & paramètrages serveurs ------------------
 // Récupération du Nom de la machine 
 var os = require("os");
 hostName = os.hostname();
-dyDns = 'azkar.ddns.net'; // Adresse no-Ip pointant sur Livebox domicile
 
-// ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP || "127.0.0.1"; // défaut
-// port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 80; // défaut
 
-ipaddress = "127.0.0.1"; // défaut
-port = 80; // défaut
+ipaddress = appSettings.appServerIp();
+port = appSettings.appServerPort();
 
-// Machines windows - I3S
-if (hostName == "azcary") ipaddress = "192.168.173.1"; // Ip du réseau virtuel robulab2_wifi
-else if (hostName == "thaby") ipaddress = "192.168.173.1"; // Tablette HP sur Robulab: ip du réseau virtuel robulab_wifi
+// Adresse de redirection pour les connexions refusées
+indexUrl = null;
 
-// Machine Windows - Domicile
-else if (hostName == "lapto_Asus") ipaddress = "0.0.0.0"; // Pc perso - (IP interne, Livebox domicile)
+var appCNRS = require('./js/common_app_cnrs'); // paramètres de configuration propre au labo
 
-// Machines Ubuntu - Domicile
-else if (hostName == "ubuntu64azkar") ipaddress = "192.168.1.10"; // Vm Ubuntu sur Pc perso (Domicile)
-else if (hostName == "azkar-Latitude-E4200") ipaddress = "0.0.0.0"; // Pc Dell Latitude - Livebox domicile - noip > azkar.ddns.net
+indexUrl = "https://" + ipaddress + ":" + port; // Par défaut...
 
-// VM Sparks -Ubuntu
-else if (hostName == "Mainline") ipaddress = "134.59.130.141"; // IP statique de la Vm sparks
-else if (hostName == "AZKAR-1") ipaddress = "134.59.130.143"; // IP statique de la Vm sparks 
-else if (hostName == "AZKAR-2") ipaddress = "134.59.130.142"; // IP statique de la Vm sparks
 
-// Seul le port 80 passe malgrès les règles appropriées dans le NAT et le Firewall de la livebox ...
-// if (hostName == "azkar-Latitude-E4200") port = 80;
-// TODO > Trouver bon réglage livebox pour faire cohabiter port 2000(nodejs) et 80(apache) en même temps.
 
 console.log("***********************************");
 console.log('');
@@ -57,16 +39,7 @@ var ent = require('ent'); // Permet de bloquer les caractères HTML (sécurité 
 
 var key = fs.readFileSync('./ssl/hacksparrow-key.pem');
 var cert = fs.readFileSync('./ssl/hacksparrow-cert.pem');
-// A chaque serveur son certificat avec l'URL proprement indiquée
-// pour importer et enregistrer le certificat coté client
-// et ne plus avoir à autoriser la connexion à chaque foi... 
-if (hostName == "azcary") { 
-	key = fs.readFileSync('./ssl/azcary-key.pem');
-	cert = fs.readFileSync('./ssl/azcary-cert.pem');	
-} else if (hostName == "AZKAR-1") {
-	key = fs.readFileSync('./ssl/vm-azkar1-key.pem');
-	cert = fs.readFileSync('./ssl/vm-azkar1-cert.pem');	
-}
+
 
 var https_options = {
     key: key,
@@ -113,11 +86,7 @@ io = require('socket.io').listen(server); // OK
 
 // ------ Partie Websocket ------------------
 
-// Adresse de redirection pour les connexions refusées
-var indexUrl;
-indexUrl = "https://" + ipaddress + ":" + port; // Par défaut...
-// Todo: a modifier coté dydns >>>> Redirection vers https...
-if (hostName == "azkar-Latitude-E4200") indexUrl = "http://" + dyDns; // Si machine derrière liveBox && noip
+
 
 // liste des clients connectés
 var users2 = {};
@@ -147,7 +116,16 @@ io.on('connection', function(socket, pseudo) {
     socket.on('razConnexions', function(data) {
         var data = { url: indexUrl};  
         socket.broadcast.emit('razConnexion',data); 
-        console.log ("> socket.broadcast.emit('razConnexion',"+data.url+")");
+        console.log ("> socket.broadcast.emit('razConnexions',"+data.url+")");
+     });
+    /**/
+    
+
+    // Reload de tous les clients robot/Pilote et visiteurs
+    socket.on('reloadAllClients', function(data) {
+        var data = { url: indexUrl};  
+        socket.broadcast.emit('reloadAllClients',data); 
+        console.log ("> socket.broadcast.emit('reloadAllClients',"+data.url+")");
      });
     /**/
     
@@ -254,6 +232,7 @@ io.on('connection', function(socket, pseudo) {
         //var p6 = null;
         // var objUser = new tools.client(p1, p2, p3, p4, p5, p6);
         var objUser = new tools.client(p1, p2, p3, p4, p5);
+        //var objUser = new models.client(p1, p2, p3, p4, p5);
 
         // On ajoute l'User à la liste des connectés
         users2[socket.id] = objUser;
@@ -387,19 +366,14 @@ io.on('connection', function(socket, pseudo) {
 
 
     socket.on('offer2', function(data) {
-        
-       
         var consoleTxt = tools.humanDateER('R') + " @ offer >>>> (SDP from "+ data.from.pseudo +"("+data.from.id+")"
         consoleTxt += " to " + data.cible.pseudo +"("+data.cible.id+") / peerConnectionID: "+ data.peerCnxId;
         console.log(consoleTxt);
-
         socket.broadcast.emit('offer', data);
 
     });
 
     socket.on('answer2', function(data) {
-        
-        
         var consoleTxt = tools.humanDateER('R') + " @ answer >>>> (SDP from "+ data.from.pseudo +"("+data.from.id+")"
         consoleTxt += " to " + data.cible.pseudo +"("+data.cible.id+") / peerConnectionID: "+ data.peerCnxId;
         console.log(consoleTxt);
@@ -412,7 +386,7 @@ io.on('connection', function(socket, pseudo) {
         socket.broadcast.emit('candidate', data);
     });
 
-    
+    /*
     socket.on('offer_VtoR', function(data) {
 
         var consoleTxt = tools.humanDateER('R') + " @ offer_VtoR >>>> (SDP from "+ data.from.pseudo +"("+data.from.id+")"
@@ -421,18 +395,8 @@ io.on('connection', function(socket, pseudo) {
 
         socket.broadcast.emit('offer_VtoR', data);
     });
-
-
-    /*// tentative contournement BUG createDataChannel sous Chrome
-    socket.on("channelObject", function(data) {
-        var consoleTxt = tools.humanDateER('R') + " @ channelObject >>>> (RTCdatachannel from Pilote";
-        console.log(consoleTxt);
-        console.log(data);
-        socket.broadcast.emit('channelObject', data);
-        //io.to(data.cible.id).emit('offer', data);
-    });
     /**/
-    
+ 
 
     // ----------------------------------------------------------------------------------
     // Phase pré-signaling ( selections caméras et micros du robot par l'IHM pilote 
@@ -497,7 +461,7 @@ io.on('connection', function(socket, pseudo) {
     }); 
 
     // Visiteur > pilote >> acceptation de la connexion WebRTC
-    // Pour mémo >> socket.emit('requestConnect', { objUser: localObjUser, cible: "pilote" }); 
+    /*// Pour mémo >> socket.emit('requestConnect', { objUser: localObjUser, cible: "pilote" }); 
     socket.on('readyForSignaling_1toN_VtoP', function(data) { 
         var consoleTxt = tools.humanDateER('R') + " @ readyForSignaling_1toN_VtoP >>>> from "+data.from.pseudo+" ("+data.from.id+") ";
         consoleTxt += "to: "+data.cible.pseudo+"("+data.cible.id+")"; 
@@ -510,33 +474,9 @@ io.on('connection', function(socket, pseudo) {
        console.log(tools.humanDateER('R') + " @ visitorCnxPiloteStatus >>>> "+data.iceState);
        socket.broadcast.emit('visitorCnxPiloteStatus', data);
     });
-
-   
-    /*// Connexions p2p Robot-visiteur (1toN) --------------
-    
-    socket.on("VtoR_initPreSignaling", function(data) {
-        var consoleTxt = tools.humanDateER('R') + " @ VtoR_initPreSignaling >>>> from "+data.from.pseudo+" ("+data.from.id+") ";
-        consoleTxt += "to: "+data.cible.pseudo+"("+data.cible.id+")"; 
-        console.log(consoleTxt); 
-        io.to(data.cible.id).emit('VtoR_requestConnect', data);
-    });
-
-    
-    // socket.on("VtoR_requestConnect", function(data) {
-    //     var consoleTxt = tools.humanDateER('R') + " @ VtoR_requestConnect >>>> from "+data.from.pseudo+" ("+data.from.id+") ";
-    //     consoleTxt += "to: "+data.cible.pseudo+"("+data.cible.id+")"; 
-    //     console.log(consoleTxt); 
-    //     io.to(data.cible.id).emit('VtoR_requestConnect', data);
-    // });
-    
-
-    socket.on('VtoR_readyForSignaling', function(data) { 
-        var consoleTxt = tools.humanDateER('R') + " @ VtoR_ReadyForSignaling >>>> from "+data.from.pseudo+" ("+data.from.id+") ";
-        consoleTxt += "to: "+data.cible.pseudo+"("+data.cible.id+")"; 
-        console.log(consoleTxt); 
-        io.to(data.cible.id).emit('VtoR_ReadyForSignaling', data);
-    }); 
     /**/
+
+
    // Elements de post-signaling----------------------------------------------------------------------------------
 
     socket.on('closeConnectionOrder', function(data) { 
@@ -546,23 +486,15 @@ io.on('connection', function(socket, pseudo) {
         io.to(data.cible.id).emit('closeConnectionOrder', data);
     }); 
 
-    /*
-    socket.on('closeAllVisitorsConnectionOrder', function(data) { 
-        var consoleTxt = tools.humanDateER('R') + " @ closeAllVisitorsConnectionOrder >>>> from "+data.from.pseudo+" ("+data.from.id+") ";
-        consoleTxt += "to: "+data.cible.pseudo+"("+data.cible.id+")"; 
-        console.log(consoleTxt); 
-        //io.to(data.cible.id).emit('closeAllVisitorsConnectionOrder', data);
-        socket.broadcast.emit('closeAllVisitorsConnectionOrder', data);
-    }); 
-    /***/
 
 
-    // Pilote/Robot >>> Visiteurs > Signal de perte de la connexion WebRTC principale (Pilote <> Robot)
+    /*// Pilote/Robot >>> Visiteurs > Signal de perte de la connexion WebRTC principale (Pilote <> Robot)
     socket.on('closeMasterConnection', function(data) { 
         var consoleTxt = tools.humanDateER('R') + " @ closeMasterConnection >>>> to ALL Clients"; 
         console.log(consoleTxt); 
         socket.broadcast.emit('closeMasterConnection', data);
-    }); 
+    });
+    /**/ 
 
 
     socket.on('infoToPilote', function(data) {

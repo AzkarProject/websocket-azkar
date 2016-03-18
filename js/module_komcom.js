@@ -1,3 +1,10 @@
+/*
+*
+* Authors: Thierry Bergeron, Michel Buffa
+* Copyright : © CNRS (Laboratoire I3S) / université de Nice
+*
+*/
+
 (function(exports){
 
 console.log ("module_komcom chargé");
@@ -131,18 +138,20 @@ exports.sendDrive = function (data){
             } else if (parameters.navSys == 'KomNAV') {
                 //console.log (">>>>>>>>>>>>>> Send Drive To KomNav");
 
-                var rpcMethod = 'com.thaby.drive';
+                var rpcMethod = 'com.kompai2.drive';
                 var values = [];
                 values[0] = lSpeed;
                 values[1] = aSpeed;
                 
+                /*
                 if (isBenchmark == true ) {
                     values[2] = source; // source
                     values[3] = channel; // channel
                     values[4] = dateA;
                     values[5] = dateB;
                 rpcMethod = 'com.thaby.drive.benchmark'; 
-                }   
+                } 
+                /**/  
                 
                 SESSION.call(rpcMethod, values);
 

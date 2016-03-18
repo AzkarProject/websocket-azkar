@@ -1,3 +1,11 @@
+/*
+*
+* Authors: Thierry Bergeron, Michel Buffa
+* Copyright : © CNRS (Laboratoire I3S) / université de Nice
+*
+*/
+
+
 // Réception d'un ordre de déconnexion
 socket.on("closeConnectionOrder",function(data) {
    console.log (">> socket.on('closeConnectionOrder',...");
@@ -49,12 +57,17 @@ function onDisconnect(peerCnxId) {
         if ( sessionConnection != "Pending") {
             // si la déconnexion du robot est involontaire
             // On relance le processus de connexion automatiquement
-            if (robotDisconnection == "Unexpected") localManageDevices(); 
-        }
+            if (robotDisconnection == "Unexpected") {
+                var title = "Connexion robot perdue !"
+                var message = " Reconnexion WebRTC en cours..."
+                notifications.writeMessage ("error",title,message,3000)
+                localManageDevices(); 
+            }
+       }
         
         // On remet le flag de déconnexion à "involontaire"
         robotDisconnection = "Unexpected";
-
+        //notifications.writeMessage ("error","",message,3000)
         
     
     } else if (type == "robot-appelé") {

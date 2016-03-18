@@ -1,3 +1,12 @@
+/*
+*
+* Authors: Thierry Bergeron, Michel Buffa
+* Copyright : © CNRS (Laboratoire I3S) / université de Nice
+*
+*/
+
+
+
 //------ PHASE 1 : Pré-signaling ----------------------------------------------------------
 
 // --------------- ! Replace by 1to1-basic select cam process ------------
@@ -205,6 +214,7 @@ function populateListDevices(result,sourceDevices) {
             // Quand on les envoie par websocket, ca provoque systématiquement un "illegal invoke" ds socket.io.
             // FIX: comme il est impossible de cloner proprement l'objet, il faut le reconstuire propriétés par propriétés.
             var exportDevice = new tools.sourceDevice();
+            //var exportDevice = new models.sourceDevice();
             exportDevice.id = sourceInfo.id;
             exportDevice.label = sourceInfo.label;
             exportDevice.kind = sourceInfo.kind;

@@ -139,6 +139,26 @@
 				</div>	
 			</div>
 	</section>
+
+
+	<section id="TopNotification">
+                       
+            <div id='infoMessage' class="info message">
+            </div>
+
+            <div id='errorMessage' class="error message">
+            </div>
+
+            <div id='warningMessage' class="warning message">
+            </div>
+
+            <div id='sucessMessage' class="success message">
+            </div>
+
+            <div id='standardMessage' class="standard message">
+            </div>
+
+    </section>
 		
 
        	<script>	  	 
@@ -154,11 +174,13 @@
     	<script src="/js/lib/autobahn.min.jgz"></script>
         
 		<script src="/js/common_tools.js"></script>
+		<script src="/js/common_models.js"></script>
         <script src="/js/common_app_settings.js"></script>
 		<!--<script src="/js/module_timesync.js"></script>-->
 		<script src='/js/module_ihm.js'></script>
 		<script src='/js/module_fake_robubox.js'></script>
         <script src='/js/module_navigation_datas.js'></script>
+        <script src='/js/module_notifications.js'></script>
         
         <!--<script src='/js/common_robubox.js'></script>-->
         <script src='/js/module_komcom.js'></script>
@@ -182,12 +204,14 @@
 		<script>                    
             // On récupère depuis nodejs le nom de la machine serveur
             // en passant par de l'AJAX plutôt que par websocket....
-            hostName = "???";    
             $.get( "/getvar", function( data ) {
               hostName = data.hostName;
-              //if (hostName != "???" ) $('#zone_info_server').replaceWith(settings.appName() + " V " + settings.appVersion()+ " ("+hostName+")");
-              infoServerTxt = appSettings.appBranch() + ' - ' + appSettings.appName() + " V " + appSettings.appVersion()+ " ("+hostName+")";
-              if (hostName != "???" ) $('#zone_info_server').replaceWith(infoServerTxt);
+              infoServerTxt = appSettings.appName()+": ";
+              infoServerTxt += appSettings.appBranch()+" - ";
+              infoServerTxt += " Version " + appSettings.appVersion() + " -";
+              infoServerTxt += " (Serveur: "+hostName+") ";
+              var infoCredit = " | " + appSettings.appCredit();
+              if (hostName != "???" ) $('#zone_info_server').replaceWith(infoServerTxt+infoCredit);
             });
     	
 			// On lance l'utilitaire de récupération de la batterie

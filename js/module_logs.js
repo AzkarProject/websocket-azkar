@@ -1,3 +1,11 @@
+/*
+*
+* Authors: Thierry Bergeron, Michel Buffa
+* Copyright : © CNRS (Laboratoire I3S) / université de Nice
+*
+*/
+
+
 // Sauvegarde des afichages TCHAT WebSocket et webRTC. Inspirés de:
 // http://purl.eligrey.com/github/FileSaver.js/blob/master/demo/demo.js */
 (function(view) {

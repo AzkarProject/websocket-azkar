@@ -1,4 +1,9 @@
-// Auteur: Thierry
+/*
+*
+* Authors: Thierry Bergeron, Michel Buffa
+* Copyright : © CNRS (Laboratoire I3S) / université de Nice
+*
+*/
 // Sources originales:
 // https://developer.mozilla.org/fr/docs/Web/Guide/API/WebRTC/WebRTC_basics
 // https://github.com/louisstow/WebRTC/blob/master/media.html

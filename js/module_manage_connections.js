@@ -1,6 +1,9 @@
-// Auteur: Thierry
-// Source : Aucune
-// -----------------------------------
+/*
+*
+* Authors: Thierry Bergeron, Michel Buffa
+* Copyright : © CNRS (Laboratoire I3S) / université de Nice
+*
+*/
 
 
 // Globale: flag de connexion webRTC active 

@@ -1,3 +1,9 @@
+/*
+*
+* Authors: Thierry Bergeron, Michel Buffa
+* Copyright : © CNRS (Laboratoire I3S) / université de Nice
+*
+*/
 (function(exports){
 
   
@@ -25,16 +31,6 @@ exports.sourceDevice = function sourcedevice (id,kind,label,facing){
 }
 
 
-/*// Objet client ( Robot, Pilote, Visiteur, Patient, ect... )
-exports.client = function client (id,pseudo,placeliste,typeClient,connectionDate,disConnectionDate){
-  this.id = id;
-  this.pseudo = pseudo;
-  this.placeliste = placeliste;
-  this.typeClient = typeClient;
-  this.connectionDate = connectionDate;
-  this.disConnectionDate = disConnectionDate;
-}
-/**/
 
 // Objet client ( Robot, Pilote, Visiteur, Patient, ect... )
 exports.client = function client (id,pseudo,placeliste,typeClient,connectionDate){
@@ -46,6 +42,8 @@ exports.client = function client (id,pseudo,placeliste,typeClient,connectionDate
   this.disConnectionDate = null;
   this.peerCnxCollection = null;
 }
+
+/**/
 
 
 // ---------------------------------

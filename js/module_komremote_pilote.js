@@ -1,4 +1,9 @@
-// Authors: François Michaudon & Hugo Mallet (53JS)
+/*
+*
+* Authors: François Michaudon & Hugo Mallet (53JS)
+*
+*/
+
 'use strict';
 console.log ("module_komRemote_Pilote chargé");
 

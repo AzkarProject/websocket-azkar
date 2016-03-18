@@ -256,12 +256,8 @@
         </div>
     </section>
 
-    <section>
-            
-
-
-
-            
+    <section id="TopNotification">
+                       
             <div id='infoMessage' class="info message">
             </div>
 
@@ -276,17 +272,6 @@
 
             <div id='standardMessage' class="standard message">
             </div>
-            
-
-            <!--
-            <ul id="trigger-list">
-                     <li><a href="#" class="trigger info-trigger">Info</a></li>
-                     <li><a href="#" class="trigger error-trigger">Error</a></li>
-                     <li><a href="#" class="trigger warning-trigger">Warning</a></li>
-                     <li><a href="#" class="trigger success-trigger">Success</a></li>
-            </ul>
-            -->
-    
 
     </section>
 
@@ -305,13 +290,17 @@
     <script src="/js/lib/autobahn.min.jgz"></script>
     
     <script src="/js/common_tools.js"></script>
+    <script src="/js/common_models.js"></script>
     <script src="/js/common_app_settings.js"></script>    
+    
+
     <script src='/js/module_navigation_datas.js'></script>
     <script src='/js/module_ihm.js'></script>
+    <script src='/js/module_notifications.js'></script>
+    
 
     <script src='/js/1to1_websocket.js'></script>
     <script src='/js/1to1_settings.js'></script>
-    <!--<script src="/js/module_timesync.js"></script>-->
     <script src='/js/1to1_pre_signaling.js'></script>
     <script src='/js/1to1_signaling.js'></script>
     <script src='/js/1to1_post_signaling.js'></script>
@@ -319,9 +308,8 @@
     <script src='/js/module_fake_robubox.js'></script>
     <script src='/js/module_carto.js'></script>
 
-    <script src='/js/module_notifications.js'></script>
+    
     <script src='/js/module_komremote_pilote.js'></script>
-    <!--<script src='/js/module_robustesse.js'></script>-->
     <script src='/js/module_forms_settings.js'></script>
     
 
@@ -331,7 +319,6 @@
     
    
     <script src='/js/module_gamepad2.js'></script>
-    <!--<script src='/js/module_navigation.js'></script>-->
     <script src="/js/module_logs.js"></script>
     
     
@@ -340,12 +327,17 @@
             // On récupère depuis nodejs le nom de la machine serveur
             // en passant par de l'AJAX plutôt que par websocket....
             hostName = "???";    
+            
             $.get( "/getvar", function( data ) {
               hostName = data.hostName;
-              //if (hostName != "???" ) $('#zone_info_server').replaceWith(settings.appName() + " V " + settings.appVersion()+ " ("+hostName+")");
-              infoServerTxt = appSettings.appBranch() + ' - ' + appSettings.appName() + " V " + appSettings.appVersion()+ " ("+hostName+")";
-              if (hostName != "???" ) $('#zone_info_server').replaceWith(infoServerTxt);
+              infoServerTxt = appSettings.appName()+": ";
+              infoServerTxt += appSettings.appBranch()+" - ";
+              infoServerTxt += " Version " + appSettings.appVersion() + " -";
+              infoServerTxt += " (Serveur: "+hostName+") ";
+              var infoCredit = " | " + appSettings.appCredit();
+              if (hostName != "???" ) $('#zone_info_server').replaceWith(infoServerTxt+infoCredit);
             });
+
     </script> 
 
 </body>
