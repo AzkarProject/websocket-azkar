@@ -1,0 +1,362 @@
+<html>
+
+<head>
+</head>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name='keywords' content='WebRTC, HTML5, JavaScript' />
+    <meta name='description' content='WebRTC benchmarks base for AZKAR project' />
+    <!-- viewport sert a controler la mise en page sur les appareils mobiles -->
+    <meta name='viewport' content='width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1'>
+    <link rel="stylesheet" href="/css/style.css" />
+    <script src='/js/lib/jquery-1.11.3.min.js'></script>
+    <link rel="import" href="/web_kom-remote/kom-remote.html">
+    <title>1to1-Pilote</title>
+</head>
+
+
+
+<body class="ihmPilote" id="bodyPilot">
+    
+
+    
+
+
+
+
+        <strong><span id="zone_info_server">WebRTC AZKAR</span></strong>
+        <hr/>
+        
+
+        <section id="controlArea" class="fullSizeContainerBox">
+
+            <div id="colGaucheUpControlArea" class="floatLeft oneQuarterContainerBox">
+                
+                <div id="robotDevices" class="insideFlex oneQuarterbox robot shadowBlack device">
+                    <strong>Robot Devices</strong>
+                    <hr/>
+                    <div class="select">
+                        <label for="remote_audioSource">Audio: </label>
+                        <select id="remote_audioSource"></select>
+                    </div>
+                    <div class="select">
+                        <label for="remote_videoSource">Video: </label>
+                        <select id="remote_videoSource"></select>
+                    </div>
+                    <hr/>
+                    <button id="remote_ButtonDevices" onclick="remoteManageDevices()">Sélectionner</button>
+                </div>
+
+
+                <div id="piloteDevices" class="insideFlex oneQuarterbox pilote shadowBlack device">
+                    <strong> Pilote Devices</strong>
+                    <hr/>
+                    <div class = "videosContainer">
+                        <video id='1to1_localVideo' autoplay muted controls="controls"></video>
+                    </div>
+                    <hr/>
+                    <div class="select">
+                        <label for="local_audioSource">Audio: </label>
+                        <select id="local_audioSource"></select>
+                    </div>
+                    <div class="select">
+                        <label for="local_videoSource">Video: </label>
+                        <select id="local_videoSource"></select>
+                    </div>
+                </div>
+
+
+                <div id="1to1_master_connection" class="insideFlex oneQuarterbox robot shadowBlack device">
+
+                    <span id="openConnection">
+                        <button class="shadowBlack" id="local_ButtonDevices" onclick="localManageDevices()">
+                            Ouvrir la connexion
+                        </button>
+                    <span id="closeConnection"></span>
+
+                </div>
+            </div>
+
+            <div id="colDroiteUpControlArea" class="floatRight tripleQuarterBox" style="height:440px;width:960px">
+                
+                <div id="remoteVideoArea" class="insideFlex robot tripleQuarterBox shadowBlack floatRight" style="height:415px; width:600px;min-width:600px">
+                    <strong> Robot Camera View</strong>
+                    <hr/>
+                    <div class = "videosContainer" id="remoteContainer" style="height:300px; width:300px;min-width:300px">
+                        <!--
+                        <video id='1to1_remoteVideo' class="embedRemoteVideo" autoplay muted controls="controls" style="height:380px; width:600px;min-width:600px"></video>
+                        -->
+                        <video id='1to1_remoteVideo' class="embedRemoteVideo" autoplay muted controls="controls"></video>
+                    </div>
+                </div>
+            
+
+                <div id="robotCommands" class="insideFlex oneQuarterbox robot shadowBlack device" style="height:333px; z-index:-100">
+                <!--<div id="robotCommands" class="insideFlex oneQuarterbox robot shadowBlack device" >-->
+                    <strong>Robot controls</strong> <span id="connect-notice"></span>
+                    <hr/>
+
+                    
+                    <span id="systemSetting" style="text-align:center;">
+                    System: 
+                        <input type="radio" name="controlSystem" value="Robubox" id="Robubox" onclick="setNavSystem('Robubox')" checked /> <label for="Robubox">Robubox</label>
+                        <input type="radio" name="controlSystem" value="KomNAV" id="KomNAV" onclick="setNavSystem('KomNAV')"/> <label for="KomNAV">KomNAV</label>
+                    </span>
+                    <br/>
+                    <span id="dataChannelSetting" style="text-align:center;">
+                    Channel: 
+                        <input type="radio" name="controlChannel" value="webSocket" id="webSocket" onclick="setNavChannel('webSocket')" checked /> <label for="webSocket">webSocket</label>
+                        <input type="radio" name="controlChannel" value="webRTC" id="webRTC" onclick="setNavChannel('webRTC')"/> <label for="webRTC">webRTC</label>
+                        
+                    </span>
+                    <hr/>
+
+                    <div id="step-commands">                   
+                        <kom-remote class="kom-remote"></kom-remote>    
+                    </div>
+
+                    <!--<div id="drive-commands" style="display:none; overflow: scroll; height:150px">-->
+                    <div id="drive-commands" style="display:none; text-align:center; height:150px">    
+                        
+                        <b>Direction</b><br/>
+                        <progress id="leftRight" value=1 max=2></progress><br><br/>
+
+                        <b>Speed</b><br/>
+                         Avance:<br/><progress  id="advanceValue" value=0 min=0 max=1></progress>
+                         <br/>
+                         Reverse:<br/><progress id="reverseValue" value=0 min=0 max=1></progress>
+                        <br/>
+                        <br/>
+                        <b>Commande</b><br/>
+                        <div id="buttonStatus"></div>
+                       
+                    </div>
+                
+                </div> <!-- id="robotCommands" -->
+
+
+                <!--<div id="robotInfos" class="insideFlex robot oneThirdBox shadowBlack device floatLeft" style="height:60px;width:316px;min-width:316px">-->
+                <div id="robotInfos" class="insideFlex robot oneQuarterbox shadowBlack device floatLeft" style="height:60px">
+                    
+                    <strong> Robot Informations</strong>
+                    <hr/>
+                    <div class="jauge" style="width:300px; text-align:center;">
+                            <div id="batteryJauge">
+                                <label for="battery_level">Battery Level:</label>
+                                <progress id="battery_level" max="100" style="width:100px"></progress>
+
+                            </div>
+                    </div>
+            </div>
+
+       
+        </section>
+
+       
+
+        <section id="controlArea2" class="fullSizeContainerBox">
+
+            <div id="colGaucheUpControlArea" class="floatLeft oneQuarterContainerBox">
+                
+                <div id="websocketChat" class="insideFlex pilote oneQuarterbox shadowBlack floatLeft" style="height:200px">
+                    <strong> Websocket Messages & Chat</strong>
+                    <hr/>
+                    <form action="/" method="post" id="formulaire_chat_websoket">
+                        <input type="text" name="message" id="message" placeholder="Votre message..." size="28" autofocus />
+                        <button id="envoi_message" type="submit">Envoyer</button>
+                    </form>
+                    <hr class="hrForm">
+                    <textarea class="input" id="zone_chat_websocket" placeholder="Once upon a time..." size="20" style="height:100px"></textarea>
+                    <form id="text-options1">
+                        <label><input type="text1" class="filename" id="text-filename1" placeholder="Pilote_WS_LOGS" />.txt</label>
+                        <button id="saveLogs_webSocket" type="submit" value="Save" />Save</button>
+                    </form>
+                </div>
+           
+
+            </div>
+
+            <div id="colDroiteUpControlArea2" class="floatRight tripleQuarterBox" style="width:960px">
+                
+
+            
+                <div id="NavigationArea" class="insideFlex robot tripleQuarterBox shadowBlack floatRight" style="height:200px; width:600px;min-width:600px">
+                        
+                        <div id="navButtons">
+                            <button id="zoomIn" onclick="zoomCarto('In')">Zoom +</button>
+                            <button id="zoomOut" onclick="zoomCarto('Out')">Zoom -</button>
+
+                            ||
+                            <button id="translateLeft" onclick="translationMap('Left')">Left</button>
+                            <button id="translateUp" onclick="translationMap('Up')">Up</button>
+                            <button id="translateDown" onclick="translationMap('Down')">Down</button>
+                            <button id="translateRight" onclick="translationMap('Right')">Right</button>
+                            ||
+                            <button id="resetMap" onclick="resetMap()">Reset Map</button>
+                            ||
+                              
+                            <button id="trackingMode" onclick="trakingMode()">Tracking</button>
+                         </div>
+
+                        
+                        <hr/>
+
+
+                        <canvas id="myCanvas" width="600" height="160" style="background-color:#000"></canvas>    
+                </div>
+
+
+
+
+
+
+
+                <div id="WebRTC_Logs" class="insideFlex oneQuarterbox pilote shadowBlack device" style="height:200px">
+                    
+                    <!--<div id="dataChannelArea" class="insideFlex pilote shadowBlack floatLeft fourQuarterBox">-->
+                        <strong> WebRTC dataChannel Log </strong>
+                        <hr/>
+                        <div id="formulaire_chat_webRTC" class="pseudoForm">
+                            <input type="text" name="message" id="input_chat_WebRTC" disabled placeholder="Waiting open channel..." size="28" autofocus />
+                            <button id="env_msg_WebRTC" disabled onclick="sendMessage()">Envoyer</button>
+                        </div>
+                        <hr class="hrForm">
+                        <textarea class="input" id="zone_chat_WebRTC" placeholder="Once upon a time..." size="20" style="height:100px"></textarea>
+                        <form id="text-options2">
+                            <label><input type="text" class="filename" id="text-filename2" placeholder="Pilote_WebRTC_LOGS" />.txt</label>
+                            <button id="saveLogs_webRTC" type="submit" value="Save" />Save</button>
+                        </form>
+                </div>
+            </div>    
+        
+        </section>
+
+
+
+        <section id="settingsArea" class="fullSizeContainerBox">
+            
+            <div id="colFullTopSettingsArea" class="insideFlex colorSettings shadowBlack floatLeft " style="width:1248px">
+                <strong> Settings </strong>
+                <hr/>
+
+                <span id="robotVideoSetting" class="">
+                    IHM Robot - Local view: 
+                    <input type="radio" name="RlVidSetting" value="show" id="RlVshow" checked onclick="setLocalRobotView('show')"> <label for="RlVshow">Show</label>
+                    <input type="radio" name="RlVidSetting" value="hide" id="RlVhide" onclick="setLocalRobotView('hide')"/> <label for="RlVhide">Hide</label>
+                    &nbsp;&nbsp; || &nbsp;&nbsp; Remote view: 
+                    <input type="radio" name="RRVidSetting" value="show" id="RRVshow" checked onclick="setRemoteRobotView('show')"> <label for="RRVshow">Show</label>
+                    <input type="radio" name="RRVidSetting" value="hide" id="RRVhide" onclick="setRemoteRobotView('hide')"/> <label for="RRVhide">Hide</label>
+                    &nbsp;&nbsp; || &nbsp;&nbsp;
+                    <label for="robot_camdef_select">Camera Resolution &nbsp;&nbsp; </label>
+                    <select id="robot_camdef_select"></select>
+                </span>
+                <br/>
+                
+                <span id="piloteVideoSetting" class="">
+                    IHM Pilote - Local view: 
+                    <input type="radio" name="PlVidSetting" value="show" id="PlVshow" checked onclick="setLocalPilotView('show')"> <label for="PlVshow">Show</label>
+                    <input type="radio" name="PlVidSetting" value="hide" id="PlVhide" onclick="setLocalPilotView('hide')"/> <label for="PlVhide">Hide</label>
+                    &nbsp;&nbsp; || &nbsp;&nbsp; Remote view: 
+                    <input type="radio" name="PRVidSetting" value="high" id="PRVhigh" onclick="setRemotePiloteView('high')" checked/> <label for="PRVhigh">Show</label>
+                    <input type="radio" name="PRVidSetting" value="hide" id="PRVhide" onclick="setRemotePiloteView('hide')"/> <label for="PRVhide">Hide</label>
+                    &nbsp;&nbsp; || &nbsp;&nbsp;
+                        <label for="pilot_camdef_select">Camera Resolution &nbsp;&nbsp; </label>
+                        <select id="pilot_camdef_select"></select>
+                </span>
+                <hr/>
+            </div>
+        </section>
+
+        <section id="TopNotification">
+                   
+            <div id='infoMessage' class="info message">
+            </div>
+
+            <div id='errorMessage' class="error message">
+            </div>
+
+            <div id='warningMessage' class="warning message">
+            </div>
+
+            <div id='sucessMessage' class="success message">
+            </div>
+
+            <div id='standardMessage' class="standard message">
+            </div>
+        </section>
+
+
+         <section id="HudFullScreen">
+         </section>
+
+
+
+    <script>
+        var type = "pilote-appelant";
+        var proto = "1to1";
+    </script>
+    
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src='/js/lib/adapter.js'></script>
+    <!--<script src="/js/lib/gamepad.js"></script>-->
+    <script src="/js/lib/FileSaver.js"></script>
+    <!-- <script src="/js/lib/timesync.js"></script> -->
+    <!--<script src="https://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>-->
+    <script src="/js/lib/autobahn.min.jgz"></script>
+    
+    <script src="/js/common_tools.js"></script>
+    <script src="/js/common_models.js"></script>
+    <script src="/js/common_app_settings.js"></script>    
+    
+
+    <script src='/js/module_navigation_datas.js'></script>
+    <script src='/js/module_ihm.js'></script>
+    <script src='/js/module_notifications.js'></script>
+    
+
+    <script src='/js/1to1_websocket.js'></script>
+    <script src='/js/1to1_settings.js'></script>
+    <script src='/js/1to1_pre_signaling.js'></script>
+    <script src='/js/1to1_signaling.js'></script>
+    <script src='/js/1to1_post_signaling.js'></script>
+    
+    <script src='/js/module_fake_robubox.js'></script>
+    <script src='/js/module_carto.js'></script>
+
+    
+    <script src='/js/module_komremote_pilote.js'></script>
+    <script src='/js/module_forms_settings.js'></script>
+    
+
+   
+    
+    <script src='/js/module_manage_connections.js'></script>
+    
+   
+    <script src='/js/module_gamepad2.js'></script>
+    <script src="/js/module_logs.js"></script>
+    
+    
+
+    <script>                    
+            // On récupère depuis nodejs le nom de la machine serveur
+            // en passant par de l'AJAX plutôt que par websocket....
+            hostName = "???";    
+            
+            $.get( "/getvar", function( data ) {
+              hostName = data.hostName;
+              infoServerTxt = appSettings.appName()+": ";
+              infoServerTxt += appSettings.appBranch()+" - ";
+              infoServerTxt += " Version " + appSettings.appVersion() + " -";
+              infoServerTxt += " (Serveur: "+hostName+") ";
+              var infoCredit = " | " + appSettings.appCredit();
+              if (hostName != "???" ) $('#zone_info_server').replaceWith(infoServerTxt+infoCredit);
+            });
+
+    </script> 
+
+</body>
+
+</html>

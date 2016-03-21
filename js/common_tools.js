@@ -1,9 +1,10 @@
 /*
 *
-* Authors: Thierry Bergeron, Michel Buffa
-* Copyright : © CNRS (Laboratoire I3S) / université de Nice
+* Copyright : © Thierry Bergeron - 2013
+* Licence LGPL
 *
 */
+
 (function(exports){
 
   
@@ -19,7 +20,7 @@ exports.test = function(){
 // -------------------------------
 
 
-// pour la reconstruction de l'objet sourceInfo, qui, 
+/*// pour la reconstruction de l'objet sourceInfo, qui, 
 // pour une raison inconnue, n'est pas transmissible tel quel par websocket 
 // quand il est construit sous Chromium (V.44.0.2371.0).
 // Par contre, R.A.S quans il est construit sous Chrome ( V.42.0.2311.90) 

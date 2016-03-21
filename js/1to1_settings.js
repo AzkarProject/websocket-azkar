@@ -1,7 +1,35 @@
 /*
 *
-* Authors: Thierry Bergeron, Michel Buffa
-* Copyright : © CNRS (Laboratoire I3S) / université de Nice
+* Copyright © CNRS (Laboratoire I3S) / université de Nice
+* Contributeurs: Michel Buffa & Thierry Bergeron, 2015-2016
+* 
+* Ce logiciel est un programme informatique servant à piloter un Robot à distance
+* Ce logiciel est régi par la licence CeCILL-C soumise au droit français et
+* respectant les principes de diffusion des logiciels libres. Vous pouvez
+* utiliser, modifier et/ou redistribuer ce programme sous les conditions
+* de la licence CeCILL-C telle que diffusée par le CEA, le CNRS et l'INRIA 
+* sur le site "http://www.cecill.info".
+*
+* En contrepartie de l'accessibilité au code source et des droits de copie,
+* de modification et de redistribution accordés par cette licence, il n'est
+* offert aux utilisateurs qu'une garantie limitée.  Pour les mêmes raisons,
+* seule une responsabilité restreinte pèse sur l'auteur du programme,  le
+* titulaire des droits patrimoniaux et les concédants successifs.
+
+* A cet égard  l'attention de l'utilisateur est attirée sur les risques
+* associés au chargement,  à l'utilisation,  à la modification et/ou au
+* développement et à la reproduction du logiciel par l'utilisateur étant 
+* donné sa spécificité de logiciel libre, qui peut le rendre complexe à 
+* manipuler et qui le réserve donc à des développeurs et des professionnels
+* avertis possédant  des  connaissances  informatiques approfondies.  Les
+* utilisateurs sont donc invités à charger  et  tester  l'adéquation  du
+* logiciel à leurs besoins dans des conditions permettant d'assurer la
+* sécurité de leurs systèmes et ou de leurs données et, plus généralement, 
+* à l'utiliser et l'exploiter dans les mêmes conditions de sécurité. 
+
+* Le fait que vous puissiez accéder à cet en-tête signifie que vous avez 
+* pris connaissance de la licence CeCILL-C, et que vous en avez accepté les
+* termes.
 *
 */
 
@@ -179,51 +207,7 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || 
 server = {'iceServers': []}; // OK sur même réseau...
 server.iceServers.push({ url: 'stun:stun.l.google.com:19302'});
 
-server.iceServers.push({urls: "turn:134.59.130.142:3478",credential: TURN_credential ,username: TURN_username}); // rfc5766 sur VM2
-//server.iceServers.push({urls: "turn:134.59.130.142:443",credential: TURN_credential ,username: TURN_username}); // rfc5766 sur VM2
-//server.iceServers.push({urls: "turn:134.59.130.142:80",credential: TURN_credential ,username: TURN_username}); // rfc5766 sur VM2
-
-// -------------------------------------------------------------------
-
-/*// Celui là fonctionnait encore le 23/11/2015
-server.iceServers.push({url: "turn:turn.anyfirewall.com:443?transport=tcp",credential: "webrtc",username: "webrtc"});
-// TURN maison - Ne fonctionne pas sous wifi unice/Eduroam
-server.iceServers.push({url: "turn:134.59.130.142:3478?transport=tcp",credential: "azkar",username: "azkar"});
-server.iceServers.push({url: "turn:134.59.130.142:3478?transport=udp",credential: "azkar",username: "azkar"});
-
-/**/// ------------------------------------------------------------------------------
-
-
-
-//server = {'iceServers': [{url: "turn:turn.anyfirewall.com:443?transport=tcp",credential: "webrtc",username: "webrtc"}]}; // OK filaire
-//server = {'iceServers': [{url: "turn:134.59.130.142:3478?transport=tcp",credential: "robosoft",username: "robosoft"}]}; // ???
-
-//server = {'iceServers': [{ 'url': 'stun:23.21.150.121'}]};
-// server.iceServers.push({ url: 'stun:stun.l.google.com:19302'});
-//server.iceServers.push({url: 'stun:stun.anyfirewall.com:3478'});
-//server.iceServers.push({url: 'stun:turn1.xirsys.com'});
-
-// Ajout de serveurs TURN
-//server.iceServers.push({url: "turn:turn.bistri.com:80",credential: "homeo",username: "homeo"});
-//server.iceServers.push({url: 'turn:turn.anyfirewall.com:443?transport=tcp', credential: 'webrtc',username: 'azkarproject'});
-//server.iceServers.push({url: "turn:numb.viagenie.ca",credential: "webrtcdemo",username: "temp20fev2015@gmail.com"});
-
-// C'est celui-là qui fonctionne...
-//server.iceServers.push({url: "turn:turn.anyfirewall.com:443?transport=tcp",credential: "webrtc",username: "webrtc"});
-//server.iceServers.push({url: "turn:134.59.130.142:3478?transport=tcp",credential: "robosoft",username: "robosoft"});
-//server.iceServers.push({url: "turn:134.59.130.142:3478?transport=udp",credential: "robosoft",username: "robosoft"});
-//server.iceServers.push({url: "turn:turn1.xirsys.com:443?transport=tcp",credential: "b8631283-b642-4bfc-9222-352d79e2d793",username: "e0f4e2b6-005f-440b-87e7-76df63421d6f"});
-
-/*
-options = {
-    optional: [{
-            DtlsSrtpKeyAgreement: true
-        }, {
-            RtpDataChannels: true
-        } //required for Firefox
-    ]
-}
-/**/
+server.iceServers.push({urls: "turn:134.59.130.142:3478",credential: TURN_credential ,username: TURN_username}); // rfc5766 
 
 // corection du bug createDataChannel à partir de Chrome M46
 options = { optional: [{DtlsSrtpKeyAgreement: true }]};
@@ -288,7 +272,6 @@ socket.on('reloadAllClients', function(data) {
     
     console.log(">> socket.on('reloadAllClients',...");
     var message = "Connexion webSocket réinitialisée ! ";
-    
     notifyAndRedirect("warning", message, data.url+"/"+localObjUser.typeClient)
 })
 
@@ -301,9 +284,6 @@ socket.on('reloadClientrobot', function(style,message,url) {
         window.location.href = url+"/"+"robot"
     }
     , 3500); 
-
-
-    // forceRedirect(data.url+"/"+"robot")
 });
 /**/
 // --------------------- Gestion des messages d'erreur ------------------

@@ -11,7 +11,7 @@
 		<!-- viewport sert a controler la mise en page sur les appareils mobiles -->
 		<meta name='viewport' content='width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1'>
 		<link rel="stylesheet" href="/css/style.css" />
-        <title>WebRTC AZKAR</title>
+        <title>1to1-Index</title>
     </head>
 
 
@@ -21,7 +21,7 @@
     <hr/>
     
     <p><a href="/robot/"> >>> Robot</a></p>
-    <p><a href="/pilote-solo/"> >>> Pilote 1to1</a></p>
+    <p><a href="/pilote/"> >>> Pilote 1to1</a></p>
 
   
     
@@ -76,8 +76,8 @@
 	<script>                    
             
 
-			// Initialisation du canal de signalisation
-			var socket = io.connect(); 
+		// Initialisation du canal de signalisation
+		var socket = io.connect(); 
 
 			function razConnexions() {
 				socket.emit('razConnexions',""); // Ordonne au serveur de virer tous les connectés

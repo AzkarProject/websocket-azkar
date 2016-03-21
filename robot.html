@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="/css/style.css" />
     <script src='/js/lib/jquery-1.11.3.min.js'></script>
     <link rel="import" href="/web_kom-remote/kom-remote.html">
-	<title>WebRTC AZKAR</title>
+	<title>1to1-Robot</title>
     </head>
 
 
@@ -202,17 +202,18 @@
 
 
 		<script>                    
-            // On récupère depuis nodejs le nom de la machine serveur
-            // en passant par de l'AJAX plutôt que par websocket....
-            $.get( "/getvar", function( data ) {
-              hostName = data.hostName;
-              infoServerTxt = appSettings.appName()+": ";
-              infoServerTxt += appSettings.appBranch()+" - ";
-              infoServerTxt += " Version " + appSettings.appVersion() + " -";
-              infoServerTxt += " (Serveur: "+hostName+") ";
-              var infoCredit = " | " + appSettings.appCredit();
-              if (hostName != "???" ) $('#zone_info_server').replaceWith(infoServerTxt+infoCredit);
-            });
+	      // On récupère depuis nodejs le nom de la machine serveur
+	      // en passant par de l'AJAX plutôt que par websocket....
+	      $.get( "/getvar", function( data ) {
+	        hostName = data.hostName;
+	        infoServerTxt = appSettings.appName()+": ";
+	        infoServerTxt += appSettings.appBranch()+" - ";
+	        infoServerTxt += " Version " + appSettings.appVersion() + " -";
+	        infoServerTxt += " (Serveur: "+hostName+") ";
+	        var infoCredit = " | " + appSettings.appCredit();
+	        if (hostName != "???" ) $('#zone_info_server').replaceWith(infoServerTxt+infoCredit);
+	      });
+
     	
 			// On lance l'utilitaire de récupération de la batterie
 			komcom.getBattery();

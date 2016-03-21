@@ -1,13 +1,46 @@
 /*
 *
-* Authors: Thierry Bergeron, Michel Buffa
-* Copyright : © CNRS (Laboratoire I3S) / université de Nice
+* Copyright © CNRS (Laboratoire I3S) / université de Nice
+* Contributeurs: Michel Buffa & Thierry Bergeron, 2015-2016
+* 
+* Ce logiciel est un programme informatique servant à piloter un Robot à distance
+* Ce logiciel est régi par la licence CeCILL-C soumise au droit français et
+* respectant les principes de diffusion des logiciels libres. Vous pouvez
+* utiliser, modifier et/ou redistribuer ce programme sous les conditions
+* de la licence CeCILL-C telle que diffusée par le CEA, le CNRS et l'INRIA 
+* sur le site "http://www.cecill.info".
+*
+* En contrepartie de l'accessibilité au code source et des droits de copie,
+* de modification et de redistribution accordés par cette licence, il n'est
+* offert aux utilisateurs qu'une garantie limitée.  Pour les mêmes raisons,
+* seule une responsabilité restreinte pèse sur l'auteur du programme,  le
+* titulaire des droits patrimoniaux et les concédants successifs.
+
+* A cet égard  l'attention de l'utilisateur est attirée sur les risques
+* associés au chargement,  à l'utilisation,  à la modification et/ou au
+* développement et à la reproduction du logiciel par l'utilisateur étant 
+* donné sa spécificité de logiciel libre, qui peut le rendre complexe à 
+* manipuler et qui le réserve donc à des développeurs et des professionnels
+* avertis possédant  des  connaissances  informatiques approfondies.  Les
+* utilisateurs sont donc invités à charger  et  tester  l'adéquation  du
+* logiciel à leurs besoins dans des conditions permettant d'assurer la
+* sécurité de leurs systèmes et ou de leurs données et, plus généralement, 
+* à l'utiliser et l'exploiter dans les mêmes conditions de sécurité. 
+
+* Le fait que vous puissiez accéder à cet en-tête signifie que vous avez 
+* pris connaissance de la licence CeCILL-C, et que vous en avez accepté les
+* termes.
 *
 */
 
 (function(exports){
 
 	
+	// Affichage par défaut. 
+	$('#HudFullScreen').hide();
+
+
+
 	// websocket: Affiche message ds le tchat
 	exports.insertWsMessage = function (objUser, message) {
 	    
@@ -131,9 +164,49 @@
             ihm.toggleModules('hide');
             style = 'position:fixed;top:0;right:0;bottom:0;left:0;height:100%;width:100%;'
 		 	$('#1to1_remoteVideo').attr('style',style);
+            
+
             remoteCameraView = "full";
 	    } 
 	}
+
+
+
+    // On ne peux pas déplacer l'élément vidéo du DOM
+    // Sinon celui-ci n'est plus lié au Stream et l'image se fige...
+	exports.toggleHUD = function() {
+		// alert ('toogleFullScreen');
+		var style = null;
+		if (remoteCameraView == 'embed') {
+			// On déplace les éléments du HUD dans les conteneurs d'origine
+			$('#robotCommands').append($('#step-commands')) 
+			$('#robotCommands').append($('#drive-commands'))
+			$('#robotCommands').append($('#drive-commands'))
+			$('#robotInfos').append($('#batteryJauge'))
+			$('#NavigationArea').append($('#navButtons'))
+			$('#NavigationArea').append($('#myCanvas'))
+			
+
+
+
+			$('#HudFullScreen').hide();
+
+    	} else {
+			// On déplace les éléments qui nous intérèssent dans la section HUD 
+			$('#HudFullScreen').append($('#step-commands'))
+			$('#HudFullScreen').append($('#drive-commands'))
+			$('#HudFullScreen').append($('#drive-commands'))
+			$('#HudFullScreen').append($('#batteryJauge'))
+			$('#HudFullScreen').append($('#navButtons'))
+			$('#HudFullScreen').append($('#myCanvas'))
+			
+
+
+
+			$('#HudFullScreen').show();
+	    } 
+	}
+
 
 
 	// z-index de la vidéo fullScreen ne fonctionne pas
@@ -152,12 +225,13 @@
 	    	$('#robotInfos').show();
 	    	$('#controlArea2').show();
 			$('#settingsArea').show();
-
+			//$('#fullScreen').hide();
 		} else if (value == 'hide') {
 			$('#robotCommands').hide();
 	    	$('#robotInfos').hide();
 	    	$('#controlArea2').hide();
 			$('#settingsArea').hide();
+			//$('#fullScreen').show();
 
 		}
 
@@ -166,52 +240,104 @@
 
 
 
-	// Cartographie en FullScreen...
+	// FullScreen...
 	exports.navigationView = function (horizontal,vertical){
 		
-		var style = 'position: fixed;';
-		var navWidth = $('#NavigationArea').width();
-    	var navHeight = $('#NavigationArea').height();
-    	var hOffset = "left:0;", vOffset = "bottom:0;";
-		var hPosition = 0;
-		
-		if (horizontal == "right") {
-			hPosition = $(window).width() - navWidth;
-		
-		} else if (horizontal == "center") {
-			var halfWidth = navWidth/2;
-			var middle = $(window).width()/2
-			hPosition = middle - halfWidth
-		}
-		hOffset = "left:"+hPosition+";";
-		
-		if (vertical == "top") vOffset = "top:0;"
-		
-		style += hOffset+vOffset;
-		
-		if (remoteCameraView == 'full') {
-		 	$('#controlArea2').show();// On réouvre la section
-		 	$('#websocketChat').hide(); // On cache la colonne gauche
-		 	$('#NavigationArea').show(); // On réouvre la colonne centrale
-		 	$('#WebRTC_Logs').hide(); // On cache la colonne de droite
-		 	//style = 'position:fixed;top:0;right:0;bottom:0;left:0;'
-	 		$('#NavigationArea').attr('style',style);
+		if (type == "pilote-appelant") {
 
-		 } else {
-		 	$('#controlArea2').show();// On réouvre la section
-		 	$('#websocketChat').show(); // On cache la colonne gauche
-		 	$('#NavigationArea').show(); // On réouvre la colonne centrale
-		 	$('#WebRTC_Logs').show(); // On cache la colonne de droite
-		 	style = ''; // On vire les styles...
-	 		$('#NavigationArea').attr('style',style);
+			var style = 'position: fixed;';
+			var navWidth = $('#NavigationArea').width();
+	    	var navHeight = $('#NavigationArea').height();
+	    	var hOffset = "left:0;", vOffset = "bottom:0;";
+			var hPosition = 0;
+			
+			if (horizontal == "right") {
+				hPosition = $(window).width() - navWidth;
+			
+			} else if (horizontal == "center") {
+				var halfWidth = navWidth/2;
+				var middle = $(window).width()/2
+				hPosition = middle - halfWidth
+			}
+			hOffset = "left:"+hPosition+";";
+			
+			if (vertical == "top") vOffset = "top:0;"
+			
+			style += hOffset+vOffset;
+			
+			if (remoteCameraView == 'full') {
+			 	$('#controlArea2').show();// On réouvre la section
+			 	$('#websocketChat').hide(); // On cache la colonne gauche
+			 	$('#NavigationArea').show(); // On réouvre la colonne centrale
+			 	$('#WebRTC_Logs').hide(); // On cache la colonne de droite
+			 	//style = 'position:fixed;top:0;right:0;bottom:0;left:0;'
+		 		$('#NavigationArea').attr('style',style);
+
+			 } else {
+			 	$('#controlArea2').show();// On réouvre la section
+			 	$('#websocketChat').show(); // On cache la colonne gauche
+			 	$('#NavigationArea').show(); // On réouvre la colonne centrale
+			 	$('#WebRTC_Logs').show(); // On cache la colonne de droite
+			 	style = ''; // On vire les styles...
+		 		$('#NavigationArea').attr('style',style);
+
+			 }
 
 		 }	
 		 /**/	
 
 	}
 
-	
+	/*// FullScreen clavier
+	BUG: LEs fonctions de type 
+	exports.gamepadView = function (horizontal,vertical){
+		
+		if (type == "pilote-appelant") {
 
+			//alert ('VAs Chier...')
+			var style = 'position: absolute;';
+
+	    	var gamePadWidth = $('#robotCommands').width();
+	    	var gamePadHeight = $('#robotCommands').height();
+
+	    	var hOffset = "left:0;", vOffset = "bottom:0;";
+			var hPosition = 0;
+			
+			if (horizontal == "right") {
+				hPosition = $(window).width() - gamePadWidth;
+			
+			} else if (horizontal == "center") {
+				var halfWidth = gamePadWidth/2;
+				var middle = $(window).width()/2
+				hPosition = middle - halfWidth
+			}
+			hOffset = "left:"+hPosition+";";
+			
+			if (vertical == "top") vOffset = "top:0;"
+			
+			style += hOffset+vOffset;
+			
+			if (remoteCameraView == 'full') {
+				//style = 'position:fixed;top:0;right:0;bottom:0;left:0;'
+				// alert(style)
+				//colDroiteUpControlArea
+				// $('#BottomFullScreen').append($('#robotCommands'))
+		 		//$('#robotCommands').attr('style',style);
+		 		//$('#robotCommands').show();
+
+			 } else {
+				//style = ''; // On vire les styleyles...
+		 		//$('#robotCommands').attr('style',style);
+		 		//$('#colDroiteUpControlArea').append($('#robotCommands'))
+		 		//$('#robotCommands').hide();
+
+			 }
+
+		 }	
+		 
+
+	}
+	/**/
 
 
 	// Ecouteur d'évènement clavier (touche tab)
@@ -219,7 +345,10 @@
 	  console.log(e);
 	  if (e.keyCode == 9) {
 	    ihm.toggleFullScreen();
-	    // ihm.originalToggleFullScreen() 
+	    ihm.toggleHUD();
+	    //ihm.toggleFullScreen2();
+		//ihm.navigationView('center','bottom');
+		//ihm.gamepadView ('right','bottom')
 	  } 
 	}, false);
 
