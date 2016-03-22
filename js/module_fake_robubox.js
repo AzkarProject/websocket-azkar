@@ -49,27 +49,7 @@ function getFakeDataMap() {
     }
     return dataMap;
 }
-/*
-function getFakeRobotInfo() {
-    var robotInfo = {
-        Pose : { 
-            Orientation : {
-                X:0,
-                Y:0,
-                Z:0.4147678497279166
-            },
-            Position : {
-                X:8140780941908364,
-                Y:-3.43144283510266,
-                Z:0
-            },
-        },
-        Status: 8,
-        Timestamp : 1563315020
-    }
-    return robotInfo;
-}
-/**/
+
 
 function getFakeRobotInfo() {
     var robotInfo = {

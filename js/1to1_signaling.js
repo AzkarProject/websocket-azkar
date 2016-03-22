@@ -161,8 +161,16 @@ function connect(peerCnxId) {
 
         var dateE = tools.humanDateER("E");
         // console.log(">>> pc["+peerCnxId+"] stateConnection Event > " + peerCnxCollection[peerCnxId].iceConnectionState);
+        var iceState = peerCnxCollection[peerCnxId].iceConnectionState
         $(chatlog).prepend(dateE + ' pc['+peerCnxId+'] stateConnection Event: ' + peerCnxCollection[peerCnxId].iceConnectionState + '\n');
 
+        
+
+        var message = "iceConnectionState > "+ iceState;
+        var typeNotify = 'info'
+        if (iceState == "connected") typeNotify = 'success';
+        else if (iceState == "failed" || iceState == "disconnected") typeNotify = 'error';
+        notifications.writeMessage (typeNotify,"WEBRTC Status",message ,3000)
 
         // Si la connexion est neuve, on remet le flag de renégo à sa position par défaut...
         if ( peerCnxCollection[peerCnxId].iceConnectionState == 'new') isRenegociate = false; 

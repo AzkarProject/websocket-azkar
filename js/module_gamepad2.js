@@ -363,7 +363,7 @@ function checkButtons(gamepad) {
 		    var selectCamText =  incrementSelectList(idSelect,textCounter)
 		    	  
 		  	//writeMessage ("info","GAMEPAD (LB)", selectCamText);
-		  	notifications.writeMessage ("info","GAMEPAD (LB)", selectCamText);
+		  	notifications.writeMessage ("standard","GAMEPAD (LB)", selectCamText);
 
 			return;
 			
@@ -390,7 +390,7 @@ function checkButtons(gamepad) {
 		    var textCounter = 'Définitions caméras robot disponibles: ';
 		    var selectDefText =  incrementSelectList(idSelect,textCounter)		  
 		  	//writeMessage ("info","GAMEPAD (RB)", selectDefText);
-		  	notifications.writeMessage ("info","GAMEPAD (RB)", selectDefText);
+		  	notifications.writeMessage ("standard","GAMEPAD (RB)", selectDefText);
 
 			return;
 		// Ferme toutes les notifications
@@ -413,10 +413,10 @@ function checkButtons(gamepad) {
 			
 		    atLeastOneButtonPressed = true;
 		    lastButtonName = "buttonStart";
-			// hideAllMessages();
-			// notifications.hideAllMessages();
+
 			ihm.toggleFullScreen();
-			ihm.navigationView('center','bottom');
+			//ihm.navigationView('center','bottom');
+	    	ihm.toggleHUD();
 		}
   }
 

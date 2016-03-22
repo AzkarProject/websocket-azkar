@@ -80,8 +80,8 @@ function checkCookie(pseudo) {
     var user = getCookie("AzcarClientName");
     
     if (user != "") {
-        //alert("Welcome again " + user);
-        notifications.writeMessage ("success","Bienvenue " + user,"",3000)
+        // alert("Welcome again " + user);
+        // notifications.writeMessage ("success","Bienvenue " + user,"",3000)
         pseudo = user;
     
     } else {
@@ -132,12 +132,16 @@ socket.on('position_liste2', function(objUser) {
 
 // Quand un nouveau client se connecte, on affiche l'information
 socket.on('nouveau_client2', function(objUser) {
-    var dateR = tools.dateER('R');
-    console.log(dateR+">> socket.on('nouveau_client2', objUser");
+    var dateR = tools.humanDateER('R');
+    // alert(dateR+">> socket.on('nouveau_client2', objUser");
     //var message = dateR + " à rejoint le Tchat";
-    var message = dateR + " > Connexion entrante";
+    var message = " > Connexion entrante";
     //insereMessage3(objUser,message);
-    ihm.insertWsMessage(objUser,message);
+    ihm.insertWsMessage(objUser,dateR+message);
+    //message = data.objUser.pseudo+" > Connexion entrante"
+    message = objUser.pseudo += message;
+    notifications.writeMessage ("success","Notification WebSocket",message,3000)
+
 
 })
 
@@ -155,12 +159,19 @@ function isInPeerCnxCollection(peerCnxID ){
 // On déplace ici l'écouteur au cas où la fonction
 // connect() de webRTC n'as pas encore été instanciée.
 socket.on("disconnected", function(data) { 
-  console.log(">> socket.on('webSocket-disconnected',...");
+  
+  // alert(">> socket.on('webSocket-disconnected',...");
 
-  var dateR = tools.dateER('R');
+
+  
+  if (!data.objUser) return;
+
+  var dateR = tools.humanDateER('R');
   var msg = dateR+' '+data.message;
   ihm.insertWsMessage(data.objUser,msg);
-  if (!data.objUser) return;
+  notifications.writeMessage ("error","Notification WebSocket",data.objUser.pseudo+" "+data.message,3000)
+
+  
   
   
   var testPeerCnxId = "";
@@ -227,19 +238,22 @@ socket.on("disconnected", function(data) {
   
 
 // Quand on reçoit un message WS, on l'insère dans la page
-socket.on('message2', function(data) {
-    var dateR = tools.dateER('R');
+socket.on('message2', function(data) { 
+    var dateR = tools.humanDateER('R');
     var msg = dateR+' '+data.message;
     ihm.insertWsMessage(data.objUser,msg);
+    var message = data.objUser.pseudo+": "+data.message;
+    notifications.writeMessage ("info","Chat WebSocket",message,3000)
 })
 
 
 
 // Quand on reçoit un message WS de service
 socket.on('service2', function(data) {
-    var dateR = tools.dateER('R');
+    var dateR = tools.humanDateER('R');
     var msg = dateR+' '+data.message;
     ihm.insertWsMessage(data.objUser,msg);
+    notifications.writeMessage ("info","Message de service WebSocket",msg,3000)
 })
 
 
@@ -251,8 +265,8 @@ socket.on('service2', function(data) {
 $('#formulaire_chat_websoket').submit(function () {
     var message = $('#message').val();
     // On ajoute la dateE au message
-    var dateE = '[E-'+tools.dateNowInMs()+']';
-    message = dateE + ' '+message;
+    //var dateE = '[E-'+tools.dateNowInMs()+']';
+    //message = dateE + ' '+message;
     socket.emit('message2', {objUser:localObjUser,message:message}); // Transmet le message aux autres
     // insereMessage3(localObjUser, message); // Affiche le message aussi sur notre page
     ihm.insertWsMessage(localObjUser, message);

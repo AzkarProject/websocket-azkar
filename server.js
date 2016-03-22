@@ -289,11 +289,12 @@ io.on('connection', function(socket, pseudo) {
         // On signale à tout le monde l'arrivée de l'User
         socket.broadcast.emit('nouveau_client2', objUser);
 
-        // Si c'st un "Visiteur", on informe Pilote (et Robot ??)
+        /*// Si c'st un "Visiteur", on informe Pilote (et Robot ??)
         if (objUser.typeClient == "Visiteur") {
             io.to(wsIdPilote).emit('newVisitor', objUser);
             //io.to(wsIdRobot).emit('newVisitor', objUser);
         }
+        /**/
         
 
         // On met a jour la liste des connectés coté client"

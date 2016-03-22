@@ -192,6 +192,7 @@ function bindEvents() {
         // si c'est u message string
         if (tools.isJson(e.data) == false) {
             $(chatlog).prepend(dateR + ' ' + e.data + "\n");
+            notifications.writeMessage ("info","Chat WebRTC",e.data,3000)
         }
         
         // sinon si c'est un objet Json 
@@ -235,8 +236,9 @@ function bindEvents() {
 // Robot & Pilote: envoi d'un message par WebRTC
 function sendMessage() {
     console.log ("@ sendMessage()");
-    var dateE = tools.dateER('E');
-    var msgToSend = dateE + ' [' + localObjUser.typeClient + '] ' + message.value;
+    var dateE = tools.humanDateER('E');
+    //var msgToSend = dateE + ' [' + localObjUser.typeClient + '] ' + message.value;
+    var msgToSend = localObjUser.pseudo + ': ' + message.value;
     channel.send(msgToSend);
     message.value = "";
     // Affiche trace du message dans le chatlog websocket local

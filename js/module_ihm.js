@@ -43,7 +43,8 @@
 
 	// websocket: Affiche message ds le tchat
 	exports.insertWsMessage = function (objUser, message) {
-	    
+	   
+	    console.log(objUser);
 	    var text;
 	    if (objUser){
 	      text = '['+objUser.typeClient+'] '+ message;
@@ -51,12 +52,12 @@
 	      text = message;
 	    }
 	    text += '\n';
-	    
 	    $('#zone_chat_websocket').prepend(text);
+	    
 	}
 
 
-
+	
 
 	// formulaires de selection caméras
 	exports.manageSubmitForm = function(cibleForm,status){
@@ -172,75 +173,28 @@
 
 
 
-    // On ne peux pas déplacer l'élément vidéo du DOM
-    // Sinon celui-ci n'est plus lié au Stream et l'image se fige...
-	exports.toggleHUD = function() {
-		// alert ('toogleFullScreen');
-		var style = null;
-		if (remoteCameraView == 'embed') {
-			// On déplace les éléments du HUD dans les conteneurs d'origine
-			$('#robotCommands').append($('#step-commands')) 
-			$('#robotCommands').append($('#drive-commands'))
-			$('#robotCommands').append($('#drive-commands'))
-			$('#robotInfos').append($('#batteryJauge'))
-			$('#NavigationArea').append($('#navButtons'))
-			$('#NavigationArea').append($('#myCanvas'))
-			
-
-
-
-			$('#HudFullScreen').hide();
-
-    	} else {
-			// On déplace les éléments qui nous intérèssent dans la section HUD 
-			$('#HudFullScreen').append($('#step-commands'))
-			$('#HudFullScreen').append($('#drive-commands'))
-			$('#HudFullScreen').append($('#drive-commands'))
-			$('#HudFullScreen').append($('#batteryJauge'))
-			$('#HudFullScreen').append($('#navButtons'))
-			$('#HudFullScreen').append($('#myCanvas'))
-			
-
-
-
-			$('#HudFullScreen').show();
-	    } 
-	}
-
-
-
-	// z-index de la vidéo fullScreen ne fonctionne pas
-	// >>> On cache cerrttains blocs pour éviter la superposition. 
+    // On cache certtains blocs pour éviter la superposition. 
+	// parce que modifier le z-index de la vidéo fullScreen ne fonctionne pas
 	exports.toggleModules = function(value) {
 		
-		/*// Version jQuery (pompre pas mal de ressources...)
-		$('#robotCommands').fadeToggle();
-    	$('#robotInfos').fadeToggle();
-    	$('#controlArea2').fadeToggle();
-		$('#settingsArea').fadeToggle();
-		/***/
-
 		if (value == 'show') {
 			$('#robotCommands').show();
 	    	$('#robotInfos').show();
 	    	$('#controlArea2').show();
 			$('#settingsArea').show();
-			//$('#fullScreen').hide();
 		} else if (value == 'hide') {
 			$('#robotCommands').hide();
 	    	$('#robotInfos').hide();
 	    	$('#controlArea2').hide();
 			$('#settingsArea').hide();
-			//$('#fullScreen').show();
 
 		}
 
 	}
 
 
-
-
-	// FullScreen...
+	// Deprecated..  Pas adapté au responsive design
+	// Remplacé plus bas par ToggleHUD 
 	exports.navigationView = function (horizontal,vertical){
 		
 		if (type == "pilote-appelant") {
@@ -284,71 +238,61 @@
 			 }
 
 		 }	
-		 /**/	
+		 	
 
 	}
 
-	/*// FullScreen clavier
-	BUG: LEs fonctions de type 
-	exports.gamepadView = function (horizontal,vertical){
-		
-		if (type == "pilote-appelant") {
 
-			//alert ('VAs Chier...')
-			var style = 'position: absolute;';
+	// On ne peux pas déplacer l'élément vidéo du DOM
+    // Sinon celui-ci n'est plus lié au Stream et l'image se fige...
+    // PAr contre, pour les autres elements, R.A.S
+	exports.toggleHUD = function() {
+		// alert ('toogleFullScreen');
+		var style = null;
+		if (remoteCameraView == 'embed') {
+			// On déplace les éléments du HUD dans les conteneurs d'origine
+			$('#robotCommands').append($('#step-commands')) 
+			$('#robotCommands').append($('#drive-commands'))
+			//$('#robotCommands').append($('#drive-commands'))
+			$('#robotInfos').append($('#batteryJauge'))
+			$('#NavigationArea').append($('#embededNav'))
 
-	    	var gamePadWidth = $('#robotCommands').width();
-	    	var gamePadHeight = $('#robotCommands').height();
+			$( "#step-commands" ).removeClass( "HudClass floatRight HudModControls" );
+			$( "#drive-commands" ).removeClass( "HudClass floatRight HudModControls" );
+			$( "#batteryJauge" ).removeClass( "HudClass" );
+			$( "#navButtons" ).removeClass( "HudClass" );
+			$( "#embededNav" ).removeClass( "HudClass" );
 
-	    	var hOffset = "left:0;", vOffset = "bottom:0;";
-			var hPosition = 0;
-			
-			if (horizontal == "right") {
-				hPosition = $(window).width() - gamePadWidth;
-			
-			} else if (horizontal == "center") {
-				var halfWidth = gamePadWidth/2;
-				var middle = $(window).width()/2
-				hPosition = middle - halfWidth
-			}
-			hOffset = "left:"+hPosition+";";
-			
-			if (vertical == "top") vOffset = "top:0;"
-			
-			style += hOffset+vOffset;
-			
-			if (remoteCameraView == 'full') {
-				//style = 'position:fixed;top:0;right:0;bottom:0;left:0;'
-				// alert(style)
-				//colDroiteUpControlArea
-				// $('#BottomFullScreen').append($('#robotCommands'))
-		 		//$('#robotCommands').attr('style',style);
-		 		//$('#robotCommands').show();
+			$('#HudFullScreen').hide();
 
-			 } else {
-				//style = ''; // On vire les styleyles...
-		 		//$('#robotCommands').attr('style',style);
-		 		//$('#colDroiteUpControlArea').append($('#robotCommands'))
-		 		//$('#robotCommands').hide();
+    	} else {
 
-			 }
+			$('#HUD_left').append($('#embededNav'))
+			$('#HUD_left').append($('#batteryJauge'))
+			$('#HUD_right').append($('#step-commands'))
+			$('#HUD_right').append($('#drive-commands'))
 
-		 }	
-		 
+			$( "#HUD_left" ).addClass( "HudClass" );
+			$( "#HUD_right" ).addClass( "HudClass" );
 
+			$( "#embededNav" ).addClass( "HudClass" );
+			$( "#batteryJauge" ).addClass( "HudClass" );
+
+			$( "#step-commands" ).addClass( "HudClass HudModControls floatRight" );
+			$( "#drive-commands" ).addClass( "HudClass HudModControls floatRight" );
+
+			$('#HudFullScreen').show();
+
+	    } 
 	}
-	/**/
 
 
-	// Ecouteur d'évènement clavier (touche tab)
+	// Ecouteur Full Screen d'évènement clavier (touche tab)
 	document.addEventListener("keydown", function(e) {
 	  console.log(e);
 	  if (e.keyCode == 9) {
 	    ihm.toggleFullScreen();
 	    ihm.toggleHUD();
-	    //ihm.toggleFullScreen2();
-		//ihm.navigationView('center','bottom');
-		//ihm.gamepadView ('right','bottom')
 	  } 
 	}, false);
 
