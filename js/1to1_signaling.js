@@ -39,7 +39,22 @@
 
 // ------ PHASE 1 : Pré-signaling ----------------------------------------------------------
 
-// >>>> voir 1to1_pre_signaling.js
+// Récupération de la liste des devices (Version2)
+// Voir: https://www.chromestatus.com/feature/4765305641369600
+// MediaStreamTrack.getSources(gotSources) utilisée jusqu'a présent n'est implémentée que dans Chrome.
+// La page https://developers.google.com/web/updates/2015/10/media-devices indique qu'à partir de la version 47
+// sont implémentées de nouvelles méthodes crossBrowser: navigator.mediaDevices.enumerateDevices().
+// Je passe donc par une méthode passerelle getAllAudioVideoDevices() qui switche entre les 2 méthodes
+// selon les implémentation du navigateur.
+var origin = "local"; // On prévient la fonction apellée que la source sera locale
+
+getAllAudioVideoDevices(function(result) {
+    populateListDevices(result,origin);
+}, function(error) {
+    if (error == null) error = "erreur getAllAudioVideoDevices()";
+    alert(error);
+});
+/**/
 
 // ------ PHASE 2 : Signaling --------------------------------------------------
 
@@ -385,6 +400,12 @@ video2.addEventListener("playing", function () {
 });
 
 // ----- Phase 3 Post-Signaling --------------------------------------------
+
+
+
+
+
+
 
 // >>>> voir 1to1_pre_signaling.js
 

@@ -1,3 +1,6 @@
+// 1to1_controller_websocket
+
+
 /*
 *
 * Copyright © CNRS (Laboratoire I3S) / université de Nice
@@ -33,71 +36,20 @@
 *
 */
 
-// Fonctions websocket générales -----------------------------
-// Flags divers
-var isServerInfoReceived = false; 
-
-// variables diverses
-var myPlaceListe = 0;
-var nbUsers = 0;
 
 // Initialisation du canal de signalisation
 var socket = io.connect(); 
 
 var typeClient = null;
-if (type == "pilote-appelant") {typeClient = "Pilote";
-} else if (type == "robot-appelé") { typeClient = "Robot";
-} else if (type == "visiteur-appelé") { typeClient = "Visiteur";}
+if (type == "pilote-appelant") typeClient = "Pilote";
+else if (type == "robot-appelé")  typeClient = "Robot";
 
 
-
-// On demande le pseudo, on l'envoie au serveur et on l'affiche dans le titre
+// On demande le pseudo ou on le récupère ds un cookie et on l'envoie au serveur
 pseudo = null;
-// pseudo = prompt('Votre pseudo? (par défaut ce sera "'+typeClient+'")');
-
 pseudo = checkCookie(pseudo);
-
-// cookies
-function setCookie(cname, cvalue, exdays) {
-    var d = new Date();
-    d.setTime(d.getTime() + (exdays*24*60*60*1000));
-    var expires = "expires="+d.toUTCString();
-    document.cookie = cname + "=" + cvalue + "; " + expires;
-}
-
-function getCookie(cname) {
-    var name = cname + "=";
-    var ca = document.cookie.split(';');
-    for(var i=0; i<ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0)==' ') c = c.substring(1);
-        if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
-    }
-    return "";
-}
-
-function checkCookie(pseudo) {
-    var user = getCookie("AzcarClientName");
-    
-    if (user != "") {
-        // alert("Welcome again " + user);
-        // notifications.writeMessage ("success","Bienvenue " + user,"",3000)
-        pseudo = user;
-    
-    } else {
-        user = prompt('Votre pseudo? (par défaut ce sera "'+typeClient+'")');
-        if (!user) {
-           user = typeClient;
-        }       
-        if (user != "" && user != null) {
-            setCookie("AzcarClientName", user, 365);
-            pseudo = user;
-        }
-    }
-    return pseudo;
-}
-
 socket.emit('nouveau_client2', {pseudo: pseudo, typeClient: typeClient}); // Version objet
+
 
 // liste des users connectés
 var users = {};
@@ -146,23 +98,11 @@ socket.on('nouveau_client2', function(objUser) {
 })
 
 
-function isInPeerCnxCollection(peerCnxID ){
-  var isPresent = true
-  if (!peerCnxCollection[peerCnxID] || peerCnxCollection[peerCnxID] == null) isPresent = false;
-  return isPresent;
-}
-
-
-
 // Réception d'une info de deconnexion:
 // Plus réactif que l'écouteur de l'API WebRTC !
 // On déplace ici l'écouteur au cas où la fonction
 // connect() de webRTC n'as pas encore été instanciée.
 socket.on("disconnected", function(data) { 
-  
-  // alert(">> socket.on('webSocket-disconnected',...");
-
-
   
   if (!data.objUser) return;
 
@@ -171,69 +111,10 @@ socket.on("disconnected", function(data) {
   ihm.insertWsMessage(data.objUser,msg);
   notifications.writeMessage ("error","Notification WebSocket",data.objUser.pseudo+" "+data.message,3000)
 
-  
-  
-  
   var testPeerCnxId = "";
   var isAPeerCnxID = false;
 
-  // Si le receveur est le pilote
-  if (type == "pilote-appelant") {
-    // si le déconnecté est un visiteur
-    if (data.objUser.typeClient == "Visiteur") {
-      // on lance la procédure individuelle de déconnexion 
-      closeCnxwith(data.objUser.id);
-    // si le déconnecté est un robot
-    } else if (data.objUser.typeClient == "Robot") {
-      // On lance la procédure de déco/reco 1to1 par défaut
-        onDisconnect(peerCnx1to1);
-    }
-  }
-  
-  // Si le receveur est le Robot
-  if (type == "robot-appelé") {
-    // Si le déconnecté est le pilote,
-    if (data.objUser.typeClient == "Pilote") {
-        // On lance la procédure de déco/reco 1to1 par défaut
-        onDisconnect(peerCnx1to1);
-
-    // Si le déconnecté est un visiteur,
-    } else if (data.objUser.typeClient == "Visiteur") {
-      // On vérifie que la connexion existe bien...
-      testPeerCnxId = prefix_peerCnx_VtoR+data.objUser.id;
-      if ( isInPeerCnxCollection(testPeerCnxId) == false ) return; 
-      else onDisconnect_VtoR(testPeerCnxId);
-    }
-
-  }
-
-  // Si le receveur est un Visiteur
-  if (type == "visiteur-appelé") { 
-      
-      // si le déconnecté est un pilote
-      if (data.objUser.typeClient == "Pilote") {
-        
-        // Déconnexion avec le pilote
-        testPeerCnxId = prefix_peerCnx_1toN_VtoP+myPeerID;
-        if ( isInPeerCnxCollection(testPeerCnxId) == false ) return; 
-        onDisconnect_1toN_VtoP(testPeerCnxId);
-       
-        // Mais aussi déconnexion avecv le Robot
-        testPeerCnxId = prefix_peerCnx_VtoR+myPeerID;
-        if ( isInPeerCnxCollection(testPeerCnxId) != false ) {
-          onDisconnect_VtoR(testPeerCnxId);
-        }
-
-      // si le déconnecté est un robot
-      } else if (data.objUser.typeClient == "Robot") {
-        
-        // On vérifie que la connexion existe bien...
-        testPeerCnxId = prefix_peerCnx_VtoR+myPeerID;
-        if ( isInPeerCnxCollection(testPeerCnxId) == false ) return; 
-        else onDisconnect_VtoR(testPeerCnxId);
-      }
-  }
-
+   onDisconnect(peerCnx1to1);
 });
   
 
@@ -274,3 +155,112 @@ $('#formulaire_chat_websoket').submit(function () {
     return false; // Permet de bloquer l'envoi "classique" du formulaire
 });
 
+
+// ----------------------------------------------------------------------------------
+
+// --------- contrôle d'accès via websocket...
+
+// rejectConnexion', message:message, url:indexUrl);
+socket.on('error', errorHandler);
+socket.on('rejectConnexion', function(data) {
+    // alertAndRedirect(data.message, data.url)
+    notifyAndRedirect("error", data.message,data.url)
+})
+
+socket.on('razConnexion', function(data) {
+    console.log(">> socket.on('razConnexion',...");
+    var message = "Fermeture des connexions webSockets ! "
+    notifyAndRedirect("warning", message, data.url)
+})
+
+socket.on('reloadAllClients', function(data) {
+    
+    console.log(">> socket.on('reloadAllClients',...");
+    var message = "Connexion webSocket réinitialisée ! ";
+    notifyAndRedirect("warning", message, data.url+"/"+localObjUser.typeClient)
+})
+
+
+
+socket.on('reloadClientrobot', function(style,message,url) {
+    console.log(">> socket.on('reloadClient',...");
+    notifications.writeMessage (style,message,"Vous allez être redirigé vers "+ url,3000)
+    setTimeout(function(){
+        window.location.href = url+"/"+"robot"
+    }
+    , 3500); 
+});
+/**/
+
+// --------------------- Messages d'erreur & redirection ------------------
+
+function errorHandler(err) {
+    console.log("ON-ERROR");
+    console.error(err);
+    // notifications.writeMessage ("error","ON-ERROR","err",3000)
+
+}
+
+
+function alertAndRedirect(message, url) {
+    window.alert(message)
+    window.location.href = url;
+}
+
+function notifyAndRedirect(style, message, url) {
+    notifications.writeMessage (style,message,"Vous allez être redirigé vers "+ url,3000)
+    setTimeout(function(){
+        window.location.href = url
+    }
+    , 3500); 
+}
+
+
+function forceRedirect(url) {
+    console.log("@ forceRedirect("+url+")");
+    // Todo....
+
+}
+
+
+// ------- Gestion des Cookies -----------------
+
+function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+d.toUTCString();
+    document.cookie = cname + "=" + cvalue + "; " + expires;
+}
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0; i<ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1);
+        if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+    }
+    return "";
+}
+
+function checkCookie(pseudo) {
+    var nameCookie = "AzcarClientName"
+    var user = getCookie(nameCookie);
+    
+    if (user != "") {
+        alert("Welcome again " + user);
+        // notifications.writeMessage ("success","Bienvenue " + user,"",3000)
+        pseudo = user;
+    
+    } else {
+        user = prompt('Votre pseudo? (par défaut ce sera "'+typeClient+'")');
+        if (!user) {
+           user = typeClient;
+        }       
+        if (user != "" && user != null) {
+            setCookie(nameCookie, user, 365);
+            pseudo = user;
+        }
+    }
+    return pseudo;
+}

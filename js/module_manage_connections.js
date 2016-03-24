@@ -153,6 +153,29 @@ function closeConnectionButton(order,userID){
 }
 /**/
 
+function getClientBy(key,value) {
+    for (i in users.listUsers) {
+        if (users.listUsers[i][key] == value) {
+                return users.listUsers[i];
+                break;
+        }
+    }
+};
+
+// Retourne l'objet client distant d'une peerConnexion
+// On peux retrouver l'ID du pair distant en analysant l'ID de la connexion:
+// Le peerID de la connexion est constitué d'une concaténation
+// d'un préfixe et de l'id client du visiteur
+// Il suffit donc d'oter le préfixe pour retrouver l'id du pair distant...
+// A partir de là, on récupère aussi le client.
+function getCibleFromPeerConnectionID(peerCnxId, prefix) {
+    var cibleID = peerCnxId;
+    cibleID = cibleID.replace(prefix, "");
+    cible = getClientBy('id',cibleID); 
+    return cible;
+};
+
+
 
 // Fonctions passerelles
 

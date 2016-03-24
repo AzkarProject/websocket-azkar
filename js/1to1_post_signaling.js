@@ -1,3 +1,8 @@
+// 1to1_controller_
+
+
+
+
 /*
 *
 * Copyright © CNRS (Laboratoire I3S) / université de Nice
@@ -225,9 +230,11 @@ function bindEvents() {
                     komcom.sendDrive(cmd);
                 }
                 
+                /*
                 else if (cmd.command == "onStep") {
                     komcom.sendStep(cmd.typeMove,cmd.distance,cmd.MaxSpeed) ;
                 }
+                /**/
             }
         }
     };
@@ -268,6 +275,9 @@ $('#formulaire_chat_webRTC').submit(function() {
     $('#send_chat_WebRTC').val('').focus(); // Vide la zone de Chat et remet le focus dessus
     return false; // Permet de bloquer l'envoi "classique" du formulaire
 });
+
+
+
 
 // --------------------- Gestion des commandes du robot -------------------
 // Robot: fonction homme mort...
