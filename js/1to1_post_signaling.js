@@ -50,24 +50,6 @@ socket.on("closeConnectionOrder",function(data) {
     }
 });
 
-/*// Réception d'un ordre de déconnexion en provenance du Pilote
-// >> Pour le robot: se déconneter de tous les visiteurs
-// >> Pour tous les visiteurs, se déconnecter du robot Et du pilote
-socket.on("closeAllVisitorsConnectionOrder", function(data) {
-
-        console.log ("------------ >>> closeAllVisitorsConnectionOrder "+data.from.typeClient+"----------");
-        var prefixID = "Robot-To-Visiteur-";
-        var robotPeerCnxID = "Robot-To-Visiteur-"+myPeerID;
-        var pilotePeerCnxID = "Pilote-To-Visiteur-"+myPeerID;
-        // Si robot on vire tous les visiteurs
-        if (type == 'robot-appelé') closeCnxwithAllVisitors("Robot"); 
-        // Si visiteur on vire Pilote et Robot
-        else if (type == 'visiteur-appelé') {
-            onDisconnect_VtoR(robotPeerCnxID);
-            onDisconnect_1toN_VtoP(pilotePeerCnxID);      
-        }
-});
-/**/
 
 // A la déconnection du pair distant:
 function onDisconnect(peerCnxId) {
@@ -162,7 +144,7 @@ function stopAndStart(peerCnxId) {
 
     console.log("@ stopAndStart()");
     
-    if (type == "pilote-appelant") updateListUsers(); // Rafraichissement de la liste des visiteurs
+    if (type == "pilote-appelant") usersConnection.updateListUsers(); // Rafraichissement de la liste des visiteurs
     input_chat_WebRTC.disabled = true;
     input_chat_WebRTC.placeholder = "RTCDataChannel close";
     env_msg_WebRTC.disabled = true;

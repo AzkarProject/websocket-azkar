@@ -35,14 +35,15 @@
 
 (function(exports){
 
-	exports.setLaboParameters = function(){
+	exports.setLaboServers = function(){
 		
 		dyDns = 'azkar.ddns.net'; // Adresse no-Ip pointant sur Livebox domicile
 		if (hostName == "azkar-Latitude-E4200") indexUrl = "http://" + dyDns; // Si machine derrière liveBox && noip
 
 		// Machines windows - I3S
-		if (hostName == "azcary") ipaddress = "192.168.173.1"; // Ip du réseau virtuel robulab2_wifi
-		else if (hostName == "thaby") ipaddress = "192.168.173.1"; // Tablette HP sur Robulab: ip du réseau virtuel robulab_wifi
+		if (hostName == "azcary") ipaddress = "192.168.173.1"; // Ip du réseau virtuel AdHoc
+		else if (hostName == "thaby") ipaddress = "192.168.173.1"; // Tablette HP sur Robulab: ip du réseau virtuel AdHoc
+		else if (hostName == "amini") ipaddress = "192.168.173.1"; // Machine Anthony
 
 		// Machine Windows - Domicile
 		else if (hostName == "lapto_Asus") ipaddress = "0.0.0.0"; // Pc perso - (IP interne, Livebox domicile)

@@ -6,6 +6,8 @@
 
 'use strict';
 console.log ("module_komRemote_Robot chargé");
+
+
 var SESSION = null;
 
 var KOMCOM_SERVER = 'komcom.53js.fr', // wss://127.0.0.1
@@ -13,17 +15,7 @@ var KOMCOM_SERVER = 'komcom.53js.fr', // wss://127.0.0.1
 	KOMNAV_METHOD_DRIVE = KOMCOM_REALM + '.drive',
 	connection = new autobahn.Connection({ url: 'wss://' + KOMCOM_SERVER, realm: KOMCOM_REALM });
 
-// var isRobubox = appSettings.isRobubox();
-
-
-// if (isRobubox == true) {
-
-	
-
-	
 	if (fakeRobubox == false) {
-
-
 		connection.onopen = function(session, details) {
 			// Publish, Subscribe, Call and Register
 			console.log('OPEN', session, details);
@@ -88,9 +80,6 @@ var KOMCOM_SERVER = 'komcom.53js.fr', // wss://127.0.0.1
 			$('body').addClass('komcom-connected');
 			this.start({ transportSession: myTransportSession }); // Use your own transport session
 		});
-
-
-
 	}
 
 
@@ -98,6 +87,6 @@ var KOMCOM_SERVER = 'komcom.53js.fr', // wss://127.0.0.1
 
 
 
-//}
+
 
 

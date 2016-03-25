@@ -248,7 +248,7 @@ function checkCookie(pseudo) {
     var user = getCookie(nameCookie);
     
     if (user != "") {
-        alert("Welcome again " + user);
+        // alert("Welcome again " + user);
         // notifications.writeMessage ("success","Bienvenue " + user,"",3000)
         pseudo = user;
     

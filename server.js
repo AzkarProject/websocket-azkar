@@ -57,7 +57,7 @@ indexUrl = "https://" + ipaddress + ":" + port; // Par défaut...
 // Ne pas mettre ds les livrables...
 // Différentes IP serveurs selon les machines (VM1, Vm2, Livebox ou local Adhoc) 
 var appCNRS = require('./js/common_app_cnrs'); // paramètres de configuration propre au labo
-appCNRS.setLaboParameters();
+appCNRS.setLaboServers();
 
 
 console.log("***********************************");

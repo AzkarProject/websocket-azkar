@@ -129,8 +129,8 @@ function connect(peerCnxId) {
         var cible = ""; 
         // Si on est bien dans la peerConnection principale (Pilote <> Robot)
         if (peerCnxId == peerCnx1to1) {
-            if (type === "pilote-appelant" ) cible = getClientBy('typeClient','Robot');
-            else if ( type === "robot-appelé") cible = getClientBy('typeClient','Pilote');
+            if (type === "pilote-appelant" ) cible = usersConnection.getClientBy('typeClient','Robot');
+            else if ( type === "robot-appelé") cible = usersConnection.getClientBy('typeClient','Pilote');
         
         } 
         // console.log ("------------ Candidate to >>> "+cible.typeClient+"----------");
@@ -259,7 +259,7 @@ function connect(peerCnxId) {
             bindEvents();
 
             // création et envoi de l'offre SDP
-            var cible = getClientBy('typeClient','Robot');
+            var cible = usersConnection.getClientBy('typeClient','Robot');
             peerCnxCollection[peerCnxId].createOffer(function(sdp){
                         peerCnxCollection[peerCnxId].setLocalDescription(sdp);
                         //console.log ("------------ offer >>> to "+cible.typeClient+"----------");
@@ -340,7 +340,7 @@ socket.on("offer", function(data) {
             
             // Une foi l'offre reçue et celle-ci enregistrée dans un setRemoteDescription,
             // on peu enfin générer une réponse SDP 
-            var cible = getClientBy('id', data.from.id);
+            var cible = usersConnection.getClientBy('id', data.from.id);
             var idPeerConnection = data.peerCnxId;
 
             // création de l'offre SDP

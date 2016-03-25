@@ -94,7 +94,7 @@
 	exports.closeConnectionButton = function  (order,userID){
 		console.log ("closeConnectionButton("+order+")");
 		if (order == "activate") {
-			var buttonClose1to1 = '<button class="shadowBlack txtRed" id="openCnx'+userID+'" onclick="closeCnxwith(\''+userID+'\')">Fermer la connexion</button>';
+			var buttonClose1to1 = '<button class="shadowBlack txtRed" id="openCnx'+userID+'" onclick="usersConnection.closeCnxwith(\''+userID+'\')">Fermer la connexion</button>';
 			document.getElementById('closeConnection').innerHTML = buttonClose1to1;
 		} else if (order == "deactivate") {
 			var buttonClose1to1 = '';

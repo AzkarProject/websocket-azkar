@@ -36,7 +36,7 @@
 (function(exports){
 
 // todo: rename module_navigation_interface
-console.log("module_navigation_datas chargé");
+console.log("module_navigation_interface chargé");
 
 exports.sendToRobot = function (rpcMethodName, values,controlDevice, driveCommand){     
 
@@ -118,4 +118,4 @@ exports.sendToPilote = function (typeData, data){
 };
 
 
-})(typeof exports === 'undefined'? this['navigation_datas']={}: exports);
+})(typeof exports === 'undefined'? this['navigation_interface']={}: exports);

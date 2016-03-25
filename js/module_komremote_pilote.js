@@ -20,7 +20,7 @@ var myTransportSession = {
 		// Rewrite with your own call method
 		// console.log('send on my transport: ' + rpcMethodName + '[' + values + ']');
 		var controlDevice = "kom-remote";
-		navigation_datas.sendToRobot(rpcMethodName, values, controlDevice,"");
+		navigation_interface.sendToRobot(rpcMethodName, values, controlDevice,"");
 
 
 	}

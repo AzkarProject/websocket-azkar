@@ -35,7 +35,7 @@
  (function(exports){
    
 
-    
+    console.log("module_carto chargé")
 
     
     // Titi: Image BackGround aux dimensions du Canvas
@@ -101,7 +101,7 @@
     	socket.on("pilotGetNav", function(data) {
     		if (data = "getNavInfos") {
     			// pilotGetNav = true;
-    			navigation_datas.sendToPilote("map_parameters", dataMap);
+    			navigation_interface.sendToPilote("map_parameters", dataMap);
                 //navigation_datas.sendToPilote("map_parameters", DATAMAP);
     		}
     	});
@@ -156,11 +156,23 @@
     console.log('@ init(callback)');      
         
             
-
+            /*
             defferedDataMap = $.Deferred();
             defferedRobotInfo = $.Deferred();
 
             $.when(defferedDataMap, defferedRobotInfo).done(function(v1, v2) {
+                mapSize = resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
+                callback();
+            });
+            /**/
+
+
+            // On met le deffered en variable globale
+            // Pour le modifier ds une autre fonction
+            DEFFERED_DataMap = $.Deferred();
+            DEFFERED_RobotInfo = $.Deferred();
+
+            $.when(DEFFERED_DataMap, DEFFERED_RobotInfo).done(function(v1, v2) {
                 mapSize = resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
                 callback();
             });
@@ -197,7 +209,7 @@
                 if (fakeRobubox == true) simulateRobotMove();
                 else komcom.getRobotInfo();
 	            // si Pilote connecté: envoi datas carto Robot >> Pilote activé
-	            if ( isOnePilot == true) navigation_datas.sendToPilote("robot_localization", robotInfo);
+	            if ( isOnePilot == true) navigation_interface.sendToPilote("robot_localization", robotInfo);
                 reDraw();
 	        }, refreshDelay); // 600
     	

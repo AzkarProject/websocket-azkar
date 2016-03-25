@@ -33,9 +33,10 @@
 *
 */
 
+// Todo: Passer en mode export
+console.log("module_fake_robubox chargé")
 
-
-fakeRobubox = true;
+fakeRobubox = false;
 
 function getFakeDataMap() {
 	var dataMap = {
@@ -70,6 +71,8 @@ function getFakeRobotInfo() {
     }
     return robotInfo;
 }
+
+
 
 function getFakeBattery() {
     var battery ={

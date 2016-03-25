@@ -172,6 +172,12 @@ sessionConnection = "Pending";
 // Tableau des connexions WebRTC (pour les 1toN et NtoN)
 peerCnxCollection = {};
 
+// Globale: flag de connexion webRTC active 
+// Pour gérer les conflits entre les commandes déco/reco
+// issues de l'interface et celles issues du Gamepad
+
+IS_WebRTC_Connected = false;
+
 // shims!
 PeerConnection = window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
 SessionDescription = window.mozRTCSessionDescription || window.RTCSessionDescription;
@@ -179,39 +185,12 @@ IceCandidate = window.mozRTCIceCandidate || window.RTCIceCandidate;
 navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || navigator.webkitGetUserMedia;
 
 
- /*// Test rfc5766 avec authentification
- TURN_username = "azkar";
- TURN_credential = "azkar";
- // server.iceServers.push({urls: "turn:134.59.130.142:3478",credential: "azkar" ,username: "azkar"}); // rfc5766 sur VM2
-    
- // Si on est l'apellant (pilote)
- if (type == "pilote-appelant") {
-    	TURN_username = "pilote";
-    	TURN_credential = "azkar";
- // Sinon si on est l'apellé (Robot)
- } else if (type == "robot-appelé") {
-    	TURN_username = "robot";
-    	TURN_credential = "azkar";
- }
-
-
-// options pour l'objet PeerConnection
-server = {'iceServers': []}; // OK sur même réseau...
-server.iceServers.push({ url: 'stun:stun.l.google.com:19302'});
-// Celui là fonctionnait encore le 23/11/2015
-server.iceServers.push({url: "turn:turn.anyfirewall.com:443?transport=tcp",credential: "webrtc",username: "webrtc"});
-
-
-server.iceServers.push({urls: "turn:134.59.130.142:3478",credential: TURN_credential ,username: TURN_username}); // rfc5766 
-/**/
-
 
 server = appSettings.setIceServers();
-
-// On charge a la volée le fichier de config
-// tools.loadjscssfile("common_app_cnrs.js", "js");
+// VErsion locale des paramètres. 
+// A supprimer ds la version livrable...
 server = appCNRS.setIceServers(type);
-/**/
+
 
 
 // corection du bug createDataChannel à partir de Chrome M46
@@ -258,9 +237,9 @@ piloteConstraints = {
 
 
 
+
+
  // ------ fonctions de présignaling --------------------------------
-
-
 
 
 // Récupération de la liste des devices (Version2)
@@ -347,6 +326,7 @@ function getAllAudioVideoDevices(successCallback, failureCallback) {
                 device.id = device.deviceId;
             }
 
+            // Label jamais renseigné sous Firefox... 
             /*
             if (!device.label) {
                 device.label = 'Please invoke getUserMedia once.';
@@ -425,7 +405,7 @@ function populateListDevices(result,sourceDevices) {
     
     if (sourceDevices == "remote") {
        
-        console.log ('XXXXXXXXXXXXXXXXXX')
+        // console.log ('XXXXXXXXXXXXXXXXXX')
         if (result) {
             console.log ("result:")
             console.log (result)
@@ -517,23 +497,6 @@ function populateFormDevices(device,sourceDevices) {
 
     }
 }
-
-/*// Récupération de la liste des devices (Version2)
-// Voir: https://www.chromestatus.com/feature/4765305641369600
-// MediaStreamTrack.getSources(gotSources) utilisée jusqu'a présent n'est implémentée que dans Chrome.
-// La page https://developers.google.com/web/updates/2015/10/media-devices indique qu'à partir de la version 47
-// sont implémentées de nouvelles méthodes crossBrowser: navigator.mediaDevices.enumerateDevices().
-// Je passe donc par une méthode passerelle getAllAudioVideoDevices() qui switche entre les 2 méthodes
-// selon les implémentation du navigateur.
-var origin = "local"; // On prévient la fonction apellée que la source sera locale
-
-getAllAudioVideoDevices(function(result) {
-    populateListDevices(result,origin);
-}, function(error) {
-    if (error == null) error = "erreur getAllAudioVideoDevices()";
-    alert(error);
-});
-/**/
 
 
 // IHM Pilote
@@ -636,16 +599,6 @@ function getLocalConstraint() {
     if (type == "pilote-appelant") camDef = parameters.camDefPilote;
     else if (type == "robot-appelé") camDef = parameters.camDefRobot;
     var maxCamWidth = 100, maxCamHeight = 100;
-    /*
-    if (camDef == 'VLD') {maxCamWidth = 100; maxCamHeight = 52} // 16/9
-    else if (camDef == 'LD') {maxCamWidth = 160; maxCamHeight = 88} // 16/9
-    else if (camDef == 'MD') {maxCamWidth = 320; maxCamHeight = 180} // 16/9 
-    else if (camDef == 'HD') {maxCamWidth = 640; maxCamHeight = 360} // 16/9
-    else if (camDef == 'VHD') {maxCamWidth = 640; maxCamHeight = 480} // 4/3..
-    else if (camDef == '720p') {maxCamWidth = 1280; maxCamHeight = 720} // 16/9..
-    else if (camDef == '1080p') {maxCamWidth = 1920; maxCamHeight = 1200} // 16/9..
-    /**/
-
 
     if (camDef == 'VLD') {maxCamWidth = 100; maxCamHeight = 52}
     else if (camDef == '144p') {maxCamWidth = 196; maxCamHeight = 144}
@@ -680,7 +633,6 @@ function getLocalConstraint() {
         }
     }
 
-    /**/
     
     return localConstraints;
 } 
@@ -732,14 +684,6 @@ socket.on('selectedRemoteDevices', function(data) {
 
         // On affecte les paramètres de settings
         parameters = data.appSettings;
-        // alert("Parameters: " +data.appSettings.lRview);
-
-        // console.log(data); 
-        //var debugg = tools.stringObjectDump(data,"selectedRemoteDevice")
-        //console.log(debugg);
-        //console.log(data);
-
-
 
         var infoMicro = "<strong> Micro Activé </strong>"
         var infoCam = "<strong> Caméra Activée </strong>"
@@ -748,20 +692,6 @@ socket.on('selectedRemoteDevices', function(data) {
 
         // On lance l'initlocalmedia
         initLocalMedia(peerCnx1to1);
-
-
-        // On rebalance au pilote-appelant le top-départ pour 
-        // qu'il lance un intilocalMedia de son coté....
-        // socket.emit("readyForSignaling","ready"); // ancienne version
-
-        // Fix Bug renégociation > On vérifie que c'est une renégo et
-        // si c'est le cas, on attend d'avoir l'état du statut webRTC ps iceConnexionXtate à "new"
-        // pour lancer le message de fin de pré-signaling . A faire ds l'écouteur idoine...
-        /*socket.emit('readyForSignaling', {
-            objUser: localObjUser,
-            message: "ready"
-        }); // Version objet
-/**/
     }
 })
 
@@ -786,7 +716,7 @@ socket.on("robotCnxStatus", function(data) {
     if (type == "pilote-appelant") {
         
         // On force la mise à jour de la liste utilisateurs coté Pilote
-        updateListUsers ();
+        usersConnection.updateListUsers ();
 
         // Si le robot à une nouvelle connexion principale
         // on lance le processus préparatoire à une reconnexion
@@ -817,22 +747,10 @@ socket.on('updateUsers', function(data) {
         // isOnePilot = tools.searchInObjects(users, "typeClient", "Pilote", "boolean");
         isOnePilot = tools.searchInObjects(users.listUsers, "typeClient", "Pilote", "boolean");
         
-        // console.log ("isOnePilot ="+ isOnePilot);
-        
-        /*
-        socket.emit('remoteListDevices', {
-            objUser: localObjUser,
-            listeDevices: listeLocalSources
-        });
-        /**/
-
-        
+       
         if (tools.isEmpty(listeLocalSources) == false) {
             socket.emit('remoteListDevices', {listeDevices: exportMediaDevices});
         }
-        /**/
-
-
         
         // On envoie ensuite son etat de connexion - Version 1to1
         if ( ! peerCnxCollection[peerCnx1to1] ) robotCnxStatus = 'new'; 
@@ -848,15 +766,12 @@ socket.on('updateUsers', function(data) {
         if ( ! peerCnxCollection[peerCnx1to1] ) piloteCnxStatus = 'new'; 
         else piloteCnxStatus = peerCnxCollection[peerCnx1to1].iceConnectionState; 
         socket.emit("piloteCnxStatus", piloteCnxStatus);
-        // console.log (users);
-        updateListUsers(); // Appel à la fonction du module manageVisitors
+        usersConnection.updateListUsers(); // Appel à la fonction du module manageVisitors
     }
 })
 
 // Reception du niveau de la batterie
 socket.on("battery_level", function(data) {
-    // console.log('onBattery_level >>');
-   // console.log('objet Batterie percentage ' + data.percentage);
     ihm.refreshJaugeBattery(data.percentage) // redessiner la jauge au niveau de l'ihm pilote
 });
 
