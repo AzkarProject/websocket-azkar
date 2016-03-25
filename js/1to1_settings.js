@@ -210,7 +210,7 @@ server = appSettings.setIceServers();
 
 // On charge a la volée le fichier de config
 // tools.loadjscssfile("common_app_cnrs.js", "js");
-server = appCNRS.setIceServers();
+server = appCNRS.setIceServers(type);
 /**/
 
 
