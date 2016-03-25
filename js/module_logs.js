@@ -39,6 +39,9 @@
 (function(view) {
 "use strict";
 
+// Todo: Passer en mode exports
+console.log("module_logs chargé");
+
 var document = view.document;
 var $ = function(id) {return document.getElementById(id);}
 var session = view.sessionStorage;

@@ -63,6 +63,20 @@ exports.appServerPort = function(){
 	return 80;
 }
 
+
+exports.setIceServers = function() {
+	// options pour l'objet PeerConnection
+	var server = {'iceServers': []}; // OK sur même réseau...
+	server.iceServers.push({ url: 'stun:stun.l.google.com:19302'});
+	// Celui là fonctionnait encore le 23/11/2015
+	server.iceServers.push({url: "turn:turn.anyfirewall.com:443?transport=tcp",credential: "webrtc",username: "webrtc"});
+	return server
+}
+
+
+
+
+
 exports.isRobubox = function(){
     var user = getCookie("username");
     if (user == "Thaby") return true; 

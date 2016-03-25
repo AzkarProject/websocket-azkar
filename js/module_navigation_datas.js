@@ -35,6 +35,9 @@
 
 (function(exports){
 
+// todo: rename module_navigation_interface
+console.log("module_navigation_datas chargé");
+
 exports.sendToRobot = function (rpcMethodName, values,controlDevice, driveCommand){     
 
 

@@ -1,3 +1,5 @@
+// 1to1_init_webrtc
+
 /*
 *
 * Copyright © CNRS (Laboratoire I3S) / université de Nice
@@ -177,7 +179,7 @@ IceCandidate = window.mozRTCIceCandidate || window.RTCIceCandidate;
 navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || navigator.webkitGetUserMedia;
 
 
- // Test rfc5766 avec authentification
+ /*// Test rfc5766 avec authentification
  TURN_username = "azkar";
  TURN_credential = "azkar";
  // server.iceServers.push({urls: "turn:134.59.130.142:3478",credential: "azkar" ,username: "azkar"}); // rfc5766 sur VM2
@@ -196,8 +198,21 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || 
 // options pour l'objet PeerConnection
 server = {'iceServers': []}; // OK sur même réseau...
 server.iceServers.push({ url: 'stun:stun.l.google.com:19302'});
+// Celui là fonctionnait encore le 23/11/2015
+server.iceServers.push({url: "turn:turn.anyfirewall.com:443?transport=tcp",credential: "webrtc",username: "webrtc"});
+
 
 server.iceServers.push({urls: "turn:134.59.130.142:3478",credential: TURN_credential ,username: TURN_username}); // rfc5766 
+/**/
+
+
+server = appSettings.setIceServers();
+
+// On charge a la volée le fichier de config
+// tools.loadjscssfile("common_app_cnrs.js", "js");
+server = appCNRS.setIceServers();
+/**/
+
 
 // corection du bug createDataChannel à partir de Chrome M46
 options = { optional: [{DtlsSrtpKeyAgreement: true }]};

@@ -36,6 +36,8 @@
 (function(exports){
 
 	
+	console.log("module_ihm chargé");
+
 	// Affichage par défaut. 
 	$('#HudFullScreen').hide();
 

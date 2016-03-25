@@ -33,6 +33,8 @@
 *
 */
 
+// Todo: passer en mode exports...
+console.log("module_manage_connections chargé")
 
 // Globale: flag de connexion webRTC active 
 // Pour gérer les conflits entre les commandes déco/reco

@@ -33,6 +33,9 @@
 *
 */
 
+// Todo: Passer en mode exports ???
+console.log ("module_gamepad chargé");
+
 var gamepad;
 var buttonStatusDiv;
 var analogicValueProgressBar;

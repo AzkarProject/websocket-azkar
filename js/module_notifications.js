@@ -36,6 +36,7 @@
 
 (function(exports){
 
+console.log("module_notifications chargé");
 // Cool Notifications 
 // source: http://red-team-design.com/cool-notification-messages-with-css3-jquery/
 
