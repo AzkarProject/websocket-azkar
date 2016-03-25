@@ -64,7 +64,7 @@
 
 	exports.setIceServers = function(type) {
 		 
-		// Test rfc5766 avec authentification
+		// rfc5766 avec authentification
 		TURN_username = "azkar";
 		TURN_credential = "azkar";
 		    
