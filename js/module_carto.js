@@ -40,8 +40,8 @@
     
     // Titi: Image BackGround aux dimensions du Canvas
     var backGroundMap = new Image();
-    backGroundMap.src = '/images/mapOriginale.png'; // Version carte I3S
-    // backGroundMap.src = '/images/mapRobosoft.png'; // Version carte Robosoft
+    backGroundMap.src = appSettings.getMapSource(); 
+    if (typeof appCNRS != 'undefined') backGroundMap.src = appCNRS.getMapSource();
 
     // Titi:  délai de rafraichissement carto en ms
     var refreshDelay = 100; // 100ms (600ms ca saccade un peu) 

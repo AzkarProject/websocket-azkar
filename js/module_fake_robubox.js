@@ -36,7 +36,11 @@
 // Todo: Passer en mode export
 console.log("module_fake_robubox chargé")
 
-fakeRobubox = false;
+//fakeRobubox = true;
+
+fakeRobubox = appSettings.isFakeRobubox();
+if (typeof appCNRS != 'undefined') fakeRobubox = appCNRS.isFakeRobubox();
+
 
 function getFakeDataMap() {
 	var dataMap = {

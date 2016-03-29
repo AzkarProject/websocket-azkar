@@ -1,6 +1,3 @@
-// 1to1_init_websocket
-
-
 /*
 *
 * Copyright © CNRS (Laboratoire I3S) / université de Nice
@@ -122,8 +119,9 @@ socket.on("disconnected", function(data) {
 socket.on('message2', function(data) { 
     var dateR = tools.humanDateER('R');
     var msg = dateR+' '+data.message;
-    ihm.insertWsMessage(data.objUser,msg);
-    var message = data.objUser.pseudo+": "+data.message;
+    //ihm.insertWsMessage(data.objUser,msg);
+    ihm.insertWsMessage(data.objUser,data.message);
+    var message = 'Message from ' + data.objUser.pseudo+": "+data.message;
     notifications.writeMessage ("info","Chat WebSocket",message,3000)
 })
 
@@ -137,23 +135,6 @@ socket.on('service2', function(data) {
     notifications.writeMessage ("info","Message de service WebSocket",msg,3000)
 })
 
-
-
-// ----------- Méthodes jquery d'affichage du tchat WS ------------------------------
-
-// Lorsqu'on envoie le formulaire, on transmet le message et on l'affiche sur la page
-// Bloc de tchat principal des IHM Pilote et Robot
-$('#formulaire_chat_websoket').submit(function () {
-    var message = $('#message').val();
-    // On ajoute la dateE au message
-    //var dateE = '[E-'+tools.dateNowInMs()+']';
-    //message = dateE + ' '+message;
-    socket.emit('message2', {objUser:localObjUser,message:message}); // Transmet le message aux autres
-    // insereMessage3(localObjUser, message); // Affiche le message aussi sur notre page
-    ihm.insertWsMessage(localObjUser, message);
-    $('#message').val('').focus(); // Vide la zone de Chat et remet le focus dessus
-    return false; // Permet de bloquer l'envoi "classique" du formulaire
-});
 
 
 // ----------------------------------------------------------------------------------

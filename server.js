@@ -44,21 +44,26 @@ var appSettings = require('./js/common_app_settings'); // paramètres de configu
 var os = require("os");
 hostName = os.hostname();
 
-
+// Configuration de l'Ip et du port de l'application
+ipaddress = appSettings.appServerIp();
+port = appSettings.appServerPort();
 
 // Adresse de redirection pour les connexions refusées
 indexUrl = null;
-ipaddress = appSettings.appServerIp();
-port = appSettings.appServerPort();
 indexUrl = "https://" + ipaddress + ":" + port; // Par défaut...
 
+// Si présence du fichier de config propre au labo: Overwrinting des settings,
+// >> différentes IP serveurs selon le nom des machines (VM1, Vm2, Livebox ou local Adhoc) 
+var appCNRS;
+try {
+   appCNRS = require('./js/common_app_cnrs'); 
+   appCNRS.setLaboServers();
+   console.log("Configuration Labo I3S")
+}
+catch (e) {
+   console.log("Configuration Standard") 
 
-// Lignes propres au labo I3S
-// Ne pas mettre ds les livrables...
-// Différentes IP serveurs selon les machines (VM1, Vm2, Livebox ou local Adhoc) 
-var appCNRS = require('./js/common_app_cnrs'); // paramètres de configuration propre au labo
-appCNRS.setLaboServers();
-
+}
 
 console.log("***********************************");
 console.log('');

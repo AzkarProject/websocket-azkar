@@ -53,7 +53,7 @@ exports.test = function(){
     var m = theDate.getMinutes();
     var s = theDate.getSeconds();
     var ms = theDate.getMilliseconds();
-    return '['+flag+'-'+h+":"+m+":"+s+":"+ms+']';
+    return '('+h+":"+m+":"+s+":"+ms+')';
     }   
 
 

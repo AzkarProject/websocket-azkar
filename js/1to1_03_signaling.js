@@ -86,11 +86,12 @@ function initLocalMedia(peerCnxId) {
         
         var showLocalVideo = true;
         if (type == "pilote-appelant") {
-            if (parameters.lPview != 'show') showLocalVideo = false;
+            //if (parameters.lPview != 'show') showLocalVideo = false;            
+            if (parameters.piloteLocalView != 'show') showLocalVideo = false;
         } else if (type == "robot-appelé") {
-            // alert("local view: " +parameters.lRview);
-            if (parameters.lRview != 'show') showLocalVideo = false;
-        	// On prévient l'autre pair qu'il peut lui aussi ouvrir sa caméra
+            //if (parameters.lRview != 'show') showLocalVideo = false;
+        	if (parameters.robotLocalView != 'show') showLocalVideo = false;
+            // On prévient l'autre pair qu'il peut lui aussi ouvrir sa caméra
             socket.emit('readyForSignaling', {
 	            objUser: localObjUser,
 	            message: "ready"
@@ -154,14 +155,14 @@ function connect(peerCnxId) {
         remoteStream = e.stream;
 
         if (type == "pilote-appelant") {
-            if (parameters.rPview == 'hide') showRemoteVideo = false;
-            // showRemoteVideo = false;
+            // if (parameters.rPview == 'hide') showRemoteVideo = false;
+            if (parameters.piloteRemoteView == 'hide') showRemoteVideo = false;
 
-            // Add version 1toN
-            /*if (originStream != "Visiteur") remoteStream = e.stream;*/
         
         } else if (type == "robot-appelé") {
-            if (parameters.rRView == 'hide') showRemoteVideo = false;
+            // if (parameters.rRView == 'hide') showRemoteVideo = false;
+            if (parameters.robotRemoteView == 'hide') showRemoteVideo = false;
+
         }
         
         // Version 1to1
@@ -191,7 +192,7 @@ function connect(peerCnxId) {
         if ( peerCnxCollection[peerCnxId].iceConnectionState == 'new') isRenegociate = false; 
 
         // Si on est dans la peerConnection principale (Pilote <> Robot)
-        if (peerCnxId == peerCnx1to1) {
+        //if (peerCnxId == peerCnx1to1) {
 
             // On informe l'autre pair de son statut de connexion   
             if (type == 'pilote-appelant') {
@@ -221,7 +222,7 @@ function connect(peerCnxId) {
                 onDisconnect(peerCnxId);
             }
 
-        } // endif connexion principale (Pilote <> Robot)
+        //} // endif connexion principale (Pilote <> Robot)
 
     };
 

@@ -35,6 +35,12 @@
 
 (function(exports){
 
+	// Pour tester si le ficher est présent 
+	// dans la distribution...
+	exports.isExist = function(){
+		return true;
+	}
+
 	exports.setLaboServers = function(){
 		
 		dyDns = 'azkar.ddns.net'; // Adresse no-Ip pointant sur Livebox domicile
@@ -86,6 +92,18 @@
 		// rfc5766  sur VM1 (Cluster SPARKS)
 		server.iceServers.push({urls: "turn:134.59.130.142:3478",credential: TURN_credential ,username: TURN_username}); 
 		return server
+	}
+
+
+	  
+	exports.isFakeRobubox = function() {
+		var fakeRobubox = false;
+		return fakeRobubox;
+	}
+
+	exports.getMapSource = function() {
+		var mapSource = '/images/mapOriginale.png'; // Carte I3S V2
+		return mapSource
 	}
 
 

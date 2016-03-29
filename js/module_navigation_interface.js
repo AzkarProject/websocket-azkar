@@ -59,10 +59,8 @@ exports.sendToRobot = function (rpcMethodName, values,controlDevice, driveComman
             driveCommand.driveSettings = rpcMethodName;
             driveCommand.channel = parameters.navCh;
         }
-        //if (isBenchmark == true )  driveCommand.dateA = Date.now();
-        //if (isBenchmark == true )  driveCommand.dateA = Date.now(ts.now());
-        //if (appSettings.isBenchmark() == true ) driveCommand.dateA = ServerDate.now();
         // console.log("@ sendToRobot: "+driveCommand.dateA);
+        
         // envoi des valeurs au serveur par websocket
         if (parameters.navCh == 'webSocket') socket.emit("piloteOrder", driveCommand);
         // envoi des valeurs au serveur par webRtc

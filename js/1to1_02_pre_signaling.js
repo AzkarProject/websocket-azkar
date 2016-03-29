@@ -49,34 +49,26 @@ onMove = false; // Flag > Si un mouvement est en cours
 //Pour la détection du dernier mouvement (homme mort)...
 lastMoveTimeStamp = 0;
 
+
 // Settings Default
 navSys = 'Robubox';
 navCh = 'webSocket';
-lPview = 'show';
-lRview = 'show';
-rPview = 'high';
-rRView = 'show';
-pStoR = 'open';
-cartoView = 'hide';
-cartoChannel = 'webSocket';
-camDefRobot = 'HD',
-camDefPilote = 'HD';
+piloteLocalView = 'show';
+robotLocalView = 'show';
+piloteRemoteView = 'show';
+robotRemoteView = 'show';
 
 
 // Objet paramètres
 parameters = {
     navSys: navSys,
     navCh: navCh,
-    lPview: lPview,
-    lRview: lRview,
-    rPview: rPview,
-    rRView: rRView,
-    pStoR: pStoR,
-    cartoView: cartoView,
-    cartoChannel: cartoChannel,
-    camDefRobot: camDefRobot,
-    camDefPilote: camDefPilote
+    piloteLocalView: piloteLocalView,
+    robotLocalView:  robotLocalView,
+    piloteRemoteView: piloteRemoteView,
+    robotRemoteView: robotRemoteView
 };
+
 
 
 // sélecteurs de micros et caméras
@@ -120,9 +112,6 @@ origin = null;
 
 // flag de connexion
 isStarted = false;
-
-
-// 
 
 
 // élements videos
@@ -185,13 +174,8 @@ IceCandidate = window.mozRTCIceCandidate || window.RTCIceCandidate;
 navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || navigator.webkitGetUserMedia;
 
 
-
 server = appSettings.setIceServers();
-// VErsion locale des paramètres. 
-// A supprimer ds la version livrable...
-server = appCNRS.setIceServers(type);
-
-
+if (typeof appCNRS != 'undefined') server = appCNRS.setIceServers(type);
 
 // corection du bug createDataChannel à partir de Chrome M46
 options = { optional: [{DtlsSrtpKeyAgreement: true }]};
@@ -239,7 +223,7 @@ piloteConstraints = {
 
 
 
- // ------ fonctions de présignaling --------------------------------
+ // ------ fonctions de la phase présignaling --------------------------------
 
 
 // Récupération de la liste des devices (Version2)
@@ -266,7 +250,6 @@ function getAllAudioVideoDevices(successCallback, failureCallback) {
     if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
         
         // Firefox 38+, Microsoft Edge, and Chrome 44+ seems having support of enumerateDevices
-        //alert ("COOL");
         navigator.enumerateDevices = function(callback) {
             navigator.mediaDevices.enumerateDevices().then(callback);
         };
@@ -372,6 +355,7 @@ function getAllAudioVideoDevices(successCallback, failureCallback) {
     });
 }
 
+
 // Affectation et traitement des résultats générées par getAllAudioVideoDevices()
 function populateListDevices(result,sourceDevices) {
     console.log("populateListDevices()");
@@ -401,17 +385,8 @@ function populateListDevices(result,sourceDevices) {
     }
 
     
-    
-    
     if (sourceDevices == "remote") {
        
-        // console.log ('XXXXXXXXXXXXXXXXXX')
-        if (result) {
-            console.log ("result:")
-            console.log (result)
-
-        }
-
         if (result.allMdiaDevices) {
             result.allMdiaDevices.forEach(function(sourceInfo) {
                 populateFormDevices(sourceInfo,sourceDevices)
@@ -457,16 +432,15 @@ function populateListDevices(result,sourceDevices) {
 
 }
 
+
 // Génération des listes de devices pour les formulaires
 function populateFormDevices(device,sourceDevices) {
 
     console.log("populateFormDevices()");
-    // console.log(device);
 
     var option = document.createElement('option');
     option.id = device.id;
     option.value = device.id;
-    // console.log (option)
 
     if (device.kind === 'audioinput' || device.kind === 'audio') {
 
@@ -498,93 +472,6 @@ function populateFormDevices(device,sourceDevices) {
     }
 }
 
-
-// IHM Pilote
-// Dévérouillage formulaires selection caméras Robot
-// Animation d'invite
-function activeManageDevices() {
-
-     console.log("@ activeManageDevices()");
-
-    // On active les sélecteurs de listes
-    remote_ButtonDevices.disabled = false;
-    remote_AudioSelect.disabled = false;
-    remote_VideoSelect.disabled = false;
-
-    // Une petite animation CSS pour visualiser l'invite de formulaire...
-    ihm.manageSubmitForm("robotDevices","activate");
-}
-
-// IHM Pilote:
-// Traitement du formulaire de selection caméras du robot
-// Dévérouillage du formulaire de selection des devices du pilote 
-// et invite lancement processus connexion 1to1 pilote/robot
-function remoteManageDevices() {
-
-    console.log("@ remoteManageDevices()");
-    // Activation
-    if (type == "pilote-appelant") {
-        local_ButtonDevices.disabled = false;
-    }
-    local_AudioSelect.disabled = false;
-    local_VideoSelect.disabled = false;
-
-    // Invite de formulaire...
-    ihm.manageSubmitForm("piloteDevices","activate");
-}
-
-// IHM Pilote:
-// Au submit du bouton d'ouverture de connexion -> 
-// > Désactivation des formulaires remote et local de selection des devices
-// > Animation CSS de désactivation
-// > Envoi au robot des settings de benchmarks
-// > Envoi au Robot la liste des devices à activer.
-function localManageDevices() {
-
-    console.log("@ localManageDevices()");
-
-    IS_WebRTC_Connected = true;
-
-    if (type == "pilote-appelant") {
-        local_ButtonDevices.disabled = true;
-    }
-
-    local_AudioSelect.disabled = true;
-    local_VideoSelect.disabled = true;
-
-    remote_ButtonDevices.disabled = true;
-    remote_AudioSelect.disabled = true;
-    remote_VideoSelect.disabled = true;
-
-    // Animation CSS de désactivation du formulaire devices robot...
-    ihm.manageSubmitForm("robotDevices","deactivate");
-
-    // On balance coté robot les devices sélectionnés...
-    // ... Et les Settings de canal/caméra du benchmarking...
-    if (type == "pilote-appelant") {
-        var selectAudio = remote_AudioSelect.value;
-        var selectVideo = remote_VideoSelect.value;
-        var selectList = {
-            selectAudio, selectVideo
-        };
-        
-        if (type == "pilote-appelant" && proto == "1to1") {
-            // Récupérations sélections définition caméras
-            parameters.camDefRobot = robot_camdef_select.value;
-            parameters.camDefPilote = pilot_camdef_select.value;
-        }
-
-        var appSettings = parameters;
-        socket.emit('selectedRemoteDevices', {
-            objUser: localObjUser,
-            listeDevices: selectList,
-            appSettings: appSettings
-        }); // Version Objet
-
-        // Animation CSS de désactivation du formulaire devices pilote...
-        ihm.manageSubmitForm("piloteDevices","deactivate");
-    }
-}
 
 // IHM Pilote & Robot: 
 // Construction des constraint locale (affectation des devices sélectionnées)
@@ -623,7 +510,7 @@ function getLocalConstraint() {
         }
     /**/
 
-    // Nouvelle version. Ne passe plus si Chrome > V 46   
+    // Nouvelle version. Ne passe plus si Chrome en dessous de la V 46   
     localConstraints = { 
         audio: { optional: [{sourceId: audioSource}] },
         video: {
@@ -636,9 +523,6 @@ function getLocalConstraint() {
     
     return localConstraints;
 } 
-
-
-
 
 
 
@@ -762,11 +646,13 @@ socket.on('updateUsers', function(data) {
     // si on est le pilote, 
     // ... En cas de besoin...
     if (type == "pilote-appelant") {
+        if (usersConnection) usersConnection.updateListUsers(); // Appel à la fonction du module manageVisitors
+        else console.log("!! Module userconnection pas encore chargé");
         // on met à jour son status de connexion
         if ( ! peerCnxCollection[peerCnx1to1] ) piloteCnxStatus = 'new'; 
         else piloteCnxStatus = peerCnxCollection[peerCnx1to1].iceConnectionState; 
         socket.emit("piloteCnxStatus", piloteCnxStatus);
-        usersConnection.updateListUsers(); // Appel à la fonction du module manageVisitors
+
     }
 })
 

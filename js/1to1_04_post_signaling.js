@@ -148,6 +148,9 @@ function stopAndStart(peerCnxId) {
     input_chat_WebRTC.disabled = true;
     input_chat_WebRTC.placeholder = "RTCDataChannel close";
     env_msg_WebRTC.disabled = true;
+    // Rétablissement du canal par défaut pour les commande Drive (websocket)
+    // et désactivation du bouton radio de select du canal webRTC
+    if (type == "pilote-appelant") raZNavChannel(); 
 
     peerCnxCollection[peerCnxId] = new PeerConnection(server, options);
     
@@ -169,29 +172,32 @@ function bindEvents() {
         input_chat_WebRTC.placeholder = "RTCDataChannel is Open !";
         input_chat_WebRTC.disabled = false;
         env_msg_WebRTC.disabled = false;
-        //isStarted = true;
-        //console.log("isStarted = "+ isStarted);
+        // ouverture du formulaire de selection  de canal webRTC/Websocket pour kes commandes drive
+        if (type == "pilote-appelant")  setNavChannelform("open"); 
+
     };
 
     // écouteur de reception message
     channel.onmessage = function(e) {
-        var dateR = Date.now();
+        //var dateR = Date.now();
+        var dateR = tools.humanDateER('R');
         // si c'est u message string
         if (tools.isJson(e.data) == false) {
-            $(chatlog).prepend(dateR + ' ' + e.data + "\n");
+            //$(chatlog).prepend(dateR + ' ' + e.data + "\n");
+            $(chatlog).prepend('Message from ' + e.data + "\n");
             notifications.writeMessage ("info","Chat WebRTC",e.data,3000)
         }
         
-        // sinon si c'est un objet Json 
+        // sinon si c'est un objet Json (donc un objet de de type commande)
         else if (tools.isJson(e.data) == true || type == "robot-appelé"){
             var cmd = e.data;
             cmd = JSON.parse(cmd);
+            
             // S'il existe une propriété "command" (commande via webRTC))
             if (cmd.command) {
                 
                 // Affiche la trace de la commande dans le chatlog webRTC
-                // var delta = dateR-cmd.dateE;
-                // $(chatlog).prepend('[' +delta+' ms] ' + cmd.command + "\n");
+                // $(chatlog).prepend(dateR+' '+cmd.command + "\n");
                 
                 // Envoi de la commande à la Robubox...
                 if (cmd.command == "onDrive") {
@@ -212,11 +218,6 @@ function bindEvents() {
                     komcom.sendDrive(cmd);
                 }
                 
-                /*
-                else if (cmd.command == "onStep") {
-                    komcom.sendStep(cmd.typeMove,cmd.distance,cmd.MaxSpeed) ;
-                }
-                /**/
             }
         }
     };
@@ -239,9 +240,9 @@ function sendCommand(commandToSend) {
     console.log ("@ sendCommand("+commandToSend.command+")");
 
     // Affiche trace de la commande dans le chatlog webRTC local
-    //var dateE = Date.now()
+    var dateE = tools.humanDateER('E');
     //commandToSend.dateE = dateE;
-    // $(chatlog).prepend(commandToSend.dateA + " SEND "+commandToSend.command + "\n");
+    $(chatlog).prepend(dateE+" SEND "+commandToSend.command + "\n");
     
     // sérialisation et envoi de la commande au robot via WebRTC
     commandToSend = JSON.stringify(commandToSend);
@@ -249,7 +250,7 @@ function sendCommand(commandToSend) {
 }
 
 
-// Bouton d'envoi du formulaire de chat WebRTC
+/*// Robot & pilote Bouton d'envoi du formulaire de chat WebRTC
 $('#formulaire_chat_webRTC').submit(function() {
     var message = $('#send_chat_WebRTC').val() + '\n';
     channel.send(msg);
@@ -257,7 +258,7 @@ $('#formulaire_chat_webRTC').submit(function() {
     $('#send_chat_WebRTC').val('').focus(); // Vide la zone de Chat et remet le focus dessus
     return false; // Permet de bloquer l'envoi "classique" du formulaire
 });
-
+/**/
 
 
 
@@ -315,12 +316,11 @@ socket.on("piloteOrder", function(data) {
             // Flags homme mort
             onMove = true;
             lastMoveTimeStamp = Date.now(); // on met a jour le timestamp du dernier ordre de mouvement...
-            // if (appSettings.isBenchmark() == true ) lastMoveTimeStamp = ServerDate.now(); // date synchroserveur (V2 ServerDate.js)
-
-
             // Envoi commande Robubox
             // robubox.sendDrive(data.enable, data.aSpeed, data.lSpeed);
             komcom.sendDrive(data);
+       
+
         } else if (data.command == "onStop") {
             // Flags homme mort
             onMove = false;

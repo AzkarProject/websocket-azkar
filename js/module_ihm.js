@@ -42,14 +42,45 @@
 	$('#HudFullScreen').hide();
 
 
+	
+	// ----------- Méthodes jquery de saisie et d'affichage du tchat  ------------------------------
+
+	// WebSocket-------------------------------
+	// Lorsqu'on envoie le formulaire, on transmet le message et on l'affiche sur la page
+	// Bloc de tchat principal des IHM Pilote et Robot
+	$('#formulaire_chat_websoket').submit(function () {
+	    var message = $('#message').val();
+	    //var dateE = '[E-'+tools.dateNowInMs()+']';
+	    //message = dateE + ' '+message;
+	    socket.emit('message2', {objUser:localObjUser,message:message}); // envoi du lessage par WebSocket
+	    ihm.insertWsMessage(localObjUser, message, 'local'); // On l'affiche ds le textArea local
+	    $('#message').val('').focus(); // Vide la zone de Chat et remet le focus dessus
+	    return false; // Permet de bloquer l'envoi "classique" du formulaire
+	});
+
+
+
+	// WebRTC ------------------------------------
+	$('#formulaire_chat_webRTC').submit(function() {
+	    var message = $('#send_chat_WebRTC').val() + '\n';
+	    channel.send(msg); // envoi du message par webRTC
+	    message.value = "";
+	    $('#send_chat_WebRTC').val('').focus(); // Vide la zone de Chat et remet le focus dessus
+	    return false; // Permet de bloquer l'envoi "classique" du formulaire
+	});
+
 
 	// websocket: Affiche message ds le tchat
-	exports.insertWsMessage = function (objUser, message) {
+	exports.insertWsMessage = function (objUser, message, origine) {
 	   
 	    console.log(objUser);
 	    var text;
 	    if (objUser){
-	      text = '['+objUser.typeClient+'] '+ message;
+	      
+	      //text = '['+objUser.typeClient+'] '+ message;
+	      if (origine == 'local' ) text = objUser.pseudo+': '+ message;
+	      else text = 'Message from '+objUser.pseudo+': '+ message;
+	   
 	    } else {
 	      text = message;
 	    }
@@ -58,8 +89,6 @@
 	    
 	}
 
-
-	
 
 	// formulaires de selection caméras
 	exports.manageSubmitForm = function(cibleForm,status){
@@ -175,7 +204,7 @@
 
 
 
-    // On cache certtains blocs pour éviter la superposition. 
+    // On cache certains blocs pour éviter la superposition. 
 	// parce que modifier le z-index de la vidéo fullScreen ne fonctionne pas
 	exports.toggleModules = function(value) {
 		
@@ -291,7 +320,7 @@
 
 	// Ecouteur Full Screen d'évènement clavier (touche tab)
 	document.addEventListener("keydown", function(e) {
-	  console.log(e);
+	  // console.log(e);
 	  if (e.keyCode == 9) {
 	    ihm.toggleFullScreen();
 	    ihm.toggleHUD();

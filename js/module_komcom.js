@@ -45,7 +45,7 @@ exports.sendDrive = function (data){
     var aSpeed = data.aSpeed;
     var lSpeed = data.lSpeed;
     
-    
+        //console.log ("komcom.sendDrive()");
        
         // Flags Homme mort:  
         if (enable != false) {

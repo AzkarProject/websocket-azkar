@@ -37,42 +37,52 @@
 
 (function(exports){
 
-exports.appName = function(){
-    return 'AZKAR Project';
-};
+	exports.appName = function(){
+	    return 'AZKAR Project';
+	};
 
-exports.appBranch = function(){
-    return '1to1-refacto';
-};
+	exports.appBranch = function(){
+	    return '1to1-refacto';
+	};
 
-exports.appVersion = function(){
-    return '0.9.9.8.1';
-};
+	exports.appVersion = function(){
+	    return '1.5.0';
+	};
 
-exports.appCredit = function(){
-   // return 'Copyright © CNRS (Laboratoire I3S) / université de Nice';
-   return 'CeCILL-C © 2015-2016 - CNRS (Laboratoire I3S) / université de Nice';
+	exports.appCredit = function(){
+	   return '© 2015-2016 - CNRS (Laboratoire I3S) / université de Nice';
+	};
 
-};
+	exports.appServerIp = function(){
+		return "127.0.0.1";
+	}
 
-exports.appServerIp = function(){
-	return "127.0.0.1";
-}
-
-exports.appServerPort = function(){
-	return 80;
-}
+	exports.appServerPort = function(){
+		return 80;
+	}
 
 
-exports.setIceServers = function() {
-	// options pour l'objet PeerConnection
-	var server = {'iceServers': []}; // OK sur même réseau...
-	server.iceServers.push({ url: 'stun:stun.l.google.com:19302'});
-	// Celui là fonctionnait encore le 23/11/2015
-	server.iceServers.push({url: "turn:turn.anyfirewall.com:443?transport=tcp",credential: "webrtc",username: "webrtc"});
-	return server
-}
+	// Liste des serveurs STUN et TURN
+	exports.setIceServers = function() {
+		var server = {'iceServers': []};
+		server.iceServers.push({ url: 'stun:stun.l.google.com:19302'});
+		server.iceServers.push({url: "turn:turn.anyfirewall.com:443?transport=tcp",credential: "webrtc",username: "webrtc"});
+		return server
+	}
 
+	
+	// Si le client Robot n'est pas sur un Pc embarqué dans un Kompaï ou autre robot,
+	// on émule un pseudo système embarqué pour la cartographie, la jauge de batterie et les commandes drive...
+	exports.isFakeRobubox = function() {
+		var fakeRobubox = true;
+		return fakeRobubox;
+	}
 
+	// Chemin et nom de l'image de cartographie à utiliser
+	exports.getMapSource = function() {
+		// var mapSource = '/images/mapOriginale.png'; // Carte I3S V2
+    	var mapSource = '/images/mapRobosoft.png'; // Carte Robosoft
+		return mapSource
+	}
 
 })(typeof exports === 'undefined'? this['appSettings']={}: exports);

@@ -103,11 +103,11 @@
       // en passant par de l'AJAX plutôt que par websocket....
       $.get( "/getvar", function( data ) {
         hostName = data.hostName;
-        infoServerTxt = appSettings.appName()+": ";
+        infoServerTxt = "<i>"+appSettings.appName()+": ";
         infoServerTxt += appSettings.appBranch()+" - ";
-        infoServerTxt += " Version " + appSettings.appVersion() + " -";
-        infoServerTxt += " (Serveur: "+hostName+") ";
-        var infoCredit = " | " + appSettings.appCredit();
+        infoServerTxt += " Version " + appSettings.appVersion();
+        infoServerTxt += " (Serveur: "+hostName+") </i>";
+        var infoCredit = " <br/> " + appSettings.appCredit();
         if (hostName != "???" ) $('#zone_info_server').replaceWith(infoServerTxt+infoCredit);
       });
 
