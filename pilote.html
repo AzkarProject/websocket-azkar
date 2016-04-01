@@ -7,7 +7,6 @@
     <meta charset="utf-8" />
     <meta name='keywords' content='WebRTC, HTML5, JavaScript' />
     <meta name='description' content='WebRTC benchmarks base for AZKAR project' />
-    <!-- viewport sert a controler la mise en page sur les appareils mobiles -->
     <meta name='viewport' content='width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1'>
     <link rel="stylesheet" href="/css/style.css" />
     <script src='/js/lib/jquery-1.11.3.min.js'></script>
@@ -19,12 +18,6 @@
 
 <body class="ihmPilote" id="bodyPilot">
     
-
-    
-
-
-
-
         <strong><span id="zone_info_server">WebRTC AZKAR</span></strong>
         <hr/>
         
@@ -84,16 +77,13 @@
                     <strong> Robot Camera View</strong>
                     <hr/>
                     <div class = "videosContainer" id="remoteContainer" style="height:300px; width:300px;min-width:300px">
-                        <!--
-                        <video id='1to1_remoteVideo' class="embedRemoteVideo" autoplay muted controls="controls" style="height:380px; width:600px;min-width:600px"></video>
-                        -->
                         <video id='1to1_remoteVideo' class="embedRemoteVideo" autoplay muted controls="controls"></video>
                     </div>
                 </div>
             
 
                 <div id="robotCommands" class="insideFlex oneQuarterbox robot shadowBlack device" style="height:333px; z-index:-100">
-                <!--<div id="robotCommands" class="insideFlex oneQuarterbox robot shadowBlack device" >-->
+                    
                     <strong>Robot controls</strong> <span id="connect-notice"></span>
                     <hr/>
 
@@ -117,7 +107,7 @@
                     </div>
 
                     
-                    <!--<div id="drive-commands" style="display:none; text-align:center; height:150px"> -->   
+                      
                     <div id="drive-commands" style="display:none; text-align:center;">    
                         <b>Direction</b><br/>
                         <progress id="leftRight" value=1 max=2></progress><br><br/>
@@ -133,10 +123,9 @@
                        
                     </div>
                 
-                </div> <!-- id="robotCommands" -->
+                </div> 
 
 
-                <!--<div id="robotInfos" class="insideFlex robot oneThirdBox shadowBlack device floatLeft" style="height:60px;width:316px;min-width:316px">-->
                 <div id="robotInfos" class="insideFlex robot oneQuarterbox shadowBlack device floatLeft" style="height:60px">
                     
                     <strong> Robot Informations</strong>
@@ -321,8 +310,6 @@
     <script src="/js/common_app_settings.js"></script>
     <script src="/js/common_app_cnrs.js"></script>      
     
-    
-    
     <script src='/js/1to1_01_websocket.js'></script>
     <script src='/js/1to1_02_pre_signaling.js'></script>
     <script src='/js/1to1_03_signaling.js'></script>
@@ -336,7 +323,6 @@
     <script src='/js/module_carto.js'></script>
     <script src='/js/module_komremote.js'></script>
     <script src='/js/module_forms.js'></script>
-    
     <script src='/js/module_gamepad2.js'></script>
     <script src="/js/module_logs.js"></script>     
 

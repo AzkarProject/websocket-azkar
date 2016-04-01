@@ -116,7 +116,7 @@
 	  // animate at 60 frames/s
 	  // requestAnimationFrame(mainloop);
 	  // Note Titi: Désactivé pour être remplacé par un simple un simple setinterval de 100ms, 
-	  // ce qui est amplement suffisant et ne surcharge pas les envois websockets/webRTC 
+	  // ce qui est amplement suffisant et diminue le risque de surcharge des envois websockets/webRTC 
 	  
 	}
 

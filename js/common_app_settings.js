@@ -37,36 +37,51 @@
 
 (function(exports){
 
+	// Nom de l'application
 	exports.appName = function(){
 	    return 'AZKAR Project';
 	};
 
+	// Nom de la branche
 	exports.appBranch = function(){
 	    return '1to1-refacto';
 	};
 
+	// Numéro de version
 	exports.appVersion = function(){
 	    return '1.5.0';
 	};
 
+	// Crédits
 	exports.appCredit = function(){
 	   return '© 2015-2016 - CNRS (Laboratoire I3S) / université de Nice';
 	};
 
+	// Adresse Ip ou nom de domaine du serveur de l'application
+	// 127.0.0.1 ou localhost pour un test en local
+	// 192.168.173.1 pour un serveur local accessible sur réseau wifi AdHoc (windows) 
+	// Sinon l'adresse Ip  ou le nom de domaaine du serveur distant.
 	exports.appServerIp = function(){
 		return "127.0.0.1";
 	}
 
+	// N° de port: Idéalement 443 pour du https.
+	// Le 80 marche aussi partout, mais dans ce cas 
+	// il faut veiller a préciser le numéro de port dans l'url
+	// pour se connecter à l'application. 
 	exports.appServerPort = function(){
 		return 80;
 	}
 
 
 	// Liste des serveurs STUN et TURN
+	// Il est possible de mettre plusieurs serveurs STUN et TURN
+	// Toutefois, il est conseillé de ne mettre qu'un seul serveur TURN fonctionnel 
+	// pour diminuer les échanges de "candidates" superflus et raccourcir les délais de connexion/reconnexion. 
 	exports.setIceServers = function() {
 		var server = {'iceServers': []};
 		server.iceServers.push({ url: 'stun:stun.l.google.com:19302'});
-		server.iceServers.push({url: "turn:turn.anyfirewall.com:443?transport=tcp",credential: "webrtc",username: "webrtc"});
+		server.iceServers.push({ url: "turn:turn.anyfirewall.com:443?transport=tcp",credential: "webrtc",username: "webrtc"});
 		return server
 	}
 
@@ -80,9 +95,19 @@
 
 	// Chemin et nom de l'image de cartographie à utiliser
 	exports.getMapSource = function() {
-		// var mapSource = '/images/mapOriginale.png'; // Carte I3S V2
-    	var mapSource = '/images/mapRobosoft.png'; // Carte Robosoft
+		// var mapSource = '/images/mapLaboI3S.png'; // Carte locaux I3S
+    	var mapSource = '/images/mapRobosoft.png'; // Carte locaux Robosoft
 		return mapSource
+	}
+
+	exports.getPathKey = function() {
+		var key = './ssl/hacksparrow-key.pem';
+		return key
+	}
+
+	exports.getPathCert = function() {
+		var cert = './ssl/hacksparrow-cert.pem';
+		return cert
 	}
 
 })(typeof exports === 'undefined'? this['appSettings']={}: exports);

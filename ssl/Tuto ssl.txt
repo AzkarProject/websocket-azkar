@@ -1,4 +1,3 @@
-Note François:
 Pour enregistrer le certificat, ne pas oublier de préciser le Common-Name lors de la création.
 Ce Common name doit correspondre a l'URL du site demandé
 --------------------------------------------

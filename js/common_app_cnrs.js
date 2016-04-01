@@ -44,6 +44,9 @@
 	exports.setLaboServers = function(){
 		
 		dyDns = 'azkar.ddns.net'; // Adresse no-Ip pointant sur Livebox domicile
+		pathKey = './ssl/hacksparrow-key.pem';
+		pathName = './ssl/hacksparrow-cert.pem';
+
 		if (hostName == "azkar-Latitude-E4200") indexUrl = "http://" + dyDns; // Si machine derrière liveBox && noip
 
 		// Machines windows - I3S
@@ -102,9 +105,21 @@
 	}
 
 	exports.getMapSource = function() {
-		var mapSource = '/images/mapOriginale.png'; // Carte I3S V2
+		// var mapSource = '/images/mapRobosoft.png'; // Carte locaux Robosoft
+		var mapSource = '/images/mapLaboI3S.png'; // Carte I3S V2
 		return mapSource
 	}
+
+	exports.getKey = function() {
+		var key = './ssl/hacksparrow-key.pem';
+		return key
+	}
+
+	exports.getKeyCert = function() {
+		var cert = './ssl/hacksparrow-cert.pem';
+		return cert
+	}
+
 
 
 })(typeof exports === 'undefined'? this['appCNRS']={}: exports);

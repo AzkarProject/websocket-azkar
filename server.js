@@ -52,6 +52,9 @@ port = appSettings.appServerPort();
 indexUrl = null;
 indexUrl = "https://" + ipaddress + ":" + port; // Par défaut...
 
+pathKey = appSettings.getPathKey();
+pathCert = appSettings.getPathCert();
+
 // Si présence du fichier de config propre au labo: Overwrinting des settings,
 // >> différentes IP serveurs selon le nom des machines (VM1, Vm2, Livebox ou local Adhoc) 
 var appCNRS;
@@ -62,7 +65,6 @@ try {
 }
 catch (e) {
    console.log("Configuration Standard") 
-
 }
 
 console.log("***********************************");
@@ -80,14 +82,24 @@ var express = require('express');
 var https = require('https');
 var ent = require('ent'); // Permet de bloquer les caractères HTML (sécurité équivalente à htmlentities en PHP)
 
-var key = fs.readFileSync('./ssl/hacksparrow-key.pem');
-var cert = fs.readFileSync('./ssl/hacksparrow-cert.pem');
+key = fs.readFileSync(pathKey);
+cert = fs.readFileSync(pathCert);
 
 
 var https_options = {
     key: key,
     cert: cert
 };
+
+try {
+   appCNRS = require('./js/common_app_cnrs'); 
+   appCNRS.setLaboServers();
+   console.log("Configuration Labo I3S")
+}
+catch (e) {
+   console.log("Configuration Standard") 
+
+}
 
 var PORT = port;
 var HOST = ipaddress;
@@ -111,11 +123,6 @@ app.get('/robot/', function(req, res) {
     res.sendFile(__dirname + '/robot.html');
 });
 
-/*
-app.get('/pilote-solo/', function(req, res) {
-    res.sendFile(__dirname + '/pilote-solo.html');
-});
-/**/
 
 app.get('/pilote/', function(req, res) {
     res.sendFile(__dirname + '/pilote.html');

@@ -1,0 +1,12 @@
+{
+  "name": "KOMS",
+  "version": "0.0.1",
+  "devDependencies": {},
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "dependencies": {
+    "express": "^4.13.3",
+    "wamp.rt": "^0.1.4"
+  }
+}

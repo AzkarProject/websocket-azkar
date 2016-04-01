@@ -240,21 +240,8 @@ function connect(peerCnxId) {
         if (peerCnxId == peerCnx1to1) {
 
             
-			//console.log("+++++++++++++++++++++++++++++++++++++")
-	    	//console.log(channel);
 	        channel = peerCnxCollection[peerCnxId].createDataChannel("1to1_PtoR", {reliable: false});
     		var tStp = tools.humanDateER("date");
-    		//console.log ("peerCnxCollection[peerCnxId].createDataChannel("+tStp+")");
-	        //console.log(channel);
-	        //console.log("+++++++++++++++++++++++++++++++++++++");
-
-	        //var data = {from: localObjUser, channel: channel.toJSON()};
-	        //console.log (data);
-	        // -----------------------------------------
-	        // var data = tools.deepClone(channel);
-	        // socket.emit("channelObject", data);
-
-
 
             // et on peut maintenant lancer l'écouteur d'évènement sur le datachannel
             bindEvents();
@@ -263,9 +250,7 @@ function connect(peerCnxId) {
             var cible = usersConnection.getClientBy('typeClient','Robot');
             peerCnxCollection[peerCnxId].createOffer(function(sdp){
                         peerCnxCollection[peerCnxId].setLocalDescription(sdp);
-                        //console.log ("------------ offer >>> to "+cible.typeClient+"----------");
                         var data = {from: localObjUser, message: sdp, cible: cible, peerCnxId: peerCnxId}
-                        // console.log (data.message.sdp);
                         socket.emit("offer2", data);
                     }
                     , errorHandler, 
@@ -281,24 +266,17 @@ function connect(peerCnxId) {
         // Si on est dans la peerConnection principale (Pilote <> Robot)
         if (peerCnxId == peerCnx1to1) {
             var tStp1 = tools.humanDateER("date");
-            //console.log ("@ ondatachannel = function(e) {... "+tStp1)
-
-            // bindEvents(); //now bind the events
             // l'appelé doit attendre l'ouverture d'un dataChannel pour lancer son écouteur d'èvènement data...
             // Ecouteur d'ouverture d'un data channel
             peerCnxCollection[peerCnxId].ondatachannel = function(e) {
                 //console.log("+++++++++++++++++++++++++++++++++++++")
                 var tStp2 = tools.humanDateER("date");
-            	//console.log ("peerCnxCollection[peerCnxId].ondatachannel("+tStp2+")");
-            	//console.log(e);
-                //console.log("+++++++++++++++++++++++++++++++++++++")
-
                 channel = e.channel;
                 bindEvents(); //now bind the events
             };
-            /**/
+            
         } // endif connexion principale (Pilote <> Robot)
-        /**/
+        
     }
 }
 
@@ -326,9 +304,7 @@ socket.on("offer", function(data) {
 
         if (isRenegociate == false) {            
 
-            //console.log("(apellé)>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-            //peerCnxCollection[peerCnxId].setRemoteDescription(new SessionDescription(data.message));
-            //peerCnxCollection[peerCnxId].createAnswer(doAnswer, errorHandler, constraints);           
+       
 
             // ------------- Version 1toN
             var offer = new SessionDescription(data.message);
@@ -354,12 +330,11 @@ socket.on("offer", function(data) {
                 }
                 , errorHandler, 
                 constraints // Robot
-                //robotConstraints
             );
         }
     }
 });
-/**/
+
 
 
 // Réception d'une réponse à une offre
@@ -401,13 +376,5 @@ video2.addEventListener("playing", function () {
 });
 
 // ----- Phase 3 Post-Signaling --------------------------------------------
-
-
-
-
-
-
-
-// >>>> voir 1to1_pre_signaling.js
 
 
