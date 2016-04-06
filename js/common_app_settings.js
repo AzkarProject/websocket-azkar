@@ -44,7 +44,7 @@
 
 	// Nom de la branche
 	exports.appBranch = function(){
-	    return '1to1-refacto';
+	    return '1to1-cnrs';
 	};
 
 	// Numéro de version
