@@ -92,7 +92,7 @@ var https_options = {
 };
 
 try {
-   appCNRS = require('./js/common_app_cnrs'); 
+   appCNRS = require('./js/cnrs/common_app_cnrs'); 
    appCNRS.setLaboServers();
    console.log("Configuration Labo I3S")
 }
