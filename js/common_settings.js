@@ -13,7 +13,7 @@ exports.appHostName = function(){
 };
 
 exports.appBranch = function(){
-    return '1to1-refacto';
+    return '1toN';
 };
 
 exports.isBenchmark = function(){
