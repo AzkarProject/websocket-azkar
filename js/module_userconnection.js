@@ -101,7 +101,7 @@
 	// function updateListUsers() {
 	exports.updateListUsers = function() {	
 	        console.log ("@ updateListUsers()");
-	        console.log ("robotCnxStatus >>>>> "+robotCnxStatus);
+	        // console.log ("robotCnxStatus >>>>> "+robotCnxStatus);
 	        
 
 	        // closeConnectionButton("deactivate",null);

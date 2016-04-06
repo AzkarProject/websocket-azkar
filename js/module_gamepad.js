@@ -88,11 +88,9 @@
 	  leftRightValueBar = document.querySelector("#leftRight");
 
 
-	   // requestAnimationFrame(mainloop);
-	   // setInterval(scangamepads, 500);
-	  
-	  // Note titi: un simple setInterval est amplement suffisant
-	  // pour envoyer des ordres de mouvement tous les 100 ms
+	 // requestAnimationFrame(mainloop);
+	 // Note titi: un simple setInterval est amplement suffisant
+	 // pour envoyer des ordres de mouvement tous les 100 ms
 	  setInterval(mainloop, 100);
 
 
@@ -207,7 +205,7 @@
 		if(!gamepad.connected) return;
 		
 		// Check si le gamepad est un XBox 360
-		// if(checkCompatibility(Gamepad) == false) return;
+		if(checkCompatibility(Gamepad) == false) return;
 
 
 		var atLeastOneButtonPressed = false;

@@ -281,6 +281,75 @@ function connect(peerCnxId) {
 }
 
 
+
+// -------------------- Méthodes RTCDataChannel ----------------------
+
+// bind the channel events
+function bindEvents() {
+
+    console.log("@ bindEvents()");
+
+    // écouteur d'ouverture
+    channel.onopen = function() {
+        //console.log("RTCDataChannel is Open");
+        input_chat_WebRTC.focus();
+        input_chat_WebRTC.placeholder = "RTCDataChannel is Open !";
+        input_chat_WebRTC.disabled = false;
+        env_msg_WebRTC.disabled = false;
+        // ouverture du formulaire de selection  de canal webRTC/Websocket pour kes commandes drive
+        if (type == "pilote-appelant")  setNavChannelform("open"); 
+
+    };
+
+    // écouteur de reception message
+    channel.onmessage = function(e) {
+        //var dateR = Date.now();
+        var dateR = tools.humanDateER('R');
+        // si c'est u message string
+        if (tools.isJson(e.data) == false) {
+            //$(chatlog).prepend(dateR + ' ' + e.data + "\n");
+            $(chatlog).prepend('Message from ' + e.data + "\n");
+            notifications.writeMessage ("info","Chat WebRTC",e.data,3000)
+        }
+        
+        // sinon si c'est un objet Json (donc un objet de de type commande)
+        else if (tools.isJson(e.data) == true || type == "robot-appelé"){
+            var cmd = e.data;
+            cmd = JSON.parse(cmd);
+            
+            // S'il existe une propriété "command" (commande via webRTC))
+            if (cmd.command) {
+                
+                // Affiche la trace de la commande dans le chatlog webRTC
+                // $(chatlog).prepend(dateR+' '+cmd.command + "\n");
+                
+                // Envoi de la commande à la Robubox...
+                if (cmd.command == "onDrive") {
+                    // Flags homme mort
+                    onMove = true;
+                    lastMoveTimeStamp = Date.now(); // on met a jour le timestamp du dernier ordre de mouvement...
+                    // Envoi commande  
+                    // robubox.sendDrive(cmd.enable, cmd.aSpeed, cmd.lSpeed);
+                    komcom.sendDrive(cmd);
+                }
+                
+                else if (cmd.command == "onStop") {
+                    // Flags homme mort
+                    onMove = false;
+                    lastMoveTimeStamp = 0;
+                    // Envoi commande    
+                    //robubox.sendDrive(cmd.enable, cmd.aSpeed, cmd.lSpeed);
+                    komcom.sendDrive(cmd);
+                }
+                
+            }
+        }
+    };
+}
+
+
+
+
 // Ecouteurs Signaling de l'API websocket -----------------
 
 
@@ -374,6 +443,13 @@ video1.addEventListener("playing", function () {
 video2.addEventListener("playing", function () {
     console.log ("RemoteStream dimensions: " + video2.videoWidth + "x" + video2.videoHeight)
 });
+
+
+
+
+
+
+
 
 // ----- Phase 3 Post-Signaling --------------------------------------------
 

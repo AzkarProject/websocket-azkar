@@ -34,10 +34,12 @@
 */
 
 
-// Initialisation du canal de signalisation
-var socket = io.connect(); 
 
-var typeClient = null;
+// Initialisation du canal de signalisation
+socket = io.connect(); 
+
+
+typeClient = null;
 if (type == "pilote-appelant") typeClient = "Pilote";
 else if (type == "robot-appelé")  typeClient = "Robot";
 
@@ -49,22 +51,25 @@ socket.emit('nouveau_client2', {pseudo: pseudo, typeClient: typeClient}); // Ver
 
 
 // liste des users connectés
-var users = {};
+users = {};
 
 // Objet User courant.
 var localObjUser;
 var myPlaceListe;
 var myPeerID;
-// ------------------------------------------------------
+
+
+
+// --- Ecouteurs utilisés pour les connections websockets --------------------------------------------------
 
 
 // Updater le titre de la page (pour le fun...)
 // Version Objet...
-socket.on('position_liste2', function(objUser) {
+socket.on('localUser', function(objUser) {
     // On copie l'objet pour un usage local
     localObjUser = objUser;
 
-    console.log(">> socket.on(position_liste2,objUser) >>>");
+    console.log(">> socket.on(localUser) >>>");
     console.log(objUser);
     // document.title = objUser.placeliste+"-" + objUser.pseudo +"("+objUser.typeClient+") - "+document.title;
     // >>> Même chose sans le numéro d'arrivée pour éviter que AutoIt ne se mélange les pédales dans la détection de la fenêtre du navigateur
@@ -76,11 +81,10 @@ socket.on('position_liste2', function(objUser) {
 
 })
 
-// Fonctions websocket dédiées au tchat ---------------------------
-
 
 // Quand un nouveau client se connecte, on affiche l'information
 socket.on('nouveau_client2', function(objUser) {
+    console.log(">> socket.on(nouveau_client2) >>>");
     var dateR = tools.humanDateER('R');
     // alert(dateR+">> socket.on('nouveau_client2', objUser");
     //var message = dateR + " à rejoint le Tchat";
@@ -95,10 +99,8 @@ socket.on('nouveau_client2', function(objUser) {
 })
 
 
-// Réception d'une info de deconnexion:
+// Réception d'une info de déconnexion websocket:
 // Plus réactif que l'écouteur de l'API WebRTC !
-// On déplace ici l'écouteur au cas où la fonction
-// connect() de webRTC n'as pas encore été instanciée.
 socket.on("disconnected", function(data) { 
   
   if (!data.objUser) return;
@@ -108,14 +110,17 @@ socket.on("disconnected", function(data) {
   ihm.insertWsMessage(data.objUser,msg);
   notifications.writeMessage ("error","Notification WebSocket",data.objUser.pseudo+" "+data.message,3000)
 
+  /*// On remet les flags a zero et on efface l'ID de connexion
   var testPeerCnxId = "";
   var isAPeerCnxID = false;
+  /**/
 
+   // On lance le processus de déconnexion WebRTC
    onDisconnect(peerCnx1to1);
 });
   
 
-// Quand on reçoit un message WS, on l'insère dans la page
+// Reception d'un message websoclet
 socket.on('message2', function(data) { 
     var dateR = tools.humanDateER('R');
     var msg = dateR+' '+data.message;
@@ -127,24 +132,20 @@ socket.on('message2', function(data) {
 
 
 
-// Quand on reçoit un message WS de service
+// reception d'un message WS de service
 socket.on('service2', function(data) {
     var dateR = tools.humanDateER('R');
     var msg = dateR+' '+data.message;
-    ihm.insertWsMessage(data.objUser,msg);
+    ihm.insertWsMessage(data.objUser,msg)
     notifications.writeMessage ("info","Message de service WebSocket",msg,3000)
 })
 
 
 
-// ----------------------------------------------------------------------------------
+// --------- écouteurs de contrôle d'accès via websocket...
 
-// --------- contrôle d'accès via websocket...
-
-// rejectConnexion', message:message, url:indexUrl);
 socket.on('error', errorHandler);
 socket.on('rejectConnexion', function(data) {
-    // alertAndRedirect(data.message, data.url)
     notifyAndRedirect("error", data.message,data.url)
 })
 
@@ -173,7 +174,7 @@ socket.on('reloadClientrobot', function(style,message,url) {
 });
 /**/
 
-// --------------------- Messages d'erreur & redirection ------------------
+// --------------------- Messages d'erreur & de redirection ------------------
 
 function errorHandler(err) {
     console.log("ON-ERROR");
@@ -229,8 +230,6 @@ function checkCookie(pseudo) {
     var user = getCookie(nameCookie);
     
     if (user != "") {
-        // alert("Welcome again " + user);
-        // notifications.writeMessage ("success","Bienvenue " + user,"",3000)
         pseudo = user;
     
     } else {
@@ -245,3 +244,6 @@ function checkCookie(pseudo) {
     }
     return pseudo;
 }
+
+
+

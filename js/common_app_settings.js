@@ -88,12 +88,14 @@
 	
 	// Si le client Robot n'est pas sur un Pc embarqué dans un Kompaï ou autre robot,
 	// on émule un pseudo système embarqué pour la cartographie, la jauge de batterie et les commandes drive...
+	// Si connecté a une robubox ou KomNav, mettre la valeur a false
 	exports.isFakeRobubox = function() {
 		var fakeRobubox = true;
 		return fakeRobubox;
 	}
 
 	// Chemin et nom de l'image de cartographie à utiliser
+	// NB: Penser à placer la carte active exportée en png par la robubox ds le repertoire image de l'applicaion.
 	exports.getMapSource = function() {
 		// var mapSource = '/images/mapLaboI3S.png'; // Carte locaux I3S
     	var mapSource = '/images/mapRobosoft.png'; // Carte locaux Robosoft

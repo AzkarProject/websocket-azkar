@@ -403,9 +403,9 @@
         //
         // Valeur absolue du point 0.0 ???
         // Désactivation le 29/01/16 pour tests ZOOM CARTO - A réactiver.
-        //function drawArrow(ctx, fromX, fromY, toX, toY, arrowWidth, color) {
-        var arrowX = 0
-        var arrowY = 0
+        // function drawArrow(ctx, fromX, fromY, toX, toY, arrowWidth, color) {
+        //var arrowX = 0
+        //var arrowY = 0
         
         // drawArrow(context, 0, 0, 25, 0, 1, "red"); // axe X
         // drawArrow(context, 0, 0, 0,-25, 1, "green"); // axe Y

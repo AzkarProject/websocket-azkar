@@ -40,6 +40,7 @@
 // Initialisation des variables, objets et paramètres du script
 // NB toutes les variables sont déclarées en global...
 
+
 // Robot seulement
 if (type == "robot-appelé") {  
     isOnePilot = false;
@@ -236,7 +237,7 @@ piloteConstraints = {
 // Adapté de  http://stackoverflow.com/questions/14610945/how-to-choose-input-video-device-for-webrtc
 function getAllAudioVideoDevices(successCallback, failureCallback) {
 
-    console.log("getAllAudioVideoDevices()");
+    console.log("@ getAllAudioVideoDevices()");
 
     var allMdiaDevices = [];
     var allAudioDevices = [];
@@ -358,7 +359,7 @@ function getAllAudioVideoDevices(successCallback, failureCallback) {
 
 // Affectation et traitement des résultats générées par getAllAudioVideoDevices()
 function populateListDevices(result,sourceDevices) {
-    console.log("populateListDevices()");
+    console.log("@ populateListDevices()");
     // console.log(result);
 
     // Si sources locales (pilote)
@@ -436,7 +437,7 @@ function populateListDevices(result,sourceDevices) {
 // Génération des listes de devices pour les formulaires
 function populateFormDevices(device,sourceDevices) {
 
-    console.log("populateFormDevices()");
+    console.log("@ populateFormDevices()");
 
     var option = document.createElement('option');
     option.id = device.id;
@@ -467,7 +468,7 @@ function populateFormDevices(device,sourceDevices) {
 
     } else {
 
-        console.log('Some other kind of source: ', device);
+        // console.log('Some other kind of source: ', device);
 
     }
 }
@@ -615,7 +616,7 @@ socket.on("robotCnxStatus", function(data) {
 });
 
 // Quand on reçoit un update de la liste des clients websockets 
-// C.A.D à chaque nouveln arrivant... 
+// C.A.D à chaque nouvel arrivant... 
 socket.on('updateUsers', function(data) {
     console.log(">> socket.on('updateUsers',...");
     // On met à jour la liste locale des connectés...
@@ -660,6 +661,7 @@ socket.on('updateUsers', function(data) {
 socket.on("battery_level", function(data) {
     ihm.refreshJaugeBattery(data.percentage) // redessiner la jauge au niveau de l'ihm pilote
 });
+
 
 
 

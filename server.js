@@ -294,7 +294,7 @@ io.on('connection', function(socket, pseudo) {
 
         // On renvoie l'User crée au nouveau connecté
         // pour l'informer entre autre de son ordre d'arrivée ds la session
-        io.to(socket.id).emit('position_liste2', objUser);
+        io.to(socket.id).emit('localUser', objUser);
         
         // On lui envoie aussi des infos concerant le serveur (pour débug)
 		// io.to(socket.id).emit('infoServer', hostName);

@@ -38,6 +38,8 @@
 
 console.log("module_forms chargé");
 
+
+
 // IHM Pilote
 // Dévérouillage formulaires selection caméras Robot
 // Animation d'invite
@@ -137,13 +139,14 @@ selectSystemKomNAV = document.querySelector('input#KomNAV');
 
 // Remise a zero (R.A.Z) du selecteur de systeme embarqué
 function raZNavSystem() {
-    console.log("raZNavSystem()")
+    console.log("@ raZNavSystem()")
     selectSystemKomNAV.checked = false;
     selectSystemRobubox.checked = true;
     parameters.navSys = "Robubox";
 }
 // Au chargement du script...
 raZNavSystem();
+
 
 // switch KonNav /Robubox
 //function setNavSystem(navSysSet) { 
@@ -168,7 +171,7 @@ selectChannelWebRTC = document.querySelector('input#webRTC');
 // remise a zero (R.A.Z) selecteur canal de commande WebRTC/webSocket
 // avec la valeur par défaut webSocket
 function raZNavChannel() {
-	console.log("raZNavChannel()")
+	console.log("@ raZNavChannel()")
     selectChannelWebRTC.disabled = true;
 	selectChannelWebRTC.checked = false;
 	selectChannelWebSocket.checked = true;
