@@ -79,9 +79,14 @@
 	// Toutefois, il est conseillé de ne mettre qu'un seul serveur TURN fonctionnel 
 	// pour diminuer les échanges de "candidates" superflus et raccourcir les délais de connexion/reconnexion. 
 	exports.setIceServers = function() {
+		// rfc5766 avec authentification
+		TURN_username = "anotherworld";
+		TURN_credential = "anotherworld";
 		var server = {'iceServers': []};
 		server.iceServers.push({ url: 'stun:stun.l.google.com:19302'});
-		server.iceServers.push({ url: "turn:turn.anyfirewall.com:443?transport=tcp",credential: "webrtc",username: "webrtc"});
+		//server.iceServers.push({ url: "turn:turn.anyfirewall.com:443?transport=tcp",credential: "webrtc",username: "webrtc"});
+		// Serveur STUN/TURN du CNRS... Essayez avec le votre...
+		server.iceServers.push({urls: "turn:134.59.130.142:3478",credential: TURN_credential ,username: TURN_username}); 
 		return server
 	}
 
