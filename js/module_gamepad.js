@@ -477,7 +477,7 @@
 				var prefix = "  ", selectClass = ""
 			    $(idSelect+" > option").each(function() {
 	    			if(this.selected) {
-	    				prefix = ">> -- ", selectClass = "selected";
+	    				prefix = ">>>>>> ", selectClass = "selected";
 	    			}
 	    			selectText += "<br><span class ='"+selectClass+"'>"+ prefix + " " + this.text+"</span>";
 	    			prefix = "  ", selectClass = "";
