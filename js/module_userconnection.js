@@ -179,7 +179,7 @@
 
 	exports.closeRobotConnexion = function() {
 			if (IS_WebRTC_Connected == false ) {
-				alert ("la connexion est déjas fermée");
+				//alert ("la connexion est déjas fermée");
 				return;
 			}
 			var userID = getUserID('Robot');
@@ -190,7 +190,7 @@
 
 	exports.openRobotConnexion = function() {
 			if (IS_WebRTC_Connected == true ) {
-				alert ("la connexion est déjas ouverte");
+				//alert ("la connexion est déjas ouverte");
 				return;
 			}
 			localManageDevices();
