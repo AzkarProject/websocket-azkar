@@ -346,9 +346,9 @@
 			// Cycle sélection caméra
 			} else if (buttonLB.pressed) {
 				
-				 
+				 // Version Originale 
 				if (IS_WebRTC_Connected == true ) {
-			      	//writeMessage ("warning","GAMEPAD (LB) ","Sélection caméra impossible !</br/> Veuillez dabord déconnecter le robot !! ",500)
+			      	
 			      	notifications.writeMessage ("error","GAMEPAD (LB) ","Sélection caméra impossible !</br/> Veuillez dabord déconnecter le robot !! ",500)
 			      	return;
 			      }
@@ -372,6 +372,24 @@
 			  	notifications.writeMessage ("standard","GAMEPAD (LB)", selectCamText);
 
 				return;
+
+				/**/
+
+				
+				/* // Version modifiée
+				if (IS_WebRTC_Connected == true ) { 
+
+					// 1 on déconnecte
+					// 2 on cycle sur la caméra suivante
+					// 3 on reconnecte
+
+				
+				} else if (IS_WebRTC_Connected == false ) {
+
+				
+				}
+				/**/
+
 				
 			// Cycle selection définitions
 			} else if (buttonRB.pressed)  {
@@ -459,7 +477,7 @@
 				var prefix = "  ", selectClass = ""
 			    $(idSelect+" > option").each(function() {
 	    			if(this.selected) {
-	    				prefix = ">> ", selectClass = "selected";
+	    				prefix = ">>  ", selectClass = "selected";
 	    			}
 	    			selectText += "<br><span class ='"+selectClass+"'>"+ prefix + " " + this.text;
 	    			prefix = "  ", selectClass = "";
@@ -469,6 +487,41 @@
 
 	}
 
+
+
+
+
+
+	// Author:Thierry: 
+	// fonction permettant de cycler sur une liste d'option
+	// Pratique quand on ne dispose que d'un bouton...
+	function incrementSelectList2(idSelect,textCounter) {
+
+				var nbSelect = $(idSelect+'>option').length;
+			    var indexSelect = $(idSelect+" option:selected").prevAll().size();
+			    
+			    // Pour selectionner automatiquement l'option suivante:
+			    // On récupère l'index sélectionné et on l'incrémente de 1
+			    // s'il est égal au nombre total d'options (-1) on remet le selecteur a l'index 0...
+			    var newIndex = indexSelect + 1;
+			    var lastIndex = nbSelect - 1;
+			    if (indexSelect == lastIndex) newIndex = 0;
+	        	$(idSelect+' option').eq(newIndex).prop('selected',true);
+			    
+				// Affichage de la nouvelle sélection
+				var selectText = textCounter+nbSelect+"<hr/>";
+				var prefix = "  ", selectClass = ""
+			    $(idSelect+" > option").each(function() {
+	    			if(this.selected) {
+	    				prefix = ">> ", selectClass = "selected";
+	    			}
+	    			selectText += "<br><span class ='"+selectClass+"'>"+ prefix + " " + this.text;
+	    			prefix = "  ", selectClass = "";
+				});
+
+				return selectText
+
+	}
 
 	// Thierry: Construction & envoi de la commande Drive
 	function prepareDriveCommand(gamepad, speedPos, speedNeg, mode, command ) {

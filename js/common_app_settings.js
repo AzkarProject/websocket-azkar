@@ -49,12 +49,12 @@
 
 	// Numéro de version
 	exports.appVersion = function(){
-	    return '1.5.1';
+	    return '1.5.0';
 	};
 
 	// Crédits
 	exports.appCredit = function(){
-	   return '© 2015-2016 - CNRS (Laboratoire I3S) / université de Nice';
+	   return '© 2015-2016 - CNR (Laboratoire I3S) / université de Nice';
 	};
 
 	// Adresse Ip ou nom de domaine du serveur de l'application
