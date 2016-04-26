@@ -346,7 +346,7 @@
 			// Cycle sélection caméra
 			} else if (buttonLB.pressed) {
 				
-				 // Version Originale 
+				 /*// Version Originale 
 				if (IS_WebRTC_Connected == true ) {
 			      	
 			      	notifications.writeMessage ("error","GAMEPAD (LB) ","Sélection caméra impossible !</br/> Veuillez dabord déconnecter le robot !! ",500)
@@ -376,18 +376,41 @@
 				/**/
 
 				
-				/* // Version modifiée
+				// Version modifiée
 				if (IS_WebRTC_Connected == true ) { 
 
 					// 1 on déconnecte
+					usersConnection.closeRobotConnexion();
+					onMove = false;
+
+
+				
+				} 
+					
+					
+					// Ralentir l'appui continu sur la même touche
+				     var newTimer = Date.now();
+				     if (lastButtonName == "buttonLB" ) {
+				     	var testDelay = newTimer - lastTimer;
+				     	if ( testDelay < 500 ) return
+				     } lastTimer = newTimer;
+
 					// 2 on cycle sur la caméra suivante
-					// 3 on reconnecte
+					lastButtonName = "buttonLB";
+			    	atLeastOneButtonPressed = true;
+			    
+				    var idSelect = '#remote_videoSource';
+				    var textCounter = 'Caméras robot disponibles: ';
+				    var selectCamText =  incrementSelectList(idSelect,textCounter)
 
-				
-				} else if (IS_WebRTC_Connected == false ) {
 
-				
-				}
+					
+					// 3 on connecte
+					usersConnection.openRobotConnexion();
+			      	onMove = false;
+
+
+
 				/**/
 
 				
