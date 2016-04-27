@@ -159,7 +159,7 @@ exports.getBattery = function (){
                  }, delay);
                 
 
-             } /*else {
+             } else {
 
                 var url = "https://127.0.0.1:443/http://127.0.0.1:50000/lokarria/battery" ; // CORS-ANYWHERE	         
     	                

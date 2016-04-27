@@ -178,6 +178,8 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || 
 server = appSettings.setIceServers();
 if (typeof appCNRS != 'undefined') server = appCNRS.setIceServers(type);
 
+
+
 // corection du bug createDataChannel à partir de Chrome M46
 options = { optional: [{DtlsSrtpKeyAgreement: true }]};
 
