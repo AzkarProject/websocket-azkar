@@ -44,7 +44,7 @@
 
 	// Nom de la branche
 	exports.appBranch = function(){
-	    return '1to1-cnrs2';
+	    return '1to1-cnrs';
 	};
 
 	// Numéro de version
@@ -54,7 +54,7 @@
 
 	// Crédits
 	exports.appCredit = function(){
-	   return '© 2015-2016 - CNRX (Laboratoire I3S) / université de Nice';
+	   return '© 2015-2016 - CNRS (Laboratoire I3S) / université de Nice';
 	};
 
 	// Adresse Ip ou nom de domaine du serveur de l'application
