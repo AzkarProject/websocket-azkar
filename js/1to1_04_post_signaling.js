@@ -56,7 +56,8 @@ function onDisconnect(peerCnxId) {
     if (type == "pilote-appelant") {
 
         IS_WebRTC_Connected = false;
-        
+        console.log(">>> sessionConnection :"+sessionConnection)
+        console.log(">>> robotDisconnection :"+robotDisconnection)
         // On referme le formulaire sélection des cams du robot
         ihm.manageSubmitForm("robotDevices","deactivate");
 

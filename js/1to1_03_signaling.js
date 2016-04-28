@@ -49,7 +49,9 @@
 var origin = "local"; // On prévient la fonction apellée que la source sera locale
 
 getAllAudioVideoDevices(function(result) {
-    populateListDevices(result,origin);
+    // console.log(result)
+    // On prévient la fonction apellée que la source sera locale
+    populateListDevices(result,"local");
 }, function(error) {
     if (error == null) error = "erreur getAllAudioVideoDevices()";
     alert(error);

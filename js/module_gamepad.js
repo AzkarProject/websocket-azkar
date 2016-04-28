@@ -346,100 +346,75 @@
 			// Cycle sélection caméra
 			} else if (buttonLB.pressed) {
 				
-				 // Version Originale 
+				// Ralentir l'appui continu sur la même touche
+				var newTimer = Date.now();
+				if (lastButtonName == "buttonLB" ) {
+				   	var testDelay = newTimer - lastTimer;
+				   	if ( testDelay < 1000 ) return
+				} lastTimer = newTimer;
+
+				lastButtonName = "buttonLB";
+				atLeastOneButtonPressed = true;
+
+				// Version Originale 
 				if (IS_WebRTC_Connected == true ) {
 			      	
-			      	notifications.writeMessage ("error","GAMEPAD (LB) ","Sélection caméra impossible !</br/> Veuillez dabord déconnecter le robot !! ",500)
-			      	return;
-			      }
+			      	//notifications.writeMessage ("error","GAMEPAD (LB) ","Sélection caméra impossible !</br/> Veuillez dabord déconnecter le robot !! ",500)
+			      	//return;
 
-			     // Ralentir l'appui continu sur la même touche
-			     var newTimer = Date.now();
-			     if (lastButtonName == "buttonLB" ) {
-			     	var testDelay = newTimer - lastTimer;
-			     	if ( testDelay < 500 ) return
-			     } lastTimer = newTimer;
+					// Sélection et activation a la volée
+					SelectAndOpenCam()
 
-
-			    lastButtonName = "buttonLB";
-			    atLeastOneButtonPressed = true;
-			    
-			    var idSelect = '#remote_videoSource';
-			    var textCounter = 'Caméras robot disponibles: ';
-			    var selectCamText =  incrementSelectList(idSelect,textCounter)
-			    	  
-			  	//writeMessage ("info","GAMEPAD (LB)", selectCamText);
-			  	notifications.writeMessage ("standard","GAMEPAD (LB)", selectCamText);
-
-				return;
-
-				/**/
-
-				
-				/*// Version modifiée
-				if (IS_WebRTC_Connected == true ) { 
-
-					// 1 on déconnecte
-					usersConnection.closeRobotConnexion();
-					onMove = false;
-
-
-				
-				} 
-					
-					
-					// Ralentir l'appui continu sur la même touche
-				     var newTimer = Date.now();
-				     if (lastButtonName == "buttonLB" ) {
-				     	var testDelay = newTimer - lastTimer;
-				     	if ( testDelay < 500 ) return
-				     } lastTimer = newTimer;
-
-					// 2 on cycle sur la caméra suivante
-					lastButtonName = "buttonLB";
-			    	atLeastOneButtonPressed = true;
+			    } else {
 			    
 				    var idSelect = '#remote_videoSource';
 				    var textCounter = 'Caméras robot disponibles: ';
 				    var selectCamText =  incrementSelectList(idSelect,textCounter)
+				    	  
+				  	notifications.writeMessage ("standard","GAMEPAD (LB)", selectCamText);
 
-
-					
-					// 3 on connecte
-					usersConnection.openRobotConnexion();
-			      	onMove = false;
-
-
-
-				/**/
+				}
+				
+				return;
 
 				
 			// Cycle selection définitions
 			} else if (buttonRB.pressed)  {
 				
-				if (IS_WebRTC_Connected == true ) {
-			      	//writeMessage ("warning","GAMEPAD (RB) ","Settings Impossibles !</br/> Veuillez dabord déconnecter le robot !! ",500)
-			      	notifications.writeMessage ("error","GAMEPAD (RB) ","Settings Impossibles !</br/> Veuillez dabord déconnecter le robot !! ",500)
-			      	return;
-			      }
-			    
-			     // Ralentir l'appui continu sur la même touche
-			     var newTimer = Date.now();
-			     if (lastButtonName == "buttonRB" ) {
-			     	var testDelay = newTimer - lastTimer;
-			     	if ( testDelay < 500 ) return
-			     } lastTimer = newTimer;
+				// Ralentir l'appui continu sur la même touche
+				var newTimer = Date.now();
+				if (lastButtonName == "buttonRB" ) {
+				   	var testDelay = newTimer - lastTimer;
+				   	if ( testDelay < 1000 ) return
+				} lastTimer = newTimer;
 
-			    atLeastOneButtonPressed = true;
-			    lastButtonName = "buttonRB";
+				atLeastOneButtonPressed = true;
+				lastButtonName = "buttonRB";
+
+
+				if (IS_WebRTC_Connected == true ) {
+			      	
+			      	//writeMessage ("warning","GAMEPAD (RB) ","Settings Impossibles !</br/> Veuillez dabord déconnecter le robot !! ",500)
+			      	//notifications.writeMessage ("error","GAMEPAD (RB) ","Settings Impossibles !</br/> Veuillez dabord déconnecter le robot !! ",500)
+			      	//return;
+			      
+					// Sélection et activation a la volée
+					SelectResolutionAndOpenCam();
+
+
+			      } else {
 			    
-			    var idSelect = '#robot_camdef_select';
-			    var textCounter = 'Définitions caméras robot disponibles: ';
-			    var selectDefText =  incrementSelectList(idSelect,textCounter)		  
-			  	//writeMessage ("info","GAMEPAD (RB)", selectDefText);
-			  	notifications.writeMessage ("standard","GAMEPAD (RB)", selectDefText);
+			    
+				    var idSelect = '#robot_camdef_select';
+				    var textCounter = 'Définitions caméras robot disponibles: ';
+				    var selectDefText =  incrementSelectList(idSelect,textCounter)		  
+				  	//writeMessage ("info","GAMEPAD (RB)", selectDefText);
+				  	notifications.writeMessage ("standard","GAMEPAD (RB)", selectDefText);
+
+			  	}
 
 				return;
+
 			// Ferme toutes les notifications
 			} else if (buttonBack.pressed)  {
 				
@@ -477,6 +452,78 @@
 	  }
 
 	}
+
+
+	function SelectAndOpenCam() {
+		console.log("SelectAndOpenCam()");
+		console.log("sélection caméra");	
+		callback1()
+	
+
+		function callback1() {
+			console.log("on déconnecte");
+			usersConnection.closeRobotConnexion();
+			onMove = false;
+		    setTimeout(callback2, 500);
+
+		}
+
+		function callback2() {   
+		    
+	    	// 2 on cycle sur la caméra suivante
+		    var idSelect = '#remote_videoSource';
+		    var textCounter = 'Caméras robot disponibles: ';
+		    var selectCamText =  incrementSelectList(idSelect,textCounter)
+		  	notifications.writeMessage ("standard","GAMEPAD (LB)", selectCamText);
+		    setTimeout(callback3, 1000);
+
+		}
+
+		function callback3() {
+			console.log("on connecte");
+			setTimeout(usersConnection.openRobotConnexion(),100)
+	      	onMove = false;
+
+		}
+
+	}
+
+
+	function SelectResolutionAndOpenCam() {
+		console.log("SelectResolutionAndOpenCam()");
+		console.log("sélection résolution");	
+		callback1(); 
+	
+
+		function callback1() {
+			console.log("on déconnecte");
+			usersConnection.closeRobotConnexion();
+			onMove = false;
+		    setTimeout(callback2, 500);
+
+		}
+
+		function callback2() {   
+		   var idSelect = '#robot_camdef_select';
+		   var textCounter = 'Définitions caméras robot disponibles: ';
+		   var selectDefText =  incrementSelectList(idSelect,textCounter)		  
+		   notifications.writeMessage ("standard","GAMEPAD (RB)", selectDefText);
+		   setTimeout(callback3, 1000);
+
+		}
+
+		function callback3() {
+			console.log("on connecte");
+			setTimeout(usersConnection.openRobotConnexion(),100)
+	      	onMove = false;
+
+		}
+
+	}
+
+
+
+
 
 
 	// Author:Thierry: 

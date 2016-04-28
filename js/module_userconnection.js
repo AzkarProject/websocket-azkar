@@ -62,7 +62,7 @@
 
 
 	//function closeCnxwith(userID) {
-	exports.closeCnxwith = function (userID) {
+	exports.closeCnxwith = function (userID,originOrder) {
 	    console.log("@ closeCnxwith("+userID+")");
 	    
 	    var cible = usersConnection.getClientBy('id',userID); 
@@ -73,6 +73,7 @@
 		// Robustesse: 
 		// On remet le flag de déconnexion du robot à "Forced" pour empécher une reconnexion automatique...
 		// Et on remet le flag de session webRTC a zéro.
+		originDisconnectionOrder = "GamepadSelectCam"
 		robotDisconnection = "Forced";
 		sessionConnection = "Pending"
 
@@ -178,10 +179,12 @@
 	// Fonctions passerelles
 
 	exports.closeRobotConnexion = function() {
+			console.log("closeRobotConnexion");
 			if (IS_WebRTC_Connected == false ) {
-				//alert ("la connexion est déjas fermée");
+				console.log ("!!! la connexion est déjas fermée");
 				return;
 			}
+			IS_WebRTC_Connected = false
 			var userID = getUserID('Robot');
 			// alert (userID);
 			usersConnection.closeCnxwith(userID);
@@ -189,8 +192,9 @@
 
 
 	exports.openRobotConnexion = function() {
+			console.log("openRobotConnexion");
 			if (IS_WebRTC_Connected == true ) {
-				//alert ("la connexion est déjas ouverte");
+				console.log ("!!! la connexion est déjas ouverte");
 				return;
 			}
 			localManageDevices();
