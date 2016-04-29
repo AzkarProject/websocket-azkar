@@ -133,32 +133,8 @@
 	}
 
 
-	// Gamepad - Affichage des jauges
-	exports.driveJauges = function (speedPos,speedNeg,axes,jaugeClass) {
-		advanceValueBar.setAttribute("class", jaugeClass)
-		advanceValueBar.value = speedPos;
-	    reverseValueBar.setAttribute("class", jaugeClass)
-	    reverseValueBar.value = speedNeg;
-	    leftRightValueBar.innerHTML = 0 + ": " + axes.toFixed(4);
-	    leftRightValueBar.setAttribute("class", jaugeClass)
-	    leftRightValueBar.setAttribute("value", axes + 1);
-	}
-
-
-	/*// Gamepad - Affichage des jauges
-	exports.driveJauges2 = function (speedPos,speedNeg,axes,jaugeClass) {
-		advanceValueBar.setAttribute("class", jaugeClass)
-		advanceValueBar.value = speedPos;
-	    reverseValueBar.setAttribute("class", jaugeClass)
-	    reverseValueBar.value = speedNeg;
-	    leftRightValueBar.innerHTML = 0 + ": " + axes.toFixed(4);
-	    leftRightValueBar.setAttribute("class", jaugeClass)
-	    leftRightValueBar.setAttribute("value", axes + 1);
-	}
-	/**/
-
-
-	// Gamepad - Affichage du module
+	
+	// Gamepad - Affichage du module Gamepad (jauges par défaut)
 	exports.driveCommandBlock = function (order){
 		if ( order == 'open' ) {
 			activeGamePad = true;
@@ -170,6 +146,159 @@
 	   		$('#drive-commands').hide(); 
 		}
 	}
+
+
+	// Gamepad - Dessin des jauges
+	exports.driveJauges = function (speedPos,speedNeg,axes,jaugeClass) {
+		advanceValueBar.setAttribute("class", jaugeClass)
+		advanceValueBar.value = speedPos;
+	    reverseValueBar.setAttribute("class", jaugeClass)
+	    reverseValueBar.value = speedNeg;
+	    leftRightValueBar.innerHTML = 0 + ": " + axes.toFixed(4);
+	    leftRightValueBar.setAttribute("class", jaugeClass)
+	    leftRightValueBar.setAttribute("value", axes + 1);
+	}
+
+
+	// Gamepad - Dessin du joystick
+	exports.drawJoystick = function( posX, posY ) {
+
+			/*
+			var canvas = document.getElementById("canvasGamepad"); 
+			var context = canvas.getContext("2d");
+			//context.clearRect(-10000, -10000, 100000, 1000000);
+
+			context.beginPath();
+			context.fillStyle="#FF4422"
+			context.arc(80, 80, 70, 0, 2 * Math.PI);
+			context.fill();
+			/**/
+
+			/*
+			context.beginPath();
+			context.fillStyle="#000"
+			context.arc(150, 75, 30, 0, 2 * Math.PI);
+			context.fill();
+			/**/
+
+			  var canvas = document.getElementById("canvasGamepad"); 
+		      var context = canvas.getContext('2d');
+		      context.clearRect(-10000, -10000, 100000, 1000000);
+		      // var x = canvas.width / 2;
+		      // var y = canvas.height / 2;
+		      // var y = canvas.height;
+		      // var x = canvas.width;
+
+		      context.beginPath();
+			  context.fillStyle="#FF4422"
+			  context.arc(150, 75, 60, 0, 2 * Math.PI);
+			  context.fill();
+		      
+		      // line color
+		      //context.strokeStyle = 'black';
+		      //context.stroke();	
+		      
+		      
+		      context.beginPath();
+			  context.fillStyle="#000"
+			  context.arc(150, 30, 30, 0, 2 * Math.PI); // p2 à 30 = oeil butée bas
+			  context.fill();
+			  
+			  context.beginPath();
+			  context.arc(150, 75, 30, 0, 2 * Math.PI); // p2 à 75 = oeil milieu
+			  context.fill();
+			  
+			  context.beginPath();			  
+			  context.arc(150, 120, 30, 0, 2 * Math.PI); // p2 à 120 = oeil butée bas
+			  context.fill();
+			  
+			  
+						  
+			  // Values verticales  20 /75 = Marche avant > 45
+			  // Values verticales  72/120 = marche arrière > 45
+			
+			  
+			  context.beginPath();			  
+			  context.arc(105, 75, 30, 0, 2 * Math.PI); // p2 à 30 = oeil butée bas
+			  context.fill();
+			  
+			  context.beginPath();			  
+			  context.arc(150, 75, 30, 0, 2 * Math.PI); // p2 à 75 = oeil milieu
+			  context.fill();
+			  
+			  context.beginPath();			  
+			  context.arc(195, 75, 30, 0, 2 * Math.PI); // p2 à 120 = oeil butée bas
+			  context.fill();
+
+			  var x = 150,  y = 75;
+			  
+
+			  var ratio = 45 / 100
+			  //console.log (posX)
+			  
+			  if ( posX > 0 ) {
+			  	x = 150+45 // Vers la droite
+			  } else if (posX < 0) {
+			  	x = 150-45 // >>> Vers la gauche
+			  }
+			  /**/
+
+			  
+			  if ( posY > 0 ) { 
+			  	y = 75+45 // Vers le haut
+			  } else if (posY < 0) {
+			  	y = 75-45 // Vers le bas
+			  }
+			  
+
+			  context.beginPath();
+			  context.fillStyle="#fff"
+			  context.arc(x, y, 30, 0, 2 * Math.PI); // p2 à 75 = oeil milieu
+			  context.fill();
+
+		      /*
+		      var radius = 75;
+		      var startAngle = 1.1 * Math.PI;
+		      var endAngle = 1.9 * Math.PI;
+		      var counterClockwise = false;
+
+		      context.beginPath();
+		      context.arc(x, y, radius, startAngle, endAngle, counterClockwise);
+		      context.lineWidth = 15;
+		      /**/
+
+
+
+			/* 
+			function assignToDiv(){ // this kind of function you are looking for
+			  dataUrl = canvas.toDataURL();
+			  document.getElementById('gamePadInfos').style.background='url('+dataUrl+')'
+			  //alert('cool')
+			}
+
+			assignToDiv()
+			
+			/**/
+		
+		}
+
+
+	// Gamepad - Affichage du module FullAxes (param 'jauges' ou 'joystick' ou 'none')
+	exports.switchGamepadDisplayMode = function (type) {
+		if ( type == 'jauges' ) {
+			$('#canvasGamepad').hide();
+			$('#gamePadInfos').show();
+		} else if ( type == 'joystick' ) {
+			$('#canvasGamepad').show();
+	   		$('#gamePadInfos').hide(); 
+		}  else if ( type == 'nothing' ) { 
+			$('#canvasGamepad').hide();
+	   		$('#gamePadInfos').hide();	
+		}
+	}
+
+
+
 
 
 	// Gamepad - message de connexion
