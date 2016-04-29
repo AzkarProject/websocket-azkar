@@ -251,7 +251,7 @@
 		buttonRT = gamepad.buttons[7]; 
 
 		buttonBack = gamepad.buttons[8]; // efface les notifications
-		buttonStart = gamepad.buttons[9]; // non utilisé
+		buttonStart = gamepad.buttons[9]; // switche fullScreen
 
 		crossUp = gamepad.buttons[12]; // non utilisé
 		crossDown = gamepad.buttons[13]; // non utilisé
@@ -439,6 +439,23 @@
 				ihm.toggleFullScreen();
 				//ihm.navigationView('center','bottom');
 		    	ihm.toggleHUD();
+			// Test Homme mort axe 2
+			} else if (crossUp.pressed) {
+
+				atLeastOneButtonPressed = true;
+		    	buttonStatusDiv.innerHTML = "(CrossUp) Drive mode full Axes";
+		    	prepareDriveCommand(gamepad, buttonRT.value, buttonLT.value,"standard","onDriveAxe" );
+		    	btHommeMort = true;
+		    	onMove = true;
+		    	lastButtonName = "crossUp";
+		    	ihm.driveCommandBlock('open');
+		   	return;
+			
+
+
+
+
+
 			}
 	  }
 
@@ -618,7 +635,10 @@
 	       		aSpeed = aSpeed/2;
 	       		//lSpeed = lSpeed/5; // 10
 
-	       	}
+	       	
+	       	// Test de commande alternative
+	       	} 
+
 
 	       	ihm.driveJauges(speedPos,speedNeg,gamepad.axes[0],jaugeClass)
 
@@ -635,7 +655,81 @@
 		         enable: 'true'
 		     }             
 		    navigation_interface.sendToRobot("", "", "Gamepad",driveCommand);
-		}
+		
+		}  /*
+			else if (command == 'onDriveAxe') {
+
+
+				console.log("-----------Axes ------------");
+				console.log(gamepad.axes);
+				console.log(gamepad.axes[0]); // horizontal axe1 (-1 left +1 right)
+				console.log(gamepad.axes[1]); // vertical axe1 (-1 up +1 down)
+				console.log(gamepad.axes[2]); // horizontal axe2 (-1 left +1 right)
+				console.log(gamepad.axes[3]); // vertical axe2 (-1 up +1 down)
+				
+
+				//var TargetLinearSpeedPos = speedPos; // vitesse marche avant
+			    //var TargetLinearSpeedNeg = speedNeg; // vitesse marche arrière
+			    
+
+			    var aSpeed = gamepad.axes[2]; // vitesse angulaire
+			    var lSpeed = gamepad.axes[3]; // Vitesse linéaire
+			    
+
+			    // changement de signe de la vitesse car marche arrière
+			    //TargetLinearSpeedNeg = TargetLinearSpeedNeg * -1;
+			    // Mixage des 2 variables linearspeed pour marche avant et neglinearspeed pour marche arrière...
+			    var lSpeed = TargetLinearSpeedPos + TargetLinearSpeedNeg; 
+			    // zone +/- en dessous de laquelle la commande angulaire vaut 0
+			    var deadzoneX = 0.20;  
+			    // test d'ajustement pour la dead zone 
+			    aSpeed = (Math.abs(aSpeed) < deadzoneX ? 0 : aSpeed); 
+			    lSpeed = (Math.abs(lSpeed) < deadzoneX ? 0 : lSpeed); 
+
+			    // changement de sens dans l'orientation en cas de marche avant
+			    //aSpeed = (lSpeed >= 0 ? -aSpeed : aSpeed); 
+
+			    if (lSpeed >=0 ) { speedPos = lSpeed }
+			    else speedNeg = lSpeed;
+
+		        // Correction des vitesses pour gagner en précision...
+		        if (mode == 'precision') { 
+		        	jaugeClass = 'blue';
+		        	aSpeed = aSpeed/5;
+		         	lSpeed = lSpeed/5; // 10
+		       	} else {
+		       		aSpeed = aSpeed/2;
+		       		//lSpeed = lSpeed/5; // 10
+
+		       	
+		       	// Test de commande alternative
+		       	} 
+
+
+		       	ihm.driveJauges(speedPos,speedNeg,gamepad.axes[3],jaugeClass)
+
+			    
+
+
+			    // envoi de l'ordre
+			     var driveCommand = {
+			         driveSettings: '',
+			         channel: parameters.navCh,
+			         system: parameters.navSys,
+			         source:"Gamepad",
+			         dateA: '',
+			         command: 'onDrive',
+			         aSpeed: aSpeed,
+			         lSpeed: lSpeed,
+			         enable: 'true'
+			     }             
+			    navigation_interface.sendToRobot("", "", "Gamepad",driveCommand);
+
+
+				
+				console.log("-----------Axes ------------");
+	       	}
+	       	/**/
 
 
 	}

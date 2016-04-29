@@ -145,6 +145,19 @@
 	}
 
 
+	/*// Gamepad - Affichage des jauges
+	exports.driveJauges2 = function (speedPos,speedNeg,axes,jaugeClass) {
+		advanceValueBar.setAttribute("class", jaugeClass)
+		advanceValueBar.value = speedPos;
+	    reverseValueBar.setAttribute("class", jaugeClass)
+	    reverseValueBar.value = speedNeg;
+	    leftRightValueBar.innerHTML = 0 + ": " + axes.toFixed(4);
+	    leftRightValueBar.setAttribute("class", jaugeClass)
+	    leftRightValueBar.setAttribute("value", axes + 1);
+	}
+	/**/
+
+
 	// Gamepad - Affichage du module
 	exports.driveCommandBlock = function (order){
 		if ( order == 'open' ) {
@@ -196,8 +209,6 @@
             ihm.toggleModules('hide');
             style = 'position:fixed;top:0;right:0;bottom:0;left:0;height:100%;width:100%;'
 		 	$('#1to1_remoteVideo').attr('style',style);
-            
-
             remoteCameraView = "full";
 	    } 
 	}
@@ -207,7 +218,6 @@
     // On cache certains blocs pour éviter la superposition. 
 	// parce que modifier le z-index de la vidéo fullScreen ne fonctionne pas
 	exports.toggleModules = function(value) {
-		
 		if (value == 'show') {
 			$('#robotCommands').show();
 	    	$('#robotInfos').show();
