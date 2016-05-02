@@ -285,6 +285,18 @@
 		    ihm.driveCommandBlock('open')
 		    return;
 		
+		
+		}   else if (crossUp.pressed) {
+
+				atLeastOneButtonPressed = true;
+		    	buttonStatusDiv.innerHTML = "(CrossUp) Drive mode full Axes";
+		    	prepareDriveCommand(gamepad, buttonRT.value, buttonLT.value,"standard","onDriveAxe" );
+		    	btHommeMort = true;
+		    	onMove = true;
+		    	lastButtonName = "crossUp";
+		    	ihm.driveCommandBlock('open');
+		   		return;
+
 		// Si bouton homme mort non activés, on traite les autres commandes
 		} else {
 
@@ -439,24 +451,9 @@
 				ihm.toggleFullScreen();
 				//ihm.navigationView('center','bottom');
 		    	ihm.toggleHUD();
-			// Test Homme mort axe 2
-			} else if (crossUp.pressed) {
-
-				atLeastOneButtonPressed = true;
-		    	buttonStatusDiv.innerHTML = "(CrossUp) Drive mode full Axes";
-		    	prepareDriveCommand(gamepad, buttonRT.value, buttonLT.value,"standard","onDriveAxe" );
-		    	btHommeMort = true;
-		    	onMove = true;
-		    	lastButtonName = "crossUp";
-		    	ihm.driveCommandBlock('open');
-		   	return;
 			
-
-
-
-
-
-			}
+			// Test Homme mort axe 2
+			} 
 	  }
 
 	  if(!atLeastOneButtonPressed) {
@@ -662,54 +659,34 @@
 		}  
 			else if (command == 'onDriveAxe') {
 
+				
 				jaugeClass = 'red';
-				//console.log("-----------Axes ------------");
-				/*
-				console.log(gamepad.axes);
-				console.log(gamepad.axes[0]); // horizontal axe1 (-1 left +1 right)
-				console.log(gamepad.axes[1]); // vertical axe1 (-1 up +1 down)
-				console.log(gamepad.axes[2]); // horizontal axe2 (-1 left +1 right)
-				console.log(gamepad.axes[3]); // vertical axe2 (-1 up +1 down)
-				/**/
 				
 			    var aSpeed = gamepad.axes[2]; // vitesse angulaire
 			    var lSpeed = gamepad.axes[3]; // Vitesse linéaire
 			    
-
 			    var deadzoneX = 0.20;  
 			    // test d'ajustement pour la dead zone 
 			    aSpeed = (Math.abs(aSpeed) < deadzoneX ? 0 : aSpeed); 
 			    lSpeed = (Math.abs(lSpeed) < deadzoneX ? 0 : lSpeed); 
-
-			    var speedPos = 0;
-			    var speedNeg = 0;	
-
-			    if (lSpeed >0 ) { speedNeg = lSpeed }
-			    else if (lSpeed <0 ) speedPos = -lSpeed;
 		        
-			    // console.log (aSpeed)
-			    // console.log (lSpeed)
+				// Gamepad - Affichage du module FullAxes (param 'jauges' ou 'joystick' ou 'none')
+				ihm.switchGamepadDisplayMode("joystick")
+				//ihm.drawJoystick( aSpeed, lSpeed );
+				ihm.directionnalArrow (aSpeed,lSpeed)
+
 
 		        mode = "precision";
-
 		        // Correction des vitesses pour gagner en précision...
 		        if (mode == 'precision') { 
-		        	aSpeed = aSpeed/5;
+		        	aSpeed = aSpeed/2;
 		         	lSpeed = lSpeed/5; // 10
 		       	} else {
 		       		aSpeed = aSpeed/2;
 		       		lSpeed = lSpeed/2; // 10
 		       	
 		       	}
-		       	/**/ 
-
-				// Gamepad - Affichage du module FullAxes (param 'jauges' ou 'joystick' ou 'none')
-				ihm.switchGamepadDisplayMode("joystick")
-				ihm.drawJoystick( gamepad.axes[2], gamepad.axes[3] );
-				ihm.drawJoystick( aSpeed, lSpeed );
-		       	//ihm.driveJauges(speedPos,speedNeg,gamepad.axes[2],jaugeClass)
-
-
+		       				    
 			    // envoi de l'ordre
 			     var driveCommand = {
 			         driveSettings: '',
@@ -718,13 +695,15 @@
 			         source:"Gamepad",
 			         dateA: '',
 			         command: 'onDrive',
-			         aSpeed: aSpeed,
-			         lSpeed: lSpeed,
+			         aSpeed: -aSpeed,
+			         lSpeed: -lSpeed,
 			         enable: 'true'
 			     }             
-			    navigation_interface.sendToRobot("", "", "Gamepad",driveCommand);
-	       	}
-	       	/**/
+			    
+			   navigation_interface.sendToRobot("", "", "Gamepad",driveCommand);
+	       	
+	    }
+	       	
 
 
 	}

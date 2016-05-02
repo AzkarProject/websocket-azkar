@@ -163,124 +163,196 @@
 	// Gamepad - Dessin du joystick
 	exports.drawJoystick = function( posX, posY ) {
 
-			/*
-			var canvas = document.getElementById("canvasGamepad"); 
-			var context = canvas.getContext("2d");
-			//context.clearRect(-10000, -10000, 100000, 1000000);
 
-			context.beginPath();
-			context.fillStyle="#FF4422"
-			context.arc(80, 80, 70, 0, 2 * Math.PI);
-			context.fill();
-			/**/
+		var canvas = document.getElementById("canvasGamepad"); 
+		var context = canvas.getContext('2d');
+    	var canvasWidth = $('#canvasGamepad').width();
+    	var canvasHeight = $('#canvasGamepad').height();
 
-			/*
-			context.beginPath();
-			context.fillStyle="#000"
-			context.arc(150, 75, 30, 0, 2 * Math.PI);
-			context.fill();
-			/**/
+    	var diametre = canvasHeight*0.4;
+    	if (canvasWidth > canvasHeight) diametre = canvasHeight*0.4;
+    	else if (canvasWidth < canvasHeight) diametre = canvasWidth*0.4;
 
-			  var canvas = document.getElementById("canvasGamepad"); 
-		      var context = canvas.getContext('2d');
-		      context.clearRect(-10000, -10000, 100000, 1000000);
-		      // var x = canvas.width / 2;
-		      // var y = canvas.height / 2;
-		      // var y = canvas.height;
-		      // var x = canvas.width;
+		context.save();
+		context.clearRect(0, 0, canvasWidth, canvasHeight);
 
-		      context.beginPath();
-			  context.fillStyle="#FF4422"
-			  context.arc(150, 75, 60, 0, 2 * Math.PI);
-			  context.fill();
-		      
-		      // line color
-		      //context.strokeStyle = 'black';
-		      //context.stroke();	
-		      
-		      
-		      context.beginPath();
-			  context.fillStyle="#000"
-			  context.arc(150, 30, 30, 0, 2 * Math.PI); // p2 à 30 = oeil butée bas
-			  context.fill();
-			  
-			  context.beginPath();
-			  context.arc(150, 75, 30, 0, 2 * Math.PI); // p2 à 75 = oeil milieu
-			  context.fill();
-			  
-			  context.beginPath();			  
-			  context.arc(150, 120, 30, 0, 2 * Math.PI); // p2 à 120 = oeil butée bas
-			  context.fill();
-			  
-			  
-						  
-			  // Values verticales  20 /75 = Marche avant > 45
-			  // Values verticales  72/120 = marche arrière > 45
-			
-			  
-			  context.beginPath();			  
-			  context.arc(105, 75, 30, 0, 2 * Math.PI); // p2 à 30 = oeil butée bas
-			  context.fill();
-			  
-			  context.beginPath();			  
-			  context.arc(150, 75, 30, 0, 2 * Math.PI); // p2 à 75 = oeil milieu
-			  context.fill();
-			  
-			  context.beginPath();			  
-			  context.arc(195, 75, 30, 0, 2 * Math.PI); // p2 à 120 = oeil butée bas
-			  context.fill();
+		// Cercle orange
+		context.beginPath();
+		context.fillStyle="#FF4422"
+		//context.arc(150, 75, 60, 0, 2 * Math.PI);
+		context.arc(canvasWidth/2, canvasHeight/2, diametre, 0, 2 * Math.PI);
+		context.fill();
+		    
+		/*
+		context.beginPath();
+		context.fillStyle="#000"
+		context.arc(150, 30, 30, 0, 2 * Math.PI); // p2 à 30 = oeil butée bas
+		context.fill();
 
-			  var x = 150,  y = 75;
-			  
+		context.beginPath();
+		context.arc(150, 75, 30, 0, 2 * Math.PI); // p2 à 75 = oeil milieu
+		context.fill();
 
-			  var ratio = 45 / 100
-			  //console.log (posX)
-			  
-			  if ( posX > 0 ) {
-			  	x = 150+45 // Vers la droite
-			  } else if (posX < 0) {
-			  	x = 150-45 // >>> Vers la gauche
-			  }
-			  /**/
+		context.beginPath();			  
+		context.arc(150, 120, 30, 0, 2 * Math.PI); // p2 à 120 = oeil butée bas
+		context.fill();
+				  
+		// Values verticales  20 /75 = Marche avant > 45
+		// Values verticales  72/120 = marche arrière > 45
 
-			  
-			  if ( posY > 0 ) { 
-			  	y = 75+45 // Vers le haut
-			  } else if (posY < 0) {
-			  	y = 75-45 // Vers le bas
-			  }
-			  
+		context.beginPath();			  
+		context.arc(105, 75, 30, 0, 2 * Math.PI); // p2 à 30 = oeil droit
+		context.fill();
 
-			  context.beginPath();
-			  context.fillStyle="#fff"
-			  context.arc(x, y, 30, 0, 2 * Math.PI); // p2 à 75 = oeil milieu
-			  context.fill();
+		context.beginPath();			  
+		context.arc(150, 75, 30, 0, 2 * Math.PI); // p2 à 75 = oeil milieu
+		context.fill();
 
-		      /*
-		      var radius = 75;
-		      var startAngle = 1.1 * Math.PI;
-		      var endAngle = 1.9 * Math.PI;
-		      var counterClockwise = false;
+		context.beginPath();			  
+		context.arc(195, 75, 30, 0, 2 * Math.PI); // p2 à 120 = oeil gauchs
+		context.fill();
+		/**/
 
-		      context.beginPath();
-		      context.arc(x, y, radius, startAngle, endAngle, counterClockwise);
-		      context.lineWidth = 15;
-		      /**/
+		var x = canvasWidth/2,  y = canvasHeight/2;
+		//var ratio = 1/45;
+		var ratio = diametre*0.75
+		var ratioX = ratio*posX; x = x+ratioX;
+		var ratioY = ratio*posY; y = y+ratioY;
+		//console.log ("(horizontal)posX: "+posX)
+		//console.log ("(horizontal)>>>>: "+ratioX)
 
+		context.beginPath();
+		context.fillStyle="#fff"
+		context.arc(x, y, diametre/2, 0, 2 * Math.PI);
+		context.fill();
 
+		context.restore();
 
-			/* 
-			function assignToDiv(){ // this kind of function you are looking for
-			  dataUrl = canvas.toDataURL();
-			  document.getElementById('gamePadInfos').style.background='url('+dataUrl+')'
-			  //alert('cool')
-			}
-
-			assignToDiv()
-			
-			/**/
-		
+		/* 
+		function assignToDiv(){ // this kind of function you are looking for
+		  dataUrl = canvas.toDataURL();
+		  document.getElementById('gamePadInfos').style.background='url('+dataUrl+')'
+		  //alert('cool')
 		}
+
+		assignToDiv()
+		
+		/**/
+		
+	}
+
+
+	exports.directionnalArrow = function (posX,posY) {
+
+		var canvas = document.getElementById("canvasGamepad"); 
+		var context = canvas.getContext('2d');
+		var canvasWidth = $('#canvasGamepad').width();
+    	var canvasHeight = $('#canvasGamepad').height();
+	    
+	    var diametre = canvasHeight*0.4;
+    	if (canvasWidth > canvasHeight) diametre = canvasHeight*0.4;
+    	else if (canvasWidth < canvasHeight) diametre = canvasWidth*0.4;
+		var x = canvasWidth/2,  y = canvasHeight/2;
+		var ratio = diametre
+		var ratioX = ratio*posX; 
+		x = x+ratioX;
+		//if (posY > 0) x = x-ratioX 
+		//else x = x+ratioX;
+		var ratioY = ratio*posY; y = y+ratioY;
+
+	    var diametre = canvasHeight*0.4;
+    	if (canvasWidth > canvasHeight) diametre = canvasHeight*0.4;
+    	else if (canvasWidth < canvasHeight) diametre = canvasWidth*0.4;
+
+	    context.save();
+	    context.clearRect(0, 0, canvasWidth, canvasHeight);
+
+
+	    // Cercle orange
+	    context.beginPath();
+		context.fillStyle="#FF4422"
+		context.arc(canvasWidth/2, canvasHeight/2, diametre, 0, 2 * Math.PI);
+		context.fill();
+
+	    /*
+	    var p1 = [canvasWidth/2, canvasHeight/2];
+		var p2 = [Math.round(x), Math.round(y)]; 
+		console.log (Math.round(x) + " " +Math.round(y)) 
+		/**/
+
+	    var fromX = canvasWidth/2; 
+	    var fromY = canvasHeight/2; 
+	    var toX = Math.round(x); 
+	    var toY = Math.round(y);
+	    //console.log (">>> "+posY) 
+	    //console.log (toX + " " +toY) 
+
+
+
+	    if (toX != fromX || toY != fromY ) {
+		
+			var lineWidth = 2; 
+	    	var strokeLine = '#0000ff';
+	    	var fillArrow = '#0000ff';
+	    	var strokeArrow = '#ff0000';
+	    	var sizeArrow = 10;
+
+
+
+			drawArrow (context, fromX, fromY, toX, toY, lineWidth, strokeLine, fillArrow, strokeArrow, sizeArrow);
+		}
+
+	    context.restore();
+
+	}
+
+
+	// inspiré de https://www.snip2code.com/Snippet/265248/HTML5-Canvas--drawing-an-arrow-at-the-en
+	function drawArrow (context, fromX, fromY, toX, toY, lineWidth, strokeLine, fillArrow, strokeArrow, sizeArrow) {
+
+		var ctx = context;
+		
+		var p1 = [fromX, fromY];
+	    var p2 = [toX,  toY]; 
+
+		var dist = Math.sqrt((p2[0] - p1[0]) * (p2[0] - p1[0]) + (p2[1] - p1[1]) * (p2[1] - p1[1]));
+	    
+	    ctx.save();
+
+	    ctx.beginPath();
+	    ctx.lineWidth = lineWidth; //2
+	    ctx.strokeStyle = strokeLine; // '#0000ff';
+	    ctx.moveTo(p1[0], p1[1]);
+	    ctx.lineTo(p2[0], p2[1]);
+	    ctx.stroke();
+
+	    var angle = Math.acos((p2[1] - p1[1]) / dist);
+
+	    if (p2[0] < p1[0]) angle = 2 * Math.PI - angle;
+
+	    var size = sizeArrow; // 15;
+
+	    ctx.beginPath();
+	    ctx.translate(p2[0], p2[1]);
+	    ctx.rotate(-angle);
+	    ctx.fillStyle = fillArrow; //'#0000ff';
+	    ctx.lineWidth = lineWidth; // 2
+	    ctx.strokeStyle = strokeArrow; // '#ff0000';
+	    ctx.moveTo(0, -size);
+	    ctx.lineTo(-size, -size);
+	    ctx.lineTo(0, 0);
+	    ctx.lineTo(size, -size);
+	    ctx.lineTo(0, -size);
+	    ctx.closePath();
+	    ctx.fill();
+	    ctx.stroke();
+
+	    ctx.restore();
+
+
+	}
+
+
 
 
 	// Gamepad - Affichage du module FullAxes (param 'jauges' ou 'joystick' ou 'none')
