@@ -262,7 +262,7 @@
 		// bouton Homme mort avec vitesses en mode normal
 		if (buttonA.pressed) {
 		    // checkAxes(gamepad,"standard");
-		    // console.log('A');
+		    console.log('Gamepad Bouton A');
 		    atLeastOneButtonPressed = true;
 		    buttonStatusDiv.innerHTML = "(A) Drive mode standard";
 		    prepareDriveCommand(gamepad, buttonRT.value, buttonLT.value,"standard","onDrive" );
@@ -276,6 +276,7 @@
 		} else if (buttonX.pressed) {
 		   // checkAxes2(gamepad,"precision");
 		   // console.log('X');
+		   console.log('Gamepad Bouton X');
 		    atLeastOneButtonPressed = true;
 		    buttonStatusDiv.innerHTML = " (X) Drive mode précision";
 		    prepareDriveCommand(gamepad, buttonRT.value, buttonLT.value,"precision","onDrive" )
@@ -287,7 +288,7 @@
 		
 		
 		}   else if (crossUp.pressed) {
-
+				console.log('Gamepad UP');
 				atLeastOneButtonPressed = true;
 		    	buttonStatusDiv.innerHTML = "(CrossUp) Drive mode full Axes";
 		    	prepareDriveCommand(gamepad, buttonRT.value, buttonLT.value,"standard","onDriveAxe" );
@@ -310,6 +311,8 @@
 
 			// Ouverture connexion
 			if (buttonY.pressed) {
+			      
+			      console.log('Gamepad Bouton Y');
 			      // empécher l'appui continu sur la même touche 
 			      if (lastButtonName == "buttonY" ) {
 			      	return
@@ -334,7 +337,7 @@
 			
 			// Fermeture connexion
 			} else if (buttonB.pressed) {
-
+				  console.log('Gamepad Bouton B');
 				  // empécher l'appui continu sur la même touche 
 				  if (lastButtonName == "buttonB" ) return;
 				  if (IS_WebRTC_Connected == false ) {
@@ -358,6 +361,7 @@
 			// Cycle sélection caméra
 			} else if (buttonLB.pressed) {
 				
+				console.log('Gamepad Bouton LB');
 				// Ralentir l'appui continu sur la même touche
 				var newTimer = Date.now();
 				if (lastButtonName == "buttonLB" ) {
@@ -393,6 +397,7 @@
 			// Cycle selection définitions
 			} else if (buttonRB.pressed)  {
 				
+				console.log('Gamepad Bouton RB');
 				// Ralentir l'appui continu sur la même touche
 				var newTimer = Date.now();
 				if (lastButtonName == "buttonRB" ) {
@@ -430,6 +435,7 @@
 			// Ferme toutes les notifications
 			} else if (buttonBack.pressed)  {
 				
+			    console.log('Gamepad Bouton BACK');
 			    atLeastOneButtonPressed = true;
 			    lastButtonName = "buttonBack";
 				// hideAllMessages();
@@ -438,6 +444,7 @@
 			// Switche mode embed/plein écran
 			} else if (buttonStart.pressed)  {
 
+				 console.log('Gamepad Bouton START');
 				 // Ralentir l'appui continu sur la même touche
 			     var newTimer = Date.now();
 			     if (lastButtonName == "buttonStart" ) {
