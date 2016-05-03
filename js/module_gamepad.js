@@ -205,7 +205,7 @@
 		if(!gamepad.connected) return;
 		
 		// Check si le gamepad est un XBox 360
-		if(checkCompatibility(Gamepad) == false) return;
+		// if(checkCompatibility(Gamepad) == false) return;
 
 
 		var atLeastOneButtonPressed = false;
