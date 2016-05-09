@@ -253,13 +253,16 @@ socket.on("piloteOrder", function(data) {
             komcom.sendDrive(data);
         
 
+        } else if (data.command == 'onFullStop') {
+            komcom.sendStepStop() ;
+        
         } else if (data.command == 'onStep') {
             komcom.sendStep(data.typeMove,data.distance,data.MaxSpeed) ;
         
-        } else if (data.command == 'onStepStop') {
-            komcom.sendStepStop() ;
-        
+
         } 
+        
+
         
         
     }

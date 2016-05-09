@@ -382,7 +382,7 @@
 			      /**/
 
 			      // Test STOP
-			      var data = { command: 'onStepStop'}
+			      var data = { command: 'onFullStop'}
 				  navigation_interface.sendToRobot("", "", "Gamepad",data);
 				  onMove = false;
 				  return;

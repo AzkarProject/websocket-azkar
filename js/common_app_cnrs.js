@@ -107,6 +107,7 @@
 	exports.getMapSource = function() {
 		// var mapSource = '/images/mapRobosoft.png'; // Carte locaux Robosoft
 		var mapSource = '/images/mapLaboI3S.png'; // Carte I3S V2
+		var mapSource = '/images/labo3.png'; // Carte I3S V2
 		return mapSource
 	}
 
