@@ -192,8 +192,6 @@ exports.sendFullStop = function (data){
     //var url = "https://127.0.0.1:443/http://127.0.0.1:50000/api/drive" ;
     //var url = "https://127.0.0.1:443/http://127.0.0.1:50000/nav/go/stop" ;
     var url = "https://127.0.0.1:443/http://127.0.0.1:50000/lokarria/trajectoryfollower/replace" ; // CORS-ANYWHERE    
-    
-
 
     var xhr = new XMLHttpRequest();
     xhr.open('POST', url);
