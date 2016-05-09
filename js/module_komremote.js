@@ -44,10 +44,10 @@ if (type === "pilote-appelant") {
 
 	var SESSION = null;
 
-	//var KOMCOM_SERVER = 'komcom.53js.fr', // wss://127.0.0.1
-	var KOMCOM_SERVER = '127.0.0.1', // 'komcom.53js.fr'
-		// KOMCOM_REALM = 'com.kompai2', // com.thaby / com.kompai2
-		KOMCOM_REALM = 'com.thaby', 
+	var KOMCOM_SERVER = 'komcom.53js.fr', // wss://127.0.0.1
+	//var KOMCOM_SERVER = '127.0.0.1', // 'komcom.53js.fr'
+		KOMCOM_REALM = 'com.kompai2', // com.thaby / com.kompai2
+		//KOMCOM_REALM = 'com.thaby', 
 		KOMNAV_METHOD_DRIVE = KOMCOM_REALM + '.drive',
 		connection = new autobahn.Connection({ url: 'wss://' + KOMCOM_SERVER, realm: KOMCOM_REALM });
 

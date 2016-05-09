@@ -184,4 +184,23 @@ exports.getBattery = function (){
 } // End getBattery
 
 
+
+exports.sendStepStop = function (data){        
+        
+    
+    var url = "https://127.0.0.1:443/http://127.0.0.1:50000/lokarria/step/stop" ; // CORS-ANYWHERE
+
+        
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', url);
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    //xhr.send(data);
+    xhr.send();
+    xhr.closed;
+           
+            
+}
+
+
+
 })(typeof exports === 'undefined'? this['komcom']={}: exports);

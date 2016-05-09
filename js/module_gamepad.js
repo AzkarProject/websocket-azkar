@@ -205,7 +205,7 @@
 		if(!gamepad.connected) return;
 		
 		// Check si le gamepad est un XBox 360
-		// if(checkCompatibility(Gamepad) == false) return;
+		if(checkCompatibility(Gamepad) == false) return;
 
 
 		var atLeastOneButtonPressed = false;
@@ -262,7 +262,7 @@
 		// bouton Homme mort avec vitesses en mode normal
 		if (buttonA.pressed) {
 		    // checkAxes(gamepad,"standard");
-		    console.log('Gamepad Bouton A');
+		    //console.log('Gamepad Bouton A');
 		    atLeastOneButtonPressed = true;
 		    buttonStatusDiv.innerHTML = "(A) Drive mode standard";
 		    prepareDriveCommand(gamepad, buttonRT.value, buttonLT.value,"standard","onDrive" );
@@ -276,7 +276,7 @@
 		} else if (buttonX.pressed) {
 		   // checkAxes2(gamepad,"precision");
 		   // console.log('X');
-		   console.log('Gamepad Bouton X');
+		   //console.log('Gamepad Bouton X');
 		    atLeastOneButtonPressed = true;
 		    buttonStatusDiv.innerHTML = " (X) Drive mode précision";
 		    prepareDriveCommand(gamepad, buttonRT.value, buttonLT.value,"precision","onDrive" )
@@ -288,7 +288,7 @@
 		
 		
 		}   else if (crossUp.pressed) {
-				console.log('Gamepad UP');
+				// console.log('Gamepad UP');
 				atLeastOneButtonPressed = true;
 		    	buttonStatusDiv.innerHTML = "(CrossUp) Drive mode full Axes";
 		    	prepareDriveCommand(gamepad, buttonRT.value, buttonLT.value,"standard","onDriveAxe" );
@@ -312,14 +312,37 @@
 			// Ouverture connexion
 			if (buttonY.pressed) {
 			      
-			      console.log('Gamepad Bouton Y');
+			      //console.log('Gamepad Bouton Y');
 			      // empécher l'appui continu sur la même touche 
-			      if (lastButtonName == "buttonY" ) {
-			      	return
-			      }
+			      // if (lastButtonName == "buttonY" ) return
+
+			    // Ralentir l'appui continu sur la même touche
+				var newTimer = Date.now();
+				if (lastButtonName == "buttonY" ) {
+				   	var testDelay = newTimer - lastTimer;
+				   	if ( testDelay < 5000 ) {
+				   		notifications.writeMessage ("standard","GAMEPAD","(Y) Ouverture/fermeture de connexion en cours, veuillez patienter...",5000)
+				   		return
+						}				
+				} lastTimer = newTimer;
+			      
+			      
 			      if (IS_WebRTC_Connected == true ) {
+			      	
+			      	/*
 			      	notifications.writeMessage ("error","GAMEPAD","(Y) Connexion déjà ouverte ! ",3000)
 			      	return;
+			      	/**/
+
+				   	notifications.writeMessage ("standard","GAMEPAD","(Y) Fermeture connexion",3000)
+				   	notifications.spawnNotification("GAMEPAD","(Y) Fermeture connexion",3000)
+				   	usersConnection.closeRobotConnexion();
+				    lastButtonName = "buttonY";
+				    onMove = false;
+				   	return;
+			      
+
+
 			      }
 			      //driveCommandBlock('open')
 			      //buttonStatusDiv.innerHTML = "(Y) Ouverture connexion";
@@ -337,7 +360,7 @@
 			
 			// Fermeture connexion
 			} else if (buttonB.pressed) {
-				  console.log('Gamepad Bouton B');
+				  /*//console.log('Gamepad Bouton B');
 				  // empécher l'appui continu sur la même touche 
 				  if (lastButtonName == "buttonB" ) return;
 				  if (IS_WebRTC_Connected == false ) {
@@ -356,12 +379,18 @@
 			      lastButtonName = "buttonB";
 			      onMove = false;
 			      return;
+			      /**/
 
+			      // Test STOP
+			      var data = { command: 'onStepStop'}
+				  navigation_interface.sendToRobot("", "", "Gamepad",data);
+				  onMove = false;
+				  return;
 
 			// Cycle sélection caméra
 			} else if (buttonLB.pressed) {
 				
-				console.log('Gamepad Bouton LB');
+				//console.log('Gamepad Bouton LB');
 				// Ralentir l'appui continu sur la même touche
 				var newTimer = Date.now();
 				if (lastButtonName == "buttonLB" ) {
@@ -397,7 +426,7 @@
 			// Cycle selection définitions
 			} else if (buttonRB.pressed)  {
 				
-				console.log('Gamepad Bouton RB');
+				//console.log('Gamepad Bouton RB');
 				// Ralentir l'appui continu sur la même touche
 				var newTimer = Date.now();
 				if (lastButtonName == "buttonRB" ) {
@@ -435,7 +464,7 @@
 			// Ferme toutes les notifications
 			} else if (buttonBack.pressed)  {
 				
-			    console.log('Gamepad Bouton BACK');
+			    //console.log('Gamepad Bouton BACK');
 			    atLeastOneButtonPressed = true;
 			    lastButtonName = "buttonBack";
 				// hideAllMessages();
@@ -444,7 +473,7 @@
 			// Switche mode embed/plein écran
 			} else if (buttonStart.pressed)  {
 
-				 console.log('Gamepad Bouton START');
+				 //console.log('Gamepad Bouton START');
 				 // Ralentir l'appui continu sur la même touche
 			     var newTimer = Date.now();
 			     if (lastButtonName == "buttonStart" ) {
@@ -681,6 +710,9 @@
 				ihm.switchGamepadDisplayMode("joystick")
 				//ihm.drawJoystick( aSpeed, lSpeed );
 				ihm.directionnalArrow (aSpeed,lSpeed)
+
+				// changement de sens dans l'orientation en cas de marche avant
+		    	aSpeed = (lSpeed > 0 ? -aSpeed : aSpeed); 
 
 
 		        mode = "precision";
