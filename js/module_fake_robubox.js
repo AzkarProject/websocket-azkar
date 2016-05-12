@@ -39,7 +39,10 @@ console.log("module_fake_robubox chargé")
 //fakeRobubox = true;
 
 fakeRobubox = appSettings.isFakeRobubox();
-if (typeof appCNRS != 'undefined') fakeRobubox = appCNRS.isFakeRobubox();
+// if (typeof appCNRS != 'undefined') fakeRobubox = appCNRS.isFakeRobubox();
+
+// Si existence d'un configuration spécifique à la branche de dev:
+if (typeof appDevBranch != 'undefined') fakeRobubox = appDevBranch.isFakeRobubox();
 
 
 function getFakeDataMap() {

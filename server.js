@@ -36,7 +36,7 @@
 // ------------------------ Elements communs client/serveur
 var tools = require('./js/common_tools'); // méthodes génériques
 var models = require('./js/common_models'); // objets
-var appSettings = require('./js/settings/common_app_settings'); // paramètres de configuration de l'application
+var appSettings = require('./js/common_app_settings'); // paramètres de configuration de l'application
 
 
 // ------ Variables d'environnement & paramètrages serveurs ------------------
@@ -55,23 +55,32 @@ indexUrl = "https://" + ipaddress + ":" + port; // Par défaut...
 pathKey = appSettings.getPathKey();
 pathCert = appSettings.getPathCert();
 
-// Si présence du fichier de config propre au labo: Overwrinting des settings,
-// >> différentes IP serveurs selon le nom des machines (VM1, Vm2, Livebox ou local Adhoc) 
-var appCNRS;
+appName = appSettings.appName();
+appBranch = appSettings.appBranch();
+appVersion = appSettings.appVersion();
+appCredit= appSettings.appCredit()
+
+// Si présence d'un fichier de config propre à la branche: Overwriting des settings,
+var appBranchSettings;
 try {
-   appCNRS = require('./js/cnrs/common_app_cnrs'); 
-   appCNRS.setLaboServers();
-   console.log("Configuration Labo I3S")
+   appBranchSettings = require('./js/branch_settings/common_app_branch_settings.js'); 
+   appBranchSettings.setServers();
+   appBranchSettings.setBranch();
+   console.log("Configuration Branche")
 }
 catch (e) {
    console.log("Configuration Standard") 
 }
 
+
+
 console.log("***********************************");
 console.log('');
 // console.log('(' + appSettings.appBranch() + ') ' + appSettings.appName() + " V " + appSettings.appVersion());
-console.log(appSettings.appName() + ': ' + appSettings.appBranch() + " (Version " + appSettings.appVersion()+")");
-console.log(appSettings.appCredit());
+// console.log(name + ': ' + branch + " (Version " + version+")");
+console.log(appName + " V " + appVersion+ "( branche "+ appBranch + ")" );
+
+console.log(appCredit);
 console.log("***********************************");
 console.log("Serveur sur machine: " + hostName);
 
@@ -90,16 +99,6 @@ var https_options = {
     key: key,
     cert: cert
 };
-
-try {
-   appCNRS = require('./js/common_app_cnrs'); 
-   appCNRS.setLaboServers();
-   console.log("Configuration Labo I3S")
-}
-catch (e) {
-   console.log("Configuration Standard") 
-
-}
 
 var PORT = port;
 var HOST = ipaddress;

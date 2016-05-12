@@ -26,28 +26,51 @@
 * logiciel à leurs besoins dans des conditions permettant d'assurer la
 * sécurité de leurs systèmes et ou de leurs données et, plus généralement, 
 * à l'utiliser et l'exploiter dans les mêmes conditions de sécurité. 
-
+*
 * Le fait que vous puissiez accéder à cet en-tête signifie que vous avez 
 * pris connaissance de la licence CeCILL-C, et que vous en avez accepté les
 * termes.
 *
 */
 
+
+
 (function(exports){
 
+	
 	// Pour tester si le ficher est présent 
 	// dans la distribution...
 	exports.isExist = function(){
 		return true;
 	}
 
-	exports.setLaboServers = function(){
+	exports.setBranch = function(){
+		appBranch = "1to1-cnrs";
+	}
+
+	exports.setServers = function(){
 		
+		
+		// OverWriter les congig serveurs par défaut. Exemple: 
+
+		/*
+		
+
+
+		port=80
+		ipaddress = "xxx.xx.xx.xx" (ou le nom du domaine...)
+		pathKey = './ssl/hacksparrow-key.pem';
+		pathName = './ssl/hacksparrow-cert.pem';
+	    indexUrl = "https://" + ipaddress + ":" + port;
+		*/
+
+		// ----------------------------------- CNRS
+
 		dyDns = 'azkar.ddns.net'; // Adresse no-Ip pointant sur Livebox domicile
 		pathKey = './ssl/hacksparrow-key.pem';
 		pathName = './ssl/hacksparrow-cert.pem';
 
-		if (hostName == "azkar-Latitude-E4200") indexUrl = "http://" + dyDns; // Si machine derrière liveBox && noip
+
 
 		// Machines windows - I3S
 		if (hostName == "azcary") ipaddress = "192.168.173.1"; // Ip du réseau virtuel AdHoc
@@ -69,11 +92,59 @@
 		port=80
 		indexUrl = "https://" + ipaddress + ":" + port;
 
+		if (hostName == "azkar-Latitude-E4200") indexUrl = "http://" + dyDns; // Si machine derrière liveBox && noip
+
 	}
 
 
 	exports.setIceServers = function(type) {
 		 
+
+		/*// ---------- Exemple
+		TURN_username = "webrtc";
+		TURN_credential = "webrtc";
+		var server = {'iceServers': []};
+		server.iceServers.push({ url: 'stun:stun.l.google.com:19302'});
+		server.iceServers.push({urls: "turn:xxx.xxx.xxx.xxx:XX",credential: TURN_credential ,username: TURN_username}); 
+		return server
+		/**/
+
+
+
+
+
+		/*// ---------------- ROBOSOFT
+
+		// rfc5766 avec authentification
+		TURN_username = "robosoft";
+		TURN_credential = "robosoft";
+		var server = {'iceServers': []};
+		server.iceServers.push({ url: 'stun:stun.l.google.com:19302'});
+		//server.iceServers.push({ url: "turn:turn.anyfirewall.com:443?transport=tcp",credential: "webrtc",username: "webrtc"});
+		// Serveur STUN/TURN du CNRS... Essayez avec le votre...
+		server.iceServers.push({urls: "turn:134.59.130.142:3478",credential: TURN_credential ,username: TURN_username}); 
+		return server
+		/**/
+
+
+
+		/*// ---------------  ANOTHERWORLD
+
+		// rfc5766 avec authentification
+		TURN_username = "anotherworld";
+		TURN_credential = "anotherworld";
+		var server = {'iceServers': []};
+		server.iceServers.push({ url: 'stun:stun.l.google.com:19302'});
+		//server.iceServers.push({ url: "turn:turn.anyfirewall.com:443?transport=tcp",credential: "webrtc",username: "webrtc"});
+		// Serveur STUN/TURN du CNRS... Essayez avec le votre...
+		server.iceServers.push({urls: "turn:134.59.130.142:3478",credential: TURN_credential ,username: TURN_username}); 
+		return server
+
+		/**/
+
+		// ------------------ CNRS 
+
+
 		// rfc5766 avec authentification
 		TURN_username = "azkar";
 		TURN_credential = "azkar";
@@ -91,7 +162,7 @@
 
 		// options pour l'objet PeerConnection
 		server = {'iceServers': []}; // OK sur même réseau...
-		// server.iceServers.push({ url: 'stun:stun.l.google.com:19302'});
+		server.iceServers.push({ url: 'stun:stun.l.google.com:19302'});
 		// rfc5766  sur VM1 (Cluster SPARKS)
 		server.iceServers.push({urls: "turn:134.59.130.142:3478",credential: TURN_credential ,username: TURN_username}); 
 		return server
@@ -106,21 +177,10 @@
 
 	exports.getMapSource = function() {
 		// var mapSource = '/images/mapRobosoft.png'; // Carte locaux Robosoft
-		//var mapSource = '/images/mapLaboI3S.png'; // Carte I3S V2
-		var mapSource = '/images/labo3.png'; // Carte I3S V2
+		// var mapSource = '/images/mapLaboI3S.png'; // Carte I3S V2
+		var mapSource = '/images/labo3.png'; // Carte I3S V3
 		return mapSource
 	}
 
-	exports.getKey = function() {
-		var key = './ssl/hacksparrow-key.pem';
-		return key
-	}
 
-	exports.getKeyCert = function() {
-		var cert = './ssl/hacksparrow-cert.pem';
-		return cert
-	}
-
-
-
-})(typeof exports === 'undefined'? this['appCNRS']={}: exports);
+})(typeof exports === 'undefined'? this['appDevBranch']={}: exports);

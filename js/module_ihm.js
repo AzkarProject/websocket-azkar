@@ -539,7 +539,32 @@
 	}, false);
 
 	
+	
+	// Bandeau supérieur
+	exports.getHeaderPage = function() {
 
+      // On récupère depuis nodejs le nom de la machine serveur
+      // en passant par de l'AJAX plutôt que par websocket....
+      $.get( "/getvar", function( data ) {
+        hostName = data.hostName;
+
+        appName = appSettings.appName();
+        appBranch = appSettings.appBranch();
+        appVersion = appSettings.appVersion();
+        appCredit= appSettings.appCredit()
+
+        if (typeof appDevBranch != 'undefined') appDevBranch.setBranch();
+
+        infoServerTxt = "<i>"+appName;
+        infoServerTxt += " Version " + appVersion;
+        infoServerTxt += " (Branche "+appBranch+" / ";
+        infoServerTxt += " Serveur: "+hostName+")";
+        var infoCredit = " </i><br/> " + appCredit;
+        /**/
+        if (hostName != "???" ) $('#zone_info_server').replaceWith(infoServerTxt+infoCredit);
+      });
+
+	}
 
 
  
