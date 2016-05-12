@@ -264,14 +264,24 @@ function setRobotRemoteView(viewSetting) {
 // --------- Résolution des caméras vidéos -----------------------
 
 // Génère les options des résolution
-var listOptionsDefinition = '<option value="VLD" selected="selected" >Very Low: 100*52</option>';   
+/*var listOptionsDefinition = '<option value="VLD" selected="selected" >Very Low: 100*52</option>';   
 listOptionsDefinition += '<option value="144p">144p: 196*144</option>'; 
 listOptionsDefinition += '<option value="244p">244p: 350*240</option>';
 listOptionsDefinition += '<option value="360p">360p: 480*360</option>'; 
 listOptionsDefinition += '<option value="VGA">VGA: 640*480</option>';
 listOptionsDefinition += '<option value="858p">858p: 858*480</option>';
 listOptionsDefinition += '<option value="720p">720p: 1280*720</option>';
-listOptionsDefinition += '<option value="1080p">1080p: 1920*1200</option>';
+listOptionsDefinition += '<option value="1080p">1080p: 1920*1080</option>';
+/**/
+
+
+var listOptionsDefinition = '<option value="144p">144p: 196x144</option>'; 
+listOptionsDefinition += '<option value="QVGA">QVGA: 320x240</option>'; 
+listOptionsDefinition += '<option value="VGA">VGA: 640x480</option>';
+listOptionsDefinition += '<option value="HD">HD: 1280x720</option>';
+listOptionsDefinition += '<option value="Full HD">Full HD: 1920x1080</option>';
+
+
 
 // Sélecteurs html des options de résolution
 $('#robot_camdef_select').html(listOptionsDefinition); 

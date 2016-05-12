@@ -178,6 +178,8 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || 
 server = appSettings.setIceServers();
 if (typeof appCNRS != 'undefined') server = appCNRS.setIceServers(type);
 
+
+
 // corection du bug createDataChannel à partir de Chrome M46
 options = { optional: [{DtlsSrtpKeyAgreement: true }]};
 
@@ -352,6 +354,10 @@ function getAllAudioVideoDevices(successCallback, failureCallback) {
                 audioInputDevices: audioInputDevices,
                 audioOutputDevices: audioOutputDevices
             });
+            console.log ("SUCCESSCALLBACK")
+
+        } else {
+            alert ("ERROR");
         }
     });
 }
@@ -360,7 +366,8 @@ function getAllAudioVideoDevices(successCallback, failureCallback) {
 // Affectation et traitement des résultats générées par getAllAudioVideoDevices()
 function populateListDevices(result,sourceDevices) {
     console.log("@ populateListDevices()");
-    // console.log(result);
+    console.log(sourceDevices);
+    //console.log(result);
 
     // Si sources locales (pilote)
     if (sourceDevices == "local") {
@@ -438,6 +445,8 @@ function populateListDevices(result,sourceDevices) {
 function populateFormDevices(device,sourceDevices) {
 
     console.log("@ populateFormDevices()");
+    //console.log(sourceDevices);
+    //console.log(device);
 
     var option = document.createElement('option');
     option.id = device.id;
@@ -486,8 +495,10 @@ function getLocalConstraint() {
     var camDef = "HD";
     if (type == "pilote-appelant") camDef = parameters.camDefPilote;
     else if (type == "robot-appelé") camDef = parameters.camDefRobot;
-    var maxCamWidth = 100, maxCamHeight = 100;
+    var minCamWidth = 100, minCamHeight = 52;
+    var maxCamWidth = 1920, maxCamHeight = 1080;
 
+    /*
     if (camDef == 'VLD') {maxCamWidth = 100; maxCamHeight = 52}
     else if (camDef == '144p') {maxCamWidth = 196; maxCamHeight = 144}
     else if (camDef == '244p') {maxCamWidth = 350; maxCamHeight = 240}  
@@ -495,13 +506,38 @@ function getLocalConstraint() {
     else if (camDef == 'VGA') {maxCamWidth = 640; maxCamHeight = 480}
     else if (camDef == '858p') {maxCamWidth = 858; maxCamHeight = 480} 
     else if (camDef == '720p') {maxCamWidth = 1280; maxCamHeight = 720} 
-    else if (camDef == '1080p') {maxCamWidth = 1920; maxCamHeight = 1200} 
+    else if (camDef == '1080p') {maxCamWidth = 1920; maxCamHeight = 1080} 
+    /**/
     
+    /*
+    if (camDef == 'VLD') {maxCamWidth = 100; maxCamHeight = 52}
+    else if (camDef == '144p') {maxCamWidth = 196; maxCamHeight = 144}
+    else if (camDef == '244p') {minCamWidth = 196; minCamHeight = 144, maxCamWidth = 350; maxCamHeight = 240}  
+    else if (camDef == '360p') {minCamWidth = 350; minCamHeight = 240, maxCamWidth = 480; maxCamHeight = 360} 
+    else if (camDef == 'VGA') {minCamWidth = 480; minCamHeight = 360, maxCamWidth = 640; maxCamHeight = 480}
+    else if (camDef == '858p') {minCamWidth = 640; minCamHeight = 480, maxCamWidth = 858; maxCamHeight = 480} 
+    else if (camDef == '720p') {minCamWidth = 858; minCamHeight = 480, maxCamWidth = 1280; maxCamHeight = 720} 
+    else if (camDef == '1080p') {minCamWidth = 1280; minCamHeight = 720, maxCamWidth = 1920; maxCamHeight = 1080} 
+    /**/
+
+
+    var listOptionsDefinition = '<option value="144p">144p: 196x144</option>'; 
+    listOptionsDefinition += '<option value="QVGA">QVGA: 320x240</option>'; 
+    listOptionsDefinition += '<option value="VGA">VGA: 640x480</option>';
+    listOptionsDefinition += '<option value="HD">HD: 1280x720</option>';
+    listOptionsDefinition += '<option value="Full HD">Full HD: 1920x1080</option>';
+
+    if (camDef == '144p') {minCamWidth = 100; minCamHeight = 52, maxCamWidth = 196; maxCamHeight = 144}
+    else if (camDef == 'QVGA') {minCamWidth = 196; minCamHeight = 144, maxCamWidth = 320; maxCamHeight = 240}  
+    else if (camDef == 'VGA') {minCamWidth = 320; minCamHeight = 240, maxCamWidth = 640; maxCamHeight = 480}
+    else if (camDef == 'HD') {minCamWidth = 640; minCamHeight = 480, maxCamWidth = 1280; maxCamHeight = 720}
+    else if (camDef == 'Full HD') {minCamWidth = 1280; minCamHeight = 720, maxCamWidth = 1920; maxCamHeight = 1080} 
+
     var framerate = 24;
 
     var localConstraints;
     
-    /*// ancienne version. bloquait à 640*480
+    /*// Ancienne version. bloquait à 640*480
     localConstraints = { 
             audio: { optional: [{sourceId: audioSource}] },
             video: {
@@ -511,17 +547,58 @@ function getLocalConstraint() {
         }
     /**/
 
-    // Nouvelle version. Ne passe plus si Chrome en dessous de la V 46   
+    /*// Nouvelle version permettant d'aller au dela de 640*480'
+    // Fonctionne seulement à partir de Chrome V 46 ++ 
+    // >>> BUG: Ne prend pas en compte la définition minimale déclarée
+    // >>> et impose une définition limitée à 320*180 maximum si la caméra ne supporte pas la définition demandée.
     localConstraints = { 
         audio: { optional: [{sourceId: audioSource}] },
         video: {
                 deviceId: videoSource ? {exact: videoSource} : undefined, 
+                minWidth: minCamWidth, 
+                minHeight: minCamHeight,
                 width: maxCamWidth, 
                 height: maxCamHeight 
         }
     }
+    /**/
 
-    
+    /* // Bonne pratique "officielle" de l'implémentation (Chrome V46 ++)
+    // >>> BUG: plante lamentablement si la caméra ne supporte pas la définition demandée
+    localConstraints = { 
+        audio: { optional: [{sourceId: audioSource}] },
+        video: {
+                deviceId: videoSource ? {exact: videoSource} : undefined, 
+                width: {exact: maxCamWidth}, 
+                height: {exact: maxCamHeight}
+        }
+    }
+    /**/
+   
+    /* // OK sur Chrome V50
+    // >>> Défaut: Pas de définition minimale déclarée, donc 320*180 max si la caméra ne supporte pas la définition demandée.
+    localConstraints = { 
+        audio: { optional: [{sourceId: audioSource}] },
+        video: {
+                deviceId: videoSource ? {exact: videoSource} : undefined, 
+                width: {ideal: maxCamWidth}, 
+                height: {ideal: maxCamHeight}
+        }
+    }
+    /**/
+
+    // OK sur V50.
+    // >>> Prend en compte la définition minimale déclarée si la caméra ne supporte pas la définition max demandée.  
+    localConstraints = { 
+        audio: { optional: [{sourceId: audioSource}] },
+        video: {
+                deviceId: videoSource ? {exact: videoSource} : undefined, 
+                width: {min:minCamWidth ,ideal: maxCamWidth}, 
+                height: {min:minCamHeight ,ideal: maxCamHeight}
+        }
+    }
+    /**/
+
     return localConstraints;
 } 
 

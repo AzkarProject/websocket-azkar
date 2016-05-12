@@ -22,6 +22,43 @@
         <hr/>
         
 
+        <section id="settingsArea" class="fullSizeContainerBox">
+            
+            <div id="colFullTopSettingsArea" class="insideFlex colorSettings shadowBlack floatLeft " style="width:1248px">
+                <strong> Settings </strong>
+                <hr/>
+
+                <span id="robotVideoSetting" class="">
+                    IHM Robot - Local view: 
+                    <input type="radio" name="RlVidSetting" value="show" id="RlVshow" checked onclick="setRobotLocalView('show')"> <label for="RlVshow">Show</label>
+                    <input type="radio" name="RlVidSetting" value="hide" id="RlVhide" onclick="setRobotLocalView('hide')"/> <label for="RlVhide">Hide</label>
+                    &nbsp;&nbsp; || &nbsp;&nbsp; Remote view: 
+                    <input type="radio" name="RRVidSetting" value="show" id="RRVshow" checked onclick="setRobotRemoteView('show')"> <label for="RRVshow">Show</label>
+                    <input type="radio" name="RRVidSetting" value="hide" id="RRVhide" onclick="setRobotRemoteView('hide')"/> <label for="RRVhide">Hide</label>
+                    &nbsp;&nbsp; || &nbsp;&nbsp;
+                    <label for="robot_camdef_select">Camera Resolution &nbsp;&nbsp; </label>
+                    <select id="robot_camdef_select"></select>
+                </span>
+                <br/>
+                
+                <span id="piloteVideoSetting" class="">
+                    IHM Pilote - Local view: 
+                    <input type="radio" name="PlVidSetting" value="show" id="PlVshow" checked onclick="setPiloteLocalView('show')"> <label for="PlVshow">Show</label>
+                    <input type="radio" name="PlVidSetting" value="hide" id="PlVhide" onclick="setPiloteLocalView('hide')"/> <label for="PlVhide">Hide</label>
+                    &nbsp;&nbsp; || &nbsp;&nbsp; Remote view: 
+                    <input type="radio" name="PRVidSetting" value="high" id="PRVhigh" onclick="setPiloteRemoteView('show')" checked/> <label for="PRVhigh">Show</label>
+                    <input type="radio" name="PRVidSetting" value="hide" id="PRVhide" onclick="setPiloteRemoteView('hide')"/> <label for="PRVhide">Hide</label>
+                    &nbsp;&nbsp; || &nbsp;&nbsp;
+                        <label for="pilot_camdef_select">Camera Resolution &nbsp;&nbsp; </label>
+                        <select id="pilot_camdef_select"></select>
+                </span>
+                <hr/>
+            </div>
+        </section>
+
+
+
+
         <section id="controlArea" class="fullSizeContainerBox">
 
             <div id="colGaucheUpControlArea" class="floatLeft oneQuarterContainerBox">
@@ -109,17 +146,31 @@
                     
                       
                     <div id="drive-commands" style="display:none; text-align:center;">    
-                        <b>Direction</b><br/>
-                        <progress id="leftRight" value=1 max=2></progress><br><br/>
+                        
+                        <canvas id="canvasGamepad" style="border: 1px solid grey"></canvas>
 
-                        <b>Speed</b><br/>
-                         Avance:<br/><progress  id="advanceValue" value=0 min=0 max=1></progress>
-                         <br/>
-                         Reverse:<br/><progress id="reverseValue" value=0 min=0 max=1></progress>
-                        <br/>
-                        <br/>
-                        <b>Commande</b><br/>
-                        <div id="buttonStatus"></div>
+                        
+                        <div id = "gamePadInfos">
+                         
+                            
+                            <b>Direction</b><br/>
+                            <progress id="leftRight" value=1 max=2></progress><br><br/>
+
+                            <b>Speed</b><br/>
+                             Avance:<br/><progress  id="advanceValue" value=0 min=0 max=1></progress>
+                             <br/>
+                             Reverse:<br/><progress id="reverseValue" value=0 min=0 max=1></progress>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+
+                            <b>Commande</b><br/>
+                            <div id="buttonStatus"></div>
+                            
+
+                        </div>
+                        
                        
                     </div>
                 
@@ -167,9 +218,7 @@
             </div>
 
             <div id="colDroiteUpControlArea2" class="floatRight tripleQuarterBox" style="width:960px">
-                
-
-            
+                            
                 <div id="NavigationArea" class="insideFlex robot tripleQuarterBox shadowBlack floatRight" >
                         
                         <div id="embededNav">
@@ -203,12 +252,6 @@
 
                 </div>
 
-
-
-
-
-
-
                 <div id="WebRTC_Logs" class="insideFlex oneQuarterbox pilote shadowBlack device" style="height:200px">
                     
                     <!--<div id="dataChannelArea" class="insideFlex pilote shadowBlack floatLeft fourQuarterBox">-->
@@ -227,42 +270,6 @@
                 </div>
             </div>    
         
-        </section>
-
-
-
-        <section id="settingsArea" class="fullSizeContainerBox">
-            
-            <div id="colFullTopSettingsArea" class="insideFlex colorSettings shadowBlack floatLeft " style="width:1248px">
-                <strong> Settings </strong>
-                <hr/>
-
-                <span id="robotVideoSetting" class="">
-                    IHM Robot - Local view: 
-                    <input type="radio" name="RlVidSetting" value="show" id="RlVshow" checked onclick="setRobotLocalView('show')"> <label for="RlVshow">Show</label>
-                    <input type="radio" name="RlVidSetting" value="hide" id="RlVhide" onclick="setRobotLocalView('hide')"/> <label for="RlVhide">Hide</label>
-                    &nbsp;&nbsp; || &nbsp;&nbsp; Remote view: 
-                    <input type="radio" name="RRVidSetting" value="show" id="RRVshow" checked onclick="setRobotRemoteView('show')"> <label for="RRVshow">Show</label>
-                    <input type="radio" name="RRVidSetting" value="hide" id="RRVhide" onclick="setRobotRemoteView('hide')"/> <label for="RRVhide">Hide</label>
-                    &nbsp;&nbsp; || &nbsp;&nbsp;
-                    <label for="robot_camdef_select">Camera Resolution &nbsp;&nbsp; </label>
-                    <select id="robot_camdef_select"></select>
-                </span>
-                <br/>
-                
-                <span id="piloteVideoSetting" class="">
-                    IHM Pilote - Local view: 
-                    <input type="radio" name="PlVidSetting" value="show" id="PlVshow" checked onclick="setPiloteLocalView('show')"> <label for="PlVshow">Show</label>
-                    <input type="radio" name="PlVidSetting" value="hide" id="PlVhide" onclick="setPiloteLocalView('hide')"/> <label for="PlVhide">Hide</label>
-                    &nbsp;&nbsp; || &nbsp;&nbsp; Remote view: 
-                    <input type="radio" name="PRVidSetting" value="high" id="PRVhigh" onclick="setPiloteRemoteView('show')" checked/> <label for="PRVhigh">Show</label>
-                    <input type="radio" name="PRVidSetting" value="hide" id="PRVhide" onclick="setPiloteRemoteView('hide')"/> <label for="PRVhide">Hide</label>
-                    &nbsp;&nbsp; || &nbsp;&nbsp;
-                        <label for="pilot_camdef_select">Camera Resolution &nbsp;&nbsp; </label>
-                        <select id="pilot_camdef_select"></select>
-                </span>
-                <hr/>
-            </div>
         </section>
 
         <section id="TopNotification">
@@ -292,8 +299,6 @@
 
          </section>
 
-
-
     <script>
         var type = "pilote-appelant";
         var proto = "1to1";
@@ -307,11 +312,9 @@
     
     <script src="/js/common_tools.js"></script>
     <script src="/js/common_models.js"></script>
-    <script src="/js/common_app_settings.js"></script>
-    <script src="/js/common_app_cnrs.js"></script>      
+    <script src="/js/settings/common_app_settings.js"></script>
+    <script src="/js/cnrs/common_app_cnrs.js"></script>      
       
-
-
     <script src='/js/1to1_01_websocket.js'></script>
     <script src='/js/1to1_02_pre_signaling.js'></script>
     <script src='/js/1to1_03_signaling.js'></script>
@@ -327,6 +330,17 @@
     <script src='/js/module_forms.js'></script>
     <script src='/js/module_gamepad.js'></script>
     <script src="/js/module_logs.js"></script>  
+
+
+
+
+
+
+
+
+
+
+
 
 
 

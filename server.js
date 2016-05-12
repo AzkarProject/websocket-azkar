@@ -36,7 +36,7 @@
 // ------------------------ Elements communs client/serveur
 var tools = require('./js/common_tools'); // méthodes génériques
 var models = require('./js/common_models'); // objets
-var appSettings = require('./js/common_app_settings'); // paramètres de configuration de l'application
+var appSettings = require('./js/settings/common_app_settings'); // paramètres de configuration de l'application
 
 
 // ------ Variables d'environnement & paramètrages serveurs ------------------
@@ -59,7 +59,7 @@ pathCert = appSettings.getPathCert();
 // >> différentes IP serveurs selon le nom des machines (VM1, Vm2, Livebox ou local Adhoc) 
 var appCNRS;
 try {
-   appCNRS = require('./js/common_app_cnrs'); 
+   appCNRS = require('./js/cnrs/common_app_cnrs'); 
    appCNRS.setLaboServers();
    console.log("Configuration Labo I3S")
 }
