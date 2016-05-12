@@ -90,7 +90,7 @@
 	// on émule un pseudo système embarqué pour la cartographie, la jauge de batterie et les commandes drive...
 	// Si connecté a une robubox ou KomNav, mettre la valeur a false
 	exports.isFakeRobubox = function() {
-		var fakeRobubox = false;
+		var fakeRobubox = true;
 		return fakeRobubox;
 	}
 
