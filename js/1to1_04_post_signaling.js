@@ -254,7 +254,7 @@ socket.on("piloteOrder", function(data) {
         
 
         } else if (data.command == 'onFullStop') {
-            komcom.sendStepStop() ;
+            komcom.sendFullStop(data) ;
         
         } else if (data.command == 'onStep') {
             komcom.sendStep(data.typeMove,data.distance,data.MaxSpeed) ;

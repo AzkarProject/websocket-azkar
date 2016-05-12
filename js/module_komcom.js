@@ -187,25 +187,9 @@ exports.getBattery = function (){
 
 exports.sendFullStop = function (data){        
         
-    
-    // var url = "https://127.0.0.1:443/http://127.0.0.1:50000/lokarria/step/stop" ; // CORS-ANYWHERE
-    //var url = "https://127.0.0.1:443/http://127.0.0.1:50000/api/drive" ;
-    //var url = "https://127.0.0.1:443/http://127.0.0.1:50000/nav/go/stop" ;
-    var url = "https://127.0.0.1:443/http://127.0.0.1:50000/lokarria/trajectoryfollower/replace" ; // CORS-ANYWHERE    
+    var messageStop = tools.stringObjectDump(data, "Fonction STOP à implémenter")
+    alert(messageStop);
 
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', url);
-    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    //xhr.send(data);
-    xhr.send();
-    /*xhr.send(JSON.stringify({
-        "Enable": false,
-        "TargetAngularSpeed": 0,
-        "TargetLinearSpeed": 0
-    }));
-    /**/
-    xhr.closed;
-           
             
 }
 
