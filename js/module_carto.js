@@ -41,7 +41,9 @@
     // Titi: Image BackGround aux dimensions du Canvas
     var backGroundMap = new Image();
     backGroundMap.src = appSettings.getMapSource(); 
-    if (typeof appCNRS != 'undefined') backGroundMap.src = appCNRS.getMapSource();
+
+    // Si configuration spécifique à la branche:
+    if (typeof appDevBranch != 'undefined') backGroundMap.src = appDevBranch.getMapSource();
 
     // Titi:  délai de rafraichissement carto en ms
     var refreshDelay = 100; // 100ms (600ms ca saccade un peu) 

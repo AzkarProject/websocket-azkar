@@ -251,7 +251,7 @@
 		buttonRT = gamepad.buttons[7]; 
 
 		buttonBack = gamepad.buttons[8]; // efface les notifications
-		buttonStart = gamepad.buttons[9]; // non utilisé
+		buttonStart = gamepad.buttons[9]; // switche fullScreen
 
 		crossUp = gamepad.buttons[12]; // non utilisé
 		crossDown = gamepad.buttons[13]; // non utilisé
@@ -262,7 +262,7 @@
 		// bouton Homme mort avec vitesses en mode normal
 		if (buttonA.pressed) {
 		    // checkAxes(gamepad,"standard");
-		    // console.log('A');
+		    //console.log('Gamepad Bouton A');
 		    atLeastOneButtonPressed = true;
 		    buttonStatusDiv.innerHTML = "(A) Drive mode standard";
 		    prepareDriveCommand(gamepad, buttonRT.value, buttonLT.value,"standard","onDrive" );
@@ -276,6 +276,7 @@
 		} else if (buttonX.pressed) {
 		   // checkAxes2(gamepad,"precision");
 		   // console.log('X');
+		   //console.log('Gamepad Bouton X');
 		    atLeastOneButtonPressed = true;
 		    buttonStatusDiv.innerHTML = " (X) Drive mode précision";
 		    prepareDriveCommand(gamepad, buttonRT.value, buttonLT.value,"precision","onDrive" )
@@ -285,6 +286,18 @@
 		    ihm.driveCommandBlock('open')
 		    return;
 		
+		
+		}   else if (crossUp.pressed) {
+				// console.log('Gamepad UP');
+				atLeastOneButtonPressed = true;
+		    	buttonStatusDiv.innerHTML = "(CrossUp) Drive mode full Axes";
+		    	prepareDriveCommand(gamepad, buttonRT.value, buttonLT.value,"standard","onDriveAxe" );
+		    	btHommeMort = true;
+		    	onMove = true;
+		    	lastButtonName = "crossUp";
+		    	ihm.driveCommandBlock('open');
+		   		return;
+
 		// Si bouton homme mort non activés, on traite les autres commandes
 		} else {
 
@@ -298,13 +311,38 @@
 
 			// Ouverture connexion
 			if (buttonY.pressed) {
+			      
+			      //console.log('Gamepad Bouton Y');
 			      // empécher l'appui continu sur la même touche 
-			      if (lastButtonName == "buttonY" ) {
-			      	return
-			      }
+			      // if (lastButtonName == "buttonY" ) return
+
+			    // Ralentir l'appui continu sur la même touche
+				var newTimer = Date.now();
+				if (lastButtonName == "buttonY" ) {
+				   	var testDelay = newTimer - lastTimer;
+				   	if ( testDelay < 5000 ) {
+				   		notifications.writeMessage ("standard","GAMEPAD","(Y) Ouverture/fermeture de connexion en cours, veuillez patienter...",5000)
+				   		return
+						}				
+				} lastTimer = newTimer;
+			      
+			      
 			      if (IS_WebRTC_Connected == true ) {
+			      	
+			      	/*
 			      	notifications.writeMessage ("error","GAMEPAD","(Y) Connexion déjà ouverte ! ",3000)
 			      	return;
+			      	/**/
+
+				   	notifications.writeMessage ("standard","GAMEPAD","(Y) Fermeture connexion",3000)
+				   	notifications.spawnNotification("GAMEPAD","(Y) Fermeture connexion",3000)
+				   	usersConnection.closeRobotConnexion();
+				    lastButtonName = "buttonY";
+				    onMove = false;
+				   	return;
+			      
+
+
 			      }
 			      //driveCommandBlock('open')
 			      //buttonStatusDiv.innerHTML = "(Y) Ouverture connexion";
@@ -322,7 +360,7 @@
 			
 			// Fermeture connexion
 			} else if (buttonB.pressed) {
-
+				  /*//console.log('Gamepad Bouton B');
 				  // empécher l'appui continu sur la même touche 
 				  if (lastButtonName == "buttonB" ) return;
 				  if (IS_WebRTC_Connected == false ) {
@@ -341,67 +379,92 @@
 			      lastButtonName = "buttonB";
 			      onMove = false;
 			      return;
+			      /**/
 
+			      // Test STOP
+			      var data = { command: 'onFullStop'}
+				  navigation_interface.sendToRobot("", "", "Gamepad",data);
+				  onMove = false;
+				  return;
 
 			// Cycle sélection caméra
 			} else if (buttonLB.pressed) {
 				
-				 
+				//console.log('Gamepad Bouton LB');
+				// Ralentir l'appui continu sur la même touche
+				var newTimer = Date.now();
+				if (lastButtonName == "buttonLB" ) {
+				   	var testDelay = newTimer - lastTimer;
+				   	if ( testDelay < 1000 ) return
+				} lastTimer = newTimer;
+
+				lastButtonName = "buttonLB";
+				atLeastOneButtonPressed = true;
+
+				// Version Originale 
 				if (IS_WebRTC_Connected == true ) {
-			      	//writeMessage ("warning","GAMEPAD (LB) ","Sélection caméra impossible !</br/> Veuillez dabord déconnecter le robot !! ",500)
-			      	notifications.writeMessage ("error","GAMEPAD (LB) ","Sélection caméra impossible !</br/> Veuillez dabord déconnecter le robot !! ",500)
-			      	return;
-			      }
+			      	
+			      	//notifications.writeMessage ("error","GAMEPAD (LB) ","Sélection caméra impossible !</br/> Veuillez dabord déconnecter le robot !! ",500)
+			      	//return;
 
-			     // Ralentir l'appui continu sur la même touche
-			     var newTimer = Date.now();
-			     if (lastButtonName == "buttonLB" ) {
-			     	var testDelay = newTimer - lastTimer;
-			     	if ( testDelay < 500 ) return
-			     } lastTimer = newTimer;
+					// Sélection et activation a la volée
+					SelectAndOpenCam()
 
-
-			    lastButtonName = "buttonLB";
-			    atLeastOneButtonPressed = true;
+			    } else {
 			    
-			    var idSelect = '#remote_videoSource';
-			    var textCounter = 'Caméras robot disponibles: ';
-			    var selectCamText =  incrementSelectList(idSelect,textCounter)
-			    	  
-			  	//writeMessage ("info","GAMEPAD (LB)", selectCamText);
-			  	notifications.writeMessage ("standard","GAMEPAD (LB)", selectCamText);
+				    var idSelect = '#remote_videoSource';
+				    var textCounter = 'Caméras robot disponibles: ';
+				    var selectCamText =  incrementSelectList(idSelect,textCounter)
+				    	  
+				  	notifications.writeMessage ("standard","GAMEPAD (LB)", selectCamText);
 
+				}
+				
 				return;
+
 				
 			// Cycle selection définitions
 			} else if (buttonRB.pressed)  {
 				
-				if (IS_WebRTC_Connected == true ) {
-			      	//writeMessage ("warning","GAMEPAD (RB) ","Settings Impossibles !</br/> Veuillez dabord déconnecter le robot !! ",500)
-			      	notifications.writeMessage ("error","GAMEPAD (RB) ","Settings Impossibles !</br/> Veuillez dabord déconnecter le robot !! ",500)
-			      	return;
-			      }
-			    
-			     // Ralentir l'appui continu sur la même touche
-			     var newTimer = Date.now();
-			     if (lastButtonName == "buttonRB" ) {
-			     	var testDelay = newTimer - lastTimer;
-			     	if ( testDelay < 500 ) return
-			     } lastTimer = newTimer;
+				//console.log('Gamepad Bouton RB');
+				// Ralentir l'appui continu sur la même touche
+				var newTimer = Date.now();
+				if (lastButtonName == "buttonRB" ) {
+				   	var testDelay = newTimer - lastTimer;
+				   	if ( testDelay < 1000 ) return
+				} lastTimer = newTimer;
 
-			    atLeastOneButtonPressed = true;
-			    lastButtonName = "buttonRB";
+				atLeastOneButtonPressed = true;
+				lastButtonName = "buttonRB";
+
+
+				if (IS_WebRTC_Connected == true ) {
+			      	
+			      	//writeMessage ("warning","GAMEPAD (RB) ","Settings Impossibles !</br/> Veuillez dabord déconnecter le robot !! ",500)
+			      	//notifications.writeMessage ("error","GAMEPAD (RB) ","Settings Impossibles !</br/> Veuillez dabord déconnecter le robot !! ",500)
+			      	//return;
+			      
+					// Sélection et activation a la volée
+					SelectResolutionAndOpenCam();
+
+
+			      } else {
 			    
-			    var idSelect = '#robot_camdef_select';
-			    var textCounter = 'Définitions caméras robot disponibles: ';
-			    var selectDefText =  incrementSelectList(idSelect,textCounter)		  
-			  	//writeMessage ("info","GAMEPAD (RB)", selectDefText);
-			  	notifications.writeMessage ("standard","GAMEPAD (RB)", selectDefText);
+			    
+				    var idSelect = '#robot_camdef_select';
+				    var textCounter = 'Définitions caméras robot disponibles: ';
+				    var selectDefText =  incrementSelectList(idSelect,textCounter)		  
+				  	//writeMessage ("info","GAMEPAD (RB)", selectDefText);
+				  	notifications.writeMessage ("standard","GAMEPAD (RB)", selectDefText);
+
+			  	}
 
 				return;
+
 			// Ferme toutes les notifications
 			} else if (buttonBack.pressed)  {
 				
+			    //console.log('Gamepad Bouton BACK');
 			    atLeastOneButtonPressed = true;
 			    lastButtonName = "buttonBack";
 				// hideAllMessages();
@@ -410,6 +473,7 @@
 			// Switche mode embed/plein écran
 			} else if (buttonStart.pressed)  {
 
+				 //console.log('Gamepad Bouton START');
 				 // Ralentir l'appui continu sur la même touche
 			     var newTimer = Date.now();
 			     if (lastButtonName == "buttonStart" ) {
@@ -423,7 +487,9 @@
 				ihm.toggleFullScreen();
 				//ihm.navigationView('center','bottom');
 		    	ihm.toggleHUD();
-			}
+			
+			// Test Homme mort axe 2
+			} 
 	  }
 
 	  if(!atLeastOneButtonPressed) {
@@ -436,6 +502,78 @@
 	  }
 
 	}
+
+
+	function SelectAndOpenCam() {
+		console.log("SelectAndOpenCam()");
+		console.log("sélection caméra");	
+		callback1()
+	
+
+		function callback1() {
+			console.log("on déconnecte");
+			usersConnection.closeRobotConnexion();
+			onMove = false;
+		    setTimeout(callback2, 500);
+
+		}
+
+		function callback2() {   
+		    
+	    	// 2 on cycle sur la caméra suivante
+		    var idSelect = '#remote_videoSource';
+		    var textCounter = 'Caméras robot disponibles: ';
+		    var selectCamText =  incrementSelectList(idSelect,textCounter)
+		  	notifications.writeMessage ("standard","GAMEPAD (LB)", selectCamText);
+		    setTimeout(callback3, 1000);
+
+		}
+
+		function callback3() {
+			console.log("on connecte");
+			setTimeout(usersConnection.openRobotConnexion(),100)
+	      	onMove = false;
+
+		}
+
+	}
+
+
+	function SelectResolutionAndOpenCam() {
+		console.log("SelectResolutionAndOpenCam()");
+		console.log("sélection résolution");	
+		callback1(); 
+	
+
+		function callback1() {
+			console.log("on déconnecte");
+			usersConnection.closeRobotConnexion();
+			onMove = false;
+		    setTimeout(callback2, 500);
+
+		}
+
+		function callback2() {   
+		   var idSelect = '#robot_camdef_select';
+		   var textCounter = 'Définitions caméras robot disponibles: ';
+		   var selectDefText =  incrementSelectList(idSelect,textCounter)		  
+		   notifications.writeMessage ("standard","GAMEPAD (RB)", selectDefText);
+		   setTimeout(callback3, 1000);
+
+		}
+
+		function callback3() {
+			console.log("on connecte");
+			setTimeout(usersConnection.openRobotConnexion(),100)
+	      	onMove = false;
+
+		}
+
+	}
+
+
+
+
 
 
 	// Author:Thierry: 
@@ -459,15 +597,16 @@
 				var prefix = "  ", selectClass = ""
 			    $(idSelect+" > option").each(function() {
 	    			if(this.selected) {
-	    				prefix = ">> ", selectClass = "selected";
+	    				prefix = ">>>>>> ", selectClass = "selected";
 	    			}
-	    			selectText += "<br><span class ='"+selectClass+"'>"+ prefix + " " + this.text;
+	    			selectText += "<br><span class ='"+selectClass+"'>"+ prefix + " " + this.text+"</span>";
 	    			prefix = "  ", selectClass = "";
 				});
 
 				return selectText
 
 	}
+
 
 
 	// Thierry: Construction & envoi de la commande Drive
@@ -480,6 +619,8 @@
 
 	    if (command == 'onStop') {
 	    	jaugeClass = 'red';
+	    	// Gamepad - Affichage du module FullAxes (param 'jauges' ou 'joystick' ou 'none')
+			ihm.switchGamepadDisplayMode("jauges")	
 	    	ihm.driveJauges(0,0,0,jaugeClass);
 	    	// console.log ('onStop');
 	    	
@@ -527,10 +668,14 @@
 	         	lSpeed = lSpeed/5; // 10
 	       	} else {
 	       		aSpeed = aSpeed/2;
-	       		//lSpeed = lSpeed/5; // 10
+	       		lSpeed = lSpeed/2; // 10
 
-	       	}
+	       	
+	       	// Test de commande alternative
+	       	} 
 
+	       	// Gamepad - Affichage du module FullAxes (param 'jauges' ou 'joystick' ou 'none')
+			ihm.switchGamepadDisplayMode("jauges")	
 	       	ihm.driveJauges(speedPos,speedNeg,gamepad.axes[0],jaugeClass)
 
 		    // envoi de l'ordre
@@ -546,7 +691,58 @@
 		         enable: 'true'
 		     }             
 		    navigation_interface.sendToRobot("", "", "Gamepad",driveCommand);
-		}
+		
+		}  
+			else if (command == 'onDriveAxe') {
+
+				
+				jaugeClass = 'red';
+				
+			    var aSpeed = gamepad.axes[2]; // vitesse angulaire
+			    var lSpeed = gamepad.axes[3]; // Vitesse linéaire
+			    
+			    var deadzoneX = 0.20;  
+			    // test d'ajustement pour la dead zone 
+			    aSpeed = (Math.abs(aSpeed) < deadzoneX ? 0 : aSpeed); 
+			    lSpeed = (Math.abs(lSpeed) < deadzoneX ? 0 : lSpeed); 
+		        
+				// Gamepad - Affichage du module FullAxes (param 'jauges' ou 'joystick' ou 'none')
+				ihm.switchGamepadDisplayMode("joystick")
+				//ihm.drawJoystick( aSpeed, lSpeed );
+				ihm.directionnalArrow (aSpeed,lSpeed)
+
+				// changement de sens dans l'orientation en cas de marche avant
+		    	aSpeed = (lSpeed > 0 ? -aSpeed : aSpeed); 
+
+
+		        mode = "precision";
+		        // Correction des vitesses pour gagner en précision...
+		        if (mode == 'precision') { 
+		        	aSpeed = aSpeed/2;
+		         	lSpeed = lSpeed/5; // 10
+		       	} else {
+		       		aSpeed = aSpeed/2;
+		       		lSpeed = lSpeed/2; // 10
+		       	
+		       	}
+		       				    
+			    // envoi de l'ordre
+			     var driveCommand = {
+			         driveSettings: '',
+			         channel: parameters.navCh,
+			         system: parameters.navSys,
+			         source:"Gamepad",
+			         dateA: '',
+			         command: 'onDrive',
+			         aSpeed: -aSpeed,
+			         lSpeed: -lSpeed,
+			         enable: 'true'
+			     }             
+			    
+			   navigation_interface.sendToRobot("", "", "Gamepad",driveCommand);
+	       	
+	    }
+	       	
 
 
 	}

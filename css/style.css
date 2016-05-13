@@ -372,18 +372,18 @@ button:hover{
 /* Ombrages */
 
 .shadowBlack {
-   -webkit-filter: drop-shadow(10px 10px 10px black); /* OK crhome 40 */
-  filter: drop-shadow(10px 10px 10px black);/* OK sous firefox 35.0.1*/
+   -webkit-filter: drop-shadow(3px 3px 3px black); /* OK crhome 40 */
+  filter: drop-shadow(3px 3px 3px black);/* OK sous firefox 35.0.1*/
 }
 
 .shadowGreen {
-   -webkit-filter: drop-shadow(10px 10px 10px green); /* OK crhome 40 */
-  filter: drop-shadow(10px 10px 10px green);/* OK sous firefox 35.0.1*/
+   -webkit-filter: drop-shadow(3px 3px 3px green); /* OK crhome 40 */
+  filter: drop-shadow(3px 3px 3px green);/* OK sous firefox 35.0.1*/
 }
 
 .shadowRed {
-   -webkit-filter: drop-shadow(10px 10px 10px red); /* OK crhome 40 */
-  filter: drop-shadow(10px 10px 10px red);/* OK sous firefox 35.0.1*/
+   -webkit-filter: drop-shadow(3px 3px 3px  red); /* OK crhome 40 */
+  filter: drop-shadow(3px 3px 3px red);/* OK sous firefox 35.0.1*/
 }
 
 /* Reset the default appearance */
@@ -455,6 +455,11 @@ http://red-team-design.com/cool-notification-messages-with-css3-jquery/
 .error{
      background-color: #de4343;
      border-color: #c43d3d;
+}
+
+.selected {
+    font-style:italic;
+    font-weight:bold;
 }
 
 
@@ -612,3 +617,6 @@ http://red-team-design.com/cool-notification-messages-with-css3-jquery/
   width:300px;
   height:232px;
 }
+
+/*#canvasGamepad {display:none};*/
+/*div #gamePadInfos{ border:1px solid #000;background-repeat:no-repeat;}*/

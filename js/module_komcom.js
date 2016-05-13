@@ -179,8 +179,20 @@ exports.getBattery = function (){
     	        }, delay);
 
             } 
+            /**/
                
 } // End getBattery
+
+
+
+exports.sendFullStop = function (data){        
+        
+    var messageStop = tools.stringObjectDump(data, "Fonction STOP à implémenter")
+    alert(messageStop);
+
+            
+}
+
 
 
 })(typeof exports === 'undefined'? this['komcom']={}: exports);

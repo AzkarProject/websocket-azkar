@@ -172,7 +172,10 @@
 		<script src="/js/common_tools.js"></script>
 		<script src="/js/common_models.js"></script>
         <script src="/js/common_app_settings.js"></script>
-        <script src="/js/common_app_cnrs.js"></script>  
+        <!--
+        <script src="/js/cnrs/common_app_cnrs.js"></script> 
+        -->
+        <script src="/js/branch_settings/common_app_branch_settings.js"></script> 
 
 	    <script src='/js/1to1_01_websocket.js'></script>
 	    
@@ -195,21 +198,13 @@
 
 
 		<script>                    
-	      // On récupère depuis nodejs le nom de la machine serveur
-	      // en passant par de l'AJAX plutôt que par websocket....
-	      $.get( "/getvar", function( data ) {
-	        hostName = data.hostName;
-	        infoServerTxt = "<i>"+appSettings.appName()+": ";
-	        infoServerTxt += appSettings.appBranch()+" - ";
-	        infoServerTxt += " Version " + appSettings.appVersion();
-	        infoServerTxt += " (Serveur: "+hostName+") </i>";
-	        var infoCredit = " <br/> " + appSettings.appCredit();
-	        if (hostName != "???" ) $('#zone_info_server').replaceWith(infoServerTxt+infoCredit);
-	      });
-
+			
+			// Affichage de l'entête
+			ihm.getHeaderPage();
     	
-			// On lance l'utilitaire de récupération de la batterie
+			// On lance l'utilitaire de récupération de la batterie sur le robot
 			komcom.getBattery();
+		
 		</script>
 
 </body>

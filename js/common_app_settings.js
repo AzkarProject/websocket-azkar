@@ -44,17 +44,19 @@
 
 	// Nom de la branche
 	exports.appBranch = function(){
-	    return '1to1-anotherworld';
+
+	    return '1to1-refacto(MASTER)';
+
 	};
 
 	// Numéro de version
 	exports.appVersion = function(){
-	    return '1.5.0';
+	    return '1.5.1';
 	};
 
 	// Crédits
 	exports.appCredit = function(){
-	   return '© 2015-2016 - CNRS (Laboratoire I3S) / université de Nice';
+	   return '© 2015-2016 - CNRS (Laboratoire I3S) / Université de Nice';
 	};
 
 	// Adresse Ip ou nom de domaine du serveur de l'application
@@ -102,8 +104,9 @@
 	// Chemin et nom de l'image de cartographie à utiliser
 	// NB: Penser à placer la carte active exportée en png par la robubox ds le repertoire image de l'applicaion.
 	exports.getMapSource = function() {
-		// var mapSource = '/images/mapLaboI3S.png'; // Carte locaux I3S
     	var mapSource = '/images/mapRobosoft.png'; // Carte locaux Robosoft
+		//var mapSource = '/images/mapLaboI3S.png'; // Carte I3S V2
+		//var mapSource = '/images/labo3.png'; // Carte I3S V3
 		return mapSource
 	}
 

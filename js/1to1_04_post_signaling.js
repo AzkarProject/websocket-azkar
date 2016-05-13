@@ -56,7 +56,8 @@ function onDisconnect(peerCnxId) {
     if (type == "pilote-appelant") {
 
         IS_WebRTC_Connected = false;
-        
+        console.log(">>> sessionConnection :"+sessionConnection)
+        console.log(">>> robotDisconnection :"+robotDisconnection)
         // On referme le formulaire sélection des cams du robot
         ihm.manageSubmitForm("robotDevices","deactivate");
 
@@ -252,9 +253,16 @@ socket.on("piloteOrder", function(data) {
             komcom.sendDrive(data);
         
 
+        } else if (data.command == 'onFullStop') {
+            komcom.sendFullStop(data) ;
+        
         } else if (data.command == 'onStep') {
             komcom.sendStep(data.typeMove,data.distance,data.MaxSpeed) ;
-        }
+        
+
+        } 
+        
+
         
         
     }

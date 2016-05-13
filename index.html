@@ -19,7 +19,7 @@
 
     <strong><info id="zone_info_server"></info></strong>
     <hr/>
-    
+    <h1>1to1-Index</h1>
     <p><a href="/robot/"> >>> Robot</a></p>
     <p><a href="/pilote/"> >>> Pilote</a></p>
 
@@ -63,11 +63,13 @@
 
     <script src='/js/lib/jquery-1.10.1.min.js'></script>
     <script src="/js/common_app_settings.js"></script>
-	  <script src="/js/common_tools.js"></script>
+    <script src="/js/branch_settings/common_app_branch_settings.js"></script>
+	<script src="/js/common_tools.js"></script>
 
 
-	  <script src="/socket.io/socket.io.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
     <script src='/js/module_notifications.js'></script>
+    <script src='/js/module_ihm.js'></script>
     <!--
     <script src='/js/main_websocket.js'></script>
     -->
@@ -77,41 +79,28 @@
             
 
 		// Initialisation du canal de signalisation
+        // TODO: Si un canal de connexion existe déjà, ne pas initialiser...
 		var socket = io.connect(); 
 
-			function razConnexions() {
-				socket.emit('razConnexions',""); // Ordonne au serveur de virer tous les connectés
-        notifications.writeMessage ("warning","déconnexion des clients en cours !","",3500)
-        setTimeout(function(){
+		function razConnexions() {
+		  socket.emit('razConnexions',""); // Ordonne au serveur de virer tous les connectés
+            notifications.writeMessage ("warning","déconnexion des clients en cours !","",3500)
+            setTimeout(function(){
             notifications.writeMessage ("success","Clients déconnectés !","",3000)
+            }, 3500); 
+       	//alert ("Clients réinitialisés !");
+		}
+
+        function reloadClients() {
+            socket.emit('reloadAllClients',""); // Ordonne au serveur de virer tous les connectés
+            notifications.writeMessage ("warning","Reload des connexions clients en cours !","",3500)
+            setTimeout(function(){
+                notifications.writeMessage ("success","Reload terminé !","",3000)
+            }
+            , 3500); 
         }
-        , 3500); 
-       
-				//alert ("Clients réinitialisés !");
-			}
-
-      function reloadClients() {
-        socket.emit('reloadAllClients',""); // Ordonne au serveur de virer tous les connectés
-        notifications.writeMessage ("warning","Reload des connexions clients en cours !","",3500)
-        setTimeout(function(){
-            notifications.writeMessage ("success","Reload terminé !","",3000)
-        }
-        , 3500); 
-      }
-      
-      // On récupère depuis nodejs le nom de la machine serveur
-      // en passant par de l'AJAX plutôt que par websocket....
-      $.get( "/getvar", function( data ) {
-        hostName = data.hostName;
-        infoServerTxt = "<i>"+appSettings.appName()+": ";
-        infoServerTxt += appSettings.appBranch()+" - ";
-        infoServerTxt += " Version " + appSettings.appVersion();
-        infoServerTxt += " (Serveur: "+hostName+") </i>";
-        var infoCredit = " <br/> " + appSettings.appCredit();
-        if (hostName != "???" ) $('#zone_info_server').replaceWith(infoServerTxt+infoCredit);
-      });
-
-
+          
+        ihm.getHeaderPage();
     
     </script>	
 

@@ -133,19 +133,8 @@
 	}
 
 
-	// Gamepad - Affichage des jauges
-	exports.driveJauges = function (speedPos,speedNeg,axes,jaugeClass) {
-		advanceValueBar.setAttribute("class", jaugeClass)
-		advanceValueBar.value = speedPos;
-	    reverseValueBar.setAttribute("class", jaugeClass)
-	    reverseValueBar.value = speedNeg;
-	    leftRightValueBar.innerHTML = 0 + ": " + axes.toFixed(4);
-	    leftRightValueBar.setAttribute("class", jaugeClass)
-	    leftRightValueBar.setAttribute("value", axes + 1);
-	}
-
-
-	// Gamepad - Affichage du module
+	
+	// Gamepad - Affichage du module Gamepad (jauges par défaut)
 	exports.driveCommandBlock = function (order){
 		if ( order == 'open' ) {
 			activeGamePad = true;
@@ -157,6 +146,231 @@
 	   		$('#drive-commands').hide(); 
 		}
 	}
+
+
+	// Gamepad - Dessin des jauges
+	exports.driveJauges = function (speedPos,speedNeg,axes,jaugeClass) {
+		advanceValueBar.setAttribute("class", jaugeClass)
+		advanceValueBar.value = speedPos;
+	    reverseValueBar.setAttribute("class", jaugeClass)
+	    reverseValueBar.value = speedNeg;
+	    leftRightValueBar.innerHTML = 0 + ": " + axes.toFixed(4);
+	    leftRightValueBar.setAttribute("class", jaugeClass)
+	    leftRightValueBar.setAttribute("value", axes + 1);
+	}
+
+
+	// Gamepad - Dessin du joystick
+	exports.drawJoystick = function( posX, posY ) {
+
+
+		var canvas = document.getElementById("canvasGamepad"); 
+		var context = canvas.getContext('2d');
+    	var canvasWidth = $('#canvasGamepad').width();
+    	var canvasHeight = $('#canvasGamepad').height();
+
+    	var diametre = canvasHeight*0.4;
+    	if (canvasWidth > canvasHeight) diametre = canvasHeight*0.4;
+    	else if (canvasWidth < canvasHeight) diametre = canvasWidth*0.4;
+
+		context.save();
+		context.clearRect(0, 0, canvasWidth, canvasHeight);
+
+		// Cercle orange
+		context.beginPath();
+		context.fillStyle="#FF4422"
+		//context.arc(150, 75, 60, 0, 2 * Math.PI);
+		context.arc(canvasWidth/2, canvasHeight/2, diametre, 0, 2 * Math.PI);
+		context.fill();
+		    
+		/*
+		context.beginPath();
+		context.fillStyle="#000"
+		context.arc(150, 30, 30, 0, 2 * Math.PI); // p2 à 30 = oeil butée bas
+		context.fill();
+
+		context.beginPath();
+		context.arc(150, 75, 30, 0, 2 * Math.PI); // p2 à 75 = oeil milieu
+		context.fill();
+
+		context.beginPath();			  
+		context.arc(150, 120, 30, 0, 2 * Math.PI); // p2 à 120 = oeil butée bas
+		context.fill();
+				  
+		// Values verticales  20 /75 = Marche avant > 45
+		// Values verticales  72/120 = marche arrière > 45
+
+		context.beginPath();			  
+		context.arc(105, 75, 30, 0, 2 * Math.PI); // p2 à 30 = oeil droit
+		context.fill();
+
+		context.beginPath();			  
+		context.arc(150, 75, 30, 0, 2 * Math.PI); // p2 à 75 = oeil milieu
+		context.fill();
+
+		context.beginPath();			  
+		context.arc(195, 75, 30, 0, 2 * Math.PI); // p2 à 120 = oeil gauchs
+		context.fill();
+		/**/
+
+		var x = canvasWidth/2,  y = canvasHeight/2;
+		//var ratio = 1/45;
+		var ratio = diametre*0.75
+		var ratioX = ratio*posX; x = x+ratioX;
+		var ratioY = ratio*posY; y = y+ratioY;
+		//console.log ("(horizontal)posX: "+posX)
+		//console.log ("(horizontal)>>>>: "+ratioX)
+
+		context.beginPath();
+		context.fillStyle="#fff"
+		context.arc(x, y, diametre/2, 0, 2 * Math.PI);
+		context.fill();
+
+		context.restore();
+
+		/* 
+		function assignToDiv(){ // this kind of function you are looking for
+		  dataUrl = canvas.toDataURL();
+		  document.getElementById('gamePadInfos').style.background='url('+dataUrl+')'
+		  //alert('cool')
+		}
+
+		assignToDiv()
+		
+		/**/
+		
+	}
+
+
+	exports.directionnalArrow = function (posX,posY) {
+
+		var canvas = document.getElementById("canvasGamepad"); 
+		var context = canvas.getContext('2d');
+		var canvasWidth = $('#canvasGamepad').width();
+    	var canvasHeight = $('#canvasGamepad').height();
+	    
+	    var diametre = canvasHeight*0.4;
+    	if (canvasWidth > canvasHeight) diametre = canvasHeight*0.4;
+    	else if (canvasWidth < canvasHeight) diametre = canvasWidth*0.4;
+		var x = canvasWidth/2,  y = canvasHeight/2;
+		var ratio = diametre
+		var ratioX = ratio*posX; 
+		x = x+ratioX;
+		//if (posY > 0) x = x-ratioX 
+		//else x = x+ratioX;
+		var ratioY = ratio*posY; y = y+ratioY;
+
+	    var diametre = canvasHeight*0.4;
+    	if (canvasWidth > canvasHeight) diametre = canvasHeight*0.4;
+    	else if (canvasWidth < canvasHeight) diametre = canvasWidth*0.4;
+
+	    context.save();
+	    context.clearRect(0, 0, canvasWidth, canvasHeight);
+
+
+	    // Cercle orange
+	    context.beginPath();
+		context.fillStyle="#FF4422"
+		context.arc(canvasWidth/2, canvasHeight/2, diametre, 0, 2 * Math.PI);
+		context.fill();
+
+	    /*
+	    var p1 = [canvasWidth/2, canvasHeight/2];
+		var p2 = [Math.round(x), Math.round(y)]; 
+		console.log (Math.round(x) + " " +Math.round(y)) 
+		/**/
+
+	    var fromX = canvasWidth/2; 
+	    var fromY = canvasHeight/2; 
+	    var toX = Math.round(x); 
+	    var toY = Math.round(y);
+	    //console.log (">>> "+posY) 
+	    //console.log (toX + " " +toY) 
+
+
+
+	    if (toX != fromX || toY != fromY ) {
+		
+			var lineWidth = 2; 
+	    	var strokeLine = '#0000ff';
+	    	var fillArrow = '#0000ff';
+	    	var strokeArrow = '#ff0000';
+	    	var sizeArrow = 10;
+
+
+
+			drawArrow (context, fromX, fromY, toX, toY, lineWidth, strokeLine, fillArrow, strokeArrow, sizeArrow);
+		}
+
+	    context.restore();
+
+	}
+
+
+	// inspiré de https://www.snip2code.com/Snippet/265248/HTML5-Canvas--drawing-an-arrow-at-the-en
+	function drawArrow (context, fromX, fromY, toX, toY, lineWidth, strokeLine, fillArrow, strokeArrow, sizeArrow) {
+
+		var ctx = context;
+		
+		var p1 = [fromX, fromY];
+	    var p2 = [toX,  toY]; 
+
+		var dist = Math.sqrt((p2[0] - p1[0]) * (p2[0] - p1[0]) + (p2[1] - p1[1]) * (p2[1] - p1[1]));
+	    
+	    ctx.save();
+
+	    ctx.beginPath();
+	    ctx.lineWidth = lineWidth; //2
+	    ctx.strokeStyle = strokeLine; // '#0000ff';
+	    ctx.moveTo(p1[0], p1[1]);
+	    ctx.lineTo(p2[0], p2[1]);
+	    ctx.stroke();
+
+	    var angle = Math.acos((p2[1] - p1[1]) / dist);
+
+	    if (p2[0] < p1[0]) angle = 2 * Math.PI - angle;
+
+	    var size = sizeArrow; // 15;
+
+	    ctx.beginPath();
+	    ctx.translate(p2[0], p2[1]);
+	    ctx.rotate(-angle);
+	    ctx.fillStyle = fillArrow; //'#0000ff';
+	    ctx.lineWidth = lineWidth; // 2
+	    ctx.strokeStyle = strokeArrow; // '#ff0000';
+	    ctx.moveTo(0, -size);
+	    ctx.lineTo(-size, -size);
+	    ctx.lineTo(0, 0);
+	    ctx.lineTo(size, -size);
+	    ctx.lineTo(0, -size);
+	    ctx.closePath();
+	    ctx.fill();
+	    ctx.stroke();
+
+	    ctx.restore();
+
+
+	}
+
+
+
+
+	// Gamepad - Affichage du module FullAxes (param 'jauges' ou 'joystick' ou 'none')
+	exports.switchGamepadDisplayMode = function (type) {
+		if ( type == 'jauges' ) {
+			$('#canvasGamepad').hide();
+			$('#gamePadInfos').show();
+		} else if ( type == 'joystick' ) {
+			$('#canvasGamepad').show();
+	   		$('#gamePadInfos').hide(); 
+		}  else if ( type == 'nothing' ) { 
+			$('#canvasGamepad').hide();
+	   		$('#gamePadInfos').hide();	
+		}
+	}
+
+
+
 
 
 	// Gamepad - message de connexion
@@ -196,8 +410,6 @@
             ihm.toggleModules('hide');
             style = 'position:fixed;top:0;right:0;bottom:0;left:0;height:100%;width:100%;'
 		 	$('#1to1_remoteVideo').attr('style',style);
-            
-
             remoteCameraView = "full";
 	    } 
 	}
@@ -207,7 +419,6 @@
     // On cache certains blocs pour éviter la superposition. 
 	// parce que modifier le z-index de la vidéo fullScreen ne fonctionne pas
 	exports.toggleModules = function(value) {
-		
 		if (value == 'show') {
 			$('#robotCommands').show();
 	    	$('#robotInfos').show();
@@ -328,7 +539,32 @@
 	}, false);
 
 	
+	
+	// Bandeau supérieur
+	exports.getHeaderPage = function() {
 
+      // On récupère depuis nodejs le nom de la machine serveur
+      // en passant par de l'AJAX plutôt que par websocket....
+      $.get( "/getvar", function( data ) {
+        hostName = data.hostName;
+
+        appName = appSettings.appName();
+        appBranch = appSettings.appBranch();
+        appVersion = appSettings.appVersion();
+        appCredit= appSettings.appCredit()
+
+        if (typeof appDevBranch != 'undefined') appDevBranch.setBranch();
+
+        infoServerTxt = "<i>"+appName;
+        infoServerTxt += " Version " + appVersion;
+        infoServerTxt += " (Branche "+appBranch+" / ";
+        infoServerTxt += " Serveur: "+hostName+")";
+        var infoCredit = " </i><br/> " + appCredit;
+        /**/
+        if (hostName != "???" ) $('#zone_info_server').replaceWith(infoServerTxt+infoCredit);
+      });
+
+	}
 
 
  
