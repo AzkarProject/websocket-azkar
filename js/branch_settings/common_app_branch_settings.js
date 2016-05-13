@@ -45,7 +45,7 @@
 	}
 
 	exports.setBranch = function(){
-		appBranch = "1to1-cnrs";
+		appBranch = "1to1-anotherworld";
 	}
 
 	exports.setServers = function(){
