@@ -51,12 +51,9 @@
 	exports.setServers = function(){
 		
 		
-		// OverWriter les congig serveurs par défaut. Exemple: 
+		// OverWriter les configs serveurs par défaut. Exemple: 
 
 		/*
-		
-
-
 		port=80
 		ipaddress = "xxx.xx.xx.xx" (ou le nom du domaine...)
 		pathKey = './ssl/hacksparrow-key.pem';
