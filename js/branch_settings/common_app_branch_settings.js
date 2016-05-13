@@ -45,7 +45,7 @@
 	}
 
 	exports.setBranch = function(){
-		appBranch = "1to1-cnrs";
+		appBranch = '1to1-refacto(MASTER)';
 	}
 
 	exports.setServers = function(){
@@ -54,9 +54,6 @@
 		// OverWriter les congig serveurs par défaut. Exemple: 
 
 		/*
-		
-
-
 		port=80
 		ipaddress = "xxx.xx.xx.xx" (ou le nom du domaine...)
 		pathKey = './ssl/hacksparrow-key.pem';
@@ -64,35 +61,7 @@
 	    indexUrl = "https://" + ipaddress + ":" + port;
 		*/
 
-		// ----------------------------------- CNRS
 
-		dyDns = 'azkar.ddns.net'; // Adresse no-Ip pointant sur Livebox domicile
-		pathKey = './ssl/hacksparrow-key.pem';
-		pathName = './ssl/hacksparrow-cert.pem';
-
-
-
-		// Machines windows - I3S
-		if (hostName == "azcary") ipaddress = "192.168.173.1"; // Ip du réseau virtuel AdHoc
-		else if (hostName == "thaby") ipaddress = "192.168.173.1"; // Tablette HP sur Robulab: ip du réseau virtuel AdHoc
-		else if (hostName == "amini") ipaddress = "192.168.173.1"; // Machine Anthony
-
-		// Machine Windows - Domicile
-		else if (hostName == "lapto_Asus") ipaddress = "0.0.0.0"; // Pc perso - (IP interne, Livebox domicile)
-
-		// Machines Ubuntu - Domicile
-		else if (hostName == "ubuntu64azkar") ipaddress = "192.168.1.10"; // Vm Ubuntu sur Pc perso (Domicile)
-		else if (hostName == "azkar-Latitude-E4200") ipaddress = "0.0.0.0"; // Pc Dell Latitude - Livebox domicile - noip > azkar.ddns.net
-
-		// VM Sparks -Ubuntu
-		else if (hostName == "Mainline") ipaddress = "134.59.130.141"; // IP statique de la Vm sparks
-		else if (hostName == "AZKAR-1") ipaddress = "134.59.130.143"; // IP statique de la Vm sparks 
-		else if (hostName == "AZKAR-2") ipaddress = "134.59.130.142"; // IP statique de la Vm sparks
-
-		port=80
-		indexUrl = "https://" + ipaddress + ":" + port;
-
-		if (hostName == "azkar-Latitude-E4200") indexUrl = "http://" + dyDns; // Si machine derrière liveBox && noip
 
 	}
 
@@ -109,69 +78,12 @@
 		return server
 		/**/
 
-
-
-
-
-		/*// ---------------- ROBOSOFT
-
-		// rfc5766 avec authentification
-		TURN_username = "robosoft";
-		TURN_credential = "robosoft";
-		var server = {'iceServers': []};
-		server.iceServers.push({ url: 'stun:stun.l.google.com:19302'});
-		//server.iceServers.push({ url: "turn:turn.anyfirewall.com:443?transport=tcp",credential: "webrtc",username: "webrtc"});
-		// Serveur STUN/TURN du CNRS... Essayez avec le votre...
-		server.iceServers.push({urls: "turn:134.59.130.142:3478",credential: TURN_credential ,username: TURN_username}); 
-		return server
-		/**/
-
-
-
-		/*// ---------------  ANOTHERWORLD
-
-		// rfc5766 avec authentification
-		TURN_username = "anotherworld";
-		TURN_credential = "anotherworld";
-		var server = {'iceServers': []};
-		server.iceServers.push({ url: 'stun:stun.l.google.com:19302'});
-		//server.iceServers.push({ url: "turn:turn.anyfirewall.com:443?transport=tcp",credential: "webrtc",username: "webrtc"});
-		// Serveur STUN/TURN du CNRS... Essayez avec le votre...
-		server.iceServers.push({urls: "turn:134.59.130.142:3478",credential: TURN_credential ,username: TURN_username}); 
-		return server
-
-		/**/
-
-		// ------------------ CNRS 
-
-
-		// rfc5766 avec authentification
-		TURN_username = "azkar";
-		TURN_credential = "azkar";
-		    
-		// Si on est l'apellant (pilote)
-		if (type == "pilote-appelant") {
-		   	TURN_username = "pilote";
-		   	TURN_credential = "azkar";
-		// Sinon si on est l'apellé (Robot)
-		} else if (type == "robot-appelé") {
-		   	TURN_username = "robot";
-		   	TURN_credential = "azkar";
-		}
-
-
-		// options pour l'objet PeerConnection
-		server = {'iceServers': []}; // OK sur même réseau...
-		server.iceServers.push({ url: 'stun:stun.l.google.com:19302'});
-		// rfc5766  sur VM1 (Cluster SPARKS)
-		server.iceServers.push({urls: "turn:134.59.130.142:3478",credential: TURN_credential ,username: TURN_username}); 
-		return server
 	}
 
 
 	  
 	exports.isFakeRobubox = function() {
-		var fakeRobubox = true;
+		var fakeRobubox = false;
 		return fakeRobubox;
 	}
 
