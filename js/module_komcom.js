@@ -141,7 +141,7 @@ exports.getDataMap = function (){
 
 // Fonction qui permet de recupérer le niveau de la  la batterie et de l'afficher dans le progress bar
 // elle interroge chaque 1000ms le robot via url et retourne le niveau de la batterie en pourcentage
-exports.getBattery = function (){
+exports.getBatteryOLD = function (){
         
 
 	         var delay = 1000; // l'interval de temps au bout du quel on envoi une autre requete pour rafraichir les information
@@ -183,7 +183,47 @@ exports.getBattery = function (){
                
 } // End getBattery
 
+// Fonction qui permet de recupérer le niveau de la  la batterie et de l'afficher dans le progress bar
+// elle interroge chaque 1000ms le robot via url et retourne le niveau de la batterie en pourcentage
+exports.getBattery = function (){
+        
 
+	         var delay = 1000; // l'interval de temps au bout du quel on envoi une autre requete pour rafraichir les information
+             var dataJson, remaining, percentage, dataString, thenum, progressBar;
+
+             if (fakeRobubox == true) {
+                batteryInfo = getFakeBattery();
+                setInterval(function() {
+                    thenum = batteryInfo.Remaining ;
+                    percentage = (thenum <= 100) ? thenum : 100; // 6- 
+                    // rafraichissement de la jauge sur l'IHM Robot
+                    ihm.refreshJaugeBattery(percentage);
+                    // envoi des valeurs au pilote via le serveur
+                    navigation_interface.sendToPilote("battery_level",percentage)
+                 }, delay);
+                
+
+             } 
+                
+                var url = "https://127.0.0.1:443/http://127.0.0.1:7007/Devices/Battery" ; // CORS-ANYWHERE	                
+    	        setInterval(function() {
+    	            $.get(url, function(data) { // 1 -  et 2- 
+    	                //batteryInfo = JSON.parse(data);
+    	                //thenum = batteryInfo.Remaining ;
+    	                //percentage = (thenum <= 100) ? thenum : 100; // 6- 
+
+    	                console.log("Batterie: " + data + "%");
+    	            });
+                    // rafraichissement de la jauge sur l'IHM Robot
+                    // ihm.refreshJaugeBattery(percentage);
+                    // envoi des valeurs au pilote via le serveur
+                    // commandes.sendToPilote("battery_level",percentage)
+                    // navigation_interface.sendToPilote("battery_level",percentage)
+
+    	        }, delay);
+
+               
+} // End getBattery
 
 exports.sendFullStop = function (data){        
         
