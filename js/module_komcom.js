@@ -250,7 +250,7 @@ exports.sendDrive = function (data){
 // elle interroge chaque 1000ms le robot via url et retourne le niveau de la batterie en pourcentage
 exports.getBattery = function (){
         
-			 console.log("komcom.getBattery() >>> ");
+			 // console.log("komcom.getBattery() >>> ");
 	         var delay = 1000; // l'interval de temps au bout du quel on envoi une autre requete pour rafraichir les information
              var dataJson, remaining, percentage, dataString, thenum, progressBar;
 
@@ -273,7 +273,7 @@ exports.getBattery = function (){
              
     	        setInterval(function() {
     	            
-	    	        console.log("komcom.getBattery() >>> parameters.navSys ="+parameters.navSys);
+	    	        // console.log("komcom.getBattery() >>> parameters.navSys ="+parameters.navSys);
 	             	
 	             	if (parameters.navSys == 'Robubox') {
 	              		url = "https://127.0.0.1:443/http://127.0.0.1:50000/lokarria/battery"
