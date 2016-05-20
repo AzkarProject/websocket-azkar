@@ -270,14 +270,17 @@ exports.getBattery = function (){
              } else {
 
              	
-             	console.log("komcom.getBattery() >>> parameters.navSys ="+parameters.navSys);
-             	
-             	if (parameters.navSys == 'Robubox') {
-              		url = "https://127.0.0.1:443/http://127.0.0.1:50000/lokarria/battery"
-              	} else if (parameters.navSys == 'KomNAV') {
-                	url = "https://127.0.0.1:443/http://127.0.0.1:7007/Devices/Battery" ; // CORS-ANYWHERE	  
-              	}                
+             
     	        setInterval(function() {
+    	            
+	    	        console.log("komcom.getBattery() >>> parameters.navSys ="+parameters.navSys);
+	             	
+	             	if (parameters.navSys == 'Robubox') {
+	              		url = "https://127.0.0.1:443/http://127.0.0.1:50000/lokarria/battery"
+	              	} else if (parameters.navSys == 'KomNAV') {
+	                	url = "https://127.0.0.1:443/http://127.0.0.1:7007/Devices/Battery" ; // CORS-ANYWHERE	  
+	              	}   
+
     	            $.get(url, function(data) { // 1 -  et 2- 
     	                if (parameters.navSys == 'Robubox') {
     	                	batteryInfo = JSON.parse(data);
