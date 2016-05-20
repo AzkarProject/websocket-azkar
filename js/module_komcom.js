@@ -319,7 +319,7 @@ exports.getRobotInfo2 = function (init){
     
     if (parameters.navSys == 'Robubox') {
     	 url = 'https://127.0.0.1:443/http://127.0.0.1:50000/lokarria/localization';
-    else if (parameters.navSys == 'KomNAV') {
+    } else if (parameters.navSys == 'KomNAV') {
     	 url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/Localisation';
     }	
 
@@ -358,7 +358,7 @@ exports.getDataMap2 = function (){
     
     if (parameters.navSys == 'Robubox') {
     	 url = 'https://127.0.0.1:443/http://127.0.0.1:50000/nav/maps/parameters';
-    else if (parameters.navSys == 'KomNAV') {
+    } else if (parameters.navSys == 'KomNAV') {
     	 url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/Properties';
     }	
 
