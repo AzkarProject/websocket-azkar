@@ -52,7 +52,7 @@ lastMoveTimeStamp = 0;
 
 
 // Settings Default
-navSys = 'KomNav'; // "Robubox" ou "KomNAV" / 
+navSys = 'KomNAV'; // "Robubox" ou "KomNAV" / 
 navCh = 'webSocket'; // "webSocket" ou "webRTC" /
 piloteLocalView = 'show';
 robotLocalView = 'show';

@@ -147,11 +147,23 @@ function raZNavSystem() {
     selectSystemKomNAV.checked = false;
     selectSystemRobubox.checked = true;
     parameters.navSys = "Robubox";
-    /**/
+    // ----
     selectSystemKomNAV.checked = true;
     selectSystemRobubox.checked = false;
     parameters.navSys = "KomNAV";
     /**/
+
+    // navSys = 'KomNAV'; // "Robubox" ou "KomNAV" / 
+    
+    if (navSys == 'KomNAV') {
+        selectSystemKomNAV.checked = true;
+        selectSystemRobubox.checked = false;
+        parameters.navSys = "KomNAV";
+    } else if (navSys == 'Robubox') {
+        selectSystemKomNAV.checked = false;
+        selectSystemRobubox.checked = true;
+        parameters.navSys = "Robubox";
+    }
 }
 // Au chargement du script...
 raZNavSystem();
@@ -178,13 +190,30 @@ selectChannelWebSocket = document.querySelector('input#webSocket');
 selectChannelWebRTC = document.querySelector('input#webRTC');
 
 // remise a zero (R.A.Z) selecteur canal de commande WebRTC/webSocket
-// avec la valeur par défaut webSocket
+// par défaut webSocket (si connexion WebRTC pas encore établie)
 function raZNavChannel() {
 	console.log("@ raZNavChannel()")
+    
     selectChannelWebRTC.disabled = true;
 	selectChannelWebRTC.checked = false;
 	selectChannelWebSocket.checked = true;
 	parameters.navCh = "webSocket";
+    /**/
+
+    /*// navCh = 'webSocket'; // "webSocket" ou "webRTC" /
+    if (navCh == 'webSocket') {
+        selectChannelWebRTC.disabled = true;
+        selectChannelWebRTC.checked = false;
+        selectChannelWebSocket.checked = true;
+        parameters.navCh = "webSocket";
+    } else if (navCh == 'webRTC') {
+        selectChannelWebRTC.disabled = true;
+        selectChannelWebRTC.checked = true;
+        selectChannelWebSocket.checked = false;
+        parameters.navCh = "webSocket";
+    }
+    /**/
+
 }
 // Au chargement du script...
 raZNavChannel();
