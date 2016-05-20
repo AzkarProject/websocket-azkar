@@ -38,7 +38,7 @@
 console.log ("module_komcom chargé");
 // Envoi d'une commande de type "Drive" au robot
 //exports.sendDrive = function (enable, aSpeed,lSpeed){
-exports.sendDrive = function (data){        
+exports.sendDriveOLD = function (data){        
         
    
     var enable = data.enable;
@@ -91,11 +91,13 @@ exports.sendDrive = function (data){
 
             }
 
-        }   
+        }  
 }
 
 
-exports.getRobotInfo = function (init){
+
+
+exports.getRobotInfoOLD = function (init){
 
 	
 	// console.log ('get robot position');
@@ -119,7 +121,7 @@ exports.getRobotInfo = function (init){
 }
 
 
-exports.getDataMap = function (){
+exports.getDataMapOLD = function (){
 	
 	console.log ('get map informations');
 	// Titi: Rebond proxy en https(Client Robot) > Http(Robubox)
@@ -138,6 +140,10 @@ exports.getDataMap = function (){
     	});  
     }   
 }
+
+
+
+
 
 // Fonction qui permet de recupérer le niveau de la  la batterie et de l'afficher dans le progress bar
 // elle interroge chaque 1000ms le robot via url et retourne le niveau de la batterie en pourcentage
@@ -183,6 +189,63 @@ exports.getBatteryOLD = function (){
                
 } // End getBattery
 
+
+// ------------ 05/2016 -- Versions compatibles MobiServ -------------------
+
+
+exports.sendDrive = function (data){        
+        
+   
+    var enable = data.enable;
+    var aSpeed = data.aSpeed;
+    var lSpeed = data.lSpeed;
+    
+        //console.log ("komcom.sendDrive()");
+       
+        // Flags Homme mort:  
+        if (enable != false) {
+            onMove = true;
+            lastMoveTimeStamp = Date.now();
+        
+        } else if (enable == false){
+            onMove = false;
+            lastMoveTimeStamp = 0;
+        }
+        
+            
+        if (fakeRobubox == false) {
+         
+         	var url = null
+            
+            if (parameters.navSys == 'Robubox') {
+                url = "https://127.0.0.1:443/http://127.0.0.1:50000/api/drive" ; // CORS-ANYWHERE
+            } else if (parameters.navSys == 'KomNAV') {
+            	url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Speed" ; // CORS-ANYWHERE
+            }
+
+            if ( url != null) {
+	           	// function sendDrive(url, enable, aSpeed,lSpeed) {
+	            var btnA = (enable == 'true' ? true : false); //  
+	            //return Q.Promise(function(resolve, reject, notify) {  
+	            var xhr = new XMLHttpRequest();
+	            xhr.open('POST', url);
+	            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+	            //xhr.send(data);
+	            xhr.send(JSON.stringify({
+	                    "Enable": btnA,
+	                    "TargetAngularSpeed": aSpeed,
+	                    "TargetLinearSpeed": lSpeed
+	                }));
+	            xhr.closed;
+            
+            }
+
+        }  
+
+}
+
+
+
 // Fonction qui permet de recupérer le niveau de la  la batterie et de l'afficher dans le progress bar
 // elle interroge chaque 1000ms le robot via url et retourne le niveau de la batterie en pourcentage
 exports.getBattery = function (){
@@ -192,6 +255,7 @@ exports.getBattery = function (){
              var dataJson, remaining, percentage, dataString, thenum, progressBar;
 
              if (fakeRobubox == true) {
+                
                 batteryInfo = getFakeBattery();
                 setInterval(function() {
                     thenum = batteryInfo.Remaining ;
@@ -203,27 +267,41 @@ exports.getBattery = function (){
                  }, delay);
                 
 
-             } 
-                
-                var url = "https://127.0.0.1:443/http://127.0.0.1:7007/Devices/Battery" ; // CORS-ANYWHERE	                
+             } else {
+
+             	if (parameters.navSys == 'Robubox') {
+              		url = "https://127.0.0.1:443/http://127.0.0.1:50000/lokarria/battery"
+              	else if (parameters.navSys == 'KomNAV') {
+                	url = "https://127.0.0.1:443/http://127.0.0.1:7007/Devices/Battery" ; // CORS-ANYWHERE	  
+              	}                
     	        setInterval(function() {
     	            $.get(url, function(data) { // 1 -  et 2- 
-    	                //batteryInfo = JSON.parse(data);
-    	                //thenum = batteryInfo.Remaining ;
-    	                //percentage = (thenum <= 100) ? thenum : 100; // 6- 
-
-    	                console.log("Batterie: " + data + "%");
+    	                if (parameters.navSys == 'Robubox') {
+    	                	batteryInfo = JSON.parse(data);
+    	                	thenum = batteryInfo.Remaining ;
+    	                } else if (parameters.navSys == 'KomNAV') {
+    	                	thenum = data;
+    	                }
+    	                percentage = (data <= 100) ? data : 100; // 6- 
     	            });
+                    
                     // rafraichissement de la jauge sur l'IHM Robot
-                    // ihm.refreshJaugeBattery(percentage);
+                    ihm.refreshJaugeBattery(percentage);
                     // envoi des valeurs au pilote via le serveur
-                    // commandes.sendToPilote("battery_level",percentage)
-                    // navigation_interface.sendToPilote("battery_level",percentage)
+                    navigation_interface.sendToPilote("battery_level",percentage)
 
     	        }, delay);
 
+
+             }
+                
+                
+
+
                
 } // End getBattery
+
+
 
 exports.sendFullStop = function (data){        
         
@@ -231,6 +309,80 @@ exports.sendFullStop = function (data){
     alert(messageStop);
 
             
+}
+
+
+exports.getRobotInfo = function (init){
+
+	
+	var url = null;
+    
+    if (parameters.navSys == 'Robubox') {
+    	 url = 'https://127.0.0.1:443/http://127.0.0.1:50000/lokarria/localization';
+    else if (parameters.navSys == 'KomNAV') {
+    	 url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/Localisation';
+    }	
+
+
+    /*
+	if (fakeRobubox == true) {  
+       robotInfo = getFakeRobotInfo();
+       DEFFERED_RobotInfo.resolve();
+
+    } else {
+    	
+    	if (url != null) {
+
+			$.get(url, function(dataLocalization) { // la localisation du robot sur la carte
+		    robotInfo = JSON.parse(dataLocalization);
+		    //if (init == true) defferedRobotInfo.resolve();
+		    if (init == true) DEFFERED_RobotInfo.resolve();
+			});
+		}
+
+    }
+    /**/
+
+    // Pour tests
+    robotInfo = getFakeRobotInfo();
+    DEFFERED_RobotInfo.resolve();
+	
+}
+
+
+exports.getDataMap = function (){
+	
+	console.log ('get map informations');
+	// Titi: Rebond proxy en https(Client Robot) > Http(Robubox)
+    var url = null;
+    
+    if (parameters.navSys == 'Robubox') {
+    	 url = 'https://127.0.0.1:443/http://127.0.0.1:50000/nav/maps/parameters';
+    else if (parameters.navSys == 'KomNAV') {
+    	 url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/Properties';
+    }	
+
+    
+    /*
+    if (fakeRobubox == true) {  
+        dataMap = getFakeDataMap();
+        DEFFERED_DataMap.resolve();
+    } else {
+        
+        if (url != null) {
+	        $.get(url, function(rep) { // Les informations de la carte 
+			    if (!rep) return;
+			    dataMap = rep;
+	            DEFFERED_DataMap.resolve();
+
+	    	}); 
+    	} 
+    } 
+    /**/  
+
+    // Pour tests
+    dataMap = getFakeDataMap();
+    DEFFERED_DataMap.resolve();
 }
 
 
