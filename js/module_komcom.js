@@ -97,7 +97,7 @@ exports.sendDriveOLD = function (data){
 
 
 
-exports.getRobotInfo = function (init){
+exports.getRobotInfoOLD = function (init){
 
 	
 	// console.log ('get robot position');
@@ -121,7 +121,7 @@ exports.getRobotInfo = function (init){
 }
 
 
-exports.getDataMap = function (){
+exports.getDataMapOLD = function (){
 	
 	console.log ('get map informations');
 	// Titi: Rebond proxy en https(Client Robot) > Http(Robubox)
@@ -312,7 +312,7 @@ exports.sendFullStop = function (data){
 }
 
 
-exports.getRobotInfo2 = function (init){
+exports.getRobotInfo = function (init){
 
 	
 	var url = null;
@@ -350,7 +350,7 @@ exports.getRobotInfo2 = function (init){
 }
 
 
-exports.getDataMap2 = function (){
+exports.getDataMap = function (){
 	
 	console.log ('get map informations');
 	// Titi: Rebond proxy en https(Client Robot) > Http(Robubox)
