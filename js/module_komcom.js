@@ -314,9 +314,8 @@ exports.sendFullStop = function (data){
 
 exports.getRobotInfo = function (init){
 
-	
+	 /*
 	var url = null;
-    
     if (parameters.navSys == 'Robubox') {
     	 url = 'https://127.0.0.1:443/http://127.0.0.1:50000/lokarria/localization';
     } else if (parameters.navSys == 'KomNAV') {
@@ -324,7 +323,7 @@ exports.getRobotInfo = function (init){
     }	
 
 
-    /*
+   
 	if (fakeRobubox == true) {  
        robotInfo = getFakeRobotInfo();
        DEFFERED_RobotInfo.resolve();
@@ -352,6 +351,7 @@ exports.getRobotInfo = function (init){
 
 exports.getDataMap = function (){
 	
+	/*
 	console.log ('get map informations');
 	// Titi: Rebond proxy en https(Client Robot) > Http(Robubox)
     var url = null;
@@ -363,7 +363,7 @@ exports.getDataMap = function (){
     }	
 
     
-    /*
+    
     if (fakeRobubox == true) {  
         dataMap = getFakeDataMap();
         DEFFERED_DataMap.resolve();
