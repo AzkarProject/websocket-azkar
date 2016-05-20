@@ -140,6 +140,9 @@ selectSystemKomNAV = document.querySelector('input#KomNAV');
 // Remise a zero (R.A.Z) du selecteur de systeme embarqué
 function raZNavSystem() {
     console.log("@ raZNavSystem()")
+    console.log("navSys =" + navSys)
+
+
     /*
     selectSystemKomNAV.checked = false;
     selectSystemRobubox.checked = true;
