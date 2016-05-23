@@ -323,11 +323,14 @@ exports.getRobotInfo = function (init){
 
 	
 	var url = null;
+	url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/Localisation';
+    /*
     if (parameters.navSys == 'Robubox') {
     	 url = 'https://127.0.0.1:443/http://127.0.0.1:50000/lokarria/localization';
     } else if (parameters.navSys == 'KomNAV') {
     	 url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/Localisation';
-    }	
+    }
+    /**/	
 
 
    
@@ -362,12 +365,15 @@ exports.getDataMap = function (){
 	console.log ('get map informations');
 	// Titi: Rebond proxy en https(Client Robot) > Http(Robubox)
     var url = null;
+    url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/Properties';
     
+    /*
     if (parameters.navSys == 'Robubox') {
     	 url = 'https://127.0.0.1:443/http://127.0.0.1:50000/nav/maps/parameters';
     } else if (parameters.navSys == 'KomNAV') {
     	 url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/Properties';
-    }	
+    }
+    /**/
 
     
     
