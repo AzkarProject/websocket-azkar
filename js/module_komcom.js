@@ -386,7 +386,9 @@ exports.getDataMap = function (){
 	        $.get(url, function(rep) { // Les informations de la carte 
 			    if (!rep) return;
 			    dataMap = rep;
+	            console.log(dataMap);
 	            DEFFERED_DataMap.resolve();
+
 
 	    	}); 
     	} 
