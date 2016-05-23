@@ -102,8 +102,9 @@ function getFakeRobotInfo() {
     return robotInfo;
     /**/
 
-   // Test KomNav carte labo 250
+   /*// Test KomNav carte labo 250
     {"Pose":{"Orientation":0.00976723491458138,"Position":{"X":-0.01083418017965721,"Y":-0.0018906058443630832,"Z":0}},"State":8,"Timestamp":10395360}
+    /**/
 
     var robotInfo = {
         Pose : { 
