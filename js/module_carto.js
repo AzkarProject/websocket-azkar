@@ -147,6 +147,41 @@
         return {X:x, Y:y};
     };
 
+    /* Code C# du dashboard
+    >> Mobiserve > Views > Dasboard > Mapview.xampl > mapview.xaml.cs
+    
+    /**
+     public Point mapToCanvas(Point mapP)
+        {
+            double mapRatio = (double)map.Width / (double)map.Height;
+            double canvasRatio = (double)ActualWidth / (double)ActualHeight;
+            bool fitVertically = mapRatio < canvasRatio;
+
+            double canvasImgWidth = (fitVertically ? (ActualWidth * mapRatio / canvasRatio) : ActualWidth);
+            double canvasImgHeight = (fitVertically ? ActualHeight : (ActualHeight * mapRatio / canvasRatio));
+
+            double x = (fitVertically ? (ActualWidth - canvasImgWidth) / 2 : 0) + mapP.X * canvasImgWidth / map.Width;
+            double y = (fitVertically ? 0 : (ActualHeight - canvasImgHeight) / 2) + mapP.Y * canvasImgHeight / map.Height;
+            return new Point(x * zoomLevelVal + xoffset, y * zoomLevelVal + yoffset);
+        }
+
+        public Point canvasToMap(Point canP)
+        {
+            double mapRatio = (double)map.Width / (double)map.Height;
+            double canvasRatio = (double)ActualWidth / (double)ActualHeight;
+            bool fitVertically = mapRatio < canvasRatio;
+
+            double canvasImgWidth = (fitVertically ? (ActualWidth * mapRatio / canvasRatio) : ActualWidth);
+            double canvasImgHeight = (fitVertically ? ActualHeight : (ActualHeight * mapRatio / canvasRatio));
+
+            double x = ((canP.X - xoffset) / zoomLevelVal - (fitVertically ? (ActualWidth - canvasImgWidth) / 2 : 0)) * map.Width / canvasImgWidth;
+            double y = ((canP.Y - yoffset) / zoomLevelVal - (fitVertically ? 0 : (ActualHeight - canvasImgHeight) / 2)) * map.Height / canvasImgHeight;
+            return new Point(x, y);
+        }
+
+	/***/
+
+
 
     /* START */
     /* call init() then load() and finaly refresh() with setInterval */
@@ -490,7 +525,7 @@
         context.fillStyle = color;
         context.fill();
         context.lineWidth = 2;
-        context.strokeStyle = "black";
+        context.strokeStyle = color;
         context.stroke();
         
         x2 = x + Math.cos(theta) * 8;
@@ -526,8 +561,8 @@
 
     function simulateRobotMove() {
         //robotInfo.Pose.Orientation.Z += 0.02;
-        robotInfo.Pose.Position.X += 0.01;               
-        robotInfo.Pose.Position.Y += 0.01;
+        //robotInfo.Pose.Position.X += 0.01;               
+        //robotInfo.Pose.Position.Y += 0.01;
     }
 
 
