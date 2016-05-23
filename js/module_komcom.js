@@ -192,7 +192,7 @@ exports.getBatteryOLD = function (){
 
 // ------------ 05/2016 -- Versions compatibles MobiServ -------------------
 
-
+// Ok V2
 exports.sendDrive = function (data){        
         
    
@@ -245,12 +245,12 @@ exports.sendDrive = function (data){
 }
 
 
-
+// Ok V2
 // Fonction qui permet de recupérer le niveau de la  la batterie et de l'afficher dans le progress bar
 // elle interroge chaque 1000ms le robot via url et retourne le niveau de la batterie en pourcentage
 exports.getBattery = function (){
         
-			 console.log("komcom.getBattery() >>> ");
+			 // console.log("komcom.getBattery() >>> ");
 	         var delay = 1000; // l'interval de temps au bout du quel on envoi une autre requete pour rafraichir les information
              var dataJson, remaining, percentage, dataString, thenum, progressBar;
 
@@ -273,8 +273,8 @@ exports.getBattery = function (){
              
     	        setInterval(function() {
     	            
-	    	        console.log("komcom.getBattery() >>> navSys ="+navSys);
-	    	        console.log("komcom.getBattery() >>> parameters.navSys ="+parameters.navSys);
+	    	        // console.log("komcom.getBattery() >>> navSys ="+navSys);
+	    	        // console.log("komcom.getBattery() >>> parameters.navSys ="+parameters.navSys);
 	             	
 	             	if (parameters.navSys == 'Robubox') {
 	              		url = "https://127.0.0.1:443/http://127.0.0.1:50000/lokarria/battery"
@@ -321,7 +321,7 @@ exports.sendFullStop = function (data){
 
 exports.getRobotInfo = function (init){
 
-	 /*
+	
 	var url = null;
     if (parameters.navSys == 'Robubox') {
     	 url = 'https://127.0.0.1:443/http://127.0.0.1:50000/lokarria/localization';
@@ -358,7 +358,7 @@ exports.getRobotInfo = function (init){
 
 exports.getDataMap = function (){
 	
-	/*
+	
 	console.log ('get map informations');
 	// Titi: Rebond proxy en https(Client Robot) > Http(Robubox)
     var url = null;

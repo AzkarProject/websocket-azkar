@@ -139,22 +139,9 @@ selectSystemKomNAV = document.querySelector('input#KomNAV');
 
 // Remise a zero (R.A.Z) du selecteur de systeme embarqué
 function raZNavSystem() {
+    
     console.log("@ raZNavSystem()")
     console.log("navSys =" + navSys)
-
-
-    /*
-    selectSystemKomNAV.checked = false;
-    selectSystemRobubox.checked = true;
-    parameters.navSys = "Robubox";
-    // ----
-    selectSystemKomNAV.checked = true;
-    selectSystemRobubox.checked = false;
-    parameters.navSys = "KomNAV";
-    /**/
-
-    // navSys = 'KomNAV'; // "Robubox" ou "KomNAV" / 
-    
     if (navSys == 'KomNAV') {
         selectSystemKomNAV.checked = true;
         selectSystemRobubox.checked = false;
@@ -174,7 +161,6 @@ raZNavSystem();
 setNavSystem = function (navSysSet) {    
     parameters.navSys = navSysSet;
     // On prévient le robot qu'on bascule entre Robubox ou KomNav
-    // console.log (parameters.navSys);
     socket.emit('changeNavSystem', {
         objUser: localObjUser,
         navSystem: navSysSet
