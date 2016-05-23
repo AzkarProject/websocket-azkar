@@ -46,7 +46,8 @@ if (typeof appDevBranch != 'undefined') fakeRobubox = appDevBranch.isFakeRobubox
 
 
 function getFakeDataMap() {
-	var dataMap = {
+	/*
+    var dataMap = {
         Height: 1171,
         Width:2384,
         Resolution: 0.2,
@@ -56,10 +57,32 @@ function getFakeDataMap() {
         }
     }
     return dataMap;
+    /**/
+
+    // Test KomNav carte labo 250
+    /*
+    {"Offset":{"X":-20.7969943946,"Y":-3.02713963867},"Width":1485,"Stride":1488,"Height":1187,"Data":[0,...,0],"Resolution":0.019999999553}
+    /**/
+
+    var dataMap = {
+        Height: 1187,
+        Width:1485,
+        Stride: 1488,
+        Resolution: 0.0199999995532,
+        Offset : {     
+            X: -20.7969943946,
+            Y: -3.02713963867
+        }
+    }
+    return dataMap;
+
+
+
 }
 
 
 function getFakeRobotInfo() {
+    /*
     var robotInfo = {
         Pose : { 
             Orientation : {
@@ -77,6 +100,30 @@ function getFakeRobotInfo() {
         Timestamp : 1563315020
     }
     return robotInfo;
+    /**/
+
+   // Test KomNav carte labo 250
+    {"Pose":{"Orientation":0.00976723491458138,"Position":{"X":-0.01083418017965721,"Y":-0.0018906058443630832,"Z":0}},"State":8,"Timestamp":10395360}
+
+    var robotInfo = {
+        Pose : { 
+            Orientation : {
+                X:0,
+                Y:0,
+                Z:0.00976723491458138
+            },
+            Position : {
+                X:-0.01083418017965721,
+                Y:-0.0018906058443630832,
+                Z:0
+            },
+        },
+        Status: 8,
+        Timestamp : 10395360
+    }
+    return robotInfo;
+
+
 }
 
 
