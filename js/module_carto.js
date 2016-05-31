@@ -54,12 +54,13 @@
     listPOI = null;  
 
     /**/
-
+    /*
     var dataLocalization, 
         offsetX,
         offsetY,
         corrOffestX,
         corrOffestY;
+    /**/
         
     var canvasMap = document.getElementById('myCanvas');
     var context = canvasMap.getContext('2d');
