@@ -418,7 +418,8 @@ exports.getDataMap = function (){
         if (url != null) {
 	        $.get(url, function(rep) { // Les informations de la carte 
 			    if (!rep) return;
-			    dataMap = rep;
+			    //dataMap = rep;
+                dataMap = JSON.parse(rep);
 	            // console.log(dataMap);
                 console.log("dataMap")
                 console.log(dataMap)
