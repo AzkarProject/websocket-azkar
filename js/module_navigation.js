@@ -124,12 +124,17 @@
     function load() {
         
         console.log('@ load()');
-        console.log(dataMap);
+        console.log("Objet dataMap");
         mapSize = carto.resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
+        console.log ("Objet mapSize")
+
+        
+        /*
         offsetX = dataMap.Offset.X;
         offsetY = dataMap.Offset.Y;
         corrOffestX = dataMap.Height - (offsetX / dataMap.Resolution);
-        corrOffestY = dataMap.Width - (offsetY / dataMap.Resolution);         
+        corrOffestY = dataMap.Width - (offsetY / dataMap.Resolution);   
+        /**/      
 
         // console.log ('then call refresh function'); 
         //refresh();
