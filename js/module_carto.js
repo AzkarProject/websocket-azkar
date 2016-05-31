@@ -501,6 +501,8 @@
     var singleton = true
     function dawListPointOfInterest() {
         
+        return
+
         // if (singleton == true) {
             
             if (listPOI != null) {
