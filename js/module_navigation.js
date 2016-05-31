@@ -99,15 +99,15 @@
         console.log('@ init(callback)');      
         
         // On met le deffered en variable globale
-        // Pour modifier son état dans une fonction de KomKom
+        // Pour le modifier ds une autre fonction
         DEFFERED_DataMap = $.Deferred();
         DEFFERED_RobotInfo = $.Deferred();
         //listPOI = getFakelistPOI();
     	//DEFFERED_listPOI.resolve();
     	DEFFERED_listPOI = $.Deferred();
 
-        $.when(DEFFERED_DataMap, DEFFERED_RobotInfo, DEFFERED_listPOI).done(function(v1, v2, v3) {
-            //console.log(listPOI)
+        $.when(DEFFERED_DataMap, DEFFERED_RobotInfo, DEFFERED_listPOI).done(function(v1, v2) {
+            alert("isDeffered");
             mapSize = carto.resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
             callback();
         });
@@ -138,7 +138,7 @@
     
     function refresh() {
         
-        console.log('@ refresh()');
+        console.log('@ init(callback)');
 
         if (type == "robot-appelé") {
 	        
