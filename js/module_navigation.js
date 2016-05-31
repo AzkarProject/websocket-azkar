@@ -122,7 +122,7 @@
 
     function load() {
         
-        //console.log('@ load()');
+        console.log('@ load()');
         mapSize = carto.resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
         offsetX = dataMap.Offset.X;
         offsetY = dataMap.Offset.Y;
@@ -138,6 +138,8 @@
     
     function refresh() {
         
+        console.log('@ refresh()');
+
         if (type == "robot-appelé") {
 	        
 	        setInterval(function() {
