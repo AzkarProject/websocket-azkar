@@ -334,6 +334,8 @@ exports.getListPOI = function (init){
 
             $.get(url, function(data) { // la localisation du robot sur la carte
             listPOI = JSON.parse(data);
+            console.log("listPOI")
+            console.log(listPOI)
             //if (init == true) defferedRobotInfo.resolve();
             if (init == true) DEFFERED_listPOI.resolve();
             });
@@ -375,6 +377,7 @@ exports.getRobotInfo = function (init){
 			$.get(url, function(dataLocalization) { // la localisation du robot sur la carte
 		    robotInfo = JSON.parse(dataLocalization);
 		    //if (init == true) defferedRobotInfo.resolve();
+            console.log("robotInfo ...")
 		    if (init == true) DEFFERED_RobotInfo.resolve();
 			});
 		}
@@ -417,6 +420,8 @@ exports.getDataMap = function (){
 			    if (!rep) return;
 			    dataMap = rep;
 	            // console.log(dataMap);
+                console.log("dataMap")
+                console.log(dataMap)
 	            DEFFERED_DataMap.resolve();
 
 
