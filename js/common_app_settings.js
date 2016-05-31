@@ -100,7 +100,7 @@
     	//var mapSource = '/images/mapRobosoft.png'; // Carte locaux Robosoft
 		//var mapSource = '/images/mapLaboI3S.png'; // Carte I3S V2
 		//var mapSource = '/images/labo3.png'; // Carte I3S V3
-		var mapSource = '/images/labo250.png'; // Carte I3S Via KomNav V1
+		var mapSource = '/images/labo261.png'; // Carte I3S Via Dashboard Mobiserv
 		return mapSource
 	}
 

@@ -63,4 +63,39 @@ exports.client = function client (id,pseudo,placeliste,typeClient,connectionDate
 }
 
 
+// Objet POI (Pont d'intêret sur la carte)
+exports.pointOfInterest = function client (Name,Pose,Label){
+  this.id = tools.createUUID();
+  this.Name = Name;
+  this.Label = Label;
+  this.Pose.X= Pose.X;
+  this.Pose.Y = Pose.Y;
+  this.Pose.Theta = Pose.Theta;
+  this.tags = null;
+}
+
+
+
+
+// Objet Scene
+// idScene
+// idParcour
+// sceneName
+// localization[X,Y,Width,Height]
+// description
+// tags [...]
+// SPARQL
+
+
+// Objet Parcour
+// idParcour
+// nameParcour
+// description
+// mapName
+
+
+
+
+
+
 })(typeof exports === 'undefined'? this['models']={}: exports);

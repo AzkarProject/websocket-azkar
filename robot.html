@@ -65,13 +65,43 @@
 
 			<div  class="floatLeft doubleQuarterContainerBox">
 				<div id="remoteCanvasArea" class="insideFlex robot shadowBlack">
-		            <strong> Navigation</strong>
-		            <hr/>
-					<canvas id="myCanvas" width="500" height="140" style=""></canvas>
-	        	</div>
-        	</div>
+		            
+					<div>
+		            	<strong> Navigation</strong>
+		            	<hr/>
+					
+					
+						<div style="float:left; width:200px">
+						  	<span id="messageDevicesStateMicro"> Points of interest</span>
+							<div class="select">
+								
+								<button id="goto_POI" onclick="gotoPOI()">go</button>
+								<select id="list_POI">
+									<option id="Départ" value="Départ">Départ</option>
+									<option id="PointA" value="PointA">PointA</option>
+									<option id="PointB" value="PointB">PointB</option>
+									<option id="PointC" value="PointC">PointC</option>
+									<option id="PointD" value="PointD">PointD</option>
+								</select>
+							
+								
+							</div>
+							
+							<br/>
 
-			
+							<h3><span id="messageNav">Robot En Attente<span></h3>
+
+
+						</div>
+						
+						<div style="height:135px;">
+							<canvas id="myCanvas" width="400" height="130" style="border:1px solid #ccc;"></canvas>
+						</div>
+					
+					</div>
+	        	</div>
+        	
+        	</div>
 
 
 			<div  class="floatLeft oneQuarterContainerBox">
@@ -186,6 +216,7 @@
         <script src='/js/module_komcom.js'></script>
 		<script src='/js/module_komremote.js'></script>
 		<script src='/js/module_carto.js'></script>
+		<script src='/js/module_navigation.js'></script>
 		<script src='/js/module_userconnection.js'></script>
 		<script src="/js/module_logs.js"></script>
 

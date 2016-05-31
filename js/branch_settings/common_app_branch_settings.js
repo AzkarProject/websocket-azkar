@@ -168,7 +168,7 @@
 
 	  
 	exports.isFakeRobubox = function() {
-		var fakeRobubox = true;
+		var fakeRobubox = false;
 		return fakeRobubox;
 	}
 
@@ -176,7 +176,7 @@
 		// var mapSource = '/images/mapRobosoft.png'; // Carte locaux Robosoft Robubox
 		// var mapSource = '/images/mapLaboI3S.png'; // Carte I3S Robubox V2
 		//var mapSource = '/images/labo3.png'; // Carte I3S Robubox V3
-		var mapSource = '/images/labo250.png'; // Carte I3S Via KomNav V1
+		var mapSource = '/images/labo261.png'; // Carte I3S Via Dashboard Mobiserv
 		return mapSource
 	}
 

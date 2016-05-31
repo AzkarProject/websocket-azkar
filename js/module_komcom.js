@@ -318,6 +318,36 @@ exports.sendFullStop = function (data){
             
 }
 
+exports.getListPOI = function (init){
+
+	
+    var url = null;
+    url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/POI';
+
+    if (fakeRobubox == true) {  
+    listPOI = getFakelistPOI();
+    DEFFERED_listPOI.resolve();
+
+    } else {
+        
+        if (url != null) {
+
+            $.get(url, function(data) { // la localisation du robot sur la carte
+            listPOI = JSON.parse(data);
+            //if (init == true) defferedRobotInfo.resolve();
+            if (init == true) DEFFERED_listPOI.resolve();
+            });
+        }
+
+    }
+
+    // Pour tests
+    // listPOI = getFakelistPOI();
+    // DEFFERED_listPOI.resolve();
+
+}
+
+
 
 exports.getRobotInfo = function (init){
 
@@ -333,7 +363,7 @@ exports.getRobotInfo = function (init){
     /**/	
 
 
-   
+    
 	if (fakeRobubox == true) {  
        robotInfo = getFakeRobotInfo();
        DEFFERED_RobotInfo.resolve();
@@ -353,8 +383,8 @@ exports.getRobotInfo = function (init){
     /**/
 
     // Pour tests
-    robotInfo = getFakeRobotInfo();
-    DEFFERED_RobotInfo.resolve();
+    //robotInfo = getFakeRobotInfo();
+    //DEFFERED_RobotInfo.resolve();
 	
 }
 
@@ -365,7 +395,7 @@ exports.getDataMap = function (){
 	console.log ('get map informations');
 	// Titi: Rebond proxy en https(Client Robot) > Http(Robubox)
     var url = null;
-    url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/Properties';
+    url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/Metadatas';
     
     /*
     if (parameters.navSys == 'Robubox') {
@@ -396,8 +426,8 @@ exports.getDataMap = function (){
     /**/  
 
     // Pour tests
-    dataMap = getFakeDataMap();
-    DEFFERED_DataMap.resolve();
+    //dataMap = getFakeDataMap();
+    //DEFFERED_DataMap.resolve();
 }
 
 

@@ -63,7 +63,7 @@ function getFakeDataMap() {
     /*
     {"Offset":{"X":-20.7969943946,"Y":-3.02713963867},"Width":1485,"Stride":1488,"Height":1187,"Data":[0,...,0],"Resolution":0.019999999553}
     /**/
-
+    /*
     var dataMap = {
         Height: 1187,
         Width:1485,
@@ -75,9 +75,10 @@ function getFakeDataMap() {
         }
     }
     return dataMap;
+    /**/
 
-
-
+    var dataMap = {"Offset":{"X":-20.7969943946,"Y":-3.02713963867},"Width":1485,"Stride":1488,"Height":1187,"Data":[0,0,0],"Resolution":0.019999999553}
+    return dataMap;
 }
 
 
@@ -106,6 +107,7 @@ function getFakeRobotInfo() {
     {"Pose":{"Orientation":0.00976723491458138,"Position":{"X":-0.01083418017965721,"Y":-0.0018906058443630832,"Z":0}},"State":8,"Timestamp":10395360}
     /**/
 
+    /*
     var robotInfo = {
         Pose : { 
             Orientation : {
@@ -123,7 +125,25 @@ function getFakeRobotInfo() {
         Timestamp : 10395360
     }
     return robotInfo;
+    /**/
 
+    var robotInfo = {"Pose":{"Orientation":0.014824313679471759,"Position":{"X":-0.01693115491662614,"Y":-0.011192893436510892,"Z":0}},"State":8,"Timestamp":2916720}
+    return robotInfo;
+
+}
+
+
+
+
+function getFakelistPOI() {
+    
+    console.log("getFakelistPOI()")
+
+    var listPOI = [{"Name":"PilierA","Pose":{"X":2.3736454829404003,"Y":6.2584240093506871,"Theta":0}},{"Name":"PilierB","Pose":{"X":2.1479895820222588,"Y":11.719296811569686,"Theta":0}},{"Name":"PilierC","Pose":{"X":-10.172822608108211,"Y":11.222853829549779,"Theta":0}},{"Name":"PilierD","Pose":{"X":-10.263084968475466,"Y":5.8973745678816627,"Theta":0}}]
+
+    console.log(listPOI);
+
+    return listPOI;
 
 }
 
