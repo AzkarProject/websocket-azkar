@@ -499,10 +499,10 @@
 
 
     
-    var singleton = true
+    //var singleton = true
     function dawListPointOfInterest() {
         
-        return
+        // return
 
         // if (singleton == true) {
             
@@ -556,7 +556,7 @@
                     context.restore();
 
 
-                    singleton = false;
+                    // singleton = false;
                
                 } 
             }

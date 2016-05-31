@@ -122,15 +122,18 @@
     }
 
     function load() {
+        mapSize = carto.resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
         
+        /*
         console.log('@ load()');
         console.log("Objet dataMap");
         console.log(dataMap);
-        mapSize = carto.resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
+        
         console.log ("Objet mapSize")
         console.log (mapSize)
         console.log ("Objet dataMap.Offset")
         console.log (dataMap.Offset)
+        /**/
         
 
 
