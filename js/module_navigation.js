@@ -18,7 +18,10 @@
 (function(exports){
 
 
-	// Titi:  délai de rafraichissement carto en ms
+	console.log("module_navigation chargé")
+
+
+    // Titi:  délai de rafraichissement carto en ms
     refreshDelay = 100; // 100ms (600ms ca saccade un peu) 
 
     // Datamap et robotInfo en variable globales...
