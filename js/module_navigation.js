@@ -124,6 +124,7 @@
     function load() {
         
         console.log('@ load()');
+        console.log(dataMap);
         mapSize = carto.resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
         offsetX = dataMap.Offset.X;
         offsetY = dataMap.Offset.Y;
