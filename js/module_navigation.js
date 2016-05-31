@@ -106,7 +106,7 @@
 
         // $.when(DEFFERED_DataMap, DEFFERED_RobotInfo, DEFFERED_listPOI).done(function(v1, v2) {
         $.when(DEFFERED_DataMap, DEFFERED_RobotInfo).done(function(v1, v2) {
-            alert("isDeffered");
+            // alert("isDeffered");
             mapSize = carto.resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
             callback();
         });
@@ -114,7 +114,7 @@
         var init = true;
         komcom.getRobotInfo(init);
         komcom.getDataMap();
-        // komcom.getListPOI();
+        komcom.getListPOI();
         
 
     }
