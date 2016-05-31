@@ -403,8 +403,10 @@ exports.getDataMap = function (){
     }
     /**/
 
+    dataMap = getFakeDataMap();
+    DEFFERED_DataMap.resolve();
     
-    
+    /*
     if (fakeRobubox == true) {  
         dataMap = getFakeDataMap();
         DEFFERED_DataMap.resolve();

@@ -102,8 +102,6 @@
         // Pour le modifier ds une autre fonction
         DEFFERED_DataMap = $.Deferred();
         DEFFERED_RobotInfo = $.Deferred();
-        //listPOI = getFakelistPOI();
-    	//DEFFERED_listPOI.resolve();
     	DEFFERED_listPOI = $.Deferred();
 
         // $.when(DEFFERED_DataMap, DEFFERED_RobotInfo, DEFFERED_listPOI).done(function(v1, v2) {
@@ -123,29 +121,6 @@
 
     function load() {
         mapSize = carto.resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
-        
-        /*
-        console.log('@ load()');
-        console.log("Objet dataMap");
-        console.log(dataMap);
-        
-        console.log ("Objet mapSize")
-        console.log (mapSize)
-        console.log ("Objet dataMap.Offset")
-        console.log (dataMap.Offset)
-        /**/
-        
-
-
-        /*
-        offsetX = dataMap.Offset.X;
-        offsetY = dataMap.Offset.Y;
-        corrOffestX = dataMap.Height - (offsetX / dataMap.Resolution);
-        corrOffestY = dataMap.Width - (offsetY / dataMap.Resolution);   
-        /**/      
-
-        // console.log ('then call refresh function'); 
-        //refresh();
         refresh();
     }
 
