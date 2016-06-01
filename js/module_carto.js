@@ -44,24 +44,7 @@
 
     // Si configuration spécifique à la branche:
     if (typeof appDevBranch != 'undefined') backGroundMap.src = appDevBranch.getMapSource();
-
-    /*// Titi:  délai de rafraichissement carto en ms
-    var refreshDelay = 100; // 100ms (600ms ca saccade un peu) 
-
-    // Datamap et robotInfo en variable globales...
-    dataMap = null; // height , width , offset (x,y) , resolution
-    robotInfo = null; // Pos X, Y et theta du robot
-    listPOI = null;  
-
-    /**/
-    /*
-    var dataLocalization, 
-        offsetX,
-        offsetY,
-        corrOffestX,
-        corrOffestY;
-    /**/
-        
+      
     var canvasMap = document.getElementById('myCanvas');
     var context = canvasMap.getContext('2d');
 
@@ -76,9 +59,6 @@
         var ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
         return { width: srcWidth*ratio, height: srcHeight*ratio, ratio: ratio };
      }
-
-
-
 
 
     // Titi: 
@@ -103,61 +83,6 @@
     canvasWidth = $('#myCanvas').width();
     canvasHeight = $('#myCanvas').height();
 
-    
-    /*// Titi:
-    // Flags et Ecouteurs pilote/robot pour l'échange des protocoles d'infos de navigation
-    // var pilotGetNav = false; // Flag d'échange par défaut.  
-    // si c'est un pilote qui éxécute le script
-    // Il prévient le robot qu'il doit lui envoyer ses infos de navigation & de cartographie.
-    if (type == "pilote-appelant") {
-    	pilotGetNav = true;
-    	socket.emit("pilotGetNav",{message:"getNavInfos"});
-    }
-    
-    // Titi:
-    // Ecouteur coté Robot: reception demande d'échange de données cartos
-    // Flag d'échange a true et envoi au pilote des paramètres de la carte
-    if (type == "robot-appelé") {
-    	socket.on("pilotGetNav", function(data) {
-    		if (data = "getNavInfos") {
-    			// pilotGetNav = true;
-                var toSend = {"dataMap":dataMap, "listPOI":listPOI,}
-    			//navigation_interface.sendToPilote("map_parameters", dataMap); // envoi parametres de la map
-                navigation_interface.sendToPilote("map_parameters2", toSend); // envoi parametres de la map
-                
-                // navigation_interface.sendToPilote("list_POI", listPOI); // envoi liste des POI
-
-            }
-    	});
-    }
-
-    // Titi: reception de données de navigation
-    if (type == "pilote-appelant") {
-    	socket.on("navigation", function(data) {
-           
-            if (data.command == "map_parameters2") {
-    			 console.log(">>> Socket.on(navigation)")
-                 console.log(data.dataMap);
-                 console.log(data.listPOI);
-                 dataMap = data.dataMap;
-                 listPOI = data.listPOI;
-    			 mapSize = resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
-                 //console.log (mapSize)
-    		     //DATAMAP = data.dataMap;
-                 //mapSize = resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
-
-            } else if (data.command == "robot_localization") {
-    			 robotInfo = data.robotInfo;
-    			 refresh();
-    		}
-
-
-    	});
-    }
-    /**/
-
-
-
 
     // Conversion Karto to png
     // Auteur: Marc Traonmilin (Robosoft)
@@ -175,82 +100,6 @@
         var y = -(p.Y - map.Height) * map.Resolution + map.Offset.Y;
         return {X:x, Y:y};
     };
-
-
-    /* START */
-    /* call init() then load() and finaly refresh() with setInterval */
-    /*// type = pilote-appelant ou robot-appelé
-    if (type == "robot-appelé") init(load);
-
-    function init(callback) {
-
-   
-        console.log('@ init(callback)');      
-        
-            
-
-        // On met le deffered en variable globale
-        // Pour le modifier ds une autre fonction
-        DEFFERED_DataMap = $.Deferred();
-        DEFFERED_RobotInfo = $.Deferred();
-        //listPOI = getFakelistPOI();
-    	//DEFFERED_listPOI.resolve();
-    	DEFFERED_listPOI = $.Deferred();
-
-        $.when(DEFFERED_DataMap, DEFFERED_RobotInfo, DEFFERED_listPOI).done(function(v1, v2) {
-            console.log(listPOI)
-            mapSize = resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
-            callback();
-        });
-
-        var init = true;
-        komcom.getRobotInfo(init);
-        komcom.getDataMap();
-        komcom.getListPOI();
-        
-
-    }
-
-    function load() {
-        
-        //console.log('@ load()');
-        mapSize = resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
-        offsetX = dataMap.Offset.X;
-        offsetY = dataMap.Offset.Y;
-        corrOffestX = dataMap.Height - (offsetX / dataMap.Resolution);
-        corrOffestY = dataMap.Width - (offsetY / dataMap.Resolution);         
-
-        // console.log ('then call refresh function'); 
-        //refresh();
-        carto.refresh();
-    }
-
-
-    
-    function refresh() {
-        
-        if (type == "robot-appelé") {
-	        
-	        setInterval(function() {
-                if (fakeRobubox == true) simulateRobotMove();
-                else komcom.getRobotInfo();
-	            // si Pilote connecté: envoi datas carto Robot >> Pilote activé
-	            if ( isOnePilot == true) navigation_interface.sendToPilote("robot_localization", robotInfo);
-                reDraw();
-	        }, refreshDelay); // 600
-    	
-    	} else if (type = "pilote-appelant") {
-    		
-            if (dataMap == null) socket.emit("pilotGetNav",{message:"getNavInfos"});
-    		else if (dataMap != null) reDraw();
-    	}
-
-    }
-    /**/
-
-
-
-    /*--------------------------------------------------------*/
 
     // flags
     modeTraking = false;
@@ -312,14 +161,13 @@
         var baseAxis = worldToMap(basePosition, dataMap);
         
 
-        if (newOffset == null) newOffset = resizeOffset (baseAxis.X,baseAxis.Y,dataMap.Width, dataMap.Height, mapSize.width,mapSize.height);
+        if (newOffset == null) {
+            newOffset = resizeOffset (baseAxis.X,baseAxis.Y,dataMap.Width, dataMap.Height, mapSize.width,mapSize.height);
+        }
         //var newOffset = resizeOffset (baseAxis.X,baseAxis.Y,dataMap.Width, dataMap.Height, mapSize.width,mapSize.height);
 
         
         // Fix Titi (BUG passage de l'équateur):
-        //var ry = -robotInfo.Pose.Position.Y /0.02
-        //var rx = -robotInfo.Pose.Position.X / 0.02
-
         var ry = -robotInfo.Pose.Position.Y / dataMap.Resolution
         var rx = -robotInfo.Pose.Position.X / dataMap.Resolution
 
@@ -329,28 +177,14 @@
         // Titi: 
         // Inversion des axes d'orientation (Carte en horizontal)
         // et application du ratio de resize
-        // console.log("z --> ", qz); 
         qz = - qz;
         rx = rx*drawRatio;
         ry = ry*drawRatio;
-        // Décalage du robot pour tenir compte du centrage horizontal
-        //if (initialX) rx = rx-initialX;
-
-        var toto = newOffset.width;
-        var tata = newOffset.height;
-
-        //console.log(rx + "-" + ry)
-       
-        //console.log(newOffset)
-
-        var newX = halfCanvasX-newOffset.width; 
-        var newY = newOffset.height-canvasHeight;
-        //console.log(toto + " - " + tata)
-        //console.log (newX +" - " + newY)
-
-        var newX = halfCanvasX-toto+rx; 
-        var newY = halfCanvasY-tata-ry;
         
+        // Décalage de l'offset pour tenir compte du centrage sur le robot       
+        var newX = halfCanvasX-newOffset.width+rx; 
+        var newY = halfCanvasY-newOffset.height-ry;
+
         context.clearRect(-10000, -10000, 100000, 1000000);
         context.drawImage(backGroundMap,newX,newY, mapSize.width, mapSize.height); // Image taille resizée avec ratio
         // drawRobot(initialX,initialY);
@@ -363,7 +197,7 @@
         drawArrow(context, startArrowX, startArrowY, startArrowX+25, startArrowY, 1, "grey",'X'); // axe X
         drawArrow(context, startArrowX, startArrowY, startArrowX, startArrowY-25, 1, "grey",'Y'); // axe Y
 
-        dawListPointOfInterest()
+        dawListPointOfInterest("tracking",startArrowX, startArrowY,rx,ry)
 
         //alert (rx +" / "+ ry)
         circleWithDirection(halfCanvasX,halfCanvasY, qz, "red", 1, 1); 
@@ -373,46 +207,7 @@
 
     }
 
-		/*
-         public Point mapToCanvas(Point mapP)
-        {
-            double mapRatio = (double)map.Width / (double)map.Height;
-            double canvasRatio = (double)ActualWidth / (double)ActualHeight;
-            bool fitVertically = mapRatio < canvasRatio;
 
-            double canvasImgWidth = (fitVertically ? (ActualWidth * mapRatio / canvasRatio) : ActualWidth);
-            double canvasImgHeight = (fitVertically ? ActualHeight : (ActualHeight * mapRatio / canvasRatio));
-
-            double x = (fitVertically ? (ActualWidth - canvasImgWidth) / 2 : 0) + mapP.X * canvasImgWidth / map.Width;
-            double y = (fitVertically ? 0 : (ActualHeight - canvasImgHeight) / 2) + mapP.Y * canvasImgHeight / map.Height;
-            return new Point(x * zoomLevelVal + xoffset, y * zoomLevelVal + yoffset);
-        }
-        /**/
-
-        
-
-        	function mapToCanvas (Point, mapP) {
-
-            var mapRatio = map.Width / map.Height;
-            var canvasRatio = ActualWidth / ActualHeight;
-            var	 fitVertically = mapRatio < canvasRatio;
-
-            var canvasImgWidth = (fitVertically ? (ActualWidth * mapRatio / canvasRatio) : ActualWidth);
-            var canvasImgHeight = (fitVertically ? ActualHeight : (ActualHeight * mapRatio / canvasRatio));
-
-            var x = (fitVertically ? (ActualWidth - canvasImgWidth) / 2 : 0) + mapP.X * canvasImgWidth / map.Width;
-            var y = (fitVertically ? 0 : (ActualHeight - canvasImgHeight) / 2) + mapP.Y * canvasImgHeight / map.Height;
-            
-            return new Point(x * zoomLevelVal + xoffset, y * zoomLevelVal + yoffset);
-
-
-
-        	}
-		/**/
-
-
-
-	
 
     function drawRobot(initialX,initialY) {
         
@@ -483,7 +278,7 @@
         drawArrow(context, initialX, initialY, initialX, initialY-25, 1, "grey",'Y'); // axe Y
 
         
-        dawListPointOfInterest();
+        dawListPointOfInterest("standard",null,null,null,null);
         // circleWithDirection(ry, rx, 0, "blue", 3, 2); // Michael
         // Titi: Ajout du paramètre QZ pour l'orientation du robot et inversion des axes X,Y...
         // if (fakeRobubox == true) circleWithDirection(145, -10, qz, "blue", 3, 2);
@@ -500,74 +295,62 @@
 
     
     //var singleton = true
-    function dawListPointOfInterest() {
+    function dawListPointOfInterest(mode, startArrowX, startArrowY,rx,ry) {
         
-        // return
 
-        // if (singleton == true) {
-            
-            if (listPOI != null) {
-                // console.log("@ dawListPointOfInterest()");
-                for (poi in listPOI) {
-                    //console.log(listPOI[poi].Name)
+        if (listPOI == null) return
+
+        for (poi in listPOI) {
+
+            var drawRatio = mapSize.ratio;
+
+            var poiName = listPOI[poi].Name;
+            var PoseX = listPOI[poi].Pose.X;
+            var PoseY = listPOI[poi].Pose.Y;
+            var Theta = listPOI[poi].Pose.Theta;
+
+            PoseX = -PoseX / dataMap.Resolution
+            PoseY = -PoseY / dataMap.Resolution
+
+            // Inversion des axes d'orientation (Carte en horizontal)
+            // et application du ratio de resize
+            Theta = - Theta;
+            PoseY = PoseY*drawRatio;
+            PoseX = PoseX*drawRatio;
+
+            // Décalage du point d'intéret pour tenir compte du centrage de la carte
+            if (initialX) PoseX = PoseX-initialX;
+            if (initialY) PoseY = PoseY-initialY;
+
+            if (mode == "standard") {
+                
+
                     
-                    // console.log(listPOI[poi].Pose.X)
-                    // console.log(listPOI[poi].Pose.Y)
-                    // console.log(listPOI[poi].Pose.Theta)
-
-                    var drawRatio = mapSize.ratio;
-
-                    var poiName = listPOI[poi].Name;
-                    var PoseX = listPOI[poi].Pose.X;
-                    var PoseY = listPOI[poi].Pose.Y;
-                    var Theta = listPOI[poi].Pose.Theta;
-
-                    var PoseX = -PoseX / dataMap.Resolution
-                    var PoseY = -PoseY / dataMap.Resolution
-
-                    //var qz = robotInfo.Pose.Orientation.Z; // Taxinomie Robubox
-                    //var qz = robotInfo.Pose.Orientation; // Taxinomie Komnav
-
-                    
-                    // Titi: 
-                    // Inversion des axes d'orientation (Carte en horizontal)
-                    // et application du ratio de resize
-                    // console.log("z --> ", qz); 
-                    Theta = - Theta;
-                    PoseY = PoseY*drawRatio;
-                    PoseX = PoseX*drawRatio;
-
-                    // Décalage du robot pour tenir compte du centrage horizontal
-                    if (initialX) PoseX = PoseX-initialX;
-
-
-                    //console.log(poi.Name)
-                    circleWithDirection(-PoseX, PoseY, Theta, "orange", 1, 1); // OK sur I3S/: Inversion XY chez Robosoft...
-
-
-                    context.save();
-            
-                    if (poiName){
-                        context.font = "8px arial";
-                        context.fillStyle = "orange";
-                        context.fillText(poiName,-PoseX-5,PoseY+10 );
-                    }
-
-                    context.restore();
-
-
-                    // singleton = false;
-               
-                } 
+            } else if (mode == "tracking") {
+		        
+                PoseX = PoseX-(rx/2)-(startArrowX/3) // Ok 
+                PoseY = PoseY+startArrowY; // OK
             }
-        
-        //} // singleton
-
-    }
 
 
-    function dawPOI(pointOIfInterest) {
+            //console.log(poi.Name)
+            circleWithDirection(-PoseX, PoseY, Theta, "orange", 1, 1); // OK sur I3S/: Inversion XY chez Robosoft...
 
+
+            context.save();
+    
+            if (poiName){
+                context.font = "8px arial";
+                context.fillStyle = "orange";
+                context.fillText(poiName,-PoseX-5,PoseY+10 );
+            }
+
+            context.restore();
+
+
+            // singleton = false;
+       
+        } 
 
 
     }
@@ -653,18 +436,19 @@
     }
 
    
-    var countSimulation = 0
-    var incrementDegree = 0.01;
+    countSimulation = 0
+    sensSimulation = true;
+    incrementDegree = 0.01;
     // function simulateRobotMove() {
     exports.simulateRobotMove = function (){ 
-        countSimulation +=1;
-        if (countSimulation == 360) {
-            if (incrementDegree = -0.01) incrementDegree = 0.01;
-            if (incrementDegree = 0.01) incrementDegree = -0.01;
+        // return
+        countSimulation += 1;
+        if (countSimulation == 200) {
+        	incrementDegree = -incrementDegree;
             countSimulation = 0;
-
         }
-        robotInfo.Pose.Orientation += incrementDegree;
+        // console.log (countSimulation)
+        robotInfo.Pose.Orientation += incrementDegree*2;
         robotInfo.Pose.Position.X += incrementDegree;               
         robotInfo.Pose.Position.Y += incrementDegree;
     }
