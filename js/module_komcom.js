@@ -344,7 +344,7 @@ exports.sendFullStop = function (data){
 exports.getListPOI = function (init){
 
 	
-    console.log("get list of P.O.I")
+    
 
     var url = null;
     url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/POI';
@@ -359,7 +359,10 @@ exports.getListPOI = function (init){
 
             $.get(url, function(data) { // la localisation du robot sur la carte
             listPOI = JSON.parse(data);
+            console.log("get list of P.O.I")
+            console.log(listPOI)
             if (init == true) DEFFERED_listPOI.resolve();
+
             });
         }
 
@@ -402,6 +405,7 @@ exports.getRobotInfo = function (init){
 		    robotInfo = JSON.parse(data);
 		    if (init == true) {
                 console.log("get first robot position (init)")
+                console.log(robotInfo)
                 DEFFERED_RobotInfo.resolve();
                 }
 			});
@@ -421,8 +425,8 @@ exports.getRobotInfo = function (init){
 exports.getDataMap = function (){
 	
 	
-	console.log ('get map metadatas');
 	
+	//console.log ('get map metadatas');
     // Titi: Rebond proxy en https(Client Robot) > Http(Robubox/KomNav)
     var url = null;
     // URL du service http Mobiserve original:
@@ -451,8 +455,8 @@ exports.getDataMap = function (){
                 
                 dataMap = JSON.parse(rep);
                 DEFFERED_DataMap.resolve();
-
-
+                console.log ('get map metadatas');
+                console.log(dataMap)
             }); 
         } 
     } 
