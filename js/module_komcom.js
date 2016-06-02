@@ -37,7 +37,8 @@
 
 console.log ("module_komcom chargé");
 // Envoi d'une commande de type "Drive" au robot
-//exports.sendDrive = function (enable, aSpeed,lSpeed){
+// Note: Obsolète avec la nouvelle version de komNav
+// exports.sendDrive = function (enable, aSpeed,lSpeed){
 exports.sendDriveOLD = function (data){        
         
    
@@ -95,8 +96,9 @@ exports.sendDriveOLD = function (data){
 }
 
 
-
-
+// Récupère les infos de position et de statut du robot
+// Note: Obsolète avec la nouvelle version de komNav
+// exports.getRobotInfo = function (init){
 exports.getRobotInfoOLD = function (init){
 
 	
@@ -120,7 +122,9 @@ exports.getRobotInfoOLD = function (init){
 	
 }
 
-
+// Récupère les métadatas de la map active coté robot
+// Note: Obsolète avec la nouvelle version de komNav
+// exports.getDataMap = function (){
 exports.getDataMapOLD = function (){
 	
 	console.log ('get map informations');
@@ -142,11 +146,10 @@ exports.getDataMapOLD = function (){
 }
 
 
-
-
-
-// Fonction qui permet de recupérer le niveau de la  la batterie et de l'afficher dans le progress bar
-// elle interroge chaque 1000ms le robot via url et retourne le niveau de la batterie en pourcentage
+// Récupère le niveau de la  la batterie et l'affiche dans une progress bar
+// Iinterroge chaque 1000ms le robot via url et retourne le niveau de la batterie en pourcentage
+// Note: Obsolète avec la nouvelle version de komNav
+// exports.getBattery = function (){
 exports.getBatteryOLD = function (){
         
 
@@ -190,9 +193,13 @@ exports.getBatteryOLD = function (){
 } // End getBattery
 
 
-// ------------ 05/2016 -- Versions compatibles MobiServ -------------------
+// ------------ 05/2016 -- Versions adaptées pour KomNav/MobiServ -------------------
+// Notes: la rétrocompatibilité Robubox n'est plus maintenue...
 
-// Ok V2
+
+// Envoi d'une commande de type "Drive" au robot
+// Note: Compatible avec la version de komNav/Mobiserve
+// exports.sendDrive = function (enable, aSpeed,lSpeed){
 exports.sendDrive = function (data){        
         
    
@@ -216,12 +223,15 @@ exports.sendDrive = function (data){
         if (fakeRobubox == false) {
          
          	var url = null
+            url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Speed" ; // CORS-ANYWHERE
             
+            /*
             if (parameters.navSys == 'Robubox') {
                 url = "https://127.0.0.1:443/http://127.0.0.1:50000/api/drive" ; // CORS-ANYWHERE
             } else if (parameters.navSys == 'KomNAV') {
             	url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Speed" ; // CORS-ANYWHERE
             }
+            /**/
 
             if ( url != null) {
 	           	// function sendDrive(url, enable, aSpeed,lSpeed) {
@@ -245,9 +255,9 @@ exports.sendDrive = function (data){
 }
 
 
-// Ok V2
-// Fonction qui permet de recupérer le niveau de la  la batterie et de l'afficher dans le progress bar
-// elle interroge chaque 1000ms le robot via url et retourne le niveau de la batterie en pourcentage
+// Récupère le niveau de la  la batterie et déclenche l'affiche dans une progress bar
+// Interroge chaque 1000ms le robot via url et retourne le niveau de la batterie en pourcentage
+// Note: Compatible avec la version de komNav/Mobiserve
 exports.getBattery = function (){
         
 			 // console.log("komcom.getBattery() >>> ");
@@ -269,19 +279,22 @@ exports.getBattery = function (){
 
              } else {
 
-             	
+             	var url = null;
+                url = "https://127.0.0.1:443/http://127.0.0.1:7007/Devices/Battery" ; // CORS-ANYWHERE    
              
     	        setInterval(function() {
     	            
 	    	        // console.log("komcom.getBattery() >>> navSys ="+navSys);
 	    	        // console.log("komcom.getBattery() >>> parameters.navSys ="+parameters.navSys);
 	             	
-	             	if (parameters.navSys == 'Robubox') {
+	             	/*
+                    if (parameters.navSys == 'Robubox') {
 	              		url = "https://127.0.0.1:443/http://127.0.0.1:50000/lokarria/battery"
 	              	} else if (parameters.navSys == 'KomNAV') {
 	                	url = "https://127.0.0.1:443/http://127.0.0.1:7007/Devices/Battery" ; // CORS-ANYWHERE	  
-	              	}   
-
+	              	} 
+                    /**/  
+                    /*
     	            $.get(url, function(data) { // 1 -  et 2- 
     	                if (parameters.navSys == 'Robubox') {
     	                	batteryInfo = JSON.parse(data);
@@ -291,6 +304,12 @@ exports.getBattery = function (){
     	                }
     	                percentage = (data <= 100) ? data : 100; // 6- 
     	            });
+                    /**/
+
+                    $.get(url, function(data) { 
+                        thenum = data;
+                        percentage = (data <= 100) ? data : 100; 
+                    });
                     
                     // rafraichissement de la jauge sur l'IHM Robot
                     ihm.refreshJaugeBattery(percentage);
@@ -309,7 +328,8 @@ exports.getBattery = function (){
 } // End getBattery
 
 
-
+// Note: Compatible avec la version de komNav/Mobiserve
+// TODO à terminer
 exports.sendFullStop = function (data){        
         
     var messageStop = tools.stringObjectDump(data, "Fonction STOP à implémenter")
@@ -318,9 +338,14 @@ exports.sendFullStop = function (data){
             
 }
 
+
+// 
+// Note: Compatible avec la version de komNav/Mobiserve
 exports.getListPOI = function (init){
 
 	
+    console.log("get list of P.O.I")
+
     var url = null;
     url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/POI';
 
@@ -346,8 +371,11 @@ exports.getListPOI = function (init){
 
 }
 
-
-
+// Récupère les infos de position et de statut du robot
+// Note: Compatible avec la version de komNav/Mobiserve
+// Le paramètre init (true ou false) permet de ne déclencher
+// la gestion asynchrone du résultat qu'au premier appel..
+// Une sorte de pattern "Singleton"
 exports.getRobotInfo = function (init){
 
 	
@@ -370,10 +398,12 @@ exports.getRobotInfo = function (init){
     } else {
     	
     	if (url != null) {
-
 			$.get(url, function(data) { // la localisation du robot sur la carte
 		    robotInfo = JSON.parse(data);
-		    if (init == true) DEFFERED_RobotInfo.resolve();
+		    if (init == true) {
+                console.log("get first robot position (init)")
+                DEFFERED_RobotInfo.resolve();
+                }
 			});
 		}
 
@@ -386,47 +416,54 @@ exports.getRobotInfo = function (init){
 	
 }
 
-
+// Récupère les métadatas de la map active coté robot
+// Note: Compatible avec la version de komNav/Mobiserve
 exports.getDataMap = function (){
 	
 	
-	console.log ('get map informations');
-	// Titi: Rebond proxy en https(Client Robot) > Http(Robubox)
+	console.log ('get map metadatas');
+	
+    // Titi: Rebond proxy en https(Client Robot) > Http(Robubox/KomNav)
     var url = null;
-    url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/Metadatas';
-    
-    /*
-    if (parameters.navSys == 'Robubox') {
-    	 url = 'https://127.0.0.1:443/http://127.0.0.1:50000/nav/maps/parameters';
-    } else if (parameters.navSys == 'KomNAV') {
-    	 url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/Properties';
-    }
-    /**/
+    // URL du service http Mobiserve original:
+    // url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/Properties'; 
+    // >>> BUG ! Cette fonction Mobiserve Renvoie un objet contenant une propriété "data []" beaucoup trop lourde !!!
+    // >>> Non seulement Il faut + de 900ms secondes pour avoir une réponse
+    // >>> mais en plus ca plante complètement le script de carto pour des raisons de tailles et d'asynchronité.
 
-    dataMap = getFakeDataMap();
-    DEFFERED_DataMap.resolve();
+    // Essai avec une version modifiée de Mobiserve qui implémente une fonction
+    // identique a la précédente mais renvoyant un objet datamap expurgé de sa priopriété data.
+    // Cette nouvelle fonction est apellée Map/Metadatas    
+    // url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/Metadatas';
+    // >>> BUG ! La fonction renvoie correctement l'objet 'light', 
+    // >>> ce qui résoud les problèmes de taille et d'asynchronité coté client
+    // >>> mais KomNav (ou Mobiserve) plante a chaque foi qu'on utilise le joystick!!!
+    // >>> Sans doute un problème de compilation de cette version modifiée. A Voir !
     
-    /*
+    
     if (fakeRobubox == true) {  
         dataMap = getFakeDataMap();
         DEFFERED_DataMap.resolve();
     } else {
         
         if (url != null) {
-	        $.get(url, function(rep) { // Les informations de la carte 
-			    
+            $.get(url, function(rep) { // Les informations de la carte 
+                
                 dataMap = JSON.parse(rep);
-	            DEFFERED_DataMap.resolve();
+                DEFFERED_DataMap.resolve();
 
 
-	    	}); 
-    	} 
+            }); 
+        } 
     } 
     /**/  
 
-    // Pour tests
-    //dataMap = getFakeDataMap();
-    //DEFFERED_DataMap.resolve();
+    // Provisoirement, on utilise les métadatas en dur
+    /*// correspondant à la carte en cours...
+    dataMap = getFakeDataMap();
+    DEFFERED_DataMap.resolve();
+    /**/
+    
 }
 
 

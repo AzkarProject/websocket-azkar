@@ -36,8 +36,6 @@
 // Todo: Passer en mode export
 console.log("module_fake_robubox chargé")
 
-//fakeRobubox = true;
-
 fakeRobubox = appSettings.isFakeRobubox();
 // if (typeof appCNRS != 'undefined') fakeRobubox = appCNRS.isFakeRobubox();
 
@@ -46,36 +44,6 @@ if (typeof appDevBranch != 'undefined') fakeRobubox = appDevBranch.isFakeRobubox
 
 
 function getFakeDataMap() {
-	/*
-    var dataMap = {
-        Height: 1171,
-        Width:2384,
-        Resolution: 0.2,
-        Offset : {     
-        	X: -25.864425741383123,
-  			Y: -6.450160926629708
-        }
-    }
-    return dataMap;
-    /**/
-
-    // Test KomNav carte labo 250
-    /*
-    {"Offset":{"X":-20.7969943946,"Y":-3.02713963867},"Width":1485,"Stride":1488,"Height":1187,"Data":[0,...,0],"Resolution":0.019999999553}
-    /**/
-    /*
-    var dataMap = {
-        Height: 1187,
-        Width:1485,
-        Stride: 1488,
-        Resolution: 0.0199999995532,
-        Offset : {     
-            X: -20.7969943946,
-            Y: -3.02713963867
-        }
-    }
-    return dataMap;
-    /**/
 
     var dataMap = {"Offset":{"X":-20.7969943946,"Y":-3.02713963867},"Width":1485,"Stride":1488,"Height":1187,"Data":[0,0,0],"Resolution":0.019999999553}
     return dataMap;
@@ -83,49 +51,7 @@ function getFakeDataMap() {
 
 
 function getFakeRobotInfo() {
-    /*
-    var robotInfo = {
-        Pose : { 
-            Orientation : {
-                X:0,
-                Y:0,
-                Z:0.4147678497279166
-            },
-            Position : {
-                X:10,
-                Y:3.5,
-                Z:0
-            },
-        },
-        Status: 8,
-        Timestamp : 1563315020
-    }
-    return robotInfo;
-    /**/
 
-   /*// Test KomNav carte labo 250
-    {"Pose":{"Orientation":0.00976723491458138,"Position":{"X":-0.01083418017965721,"Y":-0.0018906058443630832,"Z":0}},"State":8,"Timestamp":10395360}
-    /**/
-
-    /*
-    var robotInfo = {
-        Pose : { 
-            Orientation : {
-                X:0,
-                Y:0,
-                Z:0.00976723491458138
-            },
-            Position : {
-                X:-0.01083418017965721,
-                Y:-0.0018906058443630832,
-                Z:0
-            },
-        },
-        Status: 8,
-        Timestamp : 10395360
-    }
-    return robotInfo;
-    /**/
 
     var robotInfo = {"Pose":{"Orientation":0.014824313679471759,"Position":{"X":-0.01693115491662614,"Y":-0.011192893436510892,"Z":0}},"State":8,"Timestamp":2916720}
     return robotInfo;
