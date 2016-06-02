@@ -430,7 +430,7 @@ exports.getDataMap = function (){
     // Titi: Rebond proxy en https(Client Robot) > Http(Robubox/KomNav)
     var url = null;
     // URL du service http Mobiserve original:
-    url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/Properties'; 
+    // url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/Properties'; 
     // >>> BUG ! Cette fonction Mobiserve Renvoie un objet contenant une propriété "data []" beaucoup trop lourde !!!
     // >>> Non seulement Il faut + de 900ms secondes pour avoir une réponse
     // >>> mais en plus ca plante complètement le script de carto pour des raisons de tailles et d'asynchronité.
@@ -438,11 +438,8 @@ exports.getDataMap = function (){
     // Essai avec une version modifiée de Mobiserve qui implémente une fonction
     // identique a la précédente mais renvoyant un objet datamap expurgé de sa priopriété data.
     // Cette nouvelle fonction est apellée Map/Metadatas    
-    // url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/Metadatas';
-    // >>> BUG ! La fonction renvoie correctement l'objet 'light', 
-    // >>> ce qui résoud les problèmes de taille et d'asynchronité coté client
-    // >>> mais KomNav (ou Mobiserve) plante a chaque foi qu'on utilise le joystick!!!
-    // >>> Sans doute un problème de compilation de cette version modifiée. A Voir !
+    url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/Metadatas';
+    // ca prend quand même 
     
     
     if (fakeRobubox == true) {  
