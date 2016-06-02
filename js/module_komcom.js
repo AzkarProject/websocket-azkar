@@ -430,7 +430,7 @@ exports.getDataMap = function (){
     // Titi: Rebond proxy en https(Client Robot) > Http(Robubox/KomNav)
     var url = null;
     // URL du service http Mobiserve original:
-    // url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/Properties'; 
+    url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/Properties'; 
     // >>> BUG ! Cette fonction Mobiserve Renvoie un objet contenant une propriété "data []" beaucoup trop lourde !!!
     // >>> Non seulement Il faut + de 900ms secondes pour avoir une réponse
     // >>> mais en plus ca plante complètement le script de carto pour des raisons de tailles et d'asynchronité.
