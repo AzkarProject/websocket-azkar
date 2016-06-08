@@ -137,9 +137,10 @@
     	DEFFERED_listPOI = $.Deferred();
 
         // $.when(DEFFERED_DataMap, DEFFERED_RobotInfo, DEFFERED_listPOI).done(function(v1, v2) {
-        $.when(DEFFERED_DataMap, DEFFERED_RobotInfo, DEFFERED_listPOI).done(function(v1, v2) {
+        $.when(DEFFERED_DataMap, DEFFERED_RobotInfo).done(function(v1, v2) {
             mapSize = carto.resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
-            if (listPOI != null) receiveListPoi();
+            // if (listPOI != null) receiveListPoi();
+            receiveListPoi();
             callback();
         });
 
