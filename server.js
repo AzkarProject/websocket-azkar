@@ -410,7 +410,17 @@ io.on('connection', function(socket, pseudo) {
     });
     
 
+    // Navigation: envoi d'une commande Goto au robot
+    socket.on('gotoPOI', function(data) {
+    	console.log(">>>>>>GOTOPOI")
+        io.to(wsIdRobot).emit('gotoPOI', data);
+    });
 
+    // Navigation: transmission au pilote 
+    // du Statut (et trajectoire) d'une commande Goto 
+    socket.on('gotoStateReturn', function(data) {
+        io.to(wsIdPilote).emit('gotoStateReturn', data);
+    });
 
 
 

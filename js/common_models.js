@@ -64,7 +64,7 @@ exports.client = function client (id,pseudo,placeliste,typeClient,connectionDate
 
 
 // Objet POI (Pont d'intêret sur la carte)
-exports.pointOfInterest = function client (Name,Pose,Label){
+exports.pointOfInterest = function pointOfInterest (Name,Pose,Label){
   this.id = tools.createUUID();
   this.Name = Name;
   this.Label = Label;

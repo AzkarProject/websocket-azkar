@@ -1,20 +1,6 @@
 // ---- Points Of Interest
 
-/*// Génération des listes de POI pour la navigation
-    exports.populateFormPOI = function(point) {
 
-        console.log("@ populateFormPOI()");
-
-        var option = document.createElement('option');
-        option.id = point.Name;
-        option.value = point.Name;
-        option.text = point.Name;
-
-        list_POI.appendChild(option);
-
-           
-    }
-/**/
 (function(exports){
 
 
@@ -42,26 +28,45 @@
     	socket.emit("pilotGetNav",{message:"getNavInfos"});
     }
     
-    // Titi:
-    // Ecouteur coté Robot: reception demande d'échange de données cartos
-    // Flag d'échange a true et envoi au pilote des paramètres de la carte
+    // Ecouteur coté Robot: 
     if (type == "robot-appelé") {
-    	socket.on("pilotGetNav", function(data) {
+    	
+        // reception demande d'échange de données cartos
+        // Flag d'échange a true et envoi au pilote des paramètres de la carte
+        socket.on("pilotGetNav", function(data) {
     		if (data = "getNavInfos") {
     			// pilotGetNav = true;
                 var toSend = {"dataMap":dataMap, "listPOI":listPOI,}
     			//navigation_interface.sendToPilote("map_parameters", dataMap); // envoi parametres de la map
                 navigation_interface.sendToPilote("map_parameters2", toSend); // envoi parametres de la map
-                
                 // navigation_interface.sendToPilote("list_POI", listPOI); // envoi liste des POI
-
             }
     	});
+
+
+        
+        // reception d'un ordre gotoPOI
+        socket.on("gotoPOI", function(data) {
+            
+            // Mémo:
+            // >>> POST: Commande "Aller vers un point d'intérêt"
+            // http://127.0.0.1:7007/Navigation/Goto/POI
+            // Envoi: {"poiname":"PilierA"}
+            // Réponse: HTTP 204 (No content) / 
+            // alert (data)
+            var toSend = {"poiname":data.poi}
+            komcom.sendGotoPOI(toSend)
+            
+        });       
+
     }
 
-    // Titi: reception de données de navigation
+    
+    // Ecouteur coté Pilote: 
     if (type == "pilote-appelant") {
-    	socket.on("navigation", function(data) {
+    	
+        // Reception de données de navigation
+        socket.on("navigation", function(data) {
            
             if (data.command == "map_parameters2") {
     			 console.log(">>> Socket.on(navigation)")
@@ -69,6 +74,7 @@
                  console.log(data.listPOI);
                  dataMap = data.dataMap;
                  listPOI = data.listPOI;
+                 populateFormSelectPoi(listPOI) // Ok
     			 mapSize = carto.resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
                  //console.log (mapSize)
     		     //DATAMAP = data.dataMap;
@@ -81,9 +87,35 @@
 
 
     	});
+
+        //-----------
+
+
+        // Reception du Statut (et trajectoire) d'une commande Goto 
+        socket.on('gotoStateReturn', function(data) {
+            //console.log(data);
+            //console.log(data.gotoState.Status)
+            var textStatus = "???";
+            var trajectory = data.gotoState.Trajectory;
+            if (data.gotoState.Status == 0) textStatus = "Waiting";
+            else if (data.gotoState.Status == 1) textStatus = "Following";
+            else if (data.gotoState.Status == 2) textStatus = "Aiming";
+            else if (data.gotoState.Status == 3) textStatus = "Translating";
+            else if (data.gotoState.Status == 4) textStatus = "Rotating";
+            else if (data.gotoState.Status == 5) textStatus = "Error";
+            displayTrajectoryStatus(textStatus);
+
+            // Todo: Traiter le résultat:
+            // 1 Affichage du statut
+            // 2 Affichage de la trajectoire
+        
+        });
+
+        //-------------
+
+
     }
     
-
 
     // ------------------------------------
 
@@ -105,9 +137,9 @@
     	DEFFERED_listPOI = $.Deferred();
 
         // $.when(DEFFERED_DataMap, DEFFERED_RobotInfo, DEFFERED_listPOI).done(function(v1, v2) {
-        $.when(DEFFERED_DataMap, DEFFERED_RobotInfo).done(function(v1, v2) {
-            // alert("isDeffered");
+        $.when(DEFFERED_DataMap, DEFFERED_RobotInfo, DEFFERED_listPOI).done(function(v1, v2) {
             mapSize = carto.resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
+            if (listPOI != null) receiveListPoi();
             callback();
         });
 
@@ -120,6 +152,8 @@
     }
 
     function load() {
+        console.log('@ load()');
+
         mapSize = carto.resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
         refresh();
     }
@@ -128,7 +162,7 @@
     
     function refresh() {
         
-        console.log('@ init(callback)');
+        //console.log('@ refresh()');
 
         if (type == "robot-appelé") {
 	        
@@ -149,6 +183,37 @@
 
     }
     /**/
+
+
+    function receiveListPoi() {
+        // upDateListPoi() // todo
+        // sélecteurs de Points d'intérêt
+        populateFormSelectPoi(listPOI) // Ok
+        // sendListPoiToPilote // Todo
+    }
+
+    var singleton = false;
+    function populateFormSelectPoi(listPOI) {
+        if (singleton == false) {   
+            console.log("@ populateFormSelectPoi()");
+            list_POI_select = document.querySelector('select#list_POI');
+            for (poi in listPOI) {
+                var option = document.createElement('option');
+                option.id = listPOI[poi].Name;
+                option.value = listPOI[poi].Name;
+                option.text = listPOI[poi].Name;
+                list_POI_select.appendChild(option);
+            }
+            singleton = true;
+        }
+    }
+
+    function displayTrajectoryStatus(textStatus) {
+        //alert("Trajectory status:"+textStatus);
+        $('#robotStatusMessage').replaceWith(" <span id ='connect-notice'>Trajectory: "+textStatus+"</span>");
+
+    }
+
 
 
 })(typeof exports === 'undefined'? this['navigation']={}: exports);

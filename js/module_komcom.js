@@ -197,6 +197,83 @@ exports.getBatteryOLD = function (){
 // Notes: la rétrocompatibilité Robubox n'est plus maintenue...
 
 
+
+// 
+exports.sendGotoPOI = function (data) {
+
+        
+        console.log("komcom.sendGotoPOI("+data.poiname+")")
+        // alert("komcom.sendGotoPOI("+data.poiname+")")
+
+        // Mémo:
+        // >>> POST: Commande "Aller vers un point d'intérêt"
+        // http://127.0.0.1:7007/Navigation/Goto/POI
+        // Envoi: {"poiname":"PilierA"}
+        // Réponse: HTTP 204 (No content) / 
+
+        /*// reception d'un ordre gotoPOI
+        socket.on("gotoPOI", function(data) {
+            var toSend = {"poiname":data.poi}
+        }); 
+        /**/     
+
+
+
+        if (fakeRobubox == false) {
+         
+            var url = null
+            url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/POI" ; // CORS-ANYWHERE
+
+            if ( url != null) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', url);
+                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                //xhr.send(data);
+                xhr.send(JSON.stringify({
+                        "poiname": data.poi,
+                    }));
+                xhr.closed;
+            }
+
+        }  
+
+        // Petite tempo avant de récupérer la trajectoire du robot; le temps pour lui de la calculer...
+        var result = setTimeout(function() { komcom.getGotoTrajectoryState(); }, 500); 
+
+}
+
+
+exports.getGotoTrajectoryState = function () {
+
+        
+            if (fakeRobubox == true) {  
+                var gotoState = getFakeGotoTrajectoryState();
+                console.log("Trajectory Statut: "+gotoState )
+                socket.emit("gotoStateReturn",{gotoState});
+
+            } else {
+
+                var url = null
+                url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/State" ; // CORS-ANYWHERE
+                if (url != null) {
+                    $.get(url, function(data) { // la localisation du robot sur la carte
+                    var gotoState = JSON.parse(data);
+                    console.log("Trajectory Statut: "+gotoState )
+                    socket.emit("gotoStateReturn",{gotoState});
+                   
+                    });
+                }
+
+
+            
+
+            }
+
+
+}
+
+
+
 // Envoi d'une commande de type "Drive" au robot
 // Note: Compatible avec la version de komNav/Mobiserve
 // exports.sendDrive = function (enable, aSpeed,lSpeed){
@@ -436,10 +513,10 @@ exports.getDataMap = function (){
     // >>> mais en plus ca plante complètement le script de carto pour des raisons de tailles et d'asynchronité.
 
     // Essai avec une version modifiée de Mobiserve qui implémente une fonction
-    // identique a la précédente mais renvoyant un objet datamap expurgé de sa priopriété data.
-    // Cette nouvelle fonction est apellée Map/Metadatas    
-    url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/Metadatas';
-    // ca prend quand même 
+    // identique à la précédente mais renvoyant un objet map reconstruit propriété par propriété
+    // et expurgé  de sa priopriété data.
+    // Cette nouvelle fonction est dans mobiserve/Runtime/WebAPI.cs ligne 285   
+    url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/Metadatas'; 
     
     
     if (fakeRobubox == true) {  

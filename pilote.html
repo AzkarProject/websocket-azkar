@@ -242,9 +242,33 @@
                             
                             <hr/>
 
-
+                            <!--
                             <canvas id="myCanvas" width="600" height="160" style="background-color:#000"></canvas>    
-                
+                            -->
+
+                            <div style="float:left; width:200px">
+                                <span id="pointOfinterestTitle"> Points of interest</span>
+                                <div class="select">
+                                    
+                                    <button id="goto_POI" onclick="gotoPOI()">go</button>
+                                    <select id="list_POI">
+                                    </select>
+                                
+                                    
+                                </div>
+                                
+                                <br/>
+
+                                <h3><span id="robotStatusMessage">Robot En Attente<span></h3>
+                            
+
+                            </div>
+                            <br/>
+                            <div style="height:140px;">
+                                <canvas id="myCanvas" width="300" height="130" 
+                                        style="border:1px solid #ccc;background-color:#000">
+                                </canvas>
+                            </div>
 
                         </div>
 

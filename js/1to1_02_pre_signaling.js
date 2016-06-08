@@ -91,6 +91,7 @@ if (type == "pilote-appelant") {
     pilot_camdef_select = document.querySelector('select#pilot_camdef_select');
 }
 
+
 // (pilote-Appelant) > Activation/Désativation préalable 
 // Du formulaire de sélection des devices locaux et de demande de connexion
 if (type == "pilote-appelant") {

@@ -255,9 +255,21 @@ function trakingMode() {
 }
 
 
+function gotoPOI() {
+    list_POI_select = document.querySelector('select#list_POI');
+    var valuePOI = list_POI_select.value;
+    // alert("gotoPOI: "+valuePOI)
+
+   socket.emit('gotoPOI', {
+        objUser: localObjUser,
+        poi: valuePOI
+    }); 
+}
+
+
 
 // ----------- Selecteurs d'affichage des flux videos locaux et distants ---------------------
-// > Permet d'économiser sue les postes client des ressources processeurs liées a l'affichage.
+// > Permet d'économiser sur les postes client des ressources processeurs liées a l'affichage.
 
 
 function setPiloteLocalView(viewSetting) {
