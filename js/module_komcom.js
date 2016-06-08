@@ -221,6 +221,8 @@ exports.sendGotoPOI = function (data) {
 
         if (fakeRobubox == false) {
          
+            //console.log
+
             var url = null
             url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/POI" ; // CORS-ANYWHERE
 
@@ -230,7 +232,7 @@ exports.sendGotoPOI = function (data) {
                 xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
                 //xhr.send(data);
                 xhr.send(JSON.stringify({
-                        "poiname": data.poi,
+                        "poiname": data.poiname,
                     }));
                 xhr.closed;
             }
