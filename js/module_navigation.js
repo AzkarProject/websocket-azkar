@@ -74,7 +74,7 @@
                  console.log(data.listPOI);
                  dataMap = data.dataMap;
                  listPOI = data.listPOI;
-                 populateFormSelectPoi(listPOI) // Ok
+                 manageListPOIs(listPOI) // Ok
     			 mapSize = carto.resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
                  //console.log (mapSize)
     		     //DATAMAP = data.dataMap;
@@ -120,7 +120,7 @@
     // ------------------------------------
 
 
-       /* START */
+    /* START */
     /* call init() then load() and finaly refresh() with setInterval */
     // type = pilote-appelant ou robot-appelé
     if (type == "robot-appelé") init(load);
@@ -137,10 +137,10 @@
     	DEFFERED_listPOI = $.Deferred();
 
         // $.when(DEFFERED_DataMap, DEFFERED_RobotInfo, DEFFERED_listPOI).done(function(v1, v2) {
-        $.when(DEFFERED_DataMap, DEFFERED_RobotInfo).done(function(v1, v2) {
+        $.when(DEFFERED_DataMap, DEFFERED_RobotInfo, DEFFERED_listPOI).done(function(v1, v2, v3) {
             mapSize = carto.resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
-            // if (listPOI != null) receiveListPoi();
-            receiveListPoi();
+            //if (listPOI != null) receiveListPoi();
+            //receiveListPoi();
             callback();
         });
 
@@ -154,7 +154,7 @@
 
     function load() {
         console.log('@ load()');
-
+        receiveListPoi()
         mapSize = carto.resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
         refresh();
     }
@@ -186,28 +186,41 @@
     /**/
 
 
+    // Robot. A la reception de la liste des POIs
     function receiveListPoi() {
-        // upDateListPoi() // todo
-        // sélecteurs de Points d'intérêt
-        populateFormSelectPoi(listPOI) // Ok
-        // sendListPoiToPilote // Todo
+        console.log("@ receiveListPoi()");
+        populateListPOIs(listPOI);
     }
 
-    var singleton = false;
-    function populateFormSelectPoi(listPOI) {
+    
+
+    // Pilote: début traitement & persistence des Maps/Pois/Scenes/Parcours coté client
+    var singleton = false; // Pour éviter le doublonnage
+    function manageListPOIs(listPOI) {
+        console.log("@ manageListPOIs()");
+        console.log("singleton = "+singleton);
         if (singleton == false) {   
-            console.log("@ populateFormSelectPoi()");
-            list_POI_select = document.querySelector('select#list_POI');
-            for (poi in listPOI) {
-                var option = document.createElement('option');
-                option.id = listPOI[poi].Name;
-                option.value = listPOI[poi].Name;
-                option.text = listPOI[poi].Name;
-                list_POI_select.appendChild(option);
-            }
+            // if (type == "pilote-appelant") managePOIs.init(listPOI,dataMap); 
+            populateListPOIs(listPOI);
             singleton = true;
         }
     }
+
+
+    function populateListPOIs(listPOI) {
+        console.log("@ populateListPOIs()");
+        list_POI_select = document.querySelector('select#list_POI');
+        for (poi in listPOI) {
+            var option = document.createElement('option');
+            option.id = listPOI[poi].Name;
+            option.value = listPOI[poi].Name;
+            option.text = listPOI[poi].Name+" : "+listPOI[poi].label;
+            list_POI_select.appendChild(option);
+        }
+
+    }
+    
+
 
     function displayTrajectoryStatus(textStatus) {
         //alert("Trajectory status:"+textStatus);

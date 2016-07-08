@@ -274,8 +274,8 @@
         if (initialX) rx = rx-initialX;
 
         // function drawArrow(ctx, fromx, fromy, tox, toy, arrowWidth, color, text)
-        drawArrow(context, initialX, initialY, initialX+25, initialY, 1, "grey",'X'); // axe X
-        drawArrow(context, initialX, initialY, initialX, initialY-25, 1, "grey",'Y'); // axe Y
+        //drawArrow(context, initialX, initialY, initialX+25, initialY, 1, "grey",'X'); // axe X
+        //drawArrow(context, initialX, initialY, initialX, initialY-25, 1, "grey",'Y'); // axe Y
 
         
         dawListPointOfInterest("standard",null,null,null,null);
@@ -340,9 +340,15 @@
             context.save();
     
             if (poiName){
-                context.font = "8px arial";
-                context.fillStyle = "orange";
-                context.fillText(poiName,-PoseX-5,PoseY+10 );
+                
+
+                // drawTextBG(context, poiName, '5px verdana',-PoseX-5,PoseY+10,'black','orange');
+
+                // if (Theta >= 0 && Theta < ) 
+
+
+                drawTextBG(context, poiName, '5px verdana',-PoseX+3,PoseY-4,'black','orange');
+
             }
 
             context.restore();
@@ -354,6 +360,34 @@
 
 
     }
+
+
+        /// expand with color, background etc.
+    // Inspiré de  http://jsfiddle.net/AbdiasSoftware/2JGHs/
+    // Appel drawTextBG(ctx, txt, '32px arial', 30, 30);
+    // Ecrit un texte avec un background
+    function drawTextBG(ctx, txt, font, x, y, fontColor, backGroundColor) {
+        
+        ctx.save();
+        ctx.font = font;
+        ctx.textBaseline = 'top';
+        ctx.fillStyle = backGroundColor;
+        
+        var width = ctx.measureText(txt).width;
+        ctx.fillRect(x, y, width, parseInt(font, 10)+1);
+        //ctx.fillRect(x, y, width, 6);
+        
+        ctx.fillStyle = fontColor;
+        ctx.fillText(txt, x, y);
+        
+        ctx.restore();
+    } 
+
+
+
+
+
+
 
 
      // Borrowed and adapted from : http://stackoverflow.com/questions/808826/draw-arrow-on-canvas-tag
@@ -403,6 +437,10 @@
 
 
 
+
+
+
+
     // draw a circle with a line     
     function circleWithDirection(x, y, theta, color, size, sizeStroke) {
         
@@ -447,10 +485,11 @@
         	incrementDegree = -incrementDegree;
             countSimulation = 0;
         }
-        // console.log (countSimulation)
+        /*// console.log (countSimulation)
         robotInfo.Pose.Orientation += incrementDegree*2;
         robotInfo.Pose.Position.X += incrementDegree;               
         robotInfo.Pose.Position.Y += incrementDegree;
+        /**/
     }
 
 

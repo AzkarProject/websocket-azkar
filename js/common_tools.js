@@ -160,7 +160,7 @@ exports.test = function(){
   // - hasTable > Nom du tableau d'objet
   // - key > Propriété à tester
   // - value > Valeur à rechercher
-  // - typeReturn > boolean ou count
+  /*// - typeReturn > boolean ou count
   exports.searchInObjects = function (hashTable,key,value,typeReturn){
     console.log("@ searchInObjects");
     var returnValue = false;
@@ -181,7 +181,56 @@ exports.test = function(){
    }
    return returnValue;
  }
+ /**/
  
+
+  // Fonction générique de recherche dans un tableau d'objet
+  // Source: Thierry Bergeron
+  // - hasTable > Nom du tableau d'objet
+  // - key > Propriété à tester
+  // - value > Valeur à rechercher
+  // - typeReturn > boolean ou count ou object
+  exports.searchInObjects = function (hashTable,key,value,typeReturn){
+    // console.log("@ searchInObjects > "+ typeReturn);
+    var returnValue = false;
+    var nbr = 0;
+    //console.log(">>>>>>>>>> " + hashTable +" / " + key + " / " + value + " / " + typeReturn );
+    for (i in hashTable) {
+        //console.log(">>>>>>>>>> " + typeReturn );
+        //console.log(">>>>>>>>>> " + i );
+        //console.log(hashTable[i]); 
+        //console.log(hashTable[i][key]);        
+        if (hashTable[i][key] == value) {
+            returnValue = true;
+      
+            if (typeReturn == "boolean" ) {
+              break;
+            
+            } else if(typeReturn === 'count' ) {
+              nbr +=1;
+              returnValue = nbr;
+            
+            } else if(typeReturn == "object" ) {
+              returnValue = hashTable[i]
+            }
+        }
+   }
+   // console.log(">>>> returnValue:"+returnValue)
+   return returnValue;
+ }
+
+
+
+
+
+
+
+
+
+
+
+
+
 // convertit un tableau en objet
 // source: http://stackoverflow.com/questions/20807804/convert-array-to-object-javascript
 exports.convertToArrayOfObjects = function  (data) {
@@ -213,7 +262,16 @@ exports.toObject = function  (arr) {
 
 // ----------------- Objets
 
-
+// convertit un objet en array
+exports.toArray = function  (obj) {
+    var array =[];
+    for( var i in obj ) {
+        if (obj.hasOwnProperty(i)){
+           array.push(obj[i]);
+        }
+    }
+    return array;
+}
 
 
  

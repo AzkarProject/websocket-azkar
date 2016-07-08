@@ -12,7 +12,25 @@ info { font-size:12px; }
 
 form {margin-bottom: 9px;}
 
+
+
+/*// Pour montage provisoire article WS/MGG du 07/07...*/
+
+
 /* ---- A reclasser par la suite */
+
+
+.embedRemoteVideo {
+  /* background-color: #000; */
+  /*background-image: url("images/Marne1.jpg");/**/
+  
+  /*background-image: url("images/marne01.jpg");/**/
+  background-image: url("images/tranchees.jpg");/**/
+  /*background-image: url("images/Tranchee1.jpg");*/
+  /*background: no-repeat;/**/
+  background-repeat:no-repeat;
+  background-size: 100%;
+}
 
 #robotSettings input {width:75%} /* barre de volume robot */
 .ihmRobot #selectionMicros select {width:100%}

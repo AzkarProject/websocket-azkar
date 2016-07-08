@@ -255,6 +255,7 @@ function trakingMode() {
 }
 
 
+
 function gotoPOI() {
     list_POI_select = document.querySelector('select#list_POI');
     var valuePOI = list_POI_select.value;
@@ -264,8 +265,8 @@ function gotoPOI() {
         objUser: localObjUser,
         poi: valuePOI
     }); 
-}
-
+}goto
+/**/
 
 
 // ----------- Selecteurs d'affichage des flux videos locaux et distants ---------------------

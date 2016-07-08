@@ -126,6 +126,13 @@ function getFakeDataMap() {
     // Simu Map 25
     // var dataMap = {"Offset":{"X":-19.8655429626,"Y":-3.10094802423},"Width":1577,"Stride":1584,"Height":1184,"Data":null,"Resolution":0.019999999553}
 
+    // Simu map MGG
+    // var dataMap = {"Offset":{"X":-52.8251232326,"Y":-63.9346600184},"Width":3942,"Stride":3944,"Height":1928,"Data":null,"Resolution":0.019999999553}
+    
+    // Simu map MGG offsets corrigés
+    //var dataMap = {"Offset":{"X":-17.4151232326,"Y":-21.3146600184},"Width":3942,"Stride":3944,"Height":1928,"Data":null,"Resolution":0.019999999553}
+
+    /**/
 
     return dataMap;
 }
@@ -133,8 +140,32 @@ function getFakeDataMap() {
 
 function getFakeRobotInfo() {
 
-
+	// Simu map 26/26
     var robotInfo = {"Pose":{"Orientation":0.014824313679471759,"Position":{"X":-0.01693115491662614,"Y":-0.011192893436510892,"Z":0}},"State":8,"Timestamp":2916720}
+    
+    
+    // Simu map MGG positon Marne 1914
+    // var robotInfo = {"Pose":{"Orientation":3.15,"Position":{"X":-2.95,"Y":-2.3,"Z":0}},"State":8,"Timestamp":2916720}
+
+
+    // Simu map MGG positon départ XY - OK
+    //var robotInfo = {"Pose":{"Orientation":0,"Position":{"X":0,"Y":0,"Z":0}},"State":8,"Timestamp":2916720}
+
+    // Simu map MGG position Tranchées - OK
+    // var robotInfo = {"Pose":{"Orientation":5.5,"Position":{"X":7,"Y":0,"Z":0}},"State":8,"Timestamp":2916720}
+
+    // Simu map MGG positon Tranchée Allemande
+    //var robotInfo = {"Pose":{"Orientation":4.8,"Position":{"X":13,"Y":1,"Z":0}},"State":8,"Timestamp":2916720}
+    
+    // Simu map MGG positon No Man's Land
+    //var robotInfo = {"Pose":{"Orientation":4.8,"Position":{"X":13,"Y":1,"Z":0}},"State":8,"Timestamp":2916720}
+
+    // Simu map MGG positon Tranchée Française
+    //var robotInfo = {"Pose":{"Orientation":4.8,"Position":{"X":13,"Y":1,"Z":0}},"State":8,"Timestamp":2916720}
+
+
+    /**/
+
     return robotInfo;
 
 }
@@ -153,12 +184,24 @@ function getFakelistPOI() {
     console.log("getFakelistPOI()")
 
     // Simu Map 26
-    var listPOI = [{"Name":"PilierA","Pose":{"X":2.3736454829404003,"Y":6.2584240093506871,"Theta":0}},{"Name":"PilierB","Pose":{"X":2.1479895820222588,"Y":11.719296811569686,"Theta":0}},{"Name":"PilierC","Pose":{"X":-10.172822608108211,"Y":11.222853829549779,"Theta":0}},{"Name":"PilierD","Pose":{"X":-10.263084968475466,"Y":5.8973745678816627,"Theta":0}}]
+    var listPOI = [{"Name":"PilierA","Pose":{"X":1,"Y":6.2584240093506871,"Theta":0}},{"Name":"PilierB","Pose":{"X":2.1479895820222588,"Y":11.719296811569686,"Theta":0}},{"Name":"PilierC","Pose":{"X":-10.172822608108211,"Y":11.222853829549779,"Theta":0}},{"Name":"PilierD","Pose":{"X":-10.263084968475466,"Y":5.8973745678816627,"Theta":0}}]
 	
 	// Simu Map 25 (Sans POI)
-	//var listPOI = []
+	// var listPOI = []
     
-    // console.log(listPOI);
+    /*// Simu MGG
+    var listPOI = [
+        {"Name":"Poi1","Pose":{"X":-2.95,"Y":-2.3,"Theta":3.15}, "label":"Marne 1914" },
+        {"Name":"Poi2","Pose":{"X":7,"Y":0,"Theta":5.5}, "label":"Tranchées" },
+        {"Name":"Poi3","Pose":{"X":13,"Y":1,"Theta":4.8}, "label":"Tranchée Allemande" },
+        // {"Name":"Poi n°4","Pose":{"X":16.5,"Y":1.25,"Theta":4.9},"label":"No Man's Land" },
+        {"Name":"Poi4","Pose":{"X":20,"Y":1.5,"Theta":5}, "label":"Tranchée française" }
+        ]
+    /**/
+   
+        //var robotInfo = {"Pose":{"Orientation":4.8,"Position":{"X":13,"Y":1,"Z":0}},"State":8,"Timestamp":2916720}
+
+
 
     return listPOI;
 
