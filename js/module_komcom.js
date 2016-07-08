@@ -281,7 +281,15 @@ exports.sendGotoPOI = function (data) {
         // Petite tempo avant de récupérer la trajectoire du robot; le temps pour lui de la calculer...
         //var result = setTimeout(function() { komcom.getGotoTrajectoryState(); }, 500); 
         //var result = setInterval(function() { komcom.getGotoTrajectoryState(); }, 500);
-        result = setInterval(function() { getTrajectoryState(); }, 100);
+        
+        
+
+        // 
+        result == null;
+        var temporesult = setTimeout(function() {  result = setInterval(function() { getTrajectoryState(); }, 100); }, 1000); 
+
+        // OK
+        //result = setInterval(function() { getTrajectoryState(); }, 100);
 
 
 
@@ -299,7 +307,7 @@ exports.sendGotoPOI = function (data) {
             clearInterval(result);
             console.log("Trajectory Statut: Stopped!")
         }
-        // setInterval(function(){ alert("Hello"); }, 3000);
+        
 
 
         function getTrajectoryState() {
@@ -326,10 +334,8 @@ exports.sendGotoPOI = function (data) {
                             // Detection de fin de déplacement...
                             if (gotoState.Status == 1) {
                                  clearInterval(result);
-                                console.log("Trajectory Statut: Stopped!")
+                                 console.log("Trajectory Statut: Stopped!")
                             }
-
-
                             socket.emit("gotoStateReturn",{gotoState});
                             
                             });
