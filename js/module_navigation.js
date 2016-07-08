@@ -230,7 +230,8 @@
 
     function displayTrajectoryStatus(textStatus) {
         //alert("Trajectory status:"+textStatus);
-        $('#robotStatusMessage').replaceWith(" <span id ='connect-notice'>Trajectory: "+textStatus+"</span>");
+        console.log("Trajectory Status:"+textStatus)
+        // $('#robotStatusMessage').replaceWith(" <span id ='connect-notice'>Trajectory: "+textStatus+"</span>");
 
     }
 

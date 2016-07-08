@@ -338,11 +338,12 @@ exports.sendGotoPOI = function (data) {
                             //console.log(gotoState);
                             
                             // Version sans activeGoto..
-                            // Detection de fin de déplacement...
+                            /*// Detection de fin de déplacement...
                             if (gotoState.Status == 0) { // 0 = status 'Waiting'
                                  clearInterval(result);
                                  console.log("Trajectory Statut: Stopped!")
                             }
+                            /**/
                             socket.emit("gotoStateReturn",{gotoState});
                             
                             });
