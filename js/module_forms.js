@@ -265,7 +265,7 @@ function gotoPOI() {
         objUser: localObjUser,
         poi: valuePOI
     }); 
-}goto
+}
 /**/
 
 
