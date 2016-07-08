@@ -73,7 +73,7 @@
 	// websocket: Affiche message ds le tchat
 	exports.insertWsMessage = function (objUser, message, origine) {
 	   
-	    console.log(objUser);
+	    //console.log(objUser);
 	    var text;
 	    if (objUser){
 	      
