@@ -103,6 +103,12 @@
             else if (data.gotoState.Status == 3) textStatus = "Translating";
             else if (data.gotoState.Status == 4) textStatus = "Rotating";
             else if (data.gotoState.Status == 5) textStatus = "Error";
+            
+            var dateR = tools.humanDateER('R');
+            var msg = dateR+' Trajectory Status'+textStatus;
+
+            ihm.insertWsMessage(null,msg);
+
             displayTrajectoryStatus(textStatus);
 
             // Todo: Traiter le résultat:

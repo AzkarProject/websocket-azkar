@@ -199,10 +199,12 @@ exports.getBatteryOLD = function (){
 
 
 // 
+var activeGoto = false;
 exports.sendGotoPOI = function (data) {
 
+       
+        console.log("komcom.sendGotoPOI("+data.poiname+") - activeGoto:"+activeGoto)
         
-        console.log("komcom.sendGotoPOI("+data.poiname+")")
         // alert("komcom.sendGotoPOI("+data.poiname+")")
 
         // Mémo:
@@ -215,42 +217,111 @@ exports.sendGotoPOI = function (data) {
         socket.on("gotoPOI", function(data) {
             var toSend = {"poiname":data.poi}
         }); 
-        /**/     
+        /**/  
 
+        if (activeGoto == true)  {
 
+            
+            activeGoto = false;
+            clearInterval(result);
+            console.log("Trajectory Statut: Stopped!")
+        
 
-        if (fakeRobubox == false) {
-         
-            //console.log
+        } else if (activeGoto == false) {
+        
+            activeGoto = true;
+            
+            if (fakeRobubox == false) {
+             
+                //console.log
 
-            var url = null
-            url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/POI" ; // CORS-ANYWHERE
+                var url = null
+                url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/POI" ; // CORS-ANYWHERE
 
-            if ( url != null) {
-                var xhr = new XMLHttpRequest();
-                xhr.open('POST', url);
-                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-                //xhr.send(data);
-                xhr.send(JSON.stringify({
-                        "poiname": data.poiname,
-                    }));
-                xhr.closed;
-            }
+                if ( url != null) {
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('POST', url);
+                    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                    //xhr.send(data);
+                    xhr.send(JSON.stringify({
+                            "poiname": data.poiname,
+                        }));
+                    xhr.closed;
+                }
 
-        }  
+            }  
+        
 
         // Petite tempo avant de récupérer la trajectoire du robot; le temps pour lui de la calculer...
-        var result = setTimeout(function() { komcom.getGotoTrajectoryState(); }, 500); 
+        //var result = setTimeout(function() { komcom.getGotoTrajectoryState(); }, 500); 
+        //var result = setInterval(function() { komcom.getGotoTrajectoryState(); }, 500);
+        result = setInterval(function() { getTrajectoryState(); }, 100);
+
+
+
+        } 
+
+        /*else {
+            clearInterval(result);
+            console.log("Trajectory Statut: Stopped!")
+            // stopTrajectoryState()
+        }
+        /**/
+
+        
+        function stopTrajectoryState() {
+            clearInterval(result);
+            console.log("Trajectory Statut: Stopped!")
+        }
+        // setInterval(function(){ alert("Hello"); }, 3000);
+
+
+        function getTrajectoryState() {
+
+                    //activeGoto = true
+
+                    if (fakeRobubox == true) {  
+                        var gotoState = getFakeGotoTrajectoryState();
+                        //console.log("Trajectory Statut: "+gotoState )
+                        //console.log(gotoState);
+                        socket.emit("gotoStateReturn",{gotoState});
+
+                    } else {
+
+                        var url = null
+                        url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/State" ; // CORS-ANYWHERE
+                        if (url != null) {
+                            $.get(url, function(data) { // la localisation du robot sur la carte
+                            var gotoState = JSON.parse(data);
+                            //console.log("Trajectory Statut: "+gotoState )
+                            //console.log(gotoState);
+                            socket.emit("gotoStateReturn",{gotoState});
+                            
+                            });
+                        }
+                    }
+
+
+        }
+
+
+
+
+
+
+
 
 }
 
-
+/*
 exports.getGotoTrajectoryState = function () {
 
-        
+            activeGoto = true
+
             if (fakeRobubox == true) {  
                 var gotoState = getFakeGotoTrajectoryState();
                 console.log("Trajectory Statut: "+gotoState )
+                console.log(gotoState);
                 socket.emit("gotoStateReturn",{gotoState});
 
             } else {
@@ -261,18 +332,16 @@ exports.getGotoTrajectoryState = function () {
                     $.get(url, function(data) { // la localisation du robot sur la carte
                     var gotoState = JSON.parse(data);
                     console.log("Trajectory Statut: "+gotoState )
+                    console.log(gotoState);
                     socket.emit("gotoStateReturn",{gotoState});
-                   
+                    
                     });
                 }
-
-
-            
-
             }
 
 
 }
+/**/
 
 
 
