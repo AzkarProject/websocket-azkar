@@ -107,7 +107,8 @@
             var dateR = tools.humanDateER('R');
             var msg = dateR+' Trajectory Status'+textStatus;
 
-            ihm.insertWsMessage(null,msg);
+            // Pour logs et débuggage
+            // ihm.insertWsMessage(null,msg);
 
             displayTrajectoryStatus(textStatus);
 
@@ -231,7 +232,7 @@
     function displayTrajectoryStatus(textStatus) {
         //alert("Trajectory status:"+textStatus);
         console.log("Trajectory Status:"+textStatus)
-        // $('#robotStatusMessage').replaceWith(" <span id ='connect-notice'>Trajectory: "+textStatus+"</span>");
+        $('#robotStatusMessage').replaceWith(" <span id ='connect-notice'>Trajectory Status: </br>"+textStatus+"</span>");
 
     }
 
