@@ -199,7 +199,7 @@ exports.getBatteryOLD = function (){
 
 
 // 
-var activeGoto = false;
+var activeGoto = false; // Pour le switch go/stop du bouton de POI...
 exports.sendGotoPOI = function (data) {
 
        
@@ -219,6 +219,7 @@ exports.sendGotoPOI = function (data) {
         }); 
         /**/  
 
+        // Version avec activeGoto
         if (activeGoto == true)  {
 
             
@@ -249,8 +250,33 @@ exports.sendGotoPOI = function (data) {
                     xhr.closed;
                 }
 
-            }  
+            } 
+        /**/ // Fin version avec activegoto 
         
+        // Version sans activeGoto
+        if (fakeRobubox == false) {
+             
+            //console.log
+
+            var url = null
+            url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/POI" ; // CORS-ANYWHERE
+
+            if ( url != null) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', url);
+                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                //xhr.send(data);
+                xhr.send(JSON.stringify({
+                        "poiname": data.poiname,
+                    }));
+                xhr.closed;
+            }
+
+        } 
+        /**/ // fin version sans activeGoto 
+
+
+
 
         // Petite tempo avant de récupérer la trajectoire du robot; le temps pour lui de la calculer...
         //var result = setTimeout(function() { komcom.getGotoTrajectoryState(); }, 500); 
@@ -295,6 +321,15 @@ exports.sendGotoPOI = function (data) {
                             var gotoState = JSON.parse(data);
                             //console.log("Trajectory Statut: "+gotoState )
                             //console.log(gotoState);
+                            
+                            // Version sans activeGoto..
+                            // Detection de fin de déplacement...
+                            if (gotoState.Status == 1) {
+                                 clearInterval(result);
+                                console.log("Trajectory Statut: Stopped!")
+                            }
+
+
                             socket.emit("gotoStateReturn",{gotoState});
                             
                             });
