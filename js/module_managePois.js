@@ -51,10 +51,10 @@
 
 	var handlers = {
 		initCollections:initCollections,
-		initCollectionMaps:initCollectionMaps,
-		initCollectionsVisites,initCollectionsVisites,
-		initCollectionScenes,initCollectionScenes,
-		initCollectionPois,initCollectionPois,
+		//initCollectionMaps:initCollectionMaps,
+		//initCollectionsVisites,initCollectionsVisites,
+		//initCollectionScenes,initCollectionScenes,
+		//initCollectionPois,initCollectionPois,
 
 	}
 
