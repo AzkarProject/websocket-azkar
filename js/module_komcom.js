@@ -219,7 +219,7 @@ exports.sendGotoPOI = function (data) {
         }); 
         /**/  
 
-        // Version avec activeGoto
+        /*// Version avec activeGoto
         if (activeGoto == true)  {
 
             
@@ -251,6 +251,7 @@ exports.sendGotoPOI = function (data) {
                 }
 
             } 
+        } 
         /**/ // Fin version avec activegoto 
         
         // Version sans activeGoto
@@ -278,22 +279,11 @@ exports.sendGotoPOI = function (data) {
 
 
 
-        // Petite tempo avant de récupérer la trajectoire du robot; le temps pour lui de la calculer...
-        //var result = setTimeout(function() { komcom.getGotoTrajectoryState(); }, 500); 
-        //var result = setInterval(function() { komcom.getGotoTrajectoryState(); }, 500);
-        
-        
-
-        // 
-        var result == null;
-        var temporesult = setTimeout(function() {  result = setInterval(function() { getTrajectoryState(); }, 100); }, 1000); 
-
-        // OK
-        //result = setInterval(function() { getTrajectoryState(); }, 100);
 
 
 
-        } 
+
+      
 
         /*else {
             clearInterval(result);
@@ -303,6 +293,23 @@ exports.sendGotoPOI = function (data) {
         /**/
 
         
+        // Petite tempo avant de récupérer la trajectoire du robot; le temps pour lui de la calculer...
+        //var result = setTimeout(function() { komcom.getGotoTrajectoryState(); }, 500); 
+        //var result = setInterval(function() { komcom.getGotoTrajectoryState(); }, 500);
+        
+        
+
+        // 
+        // var result == null;
+        //var temporesult = setTimeout(function() {  result = setInterval(function() { getTrajectoryState(); }, 100); }, 1000); 
+
+        // OK
+        result = setInterval(function() { getTrajectoryState(); }, 100);
+
+
+
+
+
         function stopTrajectoryState() {
             clearInterval(result);
             console.log("Trajectory Statut: Stopped!")
