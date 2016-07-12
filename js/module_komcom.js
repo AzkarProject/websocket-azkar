@@ -304,7 +304,7 @@ exports.sendGotoPOI = function (data) {
         //var temporesult = setTimeout(function() {  result = setInterval(function() { getTrajectoryState(); }, 100); }, 1000); 
 
         // OK
-        // result = setInterval(function() { getTrajectoryState(); }, 200);
+        result = setInterval(function() { getTrajectoryState(); }, 100);
 
 
 
@@ -334,6 +334,7 @@ exports.sendGotoPOI = function (data) {
                         if (url != null) {
                             $.get(url, function(data) { // la localisation du robot sur la carte
                             var gotoState = JSON.parse(data);
+                            gotoState.Trajectory = null;
                             //console.log("Trajectory Statut: "+gotoState )
                             //console.log(gotoState);
                             
@@ -452,7 +453,7 @@ exports.sendDrive = function (data){
 }
 
 
-// Récupère le niveau de la  la batterie et déclenche l'affiche dans une progress bar
+// Récupère le niveau de la  la batterie et déclenche l'affichage d'une progress bar
 // Interroge chaque 1000ms le robot via url et retourne le niveau de la batterie en pourcentage
 // Note: Compatible avec la version de komNav/Mobiserve
 exports.getBattery = function (){
@@ -481,28 +482,6 @@ exports.getBattery = function (){
              
     	        setInterval(function() {
     	            
-	    	        // console.log("komcom.getBattery() >>> navSys ="+navSys);
-	    	        // console.log("komcom.getBattery() >>> parameters.navSys ="+parameters.navSys);
-	             	
-	             	/*
-                    if (parameters.navSys == 'Robubox') {
-	              		url = "https://127.0.0.1:443/http://127.0.0.1:50000/lokarria/battery"
-	              	} else if (parameters.navSys == 'KomNAV') {
-	                	url = "https://127.0.0.1:443/http://127.0.0.1:7007/Devices/Battery" ; // CORS-ANYWHERE	  
-	              	} 
-                    /**/  
-                    /*
-    	            $.get(url, function(data) { // 1 -  et 2- 
-    	                if (parameters.navSys == 'Robubox') {
-    	                	batteryInfo = JSON.parse(data);
-    	                	thenum = batteryInfo.Remaining ;
-    	                } else if (parameters.navSys == 'KomNAV') {
-    	                	thenum = data;
-    	                }
-    	                percentage = (data <= 100) ? data : 100; // 6- 
-    	            });
-                    /**/
-
                     $.get(url, function(data) { 
                         thenum = data;
                         percentage = (data <= 100) ? data : 100; 
@@ -525,6 +504,7 @@ exports.getBattery = function (){
 } // End getBattery
 
 
+// Envoi d'une commande STOP permettant de bloquer 
 // Note: Compatible avec la version de komNav/Mobiserve
 // TODO à terminer
 exports.sendFullStop = function (data){        
@@ -581,6 +561,7 @@ exports.getRobotInfo = function (init){
 	
 	var url = null;
 	url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/Localization';
+    
     /*
     if (parameters.navSys == 'Robubox') {
     	 url = 'https://127.0.0.1:443/http://127.0.0.1:50000/lokarria/localization';

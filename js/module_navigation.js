@@ -217,6 +217,7 @@
     function populateListPOIs(listPOI) {
         console.log("@ populateListPOIs()");
         list_POI_select = document.querySelector('select#list_POI');
+        
         for (poi in listPOI) {
             var option = document.createElement('option');
             option.id = listPOI[poi].Name;
