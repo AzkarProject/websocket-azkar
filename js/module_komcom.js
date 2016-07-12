@@ -304,7 +304,7 @@ exports.sendGotoPOI = function (data) {
         //var temporesult = setTimeout(function() {  result = setInterval(function() { getTrajectoryState(); }, 100); }, 1000); 
 
         // OK
-        result = setInterval(function() { getTrajectoryState(); }, 100);
+        result = setInterval(function() { getTrajectoryState(); }, 500);
 
 
 

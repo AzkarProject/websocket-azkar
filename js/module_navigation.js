@@ -110,8 +110,10 @@
             // Pour logs et débuggage
             // ihm.insertWsMessage(null,msg);
             console.log(msg)
+            $('#robotStatusMessage').replaceWith(" <span id ='connect-notice'>Trajectory Status: </br>"+textStatus+"</span>");
+            
 
-            displayTrajectoryStatus(textStatus);
+            // displayTrajectoryStatus(textStatus);
 
             // Todo: Traiter le résultat:
             // 1 Affichage du statut
@@ -233,7 +235,7 @@
 
     function displayTrajectoryStatus(textStatus) {
         //alert("Trajectory status:"+textStatus);
-        console.log("Trajectory Status:"+textStatus)
+        //console.log("Trajectory Status:"+textStatus)
         $('#robotStatusMessage').replaceWith(" <span id ='connect-notice'>Trajectory Status: </br>"+textStatus+"</span>");
 
     }
