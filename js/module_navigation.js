@@ -105,12 +105,12 @@
             else if (data.gotoState.Status == 5) textStatus = "Error";
             
             var dateR = tools.humanDateER('R');
-            var msg = dateR+' Trajectory Status'+textStatus;
+            var msg = dateR+' Trajectory Status: '+textStatus;
 
             // Pour logs et débuggage
             // ihm.insertWsMessage(null,msg);
             console.log(msg)
-            $('#robotStatusMessage').replaceWith(" <span id ='connect-notice'>Trajectory Status: </br>"+textStatus+"</span>");
+            $('#robotStatusMessage').replaceWith(" <span id ='connect-notice'>"+textStatus+"</span>");
             
 
             // displayTrajectoryStatus(textStatus);
