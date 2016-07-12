@@ -109,6 +109,7 @@
 
             // Pour logs et débuggage
             // ihm.insertWsMessage(null,msg);
+            console.log(msg)
 
             displayTrajectoryStatus(textStatus);
 
