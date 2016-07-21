@@ -371,7 +371,7 @@ exports.getRobotInfo = function (init){
 			});
 		}
 
-        console.log(robotInfo);
+        // console.log(robotInfo);
 
     }
 
