@@ -281,7 +281,7 @@
 
         
         dawListPointOfInterest("standard",null,null,null,null);
-
+        console.log ("@ drawRobot >>> carto.drawTrajectory (context, path)");
         carto.drawTrajectory (context, path);
         // circleWithDirection(ry, rx, 0, "blue", 3, 2); // Michael
         // Titi: Ajout du paramètre QZ pour l'orientation du robot et inversion des axes X,Y...
