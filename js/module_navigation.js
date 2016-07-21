@@ -248,7 +248,10 @@
 	        
 	        setInterval(function() {
                 if (fakeRobubox == true) navigation.simulateRobotInfo();
-                else komcom.getRobotInfo();
+                else {
+                    komcom.getRobotInfo();
+                    navigation.getNearestPoiName();
+                }
 
                 robotInfo.nearestPoiName = nearestPoiName;
                 robotInfo.robotColor = robotColor;
