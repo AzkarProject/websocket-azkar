@@ -234,11 +234,8 @@
         receiveListPoi()
         mapSize = carto.resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
 
-                //var toSend = {"dataMap":dataMap, "listPOI":listPOI,}
-                //navigation_interface.sendToPilote("map_parameters2", toSend); // envoi parametres de la map
-
-
-
+        //var toSend = {"dataMap":dataMap, "listPOI":listPOI,}
+        //navigation_interface.sendToPilote("map_parameters2", toSend); // envoi parametres de la map
 
         refresh();
     }
