@@ -323,7 +323,7 @@
     exports.getNearestPoiName = function() {
    
 
-        console.log ("@ getNearestPoiName()")
+        //console.log ("@ getNearestPoiName()")
         if (type == "pilote-appelant") {
            
         }
