@@ -81,7 +81,7 @@ exports.sendGotoPOI = function (data) {
 
         function getTrajectoryPath() {
 
-
+            console.log ("@ getTrajectoryPath()")
             // si on est en mode simulation
             // On récupère un dataset correspondant à la trajectoire demandée
             // la commande getFakeTrajectory étant sensée simuler 
@@ -96,7 +96,7 @@ exports.sendGotoPOI = function (data) {
                 url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/State" ; // CORS-ANYWHERE
                 if (url != null) {
                     $.get(url, function(data) { // la localisation du robot sur la carte
-                    var path = JSON.parse(data);
+                    path = JSON.parse(data);
                     socket.emit("gotoTrajectory",{path});
                     carto.convertPath()
                     
