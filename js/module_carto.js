@@ -527,7 +527,7 @@
     // Dessine la trajectoire d'un Goto sur le Canvas
     exports.drawTrajectory = function (ctx, path) {
 
-        if (type == "pilote-appelant")
+        if (type == "pilote-appelant") {
             console.log ("carto.drawTrajectory()")
             console.log (path)
         }
