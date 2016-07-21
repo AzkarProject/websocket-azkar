@@ -114,7 +114,7 @@
 
 
                 if (OldTextState != textState ) { 
-                    console.log("New Robot State: "+textState)
+                    // console.log("New Robot State: "+textState)
                     OldTextState = textState;
                 }
                 refresh();
