@@ -320,6 +320,12 @@
     exports.getNearestPoiName = function() {
     // function getNearestPoiName() {
 
+        
+        if (type == "robot-appelé") {
+            console.log ()
+        }
+
+
         var precisionXY = 0.3; 
         var precisionTheta = 0.7; // 0.7 pour 70%
         precisionTheta = 360*precisionTheta; //Si 360° = 6.25 Alors 70° = 360/70
