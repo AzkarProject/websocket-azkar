@@ -110,9 +110,7 @@
                 else if (robotInfo.State ==  32) textState = "Error";
 
     			
-                if (robotInfo.State != 16)  {
-                    path=null;
-                }
+                // if (robotInfo.State != 16)  { path=null;} // Plante en version non simulée...
 
 
                 if (OldTextState != textState ) { 
