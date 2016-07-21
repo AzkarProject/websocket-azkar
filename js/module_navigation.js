@@ -169,6 +169,12 @@
             var dateR = tools.humanDateER('R');
             var msg = dateR+' Trajectory Status: '+textStatus;
 
+            if (fakeRobubox == false) {
+                ihm.displayTrajectoryStatus(textStatus)
+                
+            }
+
+
             // Pour logs et débuggage
             // ihm.insertWsMessage(null,msg);
             // console.log(msg)
