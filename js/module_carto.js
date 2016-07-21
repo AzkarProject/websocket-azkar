@@ -528,9 +528,9 @@
     exports.drawTrajectory = function (ctx, path) {
 
         
-
-        if (! path) return;
         console.log ("carto.drawTrajectory()")
+        if (! path) return;
+
 
         for (position in path.Trajectory) {
                 
