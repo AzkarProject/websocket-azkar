@@ -302,7 +302,8 @@
                 var option = document.createElement('option');
                 option.id = listPOI[poi].Name;
                 option.value = listPOI[poi].Name;
-                option.text = listPOI[poi].Name+" : "+listPOI[poi].label;
+                if (listPOI[poi].label) option.text = listPOI[poi].Name+" : "+listPOI[poi].label;
+                else option.text = listPOI[poi].Name;
                 list_POI_select.appendChild(option);
             }
 
