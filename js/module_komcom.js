@@ -109,7 +109,8 @@ exports.sendGotoPOI = function (data) {
 
         // On récupère la trajectoire en cours
         // Avec une intervalle d'une seconde...
-        // result = setInterval(function() { getTrajectoryState(); }, 1000);
+
+        if (fakeRobubox == false ) result = setInterval(function() { getTrajectoryState(); }, 2000);
 
 
 

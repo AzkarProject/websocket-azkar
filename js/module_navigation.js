@@ -311,14 +311,6 @@
     }
     
 
-    /*
-    exports.displayTrajectoryStatus = function (textStatus) {
-        $('#robotStatusMessage').replaceWith(" <span id='robotStatusMessage'>"+textStatus+"</span>");
-
-    }
-    /**/
-
-
     var oldPoiTextMatch = null;
     exports.getNearestPoiName = function() {
    
