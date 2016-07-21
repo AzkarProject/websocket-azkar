@@ -318,11 +318,11 @@
 
     var oldPoiTextMatch = null;
     exports.getNearestPoiName = function() {
-    // function getNearestPoiName() {
+   
 
-        
-        if (type == "robot-appelé") {
-            console.log ()
+        console.log ("@ getNearestPoiName()")
+        if (type == "pilote-appelant") {
+           
         }
 
 
