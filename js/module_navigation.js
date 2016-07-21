@@ -98,7 +98,7 @@
                 robotColor = robotInfo.robotColor;
                 statusPath = robotInfo.statusPath;
 
-                ihm.displayTrajectoryStatus(statusPath)
+                if (fakeRobubox == true) ihm.displayTrajectoryStatus(statusPath)
 
 
                 if (robotInfo.State == 0) textState = "Invalid";
@@ -171,7 +171,6 @@
 
             if (fakeRobubox == false) {
                 ihm.displayTrajectoryStatus(textStatus)
-                
             }
 
 
