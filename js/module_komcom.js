@@ -198,63 +198,15 @@ exports.getBatteryOLD = function (){
 
 
 
-// 
-var activeGoto = false; // Pour le switch go/stop du bouton de POI...
 exports.sendGotoPOI = function (data) {
 
+       if ( robotInfo.State === 16) return; // si le robot est en mouvement...
        
-        console.log("komcom.sendGotoPOI("+data.poiname+") - activeGoto:"+activeGoto)
+       console.log("komcom.sendGotoPOI("+data.poiname+")");
         
-        // alert("komcom.sendGotoPOI("+data.poiname+")")
-
-        // Mémo:
-        // >>> POST: Commande "Aller vers un point d'intérêt"
-        // http://127.0.0.1:7007/Navigation/Goto/POI
-        // Envoi: {"poiname":"PilierA"}
-        // Réponse: HTTP 204 (No content) / 
-
-        /*// reception d'un ordre gotoPOI
-        socket.on("gotoPOI", function(data) {
-            var toSend = {"poiname":data.poi}
-        }); 
-        /**/  
-
-        /*// Version avec activeGoto
-        if (activeGoto == true)  {
-
-            
-            activeGoto = false;
-            clearInterval(result);
-            console.log("Trajectory Statut: Stopped!")
         
+        // On n'envoie la commande que si le robot est branché
 
-        } else if (activeGoto == false) {
-        
-            activeGoto = true;
-            
-            if (fakeRobubox == false) {
-             
-                //console.log
-
-                var url = null
-                url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/POI" ; // CORS-ANYWHERE
-
-                if ( url != null) {
-                    var xhr = new XMLHttpRequest();
-                    xhr.open('POST', url);
-                    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-                    //xhr.send(data);
-                    xhr.send(JSON.stringify({
-                            "poiname": data.poiname,
-                        }));
-                    xhr.closed;
-                }
-
-            } 
-        } 
-        /**/ // Fin version avec activegoto 
-        
-        // Version sans activeGoto
         if (fakeRobubox == false) {
              
             //console.log
@@ -271,40 +223,49 @@ exports.sendGotoPOI = function (data) {
                         "poiname": data.poiname,
                     }));
                 xhr.closed;
+            
+
+
             }
 
-        } 
-        /**/ // fin version sans activeGoto 
+       
+        }         
 
-
-
-
-
-
-
-
-      
-
-        /*else {
-            clearInterval(result);
-            console.log("Trajectory Statut: Stopped!")
-            // stopTrajectoryState()
-        }
-        /**/
-
-        
         // Petite tempo avant de récupérer la trajectoire du robot; le temps pour lui de la calculer...
-        //var result = setTimeout(function() { komcom.getGotoTrajectoryState(); }, 500); 
-        //var result = setInterval(function() { komcom.getGotoTrajectoryState(); }, 500);
-        
-        
+        var result = setTimeout(function() { getTrajectoryPath(); }, 500); 
 
-        // 
-        // var result == null;
-        //var temporesult = setTimeout(function() {  result = setInterval(function() { getTrajectoryState(); }, 100); }, 1000); 
 
-        // OK
-        result = setInterval(function() { getTrajectoryState(); }, 500);
+        function getTrajectoryPath() {
+
+
+            // si on est en mode simulation
+            // On récupère un dataset correspondant à la trajectoire demandée
+            // la commande getFakeTrajectory étant sensée simuler 
+            // ce que renverrai le vrai robot...
+            if (fakeRobubox == true) {  
+                
+                getFakeTrajectory(data);
+
+            } else {
+
+                var url = null
+                url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/State" ; // CORS-ANYWHERE
+                if (url != null) {
+                    $.get(url, function(data) { // la localisation du robot sur la carte
+                    var path = JSON.parse(data);
+                    socket.emit("gotoTrajectory",{path});
+                    carto.convertPath()
+                    
+                    });
+                }
+            }
+
+
+        }
+
+        // On récupère la trajectoire en cours
+        // Avec une intervalle d'une seconde...
+        // result = setInterval(function() { getTrajectoryState(); }, 1000);
 
 
 
@@ -334,7 +295,7 @@ exports.sendGotoPOI = function (data) {
                         if (url != null) {
                             $.get(url, function(data) { // la localisation du robot sur la carte
                             var gotoState = JSON.parse(data);
-                            gotoState.Trajectory = null;
+                            gotoState.Trajectory = null; // On vire le tableau des trajectoires pour ne pas surcharger le système....
                             //console.log("Trajectory Statut: "+gotoState )
                             //console.log(gotoState);
                             
@@ -362,37 +323,6 @@ exports.sendGotoPOI = function (data) {
 
 
 }
-
-/*
-exports.getGotoTrajectoryState = function () {
-
-            activeGoto = true
-
-            if (fakeRobubox == true) {  
-                var gotoState = getFakeGotoTrajectoryState();
-                console.log("Trajectory Statut: "+gotoState )
-                console.log(gotoState);
-                socket.emit("gotoStateReturn",{gotoState});
-
-            } else {
-
-                var url = null
-                url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/State" ; // CORS-ANYWHERE
-                if (url != null) {
-                    $.get(url, function(data) { // la localisation du robot sur la carte
-                    var gotoState = JSON.parse(data);
-                    console.log("Trajectory Statut: "+gotoState )
-                    console.log(gotoState);
-                    socket.emit("gotoStateReturn",{gotoState});
-                    
-                    });
-                }
-            }
-
-
-}
-/**/
-
 
 
 // Envoi d'une commande de type "Drive" au robot
@@ -423,14 +353,6 @@ exports.sendDrive = function (data){
          	var url = null
             url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Speed" ; // CORS-ANYWHERE
             
-            /*
-            if (parameters.navSys == 'Robubox') {
-                url = "https://127.0.0.1:443/http://127.0.0.1:50000/api/drive" ; // CORS-ANYWHERE
-            } else if (parameters.navSys == 'KomNAV') {
-            	url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Speed" ; // CORS-ANYWHERE
-            }
-            /**/
-
             if ( url != null) {
 	           	// function sendDrive(url, enable, aSpeed,lSpeed) {
 	            var btnA = (enable == 'true' ? true : false); //  
@@ -506,13 +428,38 @@ exports.getBattery = function (){
 
 // Envoi d'une commande STOP permettant de bloquer 
 // Note: Compatible avec la version de komNav/Mobiserve
-// TODO à terminer
+// TODO à tester...
 exports.sendFullStop = function (data){        
         
-    var messageStop = tools.stringObjectDump(data, "Fonction STOP à implémenter")
-    alert(messageStop);
+    
+    console.log("@ sendFullStop()");
+    stopFakeFollowTrajectory();
+    robotInfo.State = 8;
+    // robotInfo.statusPath = "STOP ORDER !!"
+    path = null;
+    
 
-            
+
+
+    if (fakeRobubox == true) {  
+
+        // Stopper le FakeTrajectory
+
+    } else {  
+
+        var url = null
+        url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Stop" ; // CORS-ANYWHERE
+
+        if ( url != null) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', url);
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            //xhr.send(data);
+            xhr.send();
+            xhr.closed;
+        }
+
+    }      
 }
 
 
@@ -562,16 +509,7 @@ exports.getRobotInfo = function (init){
 	var url = null;
 	url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/Localization';
     
-    /*
-    if (parameters.navSys == 'Robubox') {
-    	 url = 'https://127.0.0.1:443/http://127.0.0.1:50000/lokarria/localization';
-    } else if (parameters.navSys == 'KomNAV') {
-    	 url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/Localisation';
-    }
-    /**/	
-
-
-    
+  
 	if (fakeRobubox == true) {  
        robotInfo = getFakeRobotInfo();
        DEFFERED_RobotInfo.resolve();
@@ -590,7 +528,6 @@ exports.getRobotInfo = function (init){
 		}
 
     }
-    /**/
 
     // Pour tests
     //robotInfo = getFakeRobotInfo();
@@ -634,15 +571,8 @@ exports.getDataMap = function (){
                 console.log(dataMap)
             }); 
         } 
-    } 
-    /**/  
+    }  
 
-    // Provisoirement, on utilise les métadatas en dur
-    /*// correspondant à la carte en cours...
-    dataMap = getFakeDataMap();
-    DEFFERED_DataMap.resolve();
-    /**/
-    
 }
 
 

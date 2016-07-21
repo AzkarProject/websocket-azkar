@@ -197,7 +197,9 @@
         drawArrow(context, startArrowX, startArrowY, startArrowX+25, startArrowY, 1, "grey",'X'); // axe X
         drawArrow(context, startArrowX, startArrowY, startArrowX, startArrowY-25, 1, "grey",'Y'); // axe Y
 
-        dawListPointOfInterest("tracking",startArrowX, startArrowY,rx,ry)
+        // dawListPointOfInterest("tracking",startArrowX, startArrowY,rx,ry) // BUG mode Traking - Les POIs dérivent...
+        // carto.drawTrajectory (context, path); // Todo...
+
 
         //alert (rx +" / "+ ry)
         circleWithDirection(halfCanvasX,halfCanvasY, qz, "red", 1, 1); 
@@ -208,7 +210,7 @@
     }
 
 
-
+    robotColor = 'grey';
     function drawRobot(initialX,initialY) {
         
         // Michaël...
@@ -279,6 +281,8 @@
 
         
         dawListPointOfInterest("standard",null,null,null,null);
+
+        carto.drawTrajectory (context, path);
         // circleWithDirection(ry, rx, 0, "blue", 3, 2); // Michael
         // Titi: Ajout du paramètre QZ pour l'orientation du robot et inversion des axes X,Y...
         // if (fakeRobubox == true) circleWithDirection(145, -10, qz, "blue", 3, 2);
@@ -286,16 +290,21 @@
         // circleWithDirection(rx, -ry, qz, "blue", 3, 2);// OK sur I3S/: Inversion XY chez Robosoft...
         // circleWithDirection(rx, ry, qz, "blue", 3, 2);// OK sur I3S
         // circleWithDirection(geoloc.X, geoloc.Y, geoloc.Z, "blue", 3, 2);// OK sur I3S/: Inversion XY chez Robosoft...
-        circleWithDirection(-rx, ry, qz, "blue", 1, 1); // OK sur I3S/: Inversion XY chez Robosoft...
+        circleWithDirection(-rx, ry, qz, robotColor, 1, 1); // OK sur I3S/: Inversion XY chez Robosoft...
+
+
+
+
+
+
+
 
         // Titi: RAZ du context pour éviter la surimpression d'image décalée... 
         context.restore();
     }
 
-
-    
-    //var singleton = true
-    function dawListPointOfInterest(mode, startArrowX, startArrowY,rx,ry) {
+   // Desine un point d'intérêt 
+   function dawListPointOfInterest(mode, startArrowX, startArrowY,rx,ry) {
         
 
         if (listPOI == null) return
@@ -322,31 +331,21 @@
             if (initialX) PoseX = PoseX-initialX;
             if (initialY) PoseY = PoseY-initialY;
 
-            if (mode == "standard") {
+            
+            // BuG du mode Traking
+            // Les POIs dérivent....
+            if (mode == "tracking") {
                 
-
-                    
-            } else if (mode == "tracking") {
-		        
                 PoseX = PoseX-(rx/2)-(startArrowX/3) // Ok 
                 PoseY = PoseY+startArrowY; // OK
             }
 
-
-            //console.log(poi.Name)
             circleWithDirection(-PoseX, PoseY, Theta, "orange", 1, 1); // OK sur I3S/: Inversion XY chez Robosoft...
-
 
             context.save();
     
             if (poiName){
                 
-
-                // drawTextBG(context, poiName, '5px verdana',-PoseX-5,PoseY+10,'black','orange');
-
-                // if (Theta >= 0 && Theta < ) 
-
-
                 drawTextBG(context, poiName, '5px verdana',-PoseX+3,PoseY-4,'black','orange');
 
             }
@@ -362,10 +361,10 @@
     }
 
 
-        /// expand with color, background etc.
+    // Ecrit un texte avec un background
+    // expand with color, background etc.
     // Inspiré de  http://jsfiddle.net/AbdiasSoftware/2JGHs/
     // Appel drawTextBG(ctx, txt, '32px arial', 30, 30);
-    // Ecrit un texte avec un background
     function drawTextBG(ctx, txt, font, x, y, fontColor, backGroundColor) {
         
         ctx.save();
@@ -383,14 +382,8 @@
         ctx.restore();
     } 
 
-
-
-
-
-
-
-
-     // Borrowed and adapted from : http://stackoverflow.com/questions/808826/draw-arrow-on-canvas-tag
+    // Dessine une flèche...
+    // Borrowed and adapted from : http://stackoverflow.com/questions/808826/draw-arrow-on-canvas-tag
     function drawArrow(ctx, fromx, fromy, tox, toy, arrowWidth, color, text) {
         
         
@@ -436,11 +429,6 @@
     }
 
 
-
-
-
-
-
     // draw a circle with a line     
     function circleWithDirection(x, y, theta, color, size, sizeStroke) {
         
@@ -474,26 +462,89 @@
     }
 
    
-    countSimulation = 0
-    sensSimulation = true;
-    incrementDegree = 0.01;
-    // function simulateRobotMove() {
-    exports.simulateRobotMove = function (){ 
-        // return
-        countSimulation += 1;
-        if (countSimulation == 200) {
-        	incrementDegree = -incrementDegree;
-            countSimulation = 0;
+    /**/
+
+
+
+
+    // Convertit la trajectoire Goto (un tableau de  positions XY) native fournie par le robot
+    // en coordonnées XY adapées au Canvas...
+    exports.convertPath = function () {
+
+        if (! path) return;
+
+        var drawRatio = mapSize.ratio;
+
+        for (position in path.Trajectory) {
+                
+           
+            var StartX = path.Trajectory[position].Start.X;
+            var StartY = path.Trajectory[position].Start.Y;
+            var EndX = path.Trajectory[position].End.X;
+            var EndY = path.Trajectory[position].End.Y;
+
+
+            StartX = -StartX / dataMap.Resolution
+            StartY = -StartY / dataMap.Resolution
+            EndX = -EndX / dataMap.Resolution
+            EndY = -EndY / dataMap.Resolution
+
+            // Inversion des axes d'orientation (Carte en horizontal)
+            // et application du ratio de resize
+            // Theta = - Theta;
+            StartY = StartY*drawRatio;
+            StartX = StartX*drawRatio;
+            EndY = EndY*drawRatio;
+            EndX = EndX*drawRatio;
+
+            // Décalage pour tenir compte du centrage de la carte
+            if (initialX) StartX = StartX-initialX;
+            if (initialY) StartY = StartY-initialY;
+
+            if (initialX) EndX = EndX-initialX;
+            if (initialY) EndY = EndY-initialY;
+
+
+            path.Trajectory[position].Start.X = -StartX;
+            path.Trajectory[position].Start.Y = StartY;
+            path.Trajectory[position].End.X = -EndX;
+            path.Trajectory[position].End.Y = EndY;
+
+
+            //console.log(poi.Name)
+            // ihm.drawLine(ctx, -PoseX, PoseY, -EndX, EndY, 'red');
+            // circleWithDirection(-PoseX, PoseY, Theta, "orange", 1, 1); // OK sur I3S/: Inversion XY chez Robosoft...
+
+
+
+
+        }  
+
+     }
+
+
+    // Dessine la trajectoire d'un Goto sur le Canvas
+    exports.drawTrajectory = function (ctx, path) {
+
+        if (! path) return;
+
+        for (position in path.Trajectory) {
+                
+                
+                var path_fromX = path.Trajectory[position].Start.X;
+                var path_fromY = path.Trajectory[position].Start.Y;
+                var path_toX = path.Trajectory[position].End.X;
+                var path_toY = path.Trajectory[position].End.Y;   
+        
+                ihm.drawLine(ctx, path_fromX, path_fromY, path_toX, path_toY, 'red');
+        
         }
-        /*// console.log (countSimulation)
-        robotInfo.Pose.Orientation += incrementDegree*2;
-        robotInfo.Pose.Position.X += incrementDegree;               
-        robotInfo.Pose.Position.Y += incrementDegree;
-        /**/
+
+
     }
 
 
-    // Titi: Intégration ZOOM et translations à la souris
+    // ZOOM et translations à la souris
     // Adapté de http://phrogz.net/tmp/canvas_zoom_to_cursor.html
       
     trackTransforms(context);  
@@ -636,42 +687,15 @@
     }
 
 
-    // Adss Titi: pour les commandes par boutons--------
+    // Commandes par boutons--------
 
    
-    /*// Add Titi: fonction passerelle
-    // pour mémoriser les différents context.translate
-    // Afin de faire un RAZ de la position de départ...
-    actualPosX = 0;
-    actualPosY = 0;
-    function contextTranslateMemorize(toX,toY) {
-        actualPosX += toX;
-        actualPosY += toY;
-    }
-    /**/
-
-
-
     exports.setZoom = function (clicks) {
         //var reset = false;
         //if (clicks == 0) zoom(-zoomLevel,reset);
         zoom(-clicks);
     }
 
-    /*
-    exports.resetPosition = function (){
-    //function resetPosition() {
-        context.translate(-actualPosX,-actualPosY);
-        actualPosX = 0;
-        actualPosY = 0;
-
-        //var toZeroX = 300-pt.X;
-        //var toZeroY = 80-pt.y;
-        //context.translate(toZeroX,toZeroY);
-        //reDraw();       
-
-    }
-    /**/
 
     // Interface de retour aux valeurs par défaut de la carte
     exports.resetCanvas = function (){ 

@@ -444,6 +444,12 @@ io.on('connection', function(socket, pseudo) {
     });
 
 
+    // Navigation: transmission au pilote 
+    // de la trajectoire calculée d'une commande Goto 
+    socket.on('gotoTrajectory', function(data) {
+        io.to(wsIdPilote).emit('gotoTrajectory', data);
+    });
+    
 
     // ----------------------------------------------------------------------------------
     // Partie 'signaling'. Ces messages transitent par websocket 

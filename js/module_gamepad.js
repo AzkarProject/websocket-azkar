@@ -72,7 +72,8 @@
 	var activeGamePad = false;
 	var connectedGamePad = false;
 	var btHommeMort = false;
-	var onMove = false;
+	// var onMove = false;
+	onMove = false; // onMove en variable globale pour être accédée depuis un autre script...
 	var onMessage = false;
 	// Dernier bouton activé
 	var lastButtonName = "";

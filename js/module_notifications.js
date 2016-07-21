@@ -109,6 +109,55 @@ exports.writeMessage = function (type,title,body,duration,notification,url){
 }
 
 
+
+// ----- Affichages Partie Web Sémanique -----------------------
+
+// Flag d'ouverture du bandeau de recommandations
+IS_illustrated = false;
+
+// define the messages types	
+var recommandationsMsg = ['media','text','links','miscellanous']; 	 
+
+exports.hideAllRecommandations = function() {
+		 // this array will store height for each
+		 var messagesHeights = new Array(); 
+	 
+		 for (i=0; i<recommandationsMsg.length; i++)
+		 {
+				  messagesHeights[i] = $('.' + recommandationsMsg[i]).outerHeight();
+				  //move element outside viewport
+				  $('.' + recommandationsMsg[i]).css('top', -messagesHeights[i]); 	  
+		 }
+}
+
+// Author Titi: 
+// inspiré de la fonction précédente
+// mais adaptée pour que la nofifiction persiste en dessous des autres
+// A déclencher quand on arrive sur un POI ou une Scène et a retirer quand on s'en éloigne
+// Servira a afficher des médias et des infos Web Sémantique concernant la Scène. 
+exports.writeWebSemanticResult = function (type,title,body,duration,notification,url){
+
+	titleMessage = '<h3>'+title+'</h3>';
+	var textMessage = titleMessage+'<p>'+body+'</p>';
+	$('.'+type).html(textMessage);
+	notifications.hideAllRecommandations();				  
+	$('.'+type).animate({top:"0"}, 500);
+	
+	
+	if (duration) {
+		//setTimeout (set_IS_Notify(false),duration+500)
+		setTimeout(function(){
+         $('.'+type).animate({top: -$('.'+type).outerHeight()}, 500);
+    	},duration);	
+	} else IS_illustrated = false;
+
+
+}
+
+
+
+
+
 //-----Notifications Desktop -------------------------------------------------------------------------
 // source: https://developer.mozilla.org/fr/docs/Web/API/notification
 

@@ -259,7 +259,6 @@ function trakingMode() {
 function gotoPOI() {
     list_POI_select = document.querySelector('select#list_POI');
     var valuePOI = list_POI_select.value;
-    // alert("gotoPOI: "+valuePOI)
 
    socket.emit('gotoPOI', {
         objUser: localObjUser,
@@ -267,6 +266,22 @@ function gotoPOI() {
     }); 
 }
 /**/
+
+
+function  stopTrajectory() {
+    var data = { command: 'onFullStop'}
+    navigation_interface.sendToRobot("", "", "Gamepad",data);
+    onMove = false;
+
+    if (fakeRobubox == true) {  
+        // var messageStop = tools.stringObjectDump(data, "STOP Trajectory")
+        // alert(messageStop);
+        robotInfo.State = 8;
+        path = null;
+    }
+
+}
+
 
 
 // ----------- Selecteurs d'affichage des flux videos locaux et distants ---------------------
