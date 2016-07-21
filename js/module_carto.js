@@ -471,6 +471,7 @@
     // en coordonnées XY adapées au Canvas...
     exports.convertPath = function () {
 
+        
         if (! path) return;
 
         var drawRatio = mapSize.ratio;
@@ -526,7 +527,10 @@
     // Dessine la trajectoire d'un Goto sur le Canvas
     exports.drawTrajectory = function (ctx, path) {
 
+        
+
         if (! path) return;
+        console.log ("carto.drawTrajectory()")
 
         for (position in path.Trajectory) {
                 
