@@ -159,19 +159,19 @@ function getFakeRobotInfo() {
     // var robotInfo = {"Pose":{"Orientation":3.15,"Position":{"X":-2.95,"Y":-2.3,"Z":0}},"State":8,"Timestamp":2916720}
 
 
-    // Simu map MGG positon départ XY - OK
+    // Simu map MGG position départ XY - OK
     //var robotInfo = {"Pose":{"Orientation":0,"Position":{"X":0,"Y":0,"Z":0}},"State":8,"Timestamp":2916720}
 
     // Simu map MGG position Tranchées - OK
     // var robotInfo = {"Pose":{"Orientation":5.5,"Position":{"X":7,"Y":0,"Z":0}},"State":8,"Timestamp":2916720}
 
-    // Simu map MGG positon Tranchée Allemande
+    // Simu map MGG position Tranchée Allemande
     //var robotInfo = {"Pose":{"Orientation":4.8,"Position":{"X":13,"Y":1,"Z":0}},"State":8,"Timestamp":2916720}
     
-    // Simu map MGG positon No Man's Land
+    // Simu map MGG position No Man's Land
     //var robotInfo = {"Pose":{"Orientation":4.8,"Position":{"X":13,"Y":1,"Z":0}},"State":8,"Timestamp":2916720}
 
-    // Simu map MGG positon Tranchée Française
+    // Simu map MGG position Tranchée Française
     //var robotInfo = {"Pose":{"Orientation":4.8,"Position":{"X":13,"Y":1,"Z":0}},"State":8,"Timestamp":2916720}
 
 

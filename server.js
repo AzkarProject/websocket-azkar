@@ -52,11 +52,11 @@ var appSettings = require('./js/common_app_settings'); // paramètres de configu
 var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
 var ObjectId = require('mongodb').ObjectID;
-// var url = 'mongodb://localhost:27017/test';
 
+// var url = 'mongodb://localhost:27017/test';
 //var models = require('./js/common_modele.js');
-var dataRobot = require('./js/common_dataRobot.js');
-var persistance = require('./js/common_persistance.js');
+//var dataRobot = require('./js/common_dataRobot.js');
+//var persistance = require('./js/common_persistance.js');
 
 
 

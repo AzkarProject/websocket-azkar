@@ -147,7 +147,7 @@
             var msg = dateR+' Receive Trajectory path: '+textStatus;
 
             console.log(msg)
-            console.log(data)
+            // console.log(data)
         
         });
 
@@ -166,28 +166,12 @@
             else if (data.gotoState.Status == 4) textStatus = "Rotating";
             else if (data.gotoState.Status == 5) textStatus = "Error";
             
-            var dateR = tools.humanDateER('R');
-            var msg = dateR+' Trajectory Status: '+textStatus;
+            //var dateR = tools.humanDateER('R');
+            //var msg = dateR+' Trajectory Status: '+textStatus;
 
             if (fakeRobubox == false) {
                 ihm.displayTrajectoryStatus(textStatus)
             }
-
-
-            // Pour logs et débuggage
-            // ihm.insertWsMessage(null,msg);
-            // console.log(msg)
-            
-
-            // Marche pas >>> Fonctionne une première foi puis plus rien...
-            //$('#robotStatusMessage').replaceWith(" <span id ='connect-notice'>"+textStatus+"</span>");
-            
-
-            // displayTrajectoryStatus(textStatus);
-
-            // Todo: Traiter le résultat:
-            // 1 Affichage du statut
-            // 2 Affichage de la trajectoire
         
         });
 
@@ -321,12 +305,10 @@
    
 
         //console.log ("@ getNearestPoiName()")
-        if (type == "pilote-appelant") {
-           
-        }
+        //if (type == "pilote-appelant") {}
 
 
-        var precisionXY = 0.3; 
+        var precisionXY = 0.4; 
         var precisionTheta = 0.7; // 0.7 pour 70%
         precisionTheta = 360*precisionTheta; //Si 360° = 6.25 Alors 70° = 360/70
         precisionTheta = 6.25 / precisionTheta;

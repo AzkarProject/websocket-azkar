@@ -25,12 +25,13 @@ form {margin-bottom: 9px;}
   /*background-image: url("images/Marne1.jpg");/**/
   
   /*background-image: url("images/marne01.jpg");/**/
-  background-image: url("images/tranchees.jpg");/**/
+  /*background-image: url("images/tranchees.jpg");/**/
   /*background-image: url("images/Tranchee1.jpg");*/
   /*background: no-repeat;/**/
   background-repeat:no-repeat;
   background-size: 100%;
 }
+
 
 #robotSettings input {width:75%} /* barre de volume robot */
 .ihmRobot #selectionMicros select {width:100%}
@@ -482,9 +483,7 @@ http://red-team-design.com/cool-notification-messages-with-css3-jquery/
 
 
 
-
-
-     
+  
 .warning{
      background-color: #eaaf51;
      border-color: #d99a36;
