@@ -1,6 +1,9 @@
 
-
 # AZKAR PROJECT 
+
+To download this branch
+
+    git clone -b 1to1-anotherworld --single-branch https://github.com/AzkarProject/websocket-azkar.git
 
 Copyright © CNRS (Laboratoire I3S) / université de Nice
 Contributeurs: Thierry Bergeron & Michel Buffa, 2015-2016
