@@ -73,7 +73,7 @@
 	// websocket: Affiche message ds le tchat
 	exports.insertWsMessage = function (objUser, message, origine) {
 	   
-	    console.log(objUser);
+	    //console.log(objUser);
 	    var text;
 	    if (objUser){
 	      
@@ -353,6 +353,30 @@
 	}
 
 
+	//function drawLine (ctx, fromX, fromY, toX, toY) {
+	exports.drawLine = function (ctx, fromX, fromY, toX, toY, color) {
+
+		// console.log ("@ drawLine() ")
+		
+		ctx.save();
+		ctx.beginPath();
+		ctx.strokeStyle = color;
+ 		ctx.moveTo(fromX,fromY);
+ 		ctx.lineTo(toX,toY);
+ 		ctx.stroke();
+ 		ctx.restore(); 
+
+	}
+
+	
+	// Affichage du statut de trajectoire.
+	exports.displayTrajectoryStatus = function (textStatus) {
+        $('#robotStatusMessage').replaceWith(" <span id='robotStatusMessage'>"+textStatus+"</span>");
+
+    }
+	
+
+
 
 
 	// Gamepad - Affichage du module FullAxes (param 'jauges' ou 'joystick' ou 'none')
@@ -567,6 +591,8 @@
 	}
 
 
+	
+	
  
 
 })(typeof exports === 'undefined'? this['ihm']={}: exports);

@@ -13,6 +13,12 @@ utiliser, modifier et/ou redistribuer ce programme sous les conditions
 de la licence CeCILL-C telle que diffusée par le CEA, le CNRS et l'INRIA 
 sur le site "http://www.cecill.info".
 
+Révision 1.5.2:
+- Abandon rétrocompatibilité systême embarqué "Robubox"
+- Remplacement par le système embarqué "KomNav/Mobiserv" 
+- Visualisation des "Poins d'intérêts" sur la cartographie
+- Implémentation de la navigation par "Points d'intérêts" 
+
 Révision 1.5.1:
 - Modification de l'architecture des fichiers de configuration
 - Implémentation d'un nouvel affichage de la vitesse et de la direction  

@@ -49,7 +49,7 @@
 
 	// Numéro de version
 	exports.appVersion = function(){
-	    return '1.5.1';
+	    return '1.5.2';
 	};
 
 	// Crédits
@@ -97,9 +97,10 @@
 	// Chemin et nom de l'image de cartographie à utiliser
 	// NB: Penser à placer la carte active exportée en png par la robubox ds le repertoire image de l'applicaion.
 	exports.getMapSource = function() {
-    	var mapSource = '/images/mapRobosoft.png'; // Carte locaux Robosoft
+    	//var mapSource = '/images/mapRobosoft.png'; // Carte locaux Robosoft
 		//var mapSource = '/images/mapLaboI3S.png'; // Carte I3S V2
 		//var mapSource = '/images/labo3.png'; // Carte I3S V3
+		var mapSource = '/images/labo261.png'; // Carte I3S Via Dashboard Mobiserv
 		return mapSource
 	}
 

@@ -33,16 +33,38 @@
 *
 */
 
+
+// Effacer la console à chaque lancement...
+console.reset = function () {
+  return process.stdout.write('\033c');
+}
+
+console.reset()
+
+
+
 // ------------------------ Elements communs client/serveur
 var tools = require('./js/common_tools'); // méthodes génériques
 var models = require('./js/common_models'); // objets
 var appSettings = require('./js/common_app_settings'); // paramètres de configuration de l'application
+
+// Test implémentation mongoDB
+var MongoClient = require('mongodb').MongoClient;
+var assert = require('assert');
+var ObjectId = require('mongodb').ObjectID;
+
+// var url = 'mongodb://localhost:27017/test';
+//var models = require('./js/common_modele.js');
+//var dataRobot = require('./js/common_dataRobot.js');
+//var persistance = require('./js/common_persistance.js');
+
 
 
 // ------ Variables d'environnement & paramètrages serveurs ------------------
 // Récupération du Nom de la machine 
 var os = require("os");
 hostName = os.hostname();
+console.log(hostName);
 
 // Configuration de l'Ip et du port de l'application
 ipaddress = appSettings.appServerIp();
@@ -410,9 +432,25 @@ io.on('connection', function(socket, pseudo) {
     });
     
 
+    // Navigation: envoi d'une commande Goto au robot
+    socket.on('gotoPOI', function(data) {
+    	console.log(">>>>>>GOTOPOI")
+        io.to(wsIdRobot).emit('gotoPOI', data);
+    });
+
+    // Navigation: transmission au pilote 
+    // du Statut (et trajectoire) d'une commande Goto 
+    socket.on('gotoStateReturn', function(data) {
+        io.to(wsIdPilote).emit('gotoStateReturn', data);
+    });
 
 
-
+    // Navigation: transmission au pilote 
+    // de la trajectoire calculée d'une commande Goto 
+    socket.on('gotoTrajectory', function(data) {
+        io.to(wsIdPilote).emit('gotoTrajectory', data);
+    });
+    
 
     // ----------------------------------------------------------------------------------
     // Partie 'signaling'. Ces messages transitent par websocket 
@@ -558,8 +596,25 @@ io.on('connection', function(socket, pseudo) {
        io.to(wsIdPilote).emit('infoToPilote', data);
     });
 
+
+    socket.on('mongoDB', function(data) {
+        var consoleTxt = tools.humanDateER('R') + " @ mongoDB >>>>"+data.command; 
+        console.log(consoleTxt); 
+        console.log(data);
+            
+        // handlers['getListCollections'](callback, text);
+        handlers[data.command](function (result){
+                data.result = result;
+                io.to(wsIdPilote).emit('mongoDB', data);
+        },data.parameters);
+
+    });
+
+
+
+
 });
-/**/
+
 
 // ------------ fonctions Diverses ------------
 
@@ -570,3 +625,247 @@ function onSocketConnected(socket) {
 }
 
 
+
+
+
+
+// --------------------- Persistance - Passerelles MongoDB
+
+var handlers = {
+    getCountDatabases: getCountDatabases,
+    getListDatabases: getListDatabases,
+    getListCollections: getListCollections,
+    getCollectionDocs: getCollectionDocs,
+    findOneDoc: findOneDoc,
+    findManyDocs: findManyDocs,
+    createCollection:createCollection,
+    dropCollection:dropCollection,
+    renameCollection:renameCollection,
+    removeAllDocs:removeAllDocs,
+    insertOnedDoc:insertOnedDoc,
+    insertManyDocs:insertManyDocs,
+    deleteOnedDoc:deleteOnedDoc,
+    deleteManyDocs:deleteManyDocs,
+    updateOneDoc:updateOneDoc,
+    replaceOneDoc:replaceOneDoc,
+}
+
+
+
+// Récupération du compteur de bases dans une promize
+function getCountDatabases (callback, parameters) {
+    persistance.getCountDatabases(function(result) {
+        callback(result);
+    }, function(error) {
+            if (error == null) error = "erreur getCountDatabases()";
+            console.log(error)
+    });
+}
+
+
+
+// La liste des databases du serveur mongoDb
+function getListDatabases (callback, parameters) {
+    persistance.getListDatabases(function(result) {
+        callback(result);
+    }, function(error) {
+        if (error == null) error = "erreur getListDatabases()";
+        console.log(error)
+    });
+}
+
+
+// Toutes les collections de la base de donnée courante
+function getListCollections(callback, parameters) {
+    persistance.getListCollections(function(result) {
+        callback(result)
+    }, function(error) {
+        if (error == null) error = "erreur getListCollections()";
+        console.log(error)
+    });
+}
+
+
+// Remonter tous les documents d'une collection
+// function getCollectionDocs(collection, callback) {
+function getCollectionDocs(callback,parameters) {    
+    //console.log( "> Test getCollectionDocs("+collection+")");
+    var collection = parameters.collection;
+    persistance.getCollectionDocs(collection,function(result) {
+        callback(result);
+    }, function(error) {
+        if (error == null) error = "erreur getCollectionDocs("+collection+")";
+        console.log(error)
+    });
+}
+
+// Remonter tous les documents d'une collection
+// function findOneDoc(collection, query, callback) {
+function findOneDoc(callback, parameters) {
+    var collection = parameters.collection;
+    var query = parameters.query;
+    //console.log( "> Test getOneDoc("+collection+")");
+    persistance.findOneDoc(collection, query, function(result) {
+        callback(result);
+    }, function(error) {
+        if (error == null) error = "erreur findOneDoc("+collection+")";
+        console.log(error)
+    });
+}
+
+// function findManyDocs(collection, query, callback) {
+function findManyDocs(callback, parameters) {
+    var collection = parameters.collection;
+    var query = parameters.query;
+    persistance.findManyDocs(collection, query, function(result) {
+        callback(result);
+    }, function(error) {
+        if (error == null) error = "erreur findManyDocs("+collection+")";
+        console.log(error)
+    });
+}
+
+
+// Créer une collection
+//function createCollection(collection, callback) {
+function createCollection(callback, parameters) {
+    var collection = parameters.collection;
+    persistance.createCollection(collection,function(result) {
+        callback (result)       
+    }, function(error) {
+        if (error == null) error = "erreur createCollection("+collection+")";
+        console.log(error)
+    });
+}
+
+
+// Supprimer une collection (et tout son contenu)
+// function dropCollection(collection,callback) {
+function dropCollection(callback, parameters) {
+    var collection = parameters.collection;
+    persistance.dropCollection(collection,function(result) {
+        callback (result)
+    }, function(error) {
+        if (error == null) error = "erreur dropCollection("+collection+")";
+        console.log(error)
+    });
+}
+
+
+// Renommer une collection (sans toucher a son contenu)
+// function renameCollection(oldNameCollection,newNameCollection,callback) {
+function renameCollection(callback, parameters) {  
+    var oldNameCollection = parameters.oldNameCollection;
+    var newNameCollection = parameters.newNameCollection;
+    persistance.renameCollection(oldNameCollection,newNameCollection,function(result) {
+        callback (result)
+    }, function(error) {
+        if (error == null) error = "erreur renameCollection("+collection+")";
+        console.log(error)
+    });
+}
+
+// Vide tous les documents d'une collection sans la supprimer elle-même
+//function removeAllDocs(collection, callback) {
+function removeAllDocs(callback, parameters) {
+    var collection = parameters.collection;
+    persistance.removeAllDocs(collection,function(result) {
+        // var removeResult = result;
+        callback (result);
+        //logTestValues ("Result of removeAllDocs("+collection+")");
+    }, function(error) {
+        if (error == null) error = "erreur removeAllDocs("+collection+")";
+        console.log(error)
+    });
+}
+
+// OK
+// function insertOnedDoc(collection,doc,callback) {
+function insertOnedDoc(callback, parameters) {
+    var collection = parameters.collection;
+    var doc = parameters.doc;
+    persistance.insertOneDoc(collection,doc,function(result) {
+        callback (result)
+    }, function(error) {
+        if (error == null) error = "erreur insertOnedDoc("+collection+")";
+        console.log(error)
+    });
+}
+
+
+
+// OK
+//function insertManyDocs(collection,arrayDocs,callback) {
+function insertManyDocs(callback, parameters) {
+    var collection = parameters.collection;
+    var arrayDocs = parameters.arrayDocs;
+    persistance.insertManyDocs(collection,arrayDocs,function(result) {
+        callback (result)
+    }, function(error) {
+        if (error == null) error = "erreur insertManyDocs("+collection+")";
+        console.log(error)
+    });
+}
+
+
+//function deleteOnedDoc(collection,doc,callback) {
+function deleteOnedDoc(callback, parameters) {
+    var collection = parameters.collection;
+    var doc = parameters.doc;
+    persistance.deleteOnedDoc(collection,doc,function(result) {
+        //console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+        //console.log(result)
+        callback (result)
+    }, function(error) {
+        if (error == null) error = "erreur insertOnedDoc("+collection+")";
+        console.log(error)
+    });
+}
+
+
+// function deleteManyDocs(collection, query, callback) {
+function deleteManyDocs(callback, parameters) {
+    var collection = parameters.collection;
+    var query = parameters.query;
+    persistance.deleteManyDocs(collection, query, function(result) {
+        callback(result);
+    }, function(error) {
+        if (error == null) error = "erreur deleteManyDocs("+collection+")";
+        console.log(error)
+    });
+}
+
+
+//function updateOneDoc(collection, query1, query2, callback) {
+function updateOneDoc(callback, parameters) {
+    var collection = parameters.collection;
+    var query1 = parameters.query1;
+    var query2 = parameters.query2;
+    persistance.updateOneDoc(collection, query1, query2, function(result) {
+        //console.log("OK !!! ------------------------------")
+        //console.log(result)
+        callback(result);
+    }, function(error) {
+        if (error == null) error = "erreur updateOneDoc("+collection+")";
+        console.log(error)
+    });
+}
+
+
+//function replaceOneDoc(collection,docID,newDoc, callback) {
+function replaceOneDoc(callback, parameters) {
+    var collection = parameters.collection;
+    var docID = parameters.docID;
+    var newDoc = parameters.newDoc;
+    persistance.replaceOneDoc(collection, docID, newDoc, function(result) {
+        //console.log("OK !!! ------------------------------")
+        //console.log(result)
+        callback(result);
+    }, function(error) {
+        if (error == null) error = "erreur updateOneDoc("+collection+")";
+        console.log(error)
+    });
+}
+
+
+// Fonctions diverses ----------------------

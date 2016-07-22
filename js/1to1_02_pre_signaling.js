@@ -52,8 +52,8 @@ lastMoveTimeStamp = 0;
 
 
 // Settings Default
-navSys = 'Robubox';
-navCh = 'webSocket';
+navSys = 'KomNAV'; // "Robubox" ou "KomNAV" / 
+navCh = 'webSocket'; // "webSocket" ou "webRTC" /
 piloteLocalView = 'show';
 robotLocalView = 'show';
 piloteRemoteView = 'show';
@@ -90,6 +90,7 @@ if (type == "pilote-appelant") {
     robot_camdef_select = document.querySelector('select#robot_camdef_select');
     pilot_camdef_select = document.querySelector('select#pilot_camdef_select');
 }
+
 
 // (pilote-Appelant) > Activation/Désativation préalable 
 // Du formulaire de sélection des devices locaux et de demande de connexion

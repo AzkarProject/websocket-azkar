@@ -65,13 +65,29 @@
 
 			<div  class="floatLeft doubleQuarterContainerBox">
 				<div id="remoteCanvasArea" class="insideFlex robot shadowBlack">
-		            <strong> Navigation</strong>
-		            <hr/>
-					<canvas id="myCanvas" width="500" height="140" style=""></canvas>
-	        	</div>
-        	</div>
+		            
+					<div>
+		            	<strong> Navigation</strong>
+		            	<hr/>
+					
+					
+						<div style="float:left; width:200px">
+						  	<span id="pointOfinterestTitle"> Points of interest</span>							
+							<br/>
 
-			
+							<h3><span id="robotStatusMessage"><span></h3>
+
+
+						</div>
+						
+						<div style="height:135px;">
+							<canvas id="myCanvas" width="400" height="130" style="border:1px solid #ccc;"></canvas>
+						</div>
+					
+					</div>
+	        	</div>
+        	
+        	</div>
 
 
 			<div  class="floatLeft oneQuarterContainerBox">
@@ -172,9 +188,6 @@
 		<script src="/js/common_tools.js"></script>
 		<script src="/js/common_models.js"></script>
         <script src="/js/common_app_settings.js"></script>
-        <!--
-        <script src="/js/cnrs/common_app_cnrs.js"></script> 
-        -->
         <script src="/js/branch_settings/common_app_branch_settings.js"></script> 
 
 	    <script src='/js/1to1_01_websocket.js'></script>
@@ -183,9 +196,13 @@
 		<script src='/js/module_fake_robubox.js'></script>
         <script src='/js/module_navigation_interface.js'></script>
         <script src='/js/module_notifications.js'></script>
+		<!--
+        <script src='/js/module_forms.js'></script>
+        -->
         <script src='/js/module_komcom.js'></script>
 		<script src='/js/module_komremote.js'></script>
 		<script src='/js/module_carto.js'></script>
+		<script src='/js/module_navigation.js'></script>
 		<script src='/js/module_userconnection.js'></script>
 		<script src="/js/module_logs.js"></script>
 

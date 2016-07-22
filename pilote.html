@@ -53,7 +53,9 @@
                         <select id="pilot_camdef_select"></select>
                 </span>
                 <hr/>
+                <div id="laboInteraction" class=""></div>
             </div>
+
         </section>
 
 
@@ -242,9 +244,33 @@
                             
                             <hr/>
 
-
+                            <!--
                             <canvas id="myCanvas" width="600" height="160" style="background-color:#000"></canvas>    
-                
+                            -->
+
+                            <div style="float:left; width:200px">
+                                <span id="pointOfinterestTitle"> Points of interest</span>
+                                <div class="select">
+                                    
+                                    <button id="goto_POI" onclick="gotoPOI()">go</button>
+                                    <select id="list_POI">
+                                    </select>
+                                
+                                    
+                                </div>
+                                
+                                <br/>
+                                <button id="stop_Trajectory" onclick="stopTrajectory()">STOP</button>
+                                <h4><span id="robotStatusMessage"><span></h4>
+                            
+
+                            </div>
+                            <br/>
+                            <div style="height:140px;">
+                                <canvas id="myCanvas" width="300" height="130" 
+                                        style="border:1px solid #ccc;background-color:#000">
+                                </canvas>
+                            </div>
 
                         </div>
 
@@ -274,6 +300,9 @@
 
         <section id="TopNotification">
                    
+            <div id='recommandationMessage' class="miscelleanous recommandations">
+            </div>
+
             <div id='infoMessage' class="info message">
             </div>
 
@@ -288,6 +317,12 @@
 
             <div id='standardMessage' class="standard message">
             </div>
+        
+
+
+
+
+
         </section>
 
 
@@ -314,18 +349,39 @@
     <script src="/js/common_models.js"></script>
     <script src="/js/common_app_settings.js"></script>
     <script src="/js/branch_settings/common_app_branch_settings.js"></script>      
-      
+    
+
+<script>
+    
+/*
+var modele = require('./js/modele.js');
+var dataRobot = require('./js/dataRobot.js');
+var tools = require('./js/common_tools.js');
+var persistance = require('./js/persistance.js');
+/**/
+
+
+
+
+
+
+
+
+</script>
+
     <script src='/js/1to1_01_websocket.js'></script>
     <script src='/js/1to1_02_pre_signaling.js'></script>
     <script src='/js/1to1_03_signaling.js'></script>
     <script src='/js/1to1_04_post_signaling.js'></script>
 
+    <script src='/js/module_managePois.js'></script>
     <script src='/js/module_userconnection.js'></script>
     <script src='/js/module_navigation_interface.js'></script>
     <script src='/js/module_ihm.js'></script>
     <script src='/js/module_notifications.js'></script>
     <script src='/js/module_fake_robubox.js'></script>
     <script src='/js/module_carto.js'></script>
+    <script src='/js/module_navigation.js'></script>
     <script src='/js/module_komremote.js'></script>
     <script src='/js/module_forms.js'></script>
     <script src='/js/module_gamepad.js'></script>

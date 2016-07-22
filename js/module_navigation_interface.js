@@ -69,6 +69,8 @@ exports.sendToRobot = function (rpcMethodName, values,controlDevice, driveComman
 };
 
 
+Flag_DEBUG = false;
+
 exports.sendToPilote = function (typeData, data){ 
 
         
@@ -98,8 +100,20 @@ exports.sendToPilote = function (typeData, data){
             socket.emit('navigation', {
                         command: typeData,
                         dataMap: data
+                    
                     });
-         
+
+        } else if (typeData == "map_parameters2") {
+            
+            // console.log("@ sendToPilote >>> map_parameters2");
+            socket.emit('navigation', {
+                        command: typeData,
+                        dataMap: data.dataMap,
+                        listPOI: data.listPOI
+                    
+                    });
+
+         /**/
          } else if (typeData == "robot_localization") {
             
             // console.log("@ sendToPilote >>> robot_localization");

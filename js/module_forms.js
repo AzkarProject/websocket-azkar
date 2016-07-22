@@ -139,10 +139,18 @@ selectSystemKomNAV = document.querySelector('input#KomNAV');
 
 // Remise a zero (R.A.Z) du selecteur de systeme embarqué
 function raZNavSystem() {
+    
     console.log("@ raZNavSystem()")
-    selectSystemKomNAV.checked = false;
-    selectSystemRobubox.checked = true;
-    parameters.navSys = "Robubox";
+    console.log("navSys =" + navSys)
+    if (navSys == 'KomNAV') {
+        selectSystemKomNAV.checked = true;
+        selectSystemRobubox.checked = false;
+        parameters.navSys = "KomNAV";
+    } else if (navSys == 'Robubox') {
+        selectSystemKomNAV.checked = false;
+        selectSystemRobubox.checked = true;
+        parameters.navSys = "Robubox";
+    }
 }
 // Au chargement du script...
 raZNavSystem();
@@ -153,7 +161,6 @@ raZNavSystem();
 setNavSystem = function (navSysSet) {    
     parameters.navSys = navSysSet;
     // On prévient le robot qu'on bascule entre Robubox ou KomNav
-    // console.log (parameters.navSys);
     socket.emit('changeNavSystem', {
         objUser: localObjUser,
         navSystem: navSysSet
@@ -169,13 +176,30 @@ selectChannelWebSocket = document.querySelector('input#webSocket');
 selectChannelWebRTC = document.querySelector('input#webRTC');
 
 // remise a zero (R.A.Z) selecteur canal de commande WebRTC/webSocket
-// avec la valeur par défaut webSocket
+// par défaut webSocket (si connexion WebRTC pas encore établie)
 function raZNavChannel() {
 	console.log("@ raZNavChannel()")
+    
     selectChannelWebRTC.disabled = true;
 	selectChannelWebRTC.checked = false;
 	selectChannelWebSocket.checked = true;
 	parameters.navCh = "webSocket";
+    /**/
+
+    /*// navCh = 'webSocket'; // "webSocket" ou "webRTC" /
+    if (navCh == 'webSocket') {
+        selectChannelWebRTC.disabled = true;
+        selectChannelWebRTC.checked = false;
+        selectChannelWebSocket.checked = true;
+        parameters.navCh = "webSocket";
+    } else if (navCh == 'webRTC') {
+        selectChannelWebRTC.disabled = true;
+        selectChannelWebRTC.checked = true;
+        selectChannelWebSocket.checked = false;
+        parameters.navCh = "webSocket";
+    }
+    /**/
+
 }
 // Au chargement du script...
 raZNavChannel();
@@ -232,8 +256,36 @@ function trakingMode() {
 
 
 
+function gotoPOI() {
+    list_POI_select = document.querySelector('select#list_POI');
+    var valuePOI = list_POI_select.value;
+
+   socket.emit('gotoPOI', {
+        objUser: localObjUser,
+        poi: valuePOI
+    }); 
+}
+/**/
+
+
+function  stopTrajectory() {
+    var data = { command: 'onFullStop'}
+    navigation_interface.sendToRobot("", "", "Gamepad",data);
+    onMove = false;
+
+    if (fakeRobubox == true) {  
+        // var messageStop = tools.stringObjectDump(data, "STOP Trajectory")
+        // alert(messageStop);
+        robotInfo.State = 8;
+        path = null;
+    }
+
+}
+
+
+
 // ----------- Selecteurs d'affichage des flux videos locaux et distants ---------------------
-// > Permet d'économiser sue les postes client des ressources processeurs liées a l'affichage.
+// > Permet d'économiser sur les postes client des ressources processeurs liées a l'affichage.
 
 
 function setPiloteLocalView(viewSetting) {

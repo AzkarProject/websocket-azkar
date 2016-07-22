@@ -52,9 +52,15 @@ $(document).ready(function(){
 		 
 		 // Initially, hide them all
 		 notifications.hideAllMessages();
+		 notifications.hideAllRecommandations();
 
 		 // When message is clicked, hide it
 		 $('.message').click(function(){			  
+				  $(this).animate({top: -$(this).outerHeight()}, 500);
+		  });
+
+		 // When recommandation is clicked, hide it
+		 $('.recommandations').click(function(){			  
 				  $(this).animate({top: -$(this).outerHeight()}, 500);
 		  });		 
 		 
@@ -107,6 +113,58 @@ exports.writeMessage = function (type,title,body,duration,notification,url){
 	if (notification) notifications.spawnNotification(title,body,duration)
 
 }
+
+
+
+// ----- Affichages Partie Web Sémanique -----------------------
+
+// Flag d'ouverture du bandeau de recommandations
+IS_illustrated = false;
+
+// define the messages types	
+var recommandationsMsg = ['miscelleanous','media','text','web','link']; 	 
+
+exports.hideAllRecommandations = function() {
+		 // this array will store height for each
+		 // if (IS_illustrated == false) return;
+		 var messagesHeights = new Array(); 
+	 
+		 for (i=0; i<recommandationsMsg.length; i++)
+		 {
+				  messagesHeights[i] = $('.' + recommandationsMsg[i]).outerHeight();
+				  //move element outside viewport
+				  $('.' + recommandationsMsg[i]).css('top', -messagesHeights[i]); 	  
+		 }
+		 IS_illustrated = false;
+}
+
+// Author Titi: 
+// inspiré de la fonction précédente
+// mais adaptée pour que la nofifiction persiste en dessous des autres
+// A déclencher quand on arrive sur un POI ou une Scène et a retirer quand on s'en éloigne
+// Servira a afficher des médias et des infos Web Sémantique concernant la Scène. 
+exports.writeRecommandations = function (type,title,body,duration){
+	if (IS_illustrated == true) return
+	IS_illustrated = true
+	titleMessage = '<h3>'+title+'</h3>';
+	var textMessage = titleMessage+'<p>'+body+'</p>';
+	$('.'+type).html(textMessage);
+	//if (IS_illustrated != true) notifications.hideAllRecommandations();				  
+	$('.'+type).animate({top:"0"}, 500);
+	
+	
+	if (duration) {
+		//setTimeout (set_IS_Notify(false),duration+500)
+		setTimeout(function(){
+         $('.'+type).animate({top: -$('.'+type).outerHeight()}, 500);
+    	},duration);	
+	} else IS_illustrated = false;
+
+
+}
+
+
+
 
 
 //-----Notifications Desktop -------------------------------------------------------------------------
