@@ -64,6 +64,7 @@ var ObjectId = require('mongodb').ObjectID;
 // Récupération du Nom de la machine 
 var os = require("os");
 hostName = os.hostname();
+console.log(hostName);
 
 // Configuration de l'Ip et du port de l'application
 ipaddress = appSettings.appServerIp();

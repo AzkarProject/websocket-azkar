@@ -369,7 +369,6 @@
                 nearestPoiName = listPOI[poi].Name;
                 matched = true;
                 robotColor = 'green';
-                
                 break;
                 //console.log ( " Robot Position Name "+ nearestPoiName);
             } else nearestPoiName = null
@@ -415,6 +414,54 @@
     }
 
 
+
+
+    // boucle de contrôle de changement de point d'intérêt
+    // pour déclencher la récupération de ressources Web sémantique...
+    // Ne s'éxecute que coté Client...
+    if (type == "pilote-appelant") {
+        webSemanticRecommandations();
+    }
+
+    function webSemanticRecommandations() {
+
+        // if (fakeRobubox != true) return
+            
+        setInterval(function() {
+          if (robotColor == 'green')  {
+
+                // déclencer les traitements idoïnes en fonction du nearestPoiName
+                // Algo: boucler sur listPOI
+                var sceneName = null;
+                var title = null;
+                var htmlContent = ""; 
+                for (poi in listPOI) {
+                    
+                    if (nearestPoiName == listPOI[poi].Name )  {
+                        
+                        if (listPOI[poi].label) { 
+                            sceneName = listPOI[poi].label
+                            title = "Ressources recommandées pour la scène '"+sceneName+"'";
+                            htmlContent = "<div><p>Blabla quelconque...</p></div>";
+                        } else {
+                            sceneName = nearestPoiName;
+                            title = "Nearest POI: '"+sceneName+"'";
+                        }
+                    }
+                
+                }
+
+              
+               notifications.writeRecommandations ("miscelleanous",title,htmlContent)
+          
+          } else if (robotColor == 'blue'){
+
+               notifications.hideAllRecommandations()
+          }
+        }, 1000);
+ 
+
+    }
 
 
 

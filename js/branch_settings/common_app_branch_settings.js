@@ -73,6 +73,7 @@
 		if (hostName == "azcary") ipaddress = "192.168.173.1"; // Ip du réseau virtuel AdHoc
 		else if (hostName == "thaby") ipaddress = "192.168.173.1"; // Tablette HP sur Robulab: ip du réseau virtuel AdHoc
 		else if (hostName == "amini") ipaddress = "192.168.173.1"; // Machine Anthony
+		else if (hostName == "Az_HaTiM") ipaddress = "localhost"; // Machine Hatim
 
 		// Machine Windows - Domicile
 		else if (hostName == "lapto_Asus") ipaddress = "0.0.0.0"; // Pc perso - (IP interne, Livebox domicile)
