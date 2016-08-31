@@ -134,7 +134,7 @@
             path = data.path;
             carto.convertPath();
 
-            /*
+           /*
             if (data.gotoState.Status == 0) textStatus = "Waiting";
             else if (data.gotoState.Status == 1) textStatus = "Following";
             else if (data.gotoState.Status == 2) textStatus = "Aiming";
@@ -301,6 +301,7 @@
     
 
     var oldPoiTextMatch = null;
+    
     exports.getNearestPoiName = function() {
    
 
@@ -313,8 +314,6 @@
         precisionTheta = 360*precisionTheta; //Si 360° = 6.25 Alors 70° = 360/70
         precisionTheta = 6.25 / precisionTheta;
 
-        
-        // console.log("@ getNearestPoiName()")
 
         var posX = false;
         var posY = false;
@@ -323,55 +322,66 @@
         var matched = false;
         
         var oldNearestPoiName = nearestPoiName;
+
+
+        
         for (poi in listPOI) {
             
             // todo: Faire les conversions pour tenir compte des offsets négatifs en X et en Y...
             // Si les X et Y sont tous 2 positifs (cas pilier A,B,Armoire et Bureau415 ) >> OK
             if ( listPOI[poi].Pose.X >= 0 && listPOI[poi].Pose.Y >= 0) {
-                    
+
+                   
                     if ( robotInfo.Pose.Position.X >= (listPOI[poi].Pose.X - precisionXY) && robotInfo.Pose.Position.X <= (listPOI[poi].Pose.X + precisionXY) ) posX = true;
             
                     if ( robotInfo.Pose.Position.Y >= (listPOI[poi].Pose.Y - precisionXY) && robotInfo.Pose.Position.Y <= (listPOI[poi].Pose.Y + precisionXY) ) posY = true;
 
+                    
 
             
             } 
+            
+            // Si le X est négatif et le Y positif (cas pilier C et D ) >> BUG
+            else if ( listPOI[poi].Pose.X < 0 && listPOI[poi].Pose.Y >= 0) {
+
+                    if ( robotInfo.Pose.Position.X <= (listPOI[poi].Pose.X + precisionXY) && robotInfo.Pose.Position.X >= (listPOI[poi].Pose.X - precisionXY) ) posX = true;
+            
+                    if ( robotInfo.Pose.Position.Y >= (listPOI[poi].Pose.Y - precisionXY) && robotInfo.Pose.Position.Y <= (listPOI[poi].Pose.Y + precisionXY) ) posY = true;
+
+            } 
+
+
+
             /**/
             // Si les X et Y sont tous 2 négatifs >> ??
             else if ( listPOI[poi].Pose.X < 0 && listPOI[poi].Pose.Y < 0) {
 
-                    if ( robotInfo.Pose.Position.X >= (listPOI[poi].Pose.X + precisionXY) && robotInfo.Pose.Position.X <= (listPOI[poi].Pose.X - precisionXY) ) posX = true;
+                    
+                    testCase = "X+ > Y-";
+                    case2 = true;
+                    
+                    if ( robotInfo.Pose.Position.X <= (listPOI[poi].Pose.X + precisionXY) && robotInfo.Pose.Position.X >= (listPOI[poi].Pose.X - precisionXY) ) posX = true;
             
-                    if ( robotInfo.Pose.Position.Y >= (listPOI[poi].Pose.Y + precisionXY) && robotInfo.Pose.Position.Y <= (listPOI[poi].Pose.Y - precisionXY) ) posY = true;
+                    if ( robotInfo.Pose.Position.Y <= (listPOI[poi].Pose.Y + precisionXY) && robotInfo.Pose.Position.Y >= (listPOI[poi].Pose.Y - precisionXY) ) posY = true;
 
 
-            
-            
             } 
             /**/
-            // Si le X est négatif et le Y positif (cas pilier C et D ) >> BUG
-            else if ( listPOI[poi].Pose.X < 0 && listPOI[poi].Pose.Y >= 0) {
 
-                    if ( robotInfo.Pose.Position.X >= (listPOI[poi].Pose.X + precisionXY) && robotInfo.Pose.Position.X <= (listPOI[poi].Pose.X - precisionXY) ) posX = true;
-            
-                    if ( robotInfo.Pose.Position.Y >= (listPOI[poi].Pose.Y - precisionXY) && robotInfo.Pose.Position.Y <= (listPOI[poi].Pose.Y + precisionXY) ) posY = true;
-            
-            
-            
-            } 
             /**/
             // Si le X est positif et le Y négatif >> ??
             else if ( listPOI[poi].Pose.X >= 0 && listPOI[poi].Pose.Y < 0) {
 
+                    testCase = "X+ > Y-";
+                    case4 = true;
+
                     if ( robotInfo.Pose.Position.X >= (listPOI[poi].Pose.X - precisionXY) && robotInfo.Pose.Position.X <= (listPOI[poi].Pose.X + precisionXY) ) posX = true;
             
-                    if ( robotInfo.Pose.Position.Y >= (listPOI[poi].Pose.Y + precisionXY) && robotInfo.Pose.Position.Y <= (listPOI[poi].Pose.Y - precisionXY) ) posY = true;
+                    if ( robotInfo.Pose.Position.Y <= (listPOI[poi].Pose.Y + precisionXY) && robotInfo.Pose.Position.Y >= (listPOI[poi].Pose.Y - precisionXY) ) posY = true;
 
             }
             /**/
             
-
-            // if ( robotInfo.Pose.Position.Z >= listPOI[poi].Pose.Z - precisionTheta && robotInfo.Pose.Position.Z <= listPOI[poi].Pose.Z + precisionTheta ) posZ = true;
 
 
             if ( posX == true && posY == true) {
