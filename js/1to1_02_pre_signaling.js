@@ -589,7 +589,7 @@ function getLocalConstraint() {
     /**/
 
     // OK sur V50.
-    // >>> Prend en compte la définition minimale déclarée si la caméra ne supporte pas la définition max demandée.  
+    /*// >>> Prend en compte la définition minimale déclarée si la caméra ne supporte pas la définition max demandée.  
     localConstraints = { 
         audio: { optional: [{sourceId: audioSource}] },
         video: {
@@ -599,6 +599,14 @@ function getLocalConstraint() {
         }
     }
     /**/
+
+    localConstraints = { 
+       video: {
+                deviceId: videoSource ? {exact: videoSource} : undefined, 
+                width: {min:minCamWidth ,ideal: maxCamWidth}, 
+                height: {min:minCamHeight ,ideal: maxCamHeight}
+        }
+    }
 
     return localConstraints;
 } 
