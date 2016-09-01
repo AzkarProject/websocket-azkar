@@ -601,11 +601,8 @@ function getLocalConstraint() {
     /**/
 
     localConstraints = { 
-       mandatory: {
-            OfferToReceiveAudio: true,
-            OfferToReceiveVideo: true
-        },
-       audio: { optional: [{sourceId: audioSource}] },
+       mandatory: {OfferToReceiveAudio: true, OfferToReceiveVideo: true},
+       audio: {deviceId: audioSource ? {exact: audioSource} : undefined},
        video: {
                 deviceId: videoSource ? {exact: videoSource} : undefined, 
                 width: {min:minCamWidth ,ideal: maxCamWidth}, 
