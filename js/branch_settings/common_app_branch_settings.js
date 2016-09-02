@@ -169,7 +169,7 @@
 
 	  
 	exports.isFakeRobubox = function() {
-		var fakeRobubox = false;
+		var fakeRobubox = true;
 		return fakeRobubox;
 	}
 
