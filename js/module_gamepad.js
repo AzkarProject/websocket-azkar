@@ -884,7 +884,7 @@
 	    default:
 	    	 console.log ('command unknown');
 	    	break;
-	    }
+	    //}
 
 
 	}
