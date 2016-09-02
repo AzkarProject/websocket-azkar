@@ -430,6 +430,59 @@ exports.getDataMap = function (){
 
 }
 
+// ---------- Author F Mazieras
+exports.sendCamera = function (data){        
+    /* /decoder_control.cgi?command=[&onestep=&degree=&user=&pwd=&next_url=]
+      
+    // 0 up
+    // 1 stop up
+    // 2 down
+    // 3 stop down
+    // 4 left
+    // 5 stop left
+    // 6 right
+    // 7 stop right
+    */
+    var command = data.command;
+    console.log ("komcom.sendCamera("+ command +")");
+    var cmd = "";
+    switch (command) {
+        case "onCameraLeft":
+            cmd = "ptzMoveLeft";
+            break;
+        case "onCameraStop":
+            cmd = "ptzStopRun";
+            break;
+        case "onCameraRight":
+            cmd = "ptzMoveRight";
+            break;
+        case "onCameraUp":
+            cmd = "ptzMoveUp";
+            break;
+        case "onCameraDown":
+            cmd = "ptzMoveDown";
+            break;
+        case "onCameraGoToPreset1":
+            cmd = "31";
+            break;
+        default:
+            console.log("command unknown");
+            break;
+            
+    }
+    
+    //var url = "http://192.168.1.32:88/cgi-bin/CGIProxy.fcgi?usr%3Dwebvisite%26pwd%3D230458DS%23%26cmd%3D" + cmd  ; // CORS-ANYWHERE
+    var url = "https://192.168.1.50/cgi-bin/CGIProxy.fcgi?usr%3Dwebvisite%26pwd%3D230458DS%26cmd%3D" + cmd  ; // CORS-ANYWHERE
+
+    
+    console.log ("komcom.sendCamera("+ url +")");
+        
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url);
+    xhr.send();
+    xhr.closed;
+
+}
 
 
 })(typeof exports === 'undefined'? this['komcom']={}: exports);
