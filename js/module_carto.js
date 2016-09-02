@@ -471,6 +471,7 @@
     // en coordonnées XY adapées au Canvas...
     exports.convertPath = function () {
 
+        return
         
         if (! path) return;
 

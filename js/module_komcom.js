@@ -93,7 +93,8 @@ exports.sendGotoPOI = function (data) {
             } else {
 
                 var url = null
-                url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/State" ; // CORS-ANYWHERE
+                //url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/State" ; // CORS-ANYWHERE
+                url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/Status" ; // CORS-ANYWHERE
                 if (url != null) {
                     $.get(url, function(data) { // la localisation du robot sur la carte
                     path = JSON.parse(data);
@@ -136,7 +137,8 @@ exports.sendGotoPOI = function (data) {
                     } else {
 
                         var url = null
-                        url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/State" ; // CORS-ANYWHERE
+                        //url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/State" ; // CORS-ANYWHERE
+                        url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/Status" ; // CORS-ANYWHERE
                         if (url != null) {
                             $.get(url, function(data) { // la localisation du robot sur la carte
                             var gotoState = JSON.parse(data);
