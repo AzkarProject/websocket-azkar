@@ -74,6 +74,14 @@
 	var btHommeMort = false;
 	// var onMove = false;
 	onMove = false; // onMove en variable globale pour être accédée depuis un autre script...
+	
+	/*// ---------- Add F Mazieras
+	var onCameraUp = false;
+	var onCameraDown = false;
+	var onCameraRight = false;
+	var onCameraLeft = false;
+	/**/// ----------- End Add F Mazieras
+	
 	var onMessage = false;
 	// Dernier bouton activé
 	var lastButtonName = "";
@@ -490,7 +498,19 @@
 		    	ihm.toggleHUD();
 			
 			// Test Homme mort axe 2
-			} 
+			}  
+
+				// ---------- Add F Mazieras
+				else  {
+				prepareCameraCommand(gamepad, gamepad.axes[0], gamepad.axes[1]);
+				btHommeMort = false;
+				atLeastOneButtonPressed = true;
+				ihm.driveCommandBlock('open');
+				return;
+				/**/// ---------- End Add F Mazieras
+
+
+
 	  }
 
 	  if(!atLeastOneButtonPressed) {
@@ -503,6 +523,92 @@
 	  }
 
 	}
+
+
+		// ---------- Add F Mazieras
+		function prepareCameraCommand(gamepad, axe1, axe2) {
+		//haut 0,-1
+		// bas 0,1
+		// droite 1,0
+		// gauche -1,0
+		
+		//console.log('Gamepad gauche '+ axe1 + "," + axe2);
+		if (axe1 == 1) {
+			if (!onCameraRight) {
+				prepareDriveCommand(gamepad, null, null,"","onCameraRight" );
+				onCameraRight=true;
+			}
+		} else {
+			if (onCameraRight) {
+				prepareDriveCommand(gamepad, null, null,"","onCameraStop" );
+				onCameraRight=false;
+			}
+		}
+		if (axe1 == -1 ) {
+			if (!onCameraLeft) {
+				prepareDriveCommand(gamepad, null, null,"","onCameraLeft" );
+				onCameraLeft=true;
+			}
+		} else {
+			if (onCameraLeft) {
+				prepareDriveCommand(gamepad, null, null,"","onCameraStop" );
+				onCameraLeft=false;
+			}
+		}
+		if (axe2 == 1) {
+			if (!onCameraDown) {
+				prepareDriveCommand(gamepad, null, null,"","onCameraDown" );
+				onCameraDown=true;
+			}
+		} else {
+			if (onCameraDown) {
+				prepareDriveCommand(gamepad, null, null,"","onCameraStop" );
+				onCameraDown=false;
+			}
+		}
+		if (axe2 == -1) {
+			if (!onCameraUp) {
+				prepareDriveCommand(gamepad, null, null,"","onCameraUp" );
+				onCameraUp=true;
+			}
+		} else {
+			if (onCameraUp) {
+				prepareDriveCommand(gamepad, null, null,"","onCameraStop" );
+				onCameraUp=false;
+			}
+		}
+		
+	
+	}
+
+	function stopCamera() {
+		if (onCameraUp) {
+			prepareDriveCommand(gamepad, buttonRT.value, buttonLT.value,"","onCameraStop" );
+			onCameraUp=false;
+		}
+		if (onCameraDown) {
+			prepareDriveCommand(gamepad, buttonRT.value, buttonLT.value,"","onCameraStop" );
+			onCameraDown=false;
+		}
+		if (onCameraRight) {
+			prepareDriveCommand(gamepad, buttonRT.value, buttonLT.value,"","onCameraStop" );
+			onCameraRight=false;
+		}
+		if (onCameraLeft) {
+			prepareDriveCommand(gamepad, buttonRT.value, buttonLT.value,"","onCameraStop" );
+			onCameraLeft=false;
+		}
+		prepareDriveCommand(gamepad, buttonRT.value, buttonLT.value,"","onCameraGoToPreset1" );
+		
+
+	}
+	/**/// ---------- End Add F Mazieras
+
+
+
+
+
+
 
 
 	function SelectAndOpenCam() {
@@ -618,7 +724,12 @@
 
 	    var jaugeClass = 'green';
 
-	    if (command == 'onStop') {
+	    // if (command == 'onStop') {
+	    switch (command) {
+	    
+	     // ----------------------------------------------------------	
+	    case "onStop":	
+
 	    	jaugeClass = 'red';
 	    	// Gamepad - Affichage du module FullAxes (param 'jauges' ou 'joystick' ou 'none')
 			ihm.switchGamepadDisplayMode("jauges")	
@@ -640,8 +751,11 @@
 			navigation_interface.sendToRobot("", "", "Gamepad",driveStop);
 			btHommeMort = false;
 	    
-	    } else if (command == 'onDrive'){
 
+	    	break;
+	    
+	    // ----------------------------------------------------------
+	    case "onDrive":	
 		    
 		    // --- Code Michaël
 
@@ -693,8 +807,11 @@
 		     }             
 		    navigation_interface.sendToRobot("", "", "Gamepad",driveCommand);
 		
-		}  
-			else if (command == 'onDriveAxe') {
+
+			break;
+			
+	     // ----------------------------------------------------------
+	    case "onDriveAxe":
 
 				
 				jaugeClass = 'red';
@@ -703,13 +820,13 @@
 			    var lSpeed = gamepad.axes[3]; // Vitesse linéaire
 			    
 			    var deadzoneX = 0.20;  
-			    // test d'ajustement pour la dead zone 
+			    // test d'ajustement pour la dead zone
 			    aSpeed = (Math.abs(aSpeed) < deadzoneX ? 0 : aSpeed); 
 			    lSpeed = (Math.abs(lSpeed) < deadzoneX ? 0 : lSpeed); 
 		        
 				// Gamepad - Affichage du module FullAxes (param 'jauges' ou 'joystick' ou 'none')
 				ihm.switchGamepadDisplayMode("joystick")
-				//ihm.drawJoystick( aSpeed, lSpeed );
+				// ihm.drawJoystick( aSpeed, lSpeed );
 				ihm.directionnalArrow (aSpeed,lSpeed)
 
 				// changement de sens dans l'orientation en cas de marche avant
@@ -741,9 +858,33 @@
 			     }             
 			    
 			   navigation_interface.sendToRobot("", "", "Gamepad",driveCommand);
-	       	
+	    	break;
+	    
+	     // ----------------------------------------------------------	
+	    case "onCameraLeft":
+	    case "onCameraStop":
+	    case "onCameraRight":
+	    case "onCameraDown":
+	    case "onCameraUp":
+	    case "onCameraGoToPreset1":
+	    	 var cmd = command;
+		     var cameraCommand = {
+		         driveSettings: '',
+		         channel: parameters.navCh,
+		         system: parameters.navSys,
+		         source:"Gamepad",
+		         dateA: '',
+		         command: cmd,
+		         aSpeed: '',
+		         lSpeed: '',
+		         enable: 'true'
+		     }             
+		    navigation_interface.sendToRobot("", "", "Gamepad",cameraCommand);
+	    	break;
+	    default:
+	    	 console.log ('command unknown');
+	    	break;
 	    }
-	       	
 
 
 	}
