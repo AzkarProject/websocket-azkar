@@ -467,7 +467,7 @@ exports.sendCamera = function (data){
         case "onCameraDown":
             cmd = "ptzMoveDown";
             break;
-        case "onCameraGoToPreset1":
+        case "onCameraGoToPreset1":230458SD
             cmd = "31";
             break;
         default:
@@ -477,7 +477,8 @@ exports.sendCamera = function (data){
     }
     
     //var url = "http://192.168.1.32:88/cgi-bin/CGIProxy.fcgi?usr%3Dwebvisite%26pwd%3D230458DS%23%26cmd%3D" + cmd  ; // CORS-ANYWHERE
-    var url = "https://127.0.0.1:443/https://192.168.1.50/cgi-bin/CGIProxy.fcgi?usr%3Dwebvisite%26pwd%3D230458DS%26cmd%3D" + cmd  ; // CORS-ANYWHERE
+    //var url = "https://127.0.0.1:443/https://192.168.1.50/cgi-bin/CGIProxy.fcgi?usr%3Dwebvisite%26pwd%3D230458DS%26cmd%3D" + cmd  ; // CORS-ANYWHERE
+    var url = "https://127.0.0.1:443/https://192.168.1.50/cgi-bin/CGIProxy.fcgi?cmd="+cmd+"=webvisite&pwd=230458SD"; // CORS-ANYWHERE
 
     
     console.log ("komcom.sendCamera("+ url +")");
