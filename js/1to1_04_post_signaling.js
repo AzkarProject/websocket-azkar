@@ -229,7 +229,7 @@ if (type == "robot-appelé") {
 
 // Robot: Reception webSocket d'une commande pilote
 // On la renvoie au client robot qui exécuté sur la même machine que la Robubox.
-// Il pourra ainsi faire un GET ou un POST de la commande à l'aide d'un proxy et éviter le Cross Origin 
+/*// Il pourra ainsi faire un GET ou un POST de la commande à l'aide d'un proxy et éviter le Cross Origin 
 socket.on("piloteOrder", function(data) {
     //console.log('onPiloteOrder >> command:' + data.command);
     console.log (">> socket.on('piloteOrder',...");
@@ -263,6 +263,61 @@ socket.on("piloteOrder", function(data) {
         } 
         
 
+        
+        
+    }
+});
+/**/
+
+// Robot: Reception webSocket d'une commande pilote
+// On la renvoie au client robot qui exécuté sur la même machine que la Robubox.
+// Il pourra ainsi faire un GET ou un POST de la commande à l'aide d'un proxy et éviter le Cross Origin 
+/// Add modifs F Mazieras le 06/09
+socket.on("piloteOrder", function(data) {
+    //console.log('onPiloteOrder >> command:' + data.command);
+    console.log (">> socket.on('piloteOrder'" + data.command + ")");
+    if (type == "robot-appelé") {
+        
+        switch(data.command) {
+        case "onDrive":
+            // Flags homme mort
+            onMove = true;
+            lastMoveTimeStamp = Date.now(); // on met a jour le timestamp du dernier ordre de mouvement...
+            // Envoi commande Robubox
+            // robubox.sendDrive(data.enable, data.aSpeed, data.lSpeed);
+            komcom.sendDrive(data);
+            break;
+
+        case "onStop":
+            // Flags homme mort
+            onMove = false;
+            lastMoveTimeStamp = 0;
+            // Envoi commande Robubox
+            // robubox.sendDrive(data.enable, data.aSpeed, data.lSpeed);
+            komcom.sendDrive(data);
+            break;
+        case "onFullStop": 
+            komcom.sendFullStop(data) ;
+            break;
+            
+        case "onStep":
+            komcom.sendStep(data.typeMove,data.distance,data.MaxSpeed) ;
+            break;
+    
+        case "onCameraLeft":
+        case "onCameraRight":
+        case "onCameraUp":
+        case "onCameraDown":
+        case "onCameraStop":
+        case "onCameraGoToPreset1":
+            komcom.sendCamera(data);
+            break;
+
+        default:
+            console.log ("unknown command");
+            break;
+        
+        }
         
         
     }

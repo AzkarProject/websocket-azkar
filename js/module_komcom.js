@@ -445,6 +445,9 @@ exports.sendCamera = function (data){
     // 6 right
     // 7 stop right
     */
+
+    // console.log ("komcom.sendCamera("+ url +")");
+
     var command = data.command;
     console.log ("komcom.sendCamera("+ command +")");
     var cmd = "";
@@ -479,10 +482,13 @@ exports.sendCamera = function (data){
     
     console.log ("komcom.sendCamera("+ url +")");
         
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', url);
-    xhr.send();
-    xhr.closed;
+    if (fakeRobubox == false) { 
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url);
+        xhr.send();
+        xhr.closed;
+    }
+    /**/
 
 }
 

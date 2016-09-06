@@ -59,7 +59,7 @@ exports.sendToRobot = function (rpcMethodName, values,controlDevice, driveComman
             driveCommand.driveSettings = rpcMethodName;
             driveCommand.channel = parameters.navCh;
         }
-        // console.log("@ sendToRobot: "+driveCommand.dateA);
+        console.log("@ sendToRobot: "+driveCommand.command);
         
         // envoi des valeurs au serveur par websocket
         if (parameters.navCh == 'webSocket') socket.emit("piloteOrder", driveCommand);
