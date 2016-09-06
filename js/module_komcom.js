@@ -467,7 +467,7 @@ exports.sendCamera = function (data){
         case "onCameraDown":
             cmd = "ptzMoveDown";
             break;
-        case "onCameraGoToPreset1":230458SD
+        case "onCameraGoToPreset1":
             cmd = "31";
             break;
         default:
