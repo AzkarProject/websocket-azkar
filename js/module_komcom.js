@@ -56,8 +56,8 @@ exports.sendGotoPOI = function (data) {
             //console.log
 
             var url = null
-            url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/POI" ; // CORS-ANYWHERE
-
+            //url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/POI" ; // CORS-ANYWHERE
+            url = "https://127.0.0.1:443/http://192.168.1.66:7007/Navigation/Goto/POI" ; // CORS-ANYWHERE
             if ( url != null) {
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', url);
@@ -94,7 +94,8 @@ exports.sendGotoPOI = function (data) {
 
                 var url = null
                 //url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/State" ; // CORS-ANYWHERE
-                url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/Status" ; // CORS-ANYWHERE
+                //url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/Status" ; // CORS-ANYWHERE
+                url = "https://127.0.0.1:443/http://192.166.1.66:7007/Navigation/Goto/Status" ; // CORS-ANYWHERE
                 if (url != null) {
                     $.get(url, function(data) { // la localisation du robot sur la carte
                     path = JSON.parse(data);
@@ -138,7 +139,8 @@ exports.sendGotoPOI = function (data) {
 
                         var url = null
                         //url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/State" ; // CORS-ANYWHERE
-                        url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/Status" ; // CORS-ANYWHERE
+                        //url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/Status" ; // CORS-ANYWHERE
+                        url = "https://127.0.0.1:443/http://192.168.1.66:7007/Navigation/Goto/Status" ; // CORS-ANYWHERE
                         if (url != null) {
                             $.get(url, function(data) { // la localisation du robot sur la carte
                             var gotoState = JSON.parse(data);
@@ -198,8 +200,10 @@ exports.sendDrive = function (data){
         if (fakeRobubox == false) {
          
          	var url = null
-            url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Speed" ; // CORS-ANYWHERE
-            
+            // url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Speed" ; // CORS-ANYWHERE
+            url = "https://127.0.0.1:443/http://192.168.1.66:7007/Navigation/Speed" ; // CORS-ANYWHERE
+
+
             if ( url != null) {
 	           	// function sendDrive(url, enable, aSpeed,lSpeed) {
 	            var btnA = (enable == 'true' ? true : false); //  
@@ -257,8 +261,8 @@ exports.getBattery = function (){
              } else {
 
              	var url = null;
-                url = "https://127.0.0.1:443/http://127.0.0.1:7007/Devices/Battery" ; // CORS-ANYWHERE    
-             
+                // url = "https://127.0.0.1:443/http://127.0.0.1:7007/Devices/Battery" ; // CORS-ANYWHERE    
+                url = "https://127.0.0.1:443/http://192.168.1.66:7007/Devices/Battery" ; // CORS-ANYWHERE  
     	        setInterval(function() {
     	            
                     $.get(url, function(data) { 
@@ -305,8 +309,8 @@ exports.sendFullStop = function (data){
     } else {  
 
         var url = null
-        url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Stop" ; // CORS-ANYWHERE
-
+        //url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Stop" ; // CORS-ANYWHERE
+        url = "https://127.0.0.1:443/http://192.168.1.66:7007/Navigation/Stop" ; // CORS-ANYWHERE
         if ( url != null) {
             var xhr = new XMLHttpRequest();
             xhr.open('POST', url);
@@ -328,8 +332,8 @@ exports.getListPOI = function (init){
     
 
     var url = null;
-    url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/POI';
-
+    //url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/POI';
+    url = 'https://127.0.0.1:443/http://192.168.1.66:7007/Navigation/Map/POI';
     if (fakeRobubox == true) {  
     listPOI = getFakelistPOI();
     DEFFERED_listPOI.resolve();
@@ -364,8 +368,8 @@ exports.getRobotInfo = function (init){
 
 	
 	var url = null;
-	url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/Localization';
-    
+	//url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/Localization';
+    url = 'https://127.0.0.1:443/http://192.168.1.66:7007/Navigation/Map/Localization';
   
 	if (fakeRobubox == true) {  
        robotInfo = getFakeRobotInfo();
@@ -411,8 +415,8 @@ exports.getDataMap = function (){
     // identique à la précédente mais renvoyant un objet map reconstruit propriété par propriété
     // et expurgé  de sa priopriété data.
     // Cette nouvelle fonction est dans mobiserve/Runtime/WebAPI.cs ligne 285   
-    url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/Metadatas'; 
-    
+    //url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/Metadatas'; 
+    url = 'https://127.0.0.1:443/http://192.168.1.66:7007/Navigation/Map/Metadatas'; 
     
     if (fakeRobubox == true) {  
         dataMap = getFakeDataMap();
