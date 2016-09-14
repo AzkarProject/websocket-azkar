@@ -577,7 +577,7 @@
 		}
 		/**/
 
-		console.log ("camOrder:" + camOrder);
+		// console.log ("camOrder:" + camOrder);
 		
 	
 	}
@@ -720,7 +720,7 @@
 	// Thierry (Original): Construction & envoi de la commande Drive
 	function prepareDriveCommand(gamepad, speedPos, speedNeg, mode, command ) {
 
-	    console.log ("@prepareDriveCommand("+command+")");
+	    // console.log ("@prepareDriveCommand("+command+")");
 
 	    if(gamepad === undefined) return;
 	    if(!gamepad.connected) return;

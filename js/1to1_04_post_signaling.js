@@ -275,7 +275,7 @@ socket.on("piloteOrder", function(data) {
 /// Add modifs F Mazieras le 06/09
 socket.on("piloteOrder", function(data) {
     //console.log('onPiloteOrder >> command:' + data.command);
-    console.log (">> socket.on('piloteOrder'" + data.command + ")");
+    // console.log (">> socket.on('piloteOrder'" + data.command + ")");
     if (type == "robot-appelé") {
         
         switch(data.command) {

@@ -206,8 +206,8 @@ function getFakelistPOI() {
     /**/
 
     var listPOI = [
-                    {"Name":"PilierA","Pose":{"X":2.3736454829404003,"Y":6.2584240093506871,"Theta":0},"label":"Marne 1914" },
-                    {"Name":"PilierB","Pose":{"X":2.1479895820222588,"Y":11.719296811569686,"Theta":0}, "label":"Tranchée" },
+                    {"Name":"PilierA","Pose":{"X":2.3736454829404003,"Y":6.2584240093506871,"Theta":0},"label":"Marne14" },
+                    {"Name":"PilierB","Pose":{"X":2.1479895820222588,"Y":11.719296811569686,"Theta":0}, "label":"La_tranchee" },
                     {"Name":"PilierC","Pose":{"X":-10.172822608108211,"Y":11.222853829549779,"Theta":0}},
                     {"Name":"PilierD","Pose":{"X":-10.263084968475466,"Y":5.8973745678816627,"Theta":0}},
                     {"Name":"Armoire","Pose":{"X":0.327408414727309,"Y":3.37158208322273,"Theta":0}}

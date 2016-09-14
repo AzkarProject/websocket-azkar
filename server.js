@@ -182,6 +182,18 @@ isServerStarted = false;
 
 
 
+// Ajouts Web Sémantique (13/09/16) // -----------------------
+var rdfstore = require('rdfstore');
+var retourData = [];
+var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+var ontology = ""
+// ----------------------- // Ajouts Web Sémantique (13/09/16)
+
+
+
+
+
+
 io.on('connection', function(socket, pseudo) {
 
     // Ecouteur de connexion entrante
@@ -611,6 +623,71 @@ io.on('connection', function(socket, pseudo) {
     });
 
 
+    // Ajouts Web Sémantique (13/09/16) // -----------------------    
+
+    // réception d'une messagre Websocket (Demande de ressources sur une scene)
+    socket.on('getSceneRessources', function(data) {
+        
+        console.log("socket On >>> getSceneRessources")
+        // console.log(data);
+        
+        // Récupération distante du dataset de l'ontologie 
+        //getFileFromServer("http://localhost:80/sparql/dataset.ttl", function(text) {
+        getFileFromServer("http://mainline.i3s.unice.fr/azkar/ontology/v3/dataset.ttl", function(text) {
+
+
+            if (text === null) {
+                console.log('An error occurred');
+            } else {
+                
+                ontology = text.toString();
+                //console.log(ontology)
+            
+                rdfstore.create(function(err, store) {    
+                    if (err) console.log("There was an error creating the store", err);                    
+                    else  {
+                  
+                        var syncPath = __dirname + "/files/dataset.ttl";      //local but not enough 
+                        var re = new RegExp('/', 'g');
+                        syncPath = syncPath.replace(re, '\\'); //update path        
+                        //LOCAL
+                        store.load("text/turtle" , ontology, function(err, results) {           
+                            //var query = 'SELECT * WHERE { ?s ?p ?o } LIMIT 1'
+                            //var query = 'SELECT * WHERE { <http://azkar.musee_Ontology.fr/schema#Marne14> ?p ?o } LIMIT 10'
+                            var query = 'SELECT * WHERE { <http://azkar.musee_Ontology.fr/schema#'+data.scene+'> ?p ?o }'
+                            store.execute(query, function(err, results){
+                                //console.log(JSON.stringify(results));
+                                var dataArray = results;
+                                    for (data in dataArray) {
+                                       
+                                        var u = dataArray[data].p.value;
+                                        if(u.substring(0,11) == "http://purl"){
+                                            var n = u.substr(u.lastIndexOf('/') + 1)
+                                        } else {
+                                            var n = u.substr(u.lastIndexOf('#') + 1)
+                                        }
+                                        var q = dataArray[data].o.value;
+                                        retourData.push({propriete:n,valeur:q});
+                                    }
+                                    //console.log(JSON.stringify(retourData));
+                                    //socket.emit('onSceneRessources', {sentData: retourData});
+                                    io.to(socket.id).emit('onSceneRessources', {sentData: retourData}); // renvoi au demandeur
+                                    // socket.broadcast.emit('nouveauClientOut', data); // Envoie a tout le mode sauf au connecté éméteur...
+                                    // io.to(socket.id).emit('nouveauClientOut', data); // Envoie a uconnecté précis...
+                                }); 
+                            retourData = [];                     
+                        }); //END LOCAL
+
+                        store.close(); 
+                    } // End if (err) else {
+                }); // End rdfstore.create(function(err, store) { 
+            } // End if result
+        }); // End getFileFromServer(...
+    }); // End socket.on('getSceneRessources'..
+
+
+    // ----------------------- // Ajouts Web Sémantique (13/09/16)
+
 
 
 });
@@ -623,6 +700,28 @@ io.on('connection', function(socket, pseudo) {
 function onSocketConnected(socket) {
     console.log("> Connexion entrante: (ID: " + socket.id + ")");
 }
+
+
+// Ajouts Web Sémantique (13/09/16) // -----------------------    
+function getFileFromServer(url, doneCallback) {
+    
+    console.log("@ getFileFromServer")
+
+    var xhr;
+
+    xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = handleStateChange;
+    xhr.open("GET", url, true);
+    xhr.send();
+
+    function handleStateChange() {
+        if (xhr.readyState === 4) {
+            doneCallback(xhr.status == 200 ? xhr.responseText : null);
+        }
+    }
+}
+// ----------------------- // Ajouts Web Sémantique (13/09/16)
+
 
 
 
