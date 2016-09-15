@@ -40,7 +40,8 @@ console.log ("module_komcom chargé");
 // ------------ 05/2016 -- Versions adaptées pour KomNav/MobiServ -------------------
 // Notes: la rétrocompatibilité Robubox n'est plus maintenue...
 
-
+var mobiservUrl = appSettings.getMobiserveUrl();
+var foscamUrl = appSettings.getFoscamUrl();
 
 exports.sendGotoPOI = function (data) {
 
@@ -57,7 +58,9 @@ exports.sendGotoPOI = function (data) {
 
             var url = null
             //url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/POI" ; // CORS-ANYWHERE
-            url = "https://127.0.0.1:443/http://192.168.1.66:7007/Navigation/Goto/POI" ; // CORS-ANYWHERE
+            //url = "https://127.0.0.1:443/http://192.168.1.66:7007/Navigation/Goto/POI" ; // CORS-ANYWHERE
+            url = "https://127.0.0.1:443/http://"+mobiservUrl+"/Navigation/Goto/POI" ; // CORS-ANYWHEREmobiservUrl
+
             if ( url != null) {
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', url);
@@ -95,7 +98,8 @@ exports.sendGotoPOI = function (data) {
                 var url = null
                 //url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/State" ; // CORS-ANYWHERE
                 //url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/Status" ; // CORS-ANYWHERE
-                url = "https://127.0.0.1:443/http://192.166.1.66:7007/Navigation/Goto/Status" ; // CORS-ANYWHERE
+                //url = "https://127.0.0.1:443/http://192.166.1.66:7007/Navigation/Goto/Status" ; // CORS-ANYWHERE
+                url = "https://127.0.0.1:443/http://"+mobiservUrl+"/Navigation/Goto/Status" ; // CORS-ANYWHERE
                 if (url != null) {
                     $.get(url, function(data) { // la localisation du robot sur la carte
                     path = JSON.parse(data);
@@ -140,7 +144,8 @@ exports.sendGotoPOI = function (data) {
                         var url = null
                         //url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/State" ; // CORS-ANYWHERE
                         //url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/Status" ; // CORS-ANYWHERE
-                        url = "https://127.0.0.1:443/http://192.168.1.66:7007/Navigation/Goto/Status" ; // CORS-ANYWHERE
+                        //url = "https://127.0.0.1:443/http://192.168.1.66:7007/Navigation/Goto/Status" ; // CORS-ANYWHERE
+                        url = "https://127.0.0.1:443/http://"+mobiservUrl+"/Navigation/Goto/Status" ; // CORS-ANYWHERE
                         if (url != null) {
                             $.get(url, function(data) { // la localisation du robot sur la carte
                             var gotoState = JSON.parse(data);
@@ -200,9 +205,9 @@ exports.sendDrive = function (data){
         if (fakeRobubox == false) {
          
          	var url = null
-            // url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Speed" ; // CORS-ANYWHERE
-            url = "https://127.0.0.1:443/http://192.168.1.66:7007/Navigation/Speed" ; // CORS-ANYWHERE
-
+            //url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Speed" ; // CORS-ANYWHERE
+            //url = "https://127.0.0.1:443/http://192.168.1.66:7007/Navigation/Speed" ; // CORS-ANYWHERE
+            url = "https://127.0.0.1:443/http://"+mobiservUrl+"/Navigation/Speed" ; // CORS-ANYWHERE
 
             if ( url != null) {
 	           	// function sendDrive(url, enable, aSpeed,lSpeed) {
@@ -261,9 +266,10 @@ exports.getBattery = function (){
              } else {
 
              	var url = null;
-                // url = "https://127.0.0.1:443/http://127.0.0.1:7007/Devices/Battery" ; // CORS-ANYWHERE    
-                url = "https://127.0.0.1:443/http://192.168.1.66:7007/Devices/Battery" ; // CORS-ANYWHERE  
-    	        setInterval(function() {
+                //url = "https://127.0.0.1:443/http://127.0.0.1:7007/Devices/Battery" ; // CORS-ANYWHERE    
+                // url = "https://127.0.0.1:443/http://192.168.1.66:7007/Devices/Battery" ; // CORS-ANYWHERE  
+    	        url = "https://127.0.0.1:443/http://"+mobiservUrl+"/Devices/Battery" ; // CORS-ANYWHERE  
+                setInterval(function() {
     	            
                     $.get(url, function(data) { 
                         thenum = data;
@@ -310,7 +316,8 @@ exports.sendFullStop = function (data){
 
         var url = null
         //url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Stop" ; // CORS-ANYWHERE
-        url = "https://127.0.0.1:443/http://192.168.1.66:7007/Navigation/Stop" ; // CORS-ANYWHERE
+        //url = "https://127.0.0.1:443/http://192.168.1.66:7007/Navigation/Stop" ; // CORS-ANYWHERE
+        url = "https://127.0.0.1:443/http://"+mobiservUrl+"/Navigation/Stop" ; // CORS-ANYWHERE
         if ( url != null) {
             var xhr = new XMLHttpRequest();
             xhr.open('POST', url);
@@ -333,7 +340,8 @@ exports.getListPOI = function (init){
 
     var url = null;
     //url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/POI';
-    url = 'https://127.0.0.1:443/http://192.168.1.66:7007/Navigation/Map/POI';
+    //url = 'https://127.0.0.1:443/http://192.168.1.66:7007/Navigation/Map/POI';
+    url = "https://127.0.0.1:443/http://"+mobiservUrl+"/Navigation/Map/POI";
     if (fakeRobubox == true) {  
     listPOI = getFakelistPOI();
     DEFFERED_listPOI.resolve();
@@ -369,8 +377,8 @@ exports.getRobotInfo = function (init){
 	
 	var url = null;
 	//url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/Localization';
-    url = 'https://127.0.0.1:443/http://192.168.1.66:7007/Navigation/Map/Localization';
-  
+    //url = 'https://127.0.0.1:443/http://192.168.1.66:7007/Navigation/Map/Localization';
+    url = "https://127.0.0.1:443/http://"+mobiservUrl+"/Navigation/Map/Localization";
 	if (fakeRobubox == true) {  
        robotInfo = getFakeRobotInfo();
        DEFFERED_RobotInfo.resolve();
@@ -416,7 +424,8 @@ exports.getDataMap = function (){
     // et expurgé  de sa priopriété data.
     // Cette nouvelle fonction est dans mobiserve/Runtime/WebAPI.cs ligne 285   
     //url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/Metadatas'; 
-    url = 'https://127.0.0.1:443/http://192.168.1.66:7007/Navigation/Map/Metadatas'; 
+    //url = 'https://127.0.0.1:443/http://192.168.1.66:7007/Navigation/Map/Metadatas'; 
+    url = "https://127.0.0.1:443/http://"+mobiservUrl+"/Navigation/Map/Metadatas"; 
     
     if (fakeRobubox == true) {  
         dataMap = getFakeDataMap();
@@ -483,9 +492,9 @@ exports.sendCamera = function (data){
     //var url = "http://192.168.1.32:88/cgi-bin/CGIProxy.fcgi?usr%3Dwebvisite%26pwd%3D230458DS%23%26cmd%3D" + cmd  ; // CORS-ANYWHERE
     //var url = "https://127.0.0.1:443/https://192.168.1.50:88/cgi-bin/CGIProxy.fcgi?usr%3Dwebvisite%26pwd%3D230458DS%26cmd%3D" + cmd  ; // CORS-ANYWHERE
    // -------------------------------------------
-   var url = "https://127.0.0.1:443/http://192.168.1.50:88/cgi-bin/CGIProxy.fcgi?cmd="+cmd+"&usr=webvisite&pwd=230458DS"; // CORS-ANYWHERE
-   // var url = "https://127.0.0.1:443/http://10.0.15.50:88/cgi-bin/CGIProxy.fcgi?cmd="+cmd+"&usr=webvisite&pwd=230458DS"; 
-    
+   //var url = "https://127.0.0.1:443/http://192.168.1.50:88/cgi-bin/CGIProxy.fcgi?cmd="+cmd+"&usr=webvisite&pwd=230458DS"; // CORS-ANYWHERE
+    //var url = "https://127.0.0.1:443/http://10.0.15.50:88/cgi-bin/CGIProxy.fcgi?cmd="+cmd+"&usr=webvisite&pwd=230458DS"; 
+    var url = "https://127.0.0.1:443/http://"+foscamUrl+"/cgi-bin/CGIProxy.fcgi?cmd="+cmd+"&usr=webvisite&pwd=230458DS"; 
     console.log ("komcom.sendCamera("+ url +")");
         
    

@@ -169,7 +169,7 @@
 
 	  
 	exports.isFakeRobubox = function() {
-		var fakeRobubox = false;
+		var fakeRobubox = true;
 		return fakeRobubox;
 	}
 
@@ -178,12 +178,25 @@
 		// var mapSource = '/images/mapLaboI3S.png'; // Carte I3S Robubox V2
 		// var mapSource = '/images/labo3.png'; // Carte I3S Robubox V3
 		// var mapSource = '/images/hu0.png'; // Carte MGG
-		var mapSource = '/images/labo261.png'; // Carte I3S Via Dashboard Mobiserv
+		//var mapSource = '/images/labo261.png'; // Carte I3S Via Dashboard Mobiserv
 		// var mapSource = '/images/labovilette.png'; // Carte CS La Vilette Via Dashboard Mobiserv
 		// var mapSource = '/images/lavilette-salle-de-jeux.png'; // Carte CS La Vilette V2 Via Dashboard Mobiserv
 		// var mapSource = '/images/PenBron0.png'; // Carte PenBron: 
-		// var mapSource = '/images/atelierlavilette30.png'; // Carte CS La Vilette V3 Via Dashboard Mobiserv
+		var mapSource = '/images/atelierlavilette30.png'; // Carte CS La Vilette V3 Via Dashboard Mobiserv
 		return mapSource
+	}
+
+	exports.getMobiserveUrl = function() {
+		// var url = "192.166.1.66:7007"; // Mobiserve Robulab Labo (Si rebond via Surface)
+		// var url = "127.0.0.1:7007"; // Mobiserve Robulab Labo (Si HP seul)
+		var url = "10.0.15.74:7007"; // Mobiserve Kompaï LaVilette
+		return url;
+	}
+
+	exports.getFoscamUrl = function() {
+		//var url = "192.168.1.50:88"; // Foscam Robulab Labo
+		var url = "10.0.15.50:88"; // Foscam Kompaï LaVilette
+		return url;
 	}
 
 
