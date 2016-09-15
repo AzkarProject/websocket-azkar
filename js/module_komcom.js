@@ -40,8 +40,18 @@ console.log ("module_komcom chargé");
 // ------------ 05/2016 -- Versions adaptées pour KomNav/MobiServ -------------------
 // Notes: la rétrocompatibilité Robubox n'est plus maintenue...
 
-var mobiservUrl = appSettings.getMobiserveUrl();
-var foscamUrl = appSettings.getFoscamUrl();
+//mobiservUrl = appSettings.getMobiserveUrl();
+//foscamUrl = appSettings.getFoscamUrl();
+
+/*
+mobiserUrl = '10.0.15.74:80'; // MobiServ Kompaï LaVilette
+foscamUrl = "10.0.15.50:88"; // Foscam Kompaï LaVilette
+/**/
+
+
+mobiserUrl = "127.0.0.1:7007"; // Mobiserve Robulab Labo (Si HP seul)
+foscamUrl = = "192.168.1.50:88"; // Foscam Robulab Labo
+/**/
 
 exports.sendGotoPOI = function (data) {
 

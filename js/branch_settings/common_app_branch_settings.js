@@ -186,18 +186,20 @@
 		return mapSource
 	}
 
+	/*
 	exports.getMobiserveUrl = function() {
 		// var url = "192.166.1.66:7007"; // Mobiserve Robulab Labo (Si rebond via Surface)
-		// var url = "127.0.0.1:7007"; // Mobiserve Robulab Labo (Si HP seul)
-		var url = "10.0.15.74:7007"; // Mobiserve Kompaï LaVilette
+		var url = "127.0.0.1:7007"; // Mobiserve Robulab Labo (Si HP seul)
+		//var url = "10.0.15.74:7007"; // Mobiserve Kompaï LaVilette
 		return url;
 	}
 
 	exports.getFoscamUrl = function() {
-		//var url = "192.168.1.50:88"; // Foscam Robulab Labo
-		var url = "10.0.15.50:88"; // Foscam Kompaï LaVilette
+		var url = "192.168.1.50:88"; // Foscam Robulab Labo
+		//var url = "10.0.15.50:88"; // Foscam Kompaï LaVilette
 		return url;
 	}
+	/**/
 
 
 })(typeof exports === 'undefined'? this['appDevBranch']={}: exports);
