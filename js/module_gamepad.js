@@ -777,8 +777,8 @@
 	        	aSpeed = aSpeed/5;
 	         	lSpeed = lSpeed/5; // 10
 	       	} else {
-	       		//aSpeed = aSpeed/2;
-	       		//lSpeed = lSpeed/2; // 10
+	       		aSpeed = aSpeed/2;
+	       		lSpeed = lSpeed/2; // 10
 
 	       	
 	       	// Test de commande alternative
