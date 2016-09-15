@@ -2,6 +2,10 @@
 
 # AZKAR PROJECT 
 
+to download this branch:
+
+git clone -b 1to1-cnrs --single-branch https://github.com/AzkarProject/websocket-azkar.git
+
 Copyright © CNRS (Laboratoire I3S) / université de Nice
 Contributeurs: Thierry Bergeron & Michel Buffa, 2015-2016
 

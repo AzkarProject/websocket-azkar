@@ -23,47 +23,34 @@
     <hr/>
 
 
-	<section id="bloc_1to1_messages" class="" style="float:left;width:1300px">
-				
-			<div id="websocketChat" class="insideFlex robot shadowBlack floatLeft doubleQuarterBox">  
-				
-			    <form action="/" method="post" id="formulaire_chat_websoket" style="text-align:center" >
-			        <strong>Websocket Chat & Logs&nbsp;</strong>
-		            <input type="text" name="message" id="message" placeholder="Votre message..." size="28" autofocus />
-		            <button id="env_msg_ws" type="submit" >Envoyer</button>
-		        </form>
-		        <hr class="hrForm">
-			 	<textarea class="input" style="width:100%" id="zone_chat_websocket" readonly="readonly" placeholder="Once upon a time..."></textarea>
-				<hr class="hrForm">
-				<form id="text-options1" style="text-align:center">
-            		<label>Filename: <input type="text1" class="filename" id="text-filename1" placeholder="Robot_WS_LOGS"/>.txt</label>
-            		<button id="saveLogs_webSocket" type="submit" value="Save"/>Save</button>
-        		</form>
-			</div>
 
-      		<div id="dataChannelArea" class="insideFlex robot shadowBlack floatLeft doubleQuarterBox"> 
-			        
-			   <div id="formulaire_chat_webRTC" class="pseudoForm" style="text-align:center">
-			        <strong>WebRTC Chat & Logs&nbsp;</strong>
-		            <input type="text" name="message" id="input_chat_WebRTC" disabled placeholder="Waiting open channel..." size="28" autofocus />
-		            <button id="env_msg_WebRTC" disabled onclick="sendMessage()">Envoyer</button>
-			   </div>
-			    <hr class="hrForm">
-				<textarea class="input" id="zone_chat_WebRTC" readonly="readonly" style="width:100%" placeholder="Once upon a time..."></textarea>
-				<hr class="hrForm">
-				<form id="text-options2" style="text-align:center">
-	            	<label>Filename: <input type="text" class="filename" id="text-filename2" placeholder="Robot_webRTC_LOGS"/>.txt</label>
-	            	<button id="saveLogs_webRTC" type="submit" value="Save"/>Save</button>
-	        	</form>
-	      		
-
-	      	</div>
-	</section>		
 				
 	<section id="bloc_1toN" class="" style="float:left">
 			
 
-			<div  class="floatLeft doubleQuarterContainerBox">
+			<div  class="floatLeft oneQuarterContainerBox">
+				<div id="piloteCam" class="insideFlex pilote shadowBlack">
+				    <strong> Pilot Camera</strong>
+				    <hr/>
+				    <div class = "videosContainer">
+				    	<video id='1to1_remoteVideo' class="" autoplay controls="controls"></video>
+				    </div>
+		  	 	</div>
+			</div>
+		
+
+			<div  class="floatLeft oneQuarterContainerBox">
+				<div id="robotCam" class="insideFlex robot shadowBlack">
+				    <strong> Robot Camera</strong>
+				    <hr/>
+				    <div class = "videosContainer">
+                		<video id='1to1_localVideo' autoplay muted controls="controls"></video>
+                	</div>
+		  	 	</div>
+			</div>
+
+
+			<div  class="floatLeft doubleQuarterContainerBox" style="width:650px;">
 				<div id="remoteCanvasArea" class="insideFlex robot shadowBlack">
 		            
 					<div>
@@ -89,49 +76,55 @@
         	
         	</div>
 
-
-			<div  class="floatLeft oneQuarterContainerBox">
-				<div id="piloteCam" class="insideFlex pilote shadowBlack">
-				    <strong> Pilot Camera</strong>
-				    <hr/>
-				    <div class = "videosContainer">
-				    	<video id='1to1_remoteVideo' class="" autoplay controls="controls"></video>
-				    </div>
-		  	 	</div>
-			</div>
-		
-
-			<div  class="floatLeft oneQuarterContainerBox">
-				<div id="robotCam" class="insideFlex robot shadowBlack">
-				    <strong> Robot Camera</strong>
-				    <hr/>
-				    <div class = "videosContainer">
-                		<video id='1to1_localVideo' autoplay muted controls="controls"></video>
-                	</div>
-		  	 	</div>
-			</div>
 	</section>
 
-	<section id="bloc_1to1_commands" class="" style="float:left;width:1300px">
-		
 
-		<div  class="floatLeft oneQuarterContainerBox">
-					<div id="Command_PAD" class="insideFlex robot shadowBlack">
-						<kom-remote class="kom-remote"></kom-remote>
-		  	 	</div>
-			</div>
+	<section id="bloc_battery" class="" style="float:left">
 
-			
-			<div class="floatLeft oneQuarterContainerBox">
+			<div class="floatLeft oneQuarterContainerBox" style="width:650px">
 									
 				<div class="jauge insideFlex robot shadowBlack">
 	           		<label for="battery_level">Battery Level:</label>
-	            	<progress id="battery_level" class="floatRight" max="100"></progress>
+	            	<progress id="battery_level" class="floatRight" max="100" style="width:530px"></progress>
 	        	</div>
 	      	
 	      	</div>
 
-	      	<div class="floatLeft oneQuarterContainerBox">
+
+	
+	
+
+	</section>
+
+	<section id="bloc_1to1_messages" class="" style="float:left;width:1300px">
+				
+			<div id="websocketChat" class="insideFlex robot shadowBlack floatLeft doubleQuarterBox" style="width:628px">  
+				
+			    <form action="/" method="post" id="formulaire_chat_websoket" style="text-align:center" >
+			        <strong>Websocket Chat & Logs&nbsp;</strong>
+		            <input type="text" name="message" id="message" placeholder="Votre message..." size="28" autofocus />
+		            <button id="env_msg_ws" type="submit" >Envoyer</button>
+		        </form>
+		        <hr class="hrForm">
+			 	<textarea class="input" style="width:100%" id="zone_chat_websocket" readonly="readonly" placeholder="Once upon a time..."></textarea>
+				<!--
+				<hr class="hrForm">
+				<form id="text-options1" style="text-align:center">
+            		<label>Filename: <input type="text1" class="filename" id="text-filename1" placeholder="Robot_WS_LOGS"/>.txt</label>
+            		<button id="saveLogs_webSocket" type="submit" value="Save"/>Save</button>
+        		</form>
+        		-->
+			</div>
+
+     </section>
+
+
+
+
+		<section id="bloc_1to1_Devices" class="" style="float:left;width:1300px">
+		
+
+			<div class="floatLeft oneQuarterContainerBox">
 			
 				<div id="selectionMicros" class="insideFlex robot shadowBlack"> 
 				  	<span id="messageDevicesStateMicro"> Micros disponibles</span>
@@ -152,7 +145,41 @@
 					</div>
 				</div>	
 			</div>
+
+		</section>
+
+     <section id="bloc_1to1_messages2" class="" style="float:left;width:1300px">
+
+      		<div id="dataChannelArea" class="insideFlex robot shadowBlack floatLeft doubleQuarterBox" style="width:628px">  
+			        
+			   <div id="formulaire_chat_webRTC" class="pseudoForm" style="text-align:center">
+			        <strong>WebRTC Chat & Logs&nbsp;</strong>
+		            <input type="text" name="message" id="input_chat_WebRTC" disabled placeholder="Waiting open channel..." size="28" autofocus />
+		            <button id="env_msg_WebRTC" disabled onclick="sendMessage()">Envoyer</button>
+			   </div>
+			    <hr class="hrForm">
+				<textarea class="input" id="zone_chat_WebRTC" readonly="readonly" style="width:100%" placeholder="Once upon a time..."></textarea>
+				<!--
+				<hr class="hrForm">
+				<form id="text-options2" style="text-align:center">
+	            	<label>Filename: <input type="text" class="filename" id="text-filename2" placeholder="Robot_webRTC_LOGS"/>.txt</label>
+	            	<button id="saveLogs_webRTC" type="submit" value="Save"/>Save</button>
+	        	</form>
+	      		-->
+
+	      	</div>
+	</section>		
+
+	
+	<section id="bloc_1to1_commands" class="" style="float:left;width:1300px">
+
+		<div  class="floatLeft oneQuarterContainerBox">
+					<div id="Command_PAD" class="insideFlex robot shadowBlack">
+						<kom-remote class="kom-remote"></kom-remote>
+		  	 	</div>
+			</div>
 	</section>
+
 
 
 	<section id="TopNotification">
