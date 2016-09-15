@@ -44,7 +44,7 @@ console.log ("module_komcom chargé");
 //foscamUrl = appSettings.getFoscamUrl();
 
 
-mobiservUrl = '10.0.15.74:80'; // MobiServ Kompaï LaVilette
+mobiservUrl = '10.0.15.74:7007'; // MobiServ Kompaï LaVilette
 foscamUrl = "10.0.15.50:88"; // Foscam Kompaï LaVilette
 
 //mobiservUrl = "127.0.0.1:7007"; // Mobiserve Robulab Labo (Si HP seul)
