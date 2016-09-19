@@ -283,8 +283,11 @@
     }
 
     function populateListPOIs(listPOI) {
-        console.log("@ populateListPOIs()");
+        console.log("@ populateListPOIs() &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+        console.log(listPOI);
         listPOI = null;
+        console.log(listPOI);
+        console.log(" &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
         if (listPOI == null) listPOI = [];
         // if (singleton === true) {
             list_POI_select = document.querySelector('select#list_POI');
