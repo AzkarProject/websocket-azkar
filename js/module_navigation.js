@@ -284,7 +284,7 @@
 
     function populateListPOIs(listPOI) {
         console.log("@ populateListPOIs()");
-        
+            if (listPOI == null) listPOI = [];
         // if (singleton === true) {
             list_POI_select = document.querySelector('select#list_POI');
             
