@@ -495,14 +495,20 @@
                          
                         if (sceneName == "PilierA") {
                                 
+                            if (activeRecommandation === false) {    
+
                                 socket.emit('getSceneRessources', {scene: "Marne14"});
                                 console.log( "socket.emit('getSceneRessources', {scene: Marne14 })"    )
                                     //activeRecommandation = true;
 
                                 wsTitle = "Ressources recommandées pour la scène 'Marne14'";
                                 wsHtmlContent = "";
+
+                            }
                         
                         } else if (sceneName == "PilierB") {
+
+                            if (activeRecommandation === false) {
 
                                 socket.emit('getSceneRessources', {scene: "La_tranchee"});
                                 console.log( "socket.emit('getSceneRessources', {scene: La_tranchee })"    )
@@ -510,6 +516,7 @@
 
                                 wsTitle = "Ressources recommandées pour la scène 'La_tranchee'";
                                 wsHtmlContent = "";
+                            }
                         
 
                         } else {
