@@ -102,6 +102,7 @@
 		var fakeRobubox = true;
 		return null;
 	}
+	/**/
 
 	// Chemin et nom de l'image par défaut pour la cartographie
 	exports.getMapSource = function() {
