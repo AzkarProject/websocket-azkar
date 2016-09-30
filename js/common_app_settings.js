@@ -64,7 +64,7 @@
 	// Sinon le nom de domaine du serveur distant (de préférence) ou son adresse IP 
 	exports.appServerIp = function(){
 		//return "localhost";
-		return "0.0.0.0"
+		return "134.59.130.142"
 	}
 
 	// N° de port: Idéalement 443 pour du https.
