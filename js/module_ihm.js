@@ -565,7 +565,7 @@
 	
 	
 	// Bandeau supérieur
-	exports.getHeaderPage = function() {
+	exports.getHeaderPage = function(login) {
 
       // On récupère depuis nodejs le nom de la machine serveur
       // en passant par de l'AJAX plutôt que par websocket....
@@ -578,20 +578,107 @@
         appCredit= appSettings.appCredit()
 
         if (typeof appDevBranch != 'undefined') appDevBranch.setBranch();
-
+		//infoServerTxt= "<info id='zone_info_server'>";
         infoServerTxt = "<i>"+appName;
         infoServerTxt += " Version " + appVersion;
         infoServerTxt += " (Branche "+appBranch+" / ";
         infoServerTxt += " Serveur: "+hostName+")";
-        var infoCredit = " </i><br/> " + appCredit;
-        /**/
-        if (hostName != "???" ) $('#zone_info_server').replaceWith(infoServerTxt+infoCredit);
+        infoServerTxt += " </i><br/> " + appCredit;
+        if(login) {
+        	infoServerTxt += "<br/>   Bienvenue '" + login+"'";
+        } else {
+        	infoServerTxt += "<br/>   Bienvenue visiteur";
+        }
+
+        var img = '<div style="float:left; margin-right:20px"><a href="/"><img src="/images/logo/AZKAR.png" alt="AZKAR PROJECT" title="Projet Azkar"  width="150px;" height="54px"/></a></div>';
+		//var img = '<div style="float:left; margin-right:20px"><img src="/images/logo/AZKAR.png" alt="AZKAR PROJECT" title="Projet Azkar"  width="150px;" height="54px"/></div>';
+
+        if (hostName != "???" ) {
+        	$('#zone_info_server').replaceWith('<div id="zone_info_server" style="min-width:1000px;min-height:54px">'+img+'<p>'+infoServerTxt+'</p></div>');
+        }
       });
 
 	}
 
 
-	
+	exports.displayListUsers = function(listUsers) {
+		// alert (listUsers)
+		var html = ""
+
+		var ejectRobot =  '<span id="ejectRobot"><button class="shadowBlack" id="admin_RazRobot" onclick="ejectRobot()">Ejection</button> </span>';
+        var ejectPilot =  '<span id="ejectPilot"> <button class="shadowBlack" id="index_RazPilote" onclick="ejectPilot()"> Ejection</button> </span>';
+   		var reloadRobot =  '<span id="reloadRobot"><button class="shadowBlack" id="index_ReloadRobot" onclick="reloadRobot()">Reload</button></span>';
+        var reloadPilot =  '<span id="reloadPilot"><button class="shadowBlack" id="index_ReloadPilot" onclick="reloadPilot()">Reload</button></span>';
+
+		if (listUsers) {
+			
+			html = ""
+			for (user in listUsers ) {
+				var connectionDate = tools.getHumanDate(listUsers[user].connectionDate);
+				var typeIHM = listUsers[user].typeClient;
+				var pseudoClient = listUsers[user].pseudo;
+				html += "IHM: "+typeIHM+ " >>> Login: '"+pseudoClient+"'' | Connexion: "+connectionDate;
+				if (typeIHM == "Robot") html += " | "+reloadRobot+" | "+ejectRobot;
+				if (typeIHM == "Pilote") html += " | "+reloadPilot+" | "+ejectPilot;
+				html += "</br>";
+			}
+			if (html == "") html = "Aucun";
+		} else {
+			html = "Aucun"
+		}
+		//console.log(html)
+		html = '<div id="zone_info_users">'+html+'</div>';
+		$('#zone_info_users').replaceWith(html);
+
+	}
+
+
+	exports.displayFormIp = function(typeIp,listIp,defaultIp) {
+		
+		console.log('@ ihm.displayFormIp()');
+
+		html = '<strong> IP '+typeIp+' active:</strong>: '
+		if (defaultIp) {
+			html += defaultIp.url+"  ( "+defaultIp.Label+" )</br>";
+		} else { 
+			html += "Aucune <br/>";
+		}
+
+		if (listIp) {
+			for (ip in listIp) {
+				
+				var ipValue = listIp[ip].url;
+				var ipLabel = listIp[ip].Label;
+				var ipDesciption = "";
+				if (listIp[ip].description) ipDesciption = listIp[ip].description;
+				var checked = "";
+				
+
+				// Si l'IP correspond à l'IP par défaut
+				if (defaultIp.Label === ipLabel && defaultIp.url === ipValue) checked = "checked";
+				
+				var idForm = 'select'+ipLabel;
+				
+				html += 'Activer <input type="radio" name="setIP_'+typeIp+'" value="'+ipValue+'"'+checked;
+				html += ' id="'+idForm+'" onclick="setIp_'+typeIp+'(\''+ipLabel+'\')"> <label for="'+ipLabel+'">';
+				html += '</label>';
+				
+
+				html += "   <input type='text' id='editLabel_"+typeIp+"' disabled value='"+ipLabel+"''>";
+				html += "   <input type='text' id='editIP_"+typeIp+"' disabled value='"+ipValue+"''>";
+				html +=  '  <span ><button id="deleteIP_'+typeIp+'" onclick="deleteIp_'+typeIp+'(\''+ipLabel+'\')">Supprimer</button></span>';
+				html += '<br/>';
+			}
+			html += '<br/>';
+		} else {
+		}
+		//console.log(html)
+
+
+		html = '<div id="zone_info_Ip_'+typeIp+'">'+html+'</div>';
+		$('#zone_info_Ip_'+typeIp).replaceWith(html);
+
+	}
 	
  
 

@@ -35,6 +35,9 @@
 *
 */
 
+
+console.log("1to1_02_pre_signaling chargé")
+
 //------ PHASE 1 : Pré-signaling ----------------------------------------------------------
 
 // Initialisation des variables, objets et paramètres du script

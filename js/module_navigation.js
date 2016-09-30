@@ -22,17 +22,59 @@
     // Message d'information de trajectoire
     statusPath = "";
 
+    defaultMapName = 'map_unavailable.jpg';
+    defaultMapPath = '/images/defaultMaps/';
+
     /**/
 
 
     // Titi:
-    // Flags et Ecouteurs pilote/robot pour l'échange des protocoles d'infos de navigation
-    // var pilotGetNav = false; // Flag d'échange par défaut.  
-    // si c'est un pilote qui éxécute le script
+    // Flags et Ecouteurs pilote/robot pour l'échange des protocoles d'infos de navigation  
+    // testFakeRobubox = null; // pour débugg
+
+
+    // Si c'est un pilote qui éxécute le script
+    // - Il demande au serveur si on est en mode simulation ou non
     // Il prévient le robot qu'il doit lui envoyer ses infos de navigation & de cartographie.
     if (type == "pilote-appelant") {
-    	pilotGetNav = true;
-    	socket.emit("pilotGetNav",{message:"getNavInfos"});
+    	
+
+        socket.emit('getFakeRobubox',"");
+        
+        // A la réponse du serveur:
+        socket.on("getFakeRobubox", function(data) { 
+            fakeRobubox = data.isFakeRobubox
+            // testFakeRobubox = fakeRobubox; // Pour débugg
+            //init(load);
+            socket.emit("pilotGetNav",{message:"getNavInfos"});
+        });
+
+    
+        socket.emit('getActiveMap',"");
+        //socket.emit('getFakeRobubox',"");
+        
+        // A la réponse du serveur:
+        socket.on("getActiveMap", function(data) { 
+            //alert("getActiveMap:"+data.activeMap)
+            var mapPath = '/maps/';
+            if (data.activeMap == defaultMapName ) mapPath = defaultMapPath;
+            else backGroundMap.src = mapPath+data.activeMap;
+
+           //  if (data.activeMap == defaultMapName)
+
+
+            socket.emit('getFakeRobubox',"");
+        });
+
+
+        // A la réponse du serveur:
+        socket.on("getFakeRobubox", function(data) { 
+            fakeRobubox = data.isFakeRobubox
+            //if (fakeRobubox == true) backGroundMap.src = '/maps/default.png';
+            if (fakeRobubox == true) backGroundMap.src = defaultMapPath+'default.png';
+            socket.emit("pilotGetNav",{message:"getNavInfos"});
+        });
+
     }
     
     // Ecouteur coté Robot: 
@@ -49,8 +91,6 @@
                 // navigation_interface.sendToPilote("list_POI", listPOI); // envoi liste des POI
             }
     	});
-
-
         
         // reception d'un ordre gotoPOI
         socket.on("gotoPOI", function(data) {
@@ -76,9 +116,13 @@
 
         // Reception de données de navigation
         socket.on("navigation", function(data) {
-           
+        console.log(">>> Socket.on(navigation)")   
+            
             if (data.command == "map_parameters2") {
-    			 console.log(">>> Socket.on(navigation)")
+    			 
+                if (data.dataMap == null) return;
+                 
+                 
                  console.log(data.dataMap);
                  console.log(data.listPOI);
                  dataMap = data.dataMap;
@@ -90,8 +134,7 @@
                  //mapSize = resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
 
             } else if (data.command == "robot_localization") {
-    			 
-
+    			                
                 robotInfo = data.robotInfo;
 
                 nearestPoiName = robotInfo.nearestPoiName;
@@ -165,17 +208,12 @@
             else if (data.gotoState.Status == 3) textStatus = "Translating";
             else if (data.gotoState.Status == 4) textStatus = "Rotating";
             else if (data.gotoState.Status == 5) textStatus = "Error";
-            
-            //var dateR = tools.humanDateER('R');
-            //var msg = dateR+' Trajectory Status: '+textStatus;
 
             if (fakeRobubox == false) {
                 ihm.displayTrajectoryStatus(textStatus)
             }
         
         });
-
-        //-------------
 
 
     }
@@ -187,11 +225,50 @@
     /* START */
     /* call init() then load() and finaly refresh() with setInterval */
     // type = pilote-appelant ou robot-appelé
-    if (type == "robot-appelé") init(load);
+    if (type == "robot-appelé") {
+        
+        socket.emit('getActiveMap',"");
+        //socket.emit('getFakeRobubox',"");
+        
+        // A la réponse du serveur:
+        socket.on("getActiveMap", function(data) { 
+            //alert("getActiveMap:"+data.activeMap)
+            //backGroundMap.src = '/maps/'+data.activeMap;
+
+            var mapPath = '/maps/';
+            if (data.activeMap == defaultMapName ) mapPath = defaultMapPath;
+            else backGroundMap.src = mapPath+data.activeMap;
+            
+            socket.emit('getFakeRobubox',"");
+            init(load);
+        });
+
+
+        // A la réponse du serveur:
+        socket.on("getFakeRobubox", function(data) { 
+            fakeRobubox = data.isFakeRobubox
+            //if (data.isFakeRobubox == false) backGroundMap.src = '/maps/mgg01.png'
+            if (fakeRobubox == true) backGroundMap.src = defaultMapPath+'default.png';
+            clearInterval(loopBattery);
+            komcom.getBattery();
+            // carto.resetCanvas();
+            init(load);
+        });
+
+
+
+
+        
+        
+
+    }
+
+
 
     function init(callback) {
 
-   
+        if (fakeRobubox == null) return;
+
         console.log('@ init(callback)');      
         
         // On met le deffered en variable globale
@@ -218,24 +295,26 @@
 
     function load() {
         console.log('@ load()');
-        // receiveListPoi()
+        receiveListPoi()
         mapSize = carto.resizeRatio(dataMap.Width, dataMap.Height, canvasWidth, canvasHeight)
-
-        //var toSend = {"dataMap":dataMap, "listPOI":listPOI,}
-        //navigation_interface.sendToPilote("map_parameters2", toSend); // envoi parametres de la map
-
         refresh();
     }
 
 
     
-    function refresh() {
+    function refresh(stop) {
         
         //console.log('@ refresh()');
 
+        if (stop == 'stop'){
+            clearInterval(refreshLoop);
+            return;
+        }  
+
+        if (fakeRobubox == null) return;
         if (type == "robot-appelé") {
 	        
-	        setInterval(function() {
+	        var refreshLoop = setInterval(function() {
                 if (fakeRobubox == true) navigation.simulateRobotInfo();
                 else {
                     komcom.getRobotInfo();
@@ -266,7 +345,7 @@
     // Robot. A la reception de la liste des POIs
     function receiveListPoi() {
         console.log("@ receiveListPoi()");
-        // populateListPOIs(listPOI);
+        populateListPOIs(listPOI);
     }
 
     
@@ -284,16 +363,16 @@
 
     function populateListPOIs(listPOI) {
         console.log("@ populateListPOIs()");
-        /*
-        console.log(listPOI);
-        listPOI = null;
-        console.log(listPOI);
-        console.log(" &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-        if (listPOI == null) listPOI = [];
-        /**/
-        // if (singleton === true) {
+        if (type == "pilote-appelant") {
+
             list_POI_select = document.querySelector('select#list_POI');
-            
+
+            // On supprime tous les enfants du noeud précédent...
+            while (list_POI_select.firstChild) {
+                // La liste n'étant pas une copie, elle sera réindexée à chaque appel
+                list_POI_select.removeChild(list_POI_select.firstChild);
+            }
+
             for (poi in listPOI) {
                 var option = document.createElement('option');
                 option.id = listPOI[poi].Name;
@@ -302,6 +381,13 @@
                 else option.text = listPOI[poi].Name;
                 list_POI_select.appendChild(option);
             }
+
+        } else if (type == "robot-appelé") {
+
+            // TODO: Liste ul/li des points d'intérêts dans une div avec ascenceur...
+
+
+        }
 
     }
     
@@ -446,6 +532,7 @@
     activeRecommandation = false;
     var wsTitle = null;
     var wsHtmlContent = null;
+    var isLinkedToWS = false;
     function webSemanticRecommandations() {
 
         // if (fakeRobubox != true) return    
@@ -469,7 +556,7 @@
                                 sceneName = listPOI[poi].label
 
                                 if (activeRecommandation === false) {
-                                    
+                                    isLinkedToWS = true;
                                     //var sceneName = selectElmt.options[selectElmt.selectedIndex].value;
                                     socket.emit('getSceneRessources', {scene: sceneName});
                                     console.log( "socket.emit('getSceneRessources', {scene: "+sceneName+"})"    )
@@ -483,6 +570,7 @@
                                 }
 
                             } else {
+                                isLinkedToWS = false;
                                 sceneName = nearestPoiName;
                                 wsTitle = "Nearest POI: '"+sceneName+"'";
                                 activeRecommandation = false;
@@ -494,32 +582,26 @@
                          sceneName = nearestPoiName;
                          
                         if (sceneName == "PilierA") {
-                                
-                            if (activeRecommandation === false) {    
-
+                                isLinkedToWS = true;
                                 socket.emit('getSceneRessources', {scene: "Marne14"});
                                 console.log( "socket.emit('getSceneRessources', {scene: Marne14 })"    )
                                     //activeRecommandation = true;
 
                                 wsTitle = "Ressources recommandées pour la scène 'Marne14'";
                                 wsHtmlContent = "";
-
-                            }
                         
                         } else if (sceneName == "PilierB") {
-
-                            if (activeRecommandation === false) {
-
+                                isLinkedToWS = true;
                                 socket.emit('getSceneRessources', {scene: "La_tranchee"});
                                 console.log( "socket.emit('getSceneRessources', {scene: La_tranchee })"    )
                                     //activeRecommandation = true;
 
                                 wsTitle = "Ressources recommandées pour la scène 'La_tranchee'";
                                 wsHtmlContent = "";
-                            }
                         
 
                         } else {
+                            isLinkedToWS = false;
                             wsTitle = "Nearest POI: '"+sceneName+"'";
                             activeRecommandation = false;
                         }
@@ -531,7 +613,7 @@
                 }
 
             }
-            if (activeRecommandation === false) notifications.writeRecommandations ("miscelleanous",wsTitle,"")
+            if (activeRecommandation === false && isLinkedToWS === true) notifications.writeRecommandations ("miscelleanous",wsTitle,"")
           
           } else if (robotColor == 'blue'){
 

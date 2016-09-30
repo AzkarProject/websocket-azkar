@@ -36,9 +36,19 @@
 
 console.log("module_fake_robubox chargé")
 
-fakeRobubox = appSettings.isFakeRobubox();
+
+
+//fakeRobubox = appSettings.isFakeRobubox();
+
+
 // if (typeof appCNRS != 'undefined') fakeRobubox = appCNRS.isFakeRobubox();
 
+// FakeRobubox est présent:
+// >>> ici
+// >>> module_forms.js
+// >>> module_komkom.js
+// >>> module_komremote.js
+// >>> module_navigation.js
 
 /*// --------------- Mémo services http de mobiserve -------------------------
 
@@ -122,14 +132,11 @@ if (typeof appDevBranch != 'undefined') fakeRobubox = appDevBranch.isFakeRobubox
 
 function getFakeDataMap() {
 
-    // Simu Map 26
+    // Simu Map 26 Labo
     var dataMap = {"Offset":{"X":-20.7969943946,"Y":-3.02713963867},"Width":1485,"Stride":1488,"Height":1187,"Data": null,"Resolution":0.019999999553}
 
-    // Simu Map 25
-    // var dataMap = {"Offset":{"X":-19.8655429626,"Y":-3.10094802423},"Width":1577,"Stride":1584,"Height":1184,"Data":null,"Resolution":0.019999999553}
-
-    // Simu map MGG
-    // var dataMap = {"Offset":{"X":-52.8251232326,"Y":-63.9346600184},"Width":3942,"Stride":3944,"Height":1928,"Data":null,"Resolution":0.019999999553}
+    // Simu map MGG offset d'origine mais faux...
+    //var dataMap = {"Offset":{"X":-52.8251232326,"Y":-63.9346600184},"Width":3942,"Stride":3944,"Height":1928,"Data":null,"Resolution":0.019999999553}
     
     // Simu map MGG offsets corrigés
     //var dataMap = {"Offset":{"X":-17.4151232326,"Y":-21.3146600184},"Width":3942,"Stride":3944,"Height":1928,"Data":null,"Resolution":0.019999999553}
@@ -142,18 +149,12 @@ function getFakeDataMap() {
 
 function getFakeRobotInfo() {
 
-	// Simu map 26/26
+	// Simu map Labo - Position de départ 0.0
     //var robotInfo = {"Pose":{"Orientation":0.014824313679471759,"Position":{"X":-0.01693115491662614,"Y":-0.011192893436510892,"Z":0}},"State":8,"Timestamp":2916720}
     
-    // Simu map 26 - web Sémantique - Position Armoire.
-    //var robotInfo = {"Pose":{"Orientation":0.014824313679471759,"Position":{"X":0.327408414727309,"Y":3.37158208322273,"Z":0}},"State":8,"Timestamp":2916720}
-    
+    // Simu map Labo - web Sémantique - Position Armoire.
     var robotInfo = {"Pose":{"Orientation":0.014824313679471759,"Position":{"X":0.327408414727309,"Y":3.37158208322273,"Z":0}},"State":8,"Timestamp":2916720}
-
-
-    // robotPositionName = "Armoire";
-
-
+    
     // Simu map MGG positon Marne 1914
     // var robotInfo = {"Pose":{"Orientation":3.15,"Position":{"X":-2.95,"Y":-2.3,"Z":0}},"State":8,"Timestamp":2916720}
 
@@ -194,7 +195,7 @@ function getFakelistPOI() {
     console.log("getFakelistPOI()")
 
 
-    // Simu map 26 Pour simu WebSem:
+    // Simu map Labo POI piliers:
     /*
     var listPOI = [
                     {"Name":"PilierA","Pose":{"X":2.3736454829404003,"Y":6.2584240093506871,"Theta":0}},
@@ -205,6 +206,7 @@ function getFakelistPOI() {
                 ]
     /**/
 
+    // Simu map Labo avec infos Web Sémantique:
     var listPOI = [
                     {"Name":"PilierA","Pose":{"X":2.3736454829404003,"Y":6.2584240093506871,"Theta":0},"label":"Marne14" },
                     {"Name":"PilierB","Pose":{"X":2.1479895820222588,"Y":11.719296811569686,"Theta":0}, "label":"La_tranchee" },
@@ -213,10 +215,10 @@ function getFakelistPOI() {
                     {"Name":"Armoire","Pose":{"X":0.327408414727309,"Y":3.37158208322273,"Theta":0}}
     ]
 
-    // Simu Map 25 (Sans POI)
+    // Simu Map Sans POI
 	// var listPOI = []
     
-    /*// Simu MGG
+    /*// Simu POIs Map MGG
     var listPOI = [
         {"Name":"Poi1","Pose":{"X":-2.95,"Y":-2.3,"Theta":3.15}, "label":"Marne 1914" },
         {"Name":"Poi2","Pose":{"X":7,"Y":0,"Theta":5.5}, "label":"Tranchées" },
@@ -226,9 +228,6 @@ function getFakelistPOI() {
         ]
     /**/
    
-        //var robotInfo = {"Pose":{"Orientation":4.8,"Position":{"X":13,"Y":1,"Z":0}},"State":8,"Timestamp":2916720}
-
-
 
     return listPOI;
 

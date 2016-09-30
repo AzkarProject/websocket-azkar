@@ -44,12 +44,12 @@
 
 	// Nom de la branche
 	exports.appBranch = function(){
-	    return '1to1-refacto(MASTER)';
+	    return '1to1-cnrs';
 	};
 
 	// Numéro de version
 	exports.appVersion = function(){
-	    return '1.5.2';
+	    return '1.6.0';
 	};
 
 	// Crédits
@@ -58,11 +58,13 @@
 	};
 
 	// Adresse Ip ou nom de domaine du serveur de l'application
-	// 127.0.0.1 ou localhost pour un test en local
+	// Eviter le 0.0.0.0 standard
+	// localhost (de préference) pour un test en local
 	// 192.168.173.1 pour un serveur local accessible sur réseau wifi AdHoc (windows) 
-	// Sinon l'adresse Ip  ou le nom de domaaine du serveur distant.
+	// Sinon le nom de domaine du serveur distant (de préférence) ou son adresse IP 
 	exports.appServerIp = function(){
-		return "127.0.0.1";
+		//return "localhost";
+		return "0.0.0.0"
 	}
 
 	// N° de port: Idéalement 443 pour du https.
@@ -70,8 +72,15 @@
 	// il faut veiller a préciser le numéro de port dans l'url
 	// pour se connecter à l'application. 
 	exports.appServerPort = function(){
-		return 80;
+		return 443;
+		// return 80;
 	}
+
+	// Retourne le nom d'instance de l'application
+	exports.appInstanceTitle = function(){
+		return "Laboratoire I3S";
+	}
+
 
 
 	// Liste des serveurs STUN et TURN
@@ -88,21 +97,19 @@
 	
 	// Si le client Robot n'est pas sur un Pc embarqué dans un Kompaï ou autre robot,
 	// on émule un pseudo système embarqué pour la cartographie, la jauge de batterie et les commandes drive...
-	// Si connecté a une robubox ou KomNav, mettre la valeur a false
+	/*// Si connecté a une robubox ou KomNav, mettre la valeur a false
 	exports.isFakeRobubox = function() {
 		var fakeRobubox = true;
-		return fakeRobubox;
+		return null;
 	}
 
-	// Chemin et nom de l'image de cartographie à utiliser
-	// NB: Penser à placer la carte active exportée en png par la robubox ds le repertoire image de l'applicaion.
+	// Chemin et nom de l'image par défaut pour la cartographie
 	exports.getMapSource = function() {
-    	//var mapSource = '/images/mapRobosoft.png'; // Carte locaux Robosoft
-		//var mapSource = '/images/mapLaboI3S.png'; // Carte I3S V2
-		//var mapSource = '/images/labo3.png'; // Carte I3S V3
-		var mapSource = '/images/labo261.png'; // Carte I3S Via Dashboard Mobiserv
+    	var mapSource = '/images/defaultMaps/map_unavailable.jpg'; // Image de map absente
 		return mapSource
 	}
+	/**/
+
 
 	exports.getPathKey = function() {
 		var key = './ssl/hacksparrow-key.pem';

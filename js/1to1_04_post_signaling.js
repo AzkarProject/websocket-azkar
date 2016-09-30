@@ -34,6 +34,8 @@
 */
 
 
+console.log("1to1_04_post_signaling chargé")
+
 // Réception d'un ordre de déconnexion
 socket.on("closeConnectionOrder",function(data) {
    console.log (">> socket.on('closeConnectionOrder',...");
@@ -44,6 +46,7 @@ socket.on("closeConnectionOrder",function(data) {
         onDisconnect(peerCnx1to1);
     }
 });
+
 
 
 // A la déconnection du pair distant:
@@ -279,6 +282,7 @@ socket.on("piloteOrder", function(data) {
     if (type == "robot-appelé") {
         
         switch(data.command) {
+        
         case "onDrive":
             // Flags homme mort
             onMove = true;
@@ -296,6 +300,7 @@ socket.on("piloteOrder", function(data) {
             // robubox.sendDrive(data.enable, data.aSpeed, data.lSpeed);
             komcom.sendDrive(data);
             break;
+        
         case "onFullStop": 
             komcom.sendFullStop(data) ;
             break;
@@ -330,8 +335,4 @@ socket.on('changeNavSystem', function(data) {
    console.log (">> socket.on('changeNavSystem',...");  
    parameters.navSys = data.navSystem;
 });
-
-
-
-
 

@@ -33,7 +33,7 @@
 *
 */
 
-
+console.log("1to1_01_websocket chargé")
 
 // Initialisation du canal de signalisation
 socket = io.connect(); 
@@ -73,7 +73,7 @@ socket.on('localUser', function(objUser) {
     console.log(objUser);
     // document.title = objUser.placeliste+"-" + objUser.pseudo +"("+objUser.typeClient+") - "+document.title;
     // >>> Même chose sans le numéro d'arrivée pour éviter que AutoIt ne se mélange les pédales dans la détection de la fenêtre du navigateur
-    document.title = objUser.typeClient +"("+objUser.typeClient+") - "+document.title;
+    document.title = "IHM "+objUser.typeClient +" ("+objUser.typeClient+") - "+document.title;
 
     myPlaceListe = objUser.placeliste;
     myPeerID = objUser.id;
@@ -146,31 +146,51 @@ socket.on('service2', function(data) {
 
 socket.on('error', errorHandler);
 socket.on('rejectConnexion', function(data) {
-    notifyAndRedirect("error", data.message,data.url)
+    console.log(">> socket.on('rejectConnexion',...");
+    // notifyAndRedirect("error", data.message,data.url)
+    var href = window.location.href;
+    var pathname = window.location.pathname;
+    var redirectHref = href.replace(pathname, "");
+    notifyAndRedirect("error", data.message,redirectHref)
 })
 
 socket.on('razConnexion', function(data) {
+    // alert('razConnexion ')
     console.log(">> socket.on('razConnexion',...");
+    //notifyAndRedirect("warning", message, data.url)
+    var href = window.location.href;
+    var pathname = window.location.pathname;
+    var redirectHref = href.replace(pathname, "");
     var message = "Fermeture des connexions webSockets ! "
-    notifyAndRedirect("warning", message, data.url)
+    notifyAndRedirect("warning", message, redirectHref)
 })
 
 socket.on('reloadAllClients', function(data) {
-    
     console.log(">> socket.on('reloadAllClients',...");
-    var message = "Connexion webSocket réinitialisée ! ";
-    notifyAndRedirect("warning", message, data.url+"/"+localObjUser.typeClient)
+    /*
+    var debug = 'reloadAllClients '+data.url;
+    debug = "\n Url (document.location) = "+document.location;
+    debug += "\n path only (window.location.pathname) = "+ window.location.pathname;// Returns path only
+    debug += "\n full URL (window.location.href) = "+window.location.href;// Returns full URL
+    alert(debug)
+    /**/
+    
+    var message = "Attention, La page vas être rechargée ! ";
+    //notifyAndRedirect("warning", message, data.url+"/"+localObjUser.typeClient)
+    notifyAndRedirect("warning", message, window.location.href)
 })
 
 
-
+/*
 socket.on('reloadClientrobot', function(style,message,url) {
+    alert('reloadClientrobot ')
     console.log(">> socket.on('reloadClient',...");
-    notifications.writeMessage (style,message,"Vous allez être redirigé vers "+ url,3000)
+    notifications.writeMessage (style,message,"Vous allez être redirigé vers "+ url,5000)
     setTimeout(function(){
         window.location.href = url+"/"+"robot"
+        //window.location.href+"/"+"robot"
     }
-    , 3500); 
+    , 5500); 
 });
 /**/
 
@@ -194,7 +214,7 @@ function notifyAndRedirect(style, message, url) {
     setTimeout(function(){
         window.location.href = url
     }
-    , 3500); 
+    , 500); 
 }
 
 

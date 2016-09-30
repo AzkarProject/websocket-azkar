@@ -37,6 +37,9 @@
 // https://github.com/louisstow/WebRTC/blob/master/media.html
 
 
+console.log("1to1_03_signaling chargé")
+
+
 // ------ PHASE 1 : Pré-signaling ----------------------------------------------------------
 
 // Récupération de la liste des devices (Version2)

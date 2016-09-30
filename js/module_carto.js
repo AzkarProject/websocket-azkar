@@ -38,17 +38,63 @@
     console.log("module_carto chargé")
 
     
-    // Titi: Image BackGround aux dimensions du Canvas
-    var backGroundMap = new Image();
-    backGroundMap.src = appSettings.getMapSource(); 
+    backGroundMap = null;
 
-    // Si configuration spécifique à la branche:
-    if (typeof appDevBranch != 'undefined') backGroundMap.src = appDevBranch.getMapSource();
-      
-    var canvasMap = document.getElementById('myCanvas');
-    var context = canvasMap.getContext('2d');
+    canvasMap = null;
+    context = null;
 
-    var newOffset = null;
+    newOffset = null;
+
+    mapSize = null;
+    canvasWidth = null;
+    canvasHeight = null;
+
+    // flags
+    modeTraking = null;
+    initialContextSaved = null; 
+    initialX = null;
+    initialY = null;
+
+    initCarto();
+
+
+    function initCarto() {
+    //exports.initCarto = function() {  
+
+        // Titi: Image BackGround aux dimensions du Canvas
+        backGroundMap = new Image();
+        console.log("backGroundMap.src:"+backGroundMap.src)
+        if (!backGroundMap.src) backGroundMap.src = appSettings.getMapSource(); 
+        
+        /*
+        backGroundMap.onload = function(){
+          var heightControl = backGroundMap.height;
+          var widthControl = backGroundMap.width;
+
+
+          alert ("backGroundMap.src :"+ backGroundMap.src+ "\nHeight: "+heightControl+"Width : "+ widthControl)
+
+        }
+        /**/
+
+
+        canvasMap = document.getElementById('myCanvas');
+        context = canvasMap.getContext('2d');
+
+        newOffset = null;
+
+        mapSize = 0;
+        canvasWidth = $('#myCanvas').width();
+        canvasHeight = $('#myCanvas').height();
+
+        // flags
+        modeTraking = false;
+        initialContextSaved = false; 
+        initialX = 0;
+        initialY = 0;
+
+    }
+
 
     // Titi: 
     // Resize width et Height en conservant le ratio
@@ -79,9 +125,11 @@
         return { width: offsetArrowWidth, height: offsetArrowHeight };
     }
 
+    /*
     mapSize = 0;
     canvasWidth = $('#myCanvas').width();
     canvasHeight = $('#myCanvas').height();
+    /***/
 
 
     // Conversion Karto to png
@@ -101,11 +149,12 @@
         return {X:x, Y:y};
     };
 
-    // flags
+    /*// flags
     modeTraking = false;
     var initialContextSaved = false; 
     var initialX = 0;
     var initialY = 0;
+    /**/
 
     function reDraw() {
 
@@ -704,9 +753,10 @@
     exports.resetCanvas = function (){ 
     // function resetCanvas() {
         // resetZoom();  
-        //resetPosition();  
+        // resetPosition();  
         // resetZoom();
         // initialContext.restore();
+        // initCarto();
         modeTraking = false; // On reset le mode tracking 
         initialContextSaved = false; // On prévient le systeme que le contexte de départ doit être réinitialisé
         context.restore(); // On rétablit contexte de départ

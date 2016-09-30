@@ -34,7 +34,7 @@
 */
 
 
-// Effacer la console à chaque lancement...
+// Effacer la console à chaque lancement.
 console.reset = function () {
   return process.stdout.write('\033c');
 }
@@ -48,15 +48,13 @@ var tools = require('./js/common_tools'); // méthodes génériques
 var models = require('./js/common_models'); // objets
 var appSettings = require('./js/common_app_settings'); // paramètres de configuration de l'application
 
-// Test implémentation mongoDB
+// Implémentation mongoDB
 var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
 var ObjectId = require('mongodb').ObjectID;
 
-// var url = 'mongodb://localhost:27017/test';
-//var models = require('./js/common_modele.js');
-//var dataRobot = require('./js/common_dataRobot.js');
-//var persistance = require('./js/common_persistance.js');
+// Adds du 25/O9/2016 > Admin > Upload files
+var multer  =   require('multer');
 
 
 
@@ -81,9 +79,11 @@ appName = appSettings.appName();
 appBranch = appSettings.appBranch();
 appVersion = appSettings.appVersion();
 appCredit= appSettings.appCredit()
+appInstanceLabel = appSettings.appInstanceLabel();
 
 // Si présence d'un fichier de config propre à la branche: Overwriting des settings,
 var appBranchSettings;
+
 try {
    appBranchSettings = require('./js/branch_settings/common_app_branch_settings.js'); 
    appBranchSettings.setServers();
@@ -101,7 +101,6 @@ console.log('');
 // console.log('(' + appSettings.appBranch() + ') ' + appSettings.appName() + " V " + appSettings.appVersion());
 // console.log(name + ': ' + branch + " (Version " + version+")");
 console.log(appName + " V " + appVersion+ "( branche "+ appBranch + ")" );
-
 console.log(appCredit);
 console.log("***********************************");
 console.log("Serveur sur machine: " + hostName);
@@ -149,6 +148,11 @@ app.get('/pilote/', function(req, res) {
     res.sendFile(__dirname + '/pilote.html');
 });
 
+// Add 16/09/16 - titi
+app.get('/i3s/', function(req, res) {
+    res.sendFile(__dirname + '/admin.html');
+});
+// ------------------
 
 // On passe la variable hostName en ajax à l'IHM d'accueil
 // puisqu'on ne peux pas passer par websocket...
@@ -163,8 +167,10 @@ io = require('socket.io').listen(server); // OK
 // ------ Partie Websocket ------------------
 
 
+// Liste de tous les connectés au serveur
+var  serverUsers = {}
 
-// liste des clients connectés
+// liste des connectés actifs (pilotes et robots)
 var users2 = {};
 var nbUsers2 = 0;
 
@@ -182,41 +188,27 @@ isServerStarted = false;
 
 
 
-// Ajouts Web Sémantique (13/09/16) // -----------------------
+// Adds Web Sémantique (13/09/16) // -----------------------
 var rdfstore = require('rdfstore');
 var retourData = [];
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 var ontology = ""
-// ----------------------- // Ajouts Web Sémantique (13/09/16)
 
 
-
-
-
+// Adds partie Admin >> Flags & variables de configuration -----------
+isFakeRobubox = true; // Mode simulateur activé par défaut.
+activeMap = 'map_unavailable.jpg'; // Image de la Map par défaut
+defaultIpRobot = null; // Ip par defaut de Robubox/Mobiserve
+defaultIpFoscam = null; // Ip par defaut de la Foscam
+urlsRobot = {} // Liste des différentes IPs Robubox/Mobiserve
+urlsFoscam = {} // Liste des différentes Ips Foscam
+config = null; // Fichier JSON de configuration (persistence)
 
 io.on('connection', function(socket, pseudo) {
 
     // Ecouteur de connexion entrante
     onSocketConnected(socket);
 
-   
-    // Bouton ejection de tous les clients robot/Pilote et visiteurs
-    socket.on('razConnexions', function(data) {
-        var data = { url: indexUrl};  
-        socket.broadcast.emit('razConnexion',data); 
-        console.log ("> socket.broadcast.emit('razConnexions',"+data.url+")");
-     });
-    /**/
-    
-
-    // Reload de tous les clients robot/Pilote et visiteurs
-    socket.on('reloadAllClients', function(data) {
-        var data = { url: indexUrl};  
-        socket.broadcast.emit('reloadAllClients',data); 
-        console.log ("> socket.broadcast.emit('reloadAllClients',"+data.url+")");
-     });
-    /**/
-    
     // Quand un User rentre un pseudo 
     // on le stocke en variable de session et on informe les autres Users
     socket.on('nouveau_client2', function(data) {
@@ -381,7 +373,8 @@ io.on('connection', function(socket, pseudo) {
         });
 
         // contrôle liste connectés coté serveur
-        console.log("> Il reste " + nbUsers + " connectés");
+        console.log("> Il reste " + nbUsers + " utilisateurs sur les pages Robot et Pilote");
+        displayUsers();
     });
     
 
@@ -624,7 +617,7 @@ io.on('connection', function(socket, pseudo) {
 
 
     // Ajouts Web Sémantique (13/09/16) // -----------------------    
-
+    // Author: Hatim Aouzal
     // réception d'une messagre Websocket (Demande de ressources sur une scene)
     socket.on('getSceneRessources', function(data) {
         
@@ -670,10 +663,16 @@ io.on('connection', function(socket, pseudo) {
                                         retourData.push({propriete:n,valeur:q});
                                     }
                                     //console.log(JSON.stringify(retourData));
-                                    //socket.emit('onSceneRessources', {sentData: retourData});
-                                    io.to(socket.id).emit('onSceneRessources', {sentData: retourData}); // renvoi au demandeur
-                                    // socket.broadcast.emit('nouveauClientOut', data); // Envoie a tout le mode sauf au connecté éméteur...
-                                    // io.to(socket.id).emit('nouveauClientOut', data); // Envoie a uconnecté précis...
+                                    
+                                    // Envoi au demandeur
+                                    // socket.emit('onSceneRessources', {sentData: retourData});
+                                    
+                                    // Envoi a un connecté seulement (identifié par son socket ID, ici le demandeur...)
+                                    io.to(socket.id).emit('onSceneRessources', {sentData: retourData}); 
+                                    
+                                    // Envoi a tout le mode (sauf au demandeur...)
+                                    // socket.broadcast.emit('onSceneRessources', data); 
+                                   
                                 }); 
                             retourData = [];                     
                         }); //END LOCAL
@@ -686,8 +685,326 @@ io.on('connection', function(socket, pseudo) {
     }); // End socket.on('getSceneRessources'..
 
 
-    // ----------------------- // Ajouts Web Sémantique (13/09/16)
+    // ------Fonctions pour la partie Web Sémntique ------------------  
 
+    // Author: Hatim Aouzal - add le (13/09/16) 
+    // Récupération distante d'un fichier (ici un dataset .ttl)
+    function getFileFromServer(url, doneCallback) {
+        
+        console.log("@ getFileFromServer")
+
+        var xhr;
+
+        xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = handleStateChange;
+        xhr.open("GET", url, true);
+        xhr.send();
+
+        function handleStateChange() {
+            if (xhr.readyState === 4) {
+                doneCallback(xhr.status == 200 ? xhr.responseText : null);
+            }
+        }
+    }
+
+
+    // ----------------------- // Fin Ajouts Web Sémantique 
+
+
+    // ---- Page d'aministration ---------------------------------
+
+    // Adds du 26/09/2016 >> Persistence de la configuration
+    try {
+       config = require('./config.json');
+        console.log("require('./config.json') OK !");
+        //console.log(config);
+    } catch (e) {
+       console.log("require('./config.json') FAILED !");
+       config = {
+            isFakeRobubox: true,
+            activeMap: 'map_unavailable.jpg',
+            urlsRobot: urlsRobot, // Liste des urls disponibles pour le robot
+            urlsFoscam: urlsFoscam, // Liste des urls disponibles pour la Foscam
+            defaultIpRobot: defaultIpRobot,
+            defaultIpFoscam: defaultIpFoscam
+        };
+        //console.log(config);
+        persistConfig(config);
+    }
+    
+
+
+    // Ads le 17/09/2016 > Cartographie - Liste des maps disponibles
+    function getFiles (dir, files_){
+        files_ = files_ || [];
+        var files = fs.readdirSync(dir);
+        for (var i in files){
+            var name = dir + '/' + files[i];
+            if (fs.statSync(name).isDirectory()){
+                getFiles(name, files_);
+            } else {
+                files_.push(name);
+            }
+        }
+        return files_;
+    }
+
+   
+    // Adds du 25/O9/2016 > Admin > Upload file (map)
+    var storage =   multer.diskStorage({
+      destination: function (req, file, callback) {
+        callback(null, './maps');
+      },
+      filename: function (req, file, callback) {
+        console.log("file Object:");
+        console.log(file);
+        callback(null, file.originalname);
+      }
+    });
+    
+    var upload = multer({ storage : storage}).single('userPhoto');
+
+    //app.post('/api/photo',function(req,res){
+    app.post('/i3s/',function(req,res){
+        upload(req,res,function(err) {
+            if(err) {
+                console.log("EEEEEEEEEEEERRRRRRRRROOOOOOOORRRRRRRRRRRR")
+            }
+            res.sendFile(__dirname + '/admin.html');
+            console.log("SSSSSSSUUUUCCCCEESSSSSSSSSSSSS")
+        });
+    });
+
+    
+    function sendAdminMessage (type, title, msg) {
+        console.log('sendAdminMessage()');
+        var typeMessage = type;
+        var titleMessage = title;
+        var message = msg;
+        var data = {typeMessage: typeMessage, titleMessage: titleMessage, message: message}
+        //socket.broadcast.emit('messageToAdmin', data);
+        socket.emit('messageToAdmin', data);
+
+    }
+
+
+    // Adds du 25/O9/2016 > Admin > delete file (map)
+    socket.on("deleteMap", function(data) { 
+        
+        var deleteMap = data.deleteMap; 
+        console.log ("DELETE MAP: "+deleteMap);
+        var maps = getFiles('./maps'); 
+        var testMap = './maps/'+deleteMap;
+        var isInFolder = false;
+        for (m in maps) {
+            if(maps[m] == testMap ) {
+                isInFolder = true;
+            }
+        }
+        console.log("@ deleteMap checkFolder >>> "+ isInFolder)
+        if (isInFolder == true ) {
+            var filePath = "./maps/"+deleteMap ; 
+            fs.unlinkSync(filePath);
+            sendAdminMessage ('success', 'Delete Map', deleteMap)
+        }
+    });
+
+
+    // Adds du 16/09/2016 > Bouton ejection de tous les clients robot/Pilote et visiteurs
+    socket.on('ejectClients', function(data) {
+        var data = { url: indexUrl};  
+        socket.broadcast.emit('razConnexion',data); 
+        console.log ("> socket.broadcast.emit('razConnexions',"+data.url+")");
+     });
+    /**/
+    
+    // Adds du 16/09/2016 > Reload de tous les clients robot/Pilote et visiteurs
+    socket.on('reloadAllClients', function(data) {
+        var data = { url: indexUrl};  
+        socket.broadcast.emit('reloadAllClients',data); 
+        console.log ("> socket.broadcast.emit('reloadAllClients',"+data.url+")");
+     });
+    /**/
+
+    // Adds du 16/09/2016 > Ejection du robot
+    socket.on('ejectRobot', function(data) {
+        var data = { url: indexUrl};  
+        io.to(wsIdRobot).emit('razConnexion', data);
+        console.log ("> io.to(Robot).emit('razConnexions',"+data.url+")");
+     });
+    /**/
+
+    // Adds du 16/09/2016 > Ejection du pilote
+    socket.on('ejectPilot', function(data) {
+        var data = { url: indexUrl};  
+        io.to(wsIdPilote).emit('razConnexion', data); 
+        console.log ("> io.to(Pilote).emit('razConnexion',"+data.url+")");
+     });
+    /**/
+   
+    
+    // Adds du 16/09/2016 > Reload du robot
+    socket.on('reloadRobot', function(data) {
+        var data = { url: indexUrl};  
+        io.to(wsIdRobot).emit('reloadAllClients',data); 
+        console.log ("> io.to(Robot).emit('reloadAllClients',"+data.url+")");
+     });
+    /**/
+
+    // Adds du 16/09/2016 > Reload du pilote
+    socket.on('reloadPilot', function(data) {
+        var data = { url: indexUrl};  
+        io.to(wsIdPilote).emit('reloadAllClients',data); 
+        console.log ("> io.to(Pilote).emit('reloadAllClients',"+data.url+")");
+     });
+    /**/
+
+
+    // Adds du 17/09/2016 > Liste des conectés en page d'admin...
+    socket.on('onConnectionUser', function(data) { 
+        var pseudo = "???"
+        if (data.pseudo) pseudo = data.pseudo;
+        console.log("socket On >>> onConnectionUser: "+data.pseudo+" -:- "+socket.id) 
+        displayUsers();
+    }); 
+
+    // Adds du 18/O9/2016 > Demande des cartes dispos
+    socket.on("getMaps", function(data) { 
+        console.log("> socket.on(getMaps)")
+        var maps = getFiles('./maps');   
+        // io.to(socket.id).emit('getMaps', {maps: maps});
+        // Envoi de la réponse au demandeur
+        socket.emit('getMaps', {maps: maps});
+        console.log ("> socket.emit('getMaps',{maps: maps}");
+    });
+
+    // Adds du 20/O9/2016 >  Demande de l'état du mode de simulation:
+    socket.on("getFakeRobubox", function(data) { 
+        console.log("> socket.on(getFakeRobubox)")
+        var data = { isFakeRobubox: config.isFakeRobubox};  
+        // Envoi de la réponse au demandeur
+        socket.emit('getFakeRobubox', data);
+        console.log ("> socket.emit('getFakeRobubox',{ isFakeRobubox: "+isFakeRobubox+"})");
+    });
+
+    
+    // Adds du 20/O9/2016 >  Modification de l'état du mode de simulation:
+    socket.on("setFakeRobubox", function(data) { 
+        console.log("> socket.on(setFakeRobubox)")
+        isFakeRobubox = data.isFakeRobubox;
+        config.isFakeRobubox = isFakeRobubox;
+        persistConfig(config);  
+        var data = { isFakeRobubox: isFakeRobubox};                        
+        // Envoi à tout le mode (sauf à l'émeteur...)
+        socket.broadcast.emit('setFakeRobubox', data); 
+        console.log ("> socket.broadcast.emit('setFakeRobubox',{ isFakeRobubox: "+isFakeRobubox+"})");
+    });
+
+
+    // Adds du 20/O9/2016 > Demande de la carte active:
+    socket.on("getActiveMap", function(data) { 
+        console.log("> socket.on(getActiveMap)")
+        // 1: On vérifie que la carte existe dans le repertoire des maps.
+        // Si oui, on répond normalement
+        // Si non: on envoie l'image par défaut >> 'map_unavailable.jpg';
+        
+        var maps = getFiles('./maps'); 
+        //var testMap = './maps/'+activeMap;
+        var testMap = './maps/'+config.activeMap;
+        var isInFolder = false;
+        for (m in maps) {
+            if(maps[m] == testMap ) {
+                isInFolder = true;
+            }
+        }
+        /**/
+        //console.log("@ getActiveMap checkFolder >>> "+ testMap)
+        console.log("@@@@ getActiveMap checkFolder >>> "+ isInFolder)
+
+        //var isInFolder = checkFolder('./maps/',activeMap)
+        if (isInFolder == false) {
+            activeMap = 'map_unavailable.jpg';
+            config.activeMap = activeMap;
+            persistConfig(config);
+        }    
+        //var data = { activeMap: activeMap}; 
+        var data = { activeMap: config.activeMap};  
+        io.to(socket.id).emit('getActiveMap', data);
+        console.log ("> io.to("+socket.id+").emit('getActiveMap',{ activeMap: "+config.activeMap+"})");
+    });
+
+	// Adds du 23/O9/2016 > Modification de la carte active:
+    socket.on("setActiveMap", function(data) { 
+    	console.log("> socket.on(setActiveMap)")
+        activeMap = data.activeMap; 
+        config.activeMap = activeMap;
+        persistConfig(config);
+        socket.broadcast.emit('getActiveMap', data); 
+        console.log ("> socket.broadcast.emit('getActiveMap',{ activeMap: "+activeMap+"})");
+    });
+	
+	// Adds du 23/O9/2016 > Demande la liste des connectés aux IHM Pilot et Robot:
+    socket.on("getUsers", function(data) {
+        console.log("> socket.on(getUsers)") 
+        var data =  {listUsers: users2};
+        socket.emit('updateUsers', data );
+        console.log ("> socket.emit('getUsers',{ updateUsers: users2 })");
+    });
+
+
+    // Adds du 26/09/2016 > renvoie les IP caméra et robot
+    socket.on("getIpRessources", function(data) { 
+        var debug = "";
+        if (data.from) debug = " from "+data.from;
+        console.log("> socket.on( getIpRessources"+debug+" )") 
+        // console.log(config)
+        var data =  {
+                listUrlsRobot: config.urlsRobot,
+                listUrlsFoscam: config.urlsFoscam,
+                ipRobot: config.defaultIpRobot ,
+                ipFoscam: config.defaultIpFoscam
+
+            };
+        socket.emit('getIpRessources', data );
+        // socket.broadcast.emit('getIpRessources', data);
+        console.log ("> socket.emit('getIpRessources',data)");
+    });
+
+    // Adds du 26/09/2016 > Met à jour les IP camer et robot
+    socket.on("updateIpRessources", function(data) { 
+               
+        // console.log ("> socket.on(setIpRessources, data)");
+		console.log ("> socket.on(updateIpRessources, "+data.cible+")");
+        
+        if (data.cible == "Robot") config.defaultIpRobot = data.newData;
+        if (data.cible == "Camera") config.defaultIpFoscam = data.newData;
+
+        if (data.cible == "listUrlsRobot") config.urlsRobot = data.newData;
+        if (data.cible == "listUrlsFoscam") config.urlsFoscam = data.newData;
+        
+        
+        persistConfig(config);
+
+        var data =  {
+                from: "@ updateIpRessources",
+                listUrlsRobot: config.urlsRobot,
+                listUrlsFoscam: config.urlsFoscam,
+                ipRobot: config.defaultIpRobot ,
+                ipFoscam: config.defaultIpFoscam
+
+            };
+        
+        socket.emit('setIpRessources', data );
+        //socket.broadcast.emit('getIpRessources', data);
+        console.log ("> socket.emit('setIpRessources',data)");
+        /**/
+    
+
+
+    });
+
+
+    // ----------------------- // Fin Ajouts pages d'amnisitration
 
 
 });
@@ -698,29 +1015,77 @@ io.on('connection', function(socket, pseudo) {
 // Pour Contrôle des connectés coté serveur
 // Ecouteur de connexion entrante
 function onSocketConnected(socket) {
+    console.log("\n -------------------------------------------------");
     console.log("> Connexion entrante: (ID: " + socket.id + ")");
+    //displayUsers();
 }
 
 
-// Ajouts Web Sémantique (13/09/16) // -----------------------    
-function getFileFromServer(url, doneCallback) {
+// ------Fonctions pour la page d'administration ------------------  
+
+// Adds du 26/09/16 >> Ip Mobiserv & Foscam par défaut
+
+var urlRobotI3S = new models.ressourceUrl("127.0.0.1:7007", "IP Mobiserv I3S", "");
+urlsRobot[urlRobotI3S.Label] = urlRobotI3S;
+
+var urlRobotCSI = new models.ressourceUrl("10.0.15.74:7007", "IP Mobiserv CSI","");
+urlsRobot[urlRobotCSI.Label] = urlRobotCSI;
+
+var urlFoscamI3S = new models.ressourceUrl("192.168.1.50:88", "IP Foscam I3S", "");
+urlsFoscam[urlFoscamI3S.Label] = urlFoscamI3S;
+
+var urlFoscamCSI = new models.ressourceUrl("127.0.0.1:7007", "IP Foscam CSI", "");
+urlsFoscam[urlFoscamCSI.Label] = urlFoscamCSI;
+
+defaultIpRobot = urlRobotI3S;
+defaultIpFoscam = urlFoscamI3S;
+
+
+function persistConfig(config) {
+    console.log("@@@@ persistConfig(config)")
+    // console.log(config);
+    newConfig = JSON.stringify(config);
+    fs.writeFile('config.json', newConfig, "utf8", function (err) {
+        if (err) return console.log(err);
+        console.log('fs.writeFile > config.json');
+    });
+
+}
+
+// Ads le 17/09/2016 > 
+// Gestion des connectés - Fonction de test & débuggage
+function displayUsers() {
+
+
+/*
+    console.log("////////////////////////////////////////////////////////////////////");
+    // This will return the array of SockeId of all the connected clients
+    var allConnectedClients = Object.keys(io.sockets.connected);
+    console.log("allConnectedClients");
+    console.log(allConnectedClients);
+    console.log("-------------------------------------");
     
-    console.log("@ getFileFromServer")
-
-    var xhr;
-
-    xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = handleStateChange;
-    xhr.open("GET", url, true);
-    xhr.send();
-
-    function handleStateChange() {
-        if (xhr.readyState === 4) {
-            doneCallback(xhr.status == 200 ? xhr.responseText : null);
-        }
+    var allConnectedClients2 = io.sockets.connected;
+    for (v in allConnectedClients2) {
+        console.log("&&&&&&&&&&&&&&&&&-");
+        console.log(allConnectedClients2[v].id)
     }
+    
+
+    console.log("-------------------------------------");
+    console.log("HistoUsers");
+    console.log("-------------------------------------");
+    console.log(histoUsers2);
+    console.log("-------------------------------------");
+    console.log("ActiveUsers:");
+    console.log("-------------------------------------");
+    console.log(users2);
+    console.log("////////////////////////////////////////////////////////////////////");
+
+*/
+
+
 }
-// ----------------------- // Ajouts Web Sémantique (13/09/16)
 
 
 
@@ -728,7 +1093,10 @@ function getFileFromServer(url, doneCallback) {
 
 
 
-// --------------------- Persistance - Passerelles MongoDB
+
+
+
+// --------------------- Fonctions de Persistance - Passerelles MongoDB
 
 var handlers = {
     getCountDatabases: getCountDatabases,

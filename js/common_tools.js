@@ -57,6 +57,23 @@ exports.test = function(){
     }   
 
 
+  // Retourne une date préformatée [E-12:30:00:00:00]
+  // Paramètre: flag pour la première lettre...
+  exports.getHumanDate = function (timeStamp){
+    var theDate = new Date(timeStamp);
+    var h = theDate.getHours();
+    var m = theDate.getMinutes();
+    var s = theDate.getSeconds();
+    //var ms = theDate.getMilliseconds();
+    return h+":"+m+":"+s;
+  }  
+
+
+
+
+
+
+
   // Retourne un crhono brut
   exports.doChrono = function (startTime){
       var time=new Date(); 

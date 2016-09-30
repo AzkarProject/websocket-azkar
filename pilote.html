@@ -338,6 +338,8 @@
     <script>
         var type = "pilote-appelant";
         var proto = "1to1";
+        // On initialise les flages du mode simulateur
+        var fakeRobubox = null;
     </script>
     
 
@@ -349,7 +351,7 @@
     <script src="/js/common_tools.js"></script>
     <script src="/js/common_models.js"></script>
     <script src="/js/common_app_settings.js"></script>
-    <script src="/js/branch_settings/common_app_branch_settings.js"></script>      
+<!--     <script src="/js/branch_settings/common_app_branch_settings.js"></script>     -->  
     
 
 <script>
@@ -377,8 +379,7 @@
 
     <script>                    
             // Affichage de l'entête
-            ihm.getHeaderPage();
-
+            ihm.getHeaderPage(pseudo);
     </script> 
 
 </body>

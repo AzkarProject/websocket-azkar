@@ -36,149 +36,161 @@
 (function(exports){
 
 console.log ("module_komcom chargé");
+// console.log("fakeRobubox = "+fakeRobubox)
 
 // ------------ 05/2016 -- Versions adaptées pour KomNav/MobiServ -------------------
 // Notes: la rétrocompatibilité Robubox n'est plus maintenue...
 
-//mobiservUrl = '10.0.15.74:7007'; // MobiServ Kompaï LaVilette
-//foscamUrl = "10.0.15.50:88"; // Foscam Kompaï LaVilette
+// ------------ 07/2016 -- Abandon compatibilité KomNav (serveur WSS plus maintenu par 52js)
 
-mobiservUrl = "127.0.0.1:7007"; // Mobiserve Robulab Labo (Si HP seul)
-foscamUrl = "192.168.1.50:88"; // Foscam Robulab Labo
+// ------------ 09/2016 -- Ajouts IPs dynamiques pour Robot et caméra
+
+mobiservUrl = null; // MobiServ Kompaï LaVilette
+foscamUrl = null; // Foscam Kompaï LaVilette
+
+// Récupération des infos serveur
+function getIpRessources() {
+    socket.emit('getIpRessources',""); 
+}
+
+// A la réponse du serveur:
+socket.on("getIpRessources", function(data) { 
+    
+    foscamUrl = data.ipFoscam.url;
+    mobiservUrl = data.ipRobot.url;
+    console.log("socket.on('getIpRessources', data");
+    console.log(data);
+
+});
+
+getIpRessources();
 
 
 exports.sendGotoPOI = function (data) {
 
-       if ( robotInfo.State === 16) return; // si le robot est en mouvement...
        
-       console.log("komcom.sendGotoPOI("+data.poiname+")");
-        
-        
-        // On n'envoie la commande que si le robot est branché
+    if (fakeRobubox == null) return;
 
-        if (fakeRobubox == false) {
-             
-            //console.log
+    if ( robotInfo.State === 16) return; // si le robot est en mouvement...
+   
+    console.log("komcom.sendGotoPOI("+data.poiname+")");
+    
+    
+    // On n'envoie la commande que si le robot est branché
+
+    if (fakeRobubox == false) {
+         
+        //console.log
+
+        var url = null
+        //url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/POI" ; // CORS-ANYWHERE
+        //url = "https://127.0.0.1:443/http://192.168.1.66:7007/Navigation/Goto/POI" ; // CORS-ANYWHERE
+        url = "https://127.0.0.1:443/http://"+mobiservUrl+"/Navigation/Goto/POI" ; // CORS-ANYWHERE
+
+        if ( url != null) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', url);
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            //xhr.send(data);
+            xhr.send(JSON.stringify({
+                    "poiname": data.poiname,
+                }));
+            xhr.closed;
+        
+
+
+        }
+
+   
+    }         
+
+    // Petite tempo avant de récupérer la trajectoire du robot; le temps pour lui de la calculer...
+    var result = setTimeout(function() { getTrajectoryPath(); }, 500); 
+
+
+    function getTrajectoryPath() {
+
+        console.log ("@ getTrajectoryPath()")
+        // si on est en mode simulation
+        // On récupère un dataset correspondant à la trajectoire demandée
+        // la commande getFakeTrajectory étant sensée simuler 
+        // ce que renverrai le vrai robot...
+        if (fakeRobubox == true) {  
+            
+            getFakeTrajectory(data);
+
+        } else {
 
             var url = null
-            //url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/POI" ; // CORS-ANYWHERE
-            //url = "https://127.0.0.1:443/http://192.168.1.66:7007/Navigation/Goto/POI" ; // CORS-ANYWHERE
-            url = "https://127.0.0.1:443/http://"+mobiservUrl+"/Navigation/Goto/POI" ; // CORS-ANYWHEREmobiservUrl
-
-            if ( url != null) {
-                var xhr = new XMLHttpRequest();
-                xhr.open('POST', url);
-                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-                //xhr.send(data);
-                xhr.send(JSON.stringify({
-                        "poiname": data.poiname,
-                    }));
-                xhr.closed;
-            
-
-
-            }
-
-       
-        }         
-
-        // Petite tempo avant de récupérer la trajectoire du robot; le temps pour lui de la calculer...
-        var result = setTimeout(function() { getTrajectoryPath(); }, 500); 
-
-
-        function getTrajectoryPath() {
-
-            console.log ("@ getTrajectoryPath()")
-            // si on est en mode simulation
-            // On récupère un dataset correspondant à la trajectoire demandée
-            // la commande getFakeTrajectory étant sensée simuler 
-            // ce que renverrai le vrai robot...
-            if (fakeRobubox == true) {  
+            //url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/State" ; // CORS-ANYWHERE
+            //url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/Status" ; // CORS-ANYWHERE
+            //url = "https://127.0.0.1:443/http://192.166.1.66:7007/Navigation/Goto/Status" ; // CORS-ANYWHERE
+            url = "https://127.0.0.1:443/http://"+mobiservUrl+"/Navigation/Goto/Status" ; // CORS-ANYWHERE
+            if (url != null) {
+                $.get(url, function(data) { // la localisation du robot sur la carte
+                path = JSON.parse(data);
+                socket.emit("gotoTrajectory",{path});
+                carto.convertPath()
                 
-                getFakeTrajectory(data);
-
-            } else {
-
-                var url = null
-                //url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/State" ; // CORS-ANYWHERE
-                //url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/Status" ; // CORS-ANYWHERE
-                //url = "https://127.0.0.1:443/http://192.166.1.66:7007/Navigation/Goto/Status" ; // CORS-ANYWHERE
-                url = "https://127.0.0.1:443/http://"+mobiservUrl+"/Navigation/Goto/Status" ; // CORS-ANYWHERE
-                if (url != null) {
-                    $.get(url, function(data) { // la localisation du robot sur la carte
-                    path = JSON.parse(data);
-                    socket.emit("gotoTrajectory",{path});
-                    carto.convertPath()
-                    
-                    });
-                }
+                });
             }
-
-
-        }
-
-        // On récupère la trajectoire en cours
-        // Avec une intervalle d'une seconde...
-
-        if (fakeRobubox == false ) result = setInterval(function() { getTrajectoryState(); }, 2000);
-
-
-
-
-
-        function stopTrajectoryState() {
-            clearInterval(result);
-            console.log("Trajectory Statut: Stopped!")
-        }
-        
-
-
-        function getTrajectoryState() {
-
-                    //activeGoto = true
-
-                    if (fakeRobubox == true) {  
-                        var gotoState = getFakeGotoTrajectoryState();
-                        //console.log("Trajectory Statut: "+gotoState )
-                        //console.log(gotoState);
-                        socket.emit("gotoStateReturn",{gotoState});
-
-                    } else {
-
-                        var url = null
-                        //url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/State" ; // CORS-ANYWHERE
-                        //url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/Status" ; // CORS-ANYWHERE
-                        //url = "https://127.0.0.1:443/http://192.168.1.66:7007/Navigation/Goto/Status" ; // CORS-ANYWHERE
-                        url = "https://127.0.0.1:443/http://"+mobiservUrl+"/Navigation/Goto/Status" ; // CORS-ANYWHERE
-                        if (url != null) {
-                            $.get(url, function(data) { // la localisation du robot sur la carte
-                            var gotoState = JSON.parse(data);
-                            gotoState.Trajectory = null; // On vire le tableau des trajectoires pour ne pas surcharger le système....
-                            //console.log("Trajectory Statut: "+gotoState )
-                            //console.log(gotoState);
-                            
-                            // Version sans activeGoto..
-                            /*// Detection de fin de déplacement...
-                            if (gotoState.Status == 0) { // 0 = status 'Waiting'
-                                 clearInterval(result);
-                                 console.log("Trajectory Statut: Stopped!")
-                            }
-                            /**/
-                            socket.emit("gotoStateReturn",{gotoState});
-                            
-                            });
-                        }
-                    }
-
-
         }
 
 
+    }
+
+    // On récupère la trajectoire en cours
+    // Avec une intervalle d'une seconde...
+
+    if (fakeRobubox == false ) result = setInterval(function() { getTrajectoryState(); }, 2000);
 
 
+    function stopTrajectoryState() {
+        clearInterval(result);
+        console.log("Trajectory Statut: Stopped!")
+    }
+    
 
 
+    function getTrajectoryState() {
 
+        //activeGoto = true
+
+        if (fakeRobubox == true) {  
+            var gotoState = getFakeGotoTrajectoryState();
+            //console.log("Trajectory Statut: "+gotoState )
+            //console.log(gotoState);
+            socket.emit("gotoStateReturn",{gotoState});
+
+        } else {
+
+            var url = null
+            //url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/State" ; // CORS-ANYWHERE
+            //url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/Status" ; // CORS-ANYWHERE
+            //url = "https://127.0.0.1:443/http://192.168.1.66:7007/Navigation/Goto/Status" ; // CORS-ANYWHERE
+            url = "https://127.0.0.1:443/http://"+mobiservUrl+"/Navigation/Goto/Status" ; // CORS-ANYWHERE
+            if (url != null) {
+                $.get(url, function(data) { // la localisation du robot sur la carte
+                var gotoState = JSON.parse(data);
+                gotoState.Trajectory = null; // On vire le tableau des trajectoires pour ne pas surcharger le système....
+                //console.log("Trajectory Statut: "+gotoState )
+                //console.log(gotoState);
+                
+                // Version sans activeGoto..
+                /*// Detection de fin de déplacement...
+                if (gotoState.Status == 0) { // 0 = status 'Waiting'
+                     clearInterval(result);
+                     console.log("Trajectory Statut: Stopped!")
+                }
+                /**/
+                socket.emit("gotoStateReturn",{gotoState});
+                
+                });
+            }
+        }
+
+
+    }
 
 }
 
@@ -188,7 +200,8 @@ exports.sendGotoPOI = function (data) {
 // exports.sendDrive = function (enable, aSpeed,lSpeed){
 exports.sendDrive = function (data){        
         
-   
+    if (fakeRobubox == null) return;
+
     var enable = data.enable;
     var aSpeed = data.aSpeed;
     var lSpeed = data.lSpeed;
@@ -250,50 +263,60 @@ exports.sendDrive = function (data){
 // Note: Compatible avec la version de komNav/Mobiserve
 exports.getBattery = function (){
         
-			 // console.log("komcom.getBattery() >>> ");
-	         var delay = 1000; // l'interval de temps au bout du quel on envoi une autre requete pour rafraichir les information
-             var dataJson, remaining, percentage, dataString, thenum, progressBar;
+    // console.log('@@@@@@@@@@@@@@@ getBattery')
 
-             if (fakeRobubox == true) {
-                
-                batteryInfo = getFakeBattery();
-                setInterval(function() {
-                    thenum = batteryInfo.Remaining ;
-                    percentage = (thenum <= 100) ? thenum : 100; // 6- 
-                    // rafraichissement de la jauge sur l'IHM Robot
-                    ihm.refreshJaugeBattery(percentage);
-                    // envoi des valeurs au pilote via le serveur
-                    navigation_interface.sendToPilote("battery_level",percentage)
-                 }, delay);
-                
+    if (fakeRobubox == null) return;
 
-             } else {
+    // console.log("komcom.getBattery() >>> ");
+    var delay = 1000; // l'interval de temps au bout du quel on envoi une autre requete pour rafraichir les information
+    var dataJson, remaining, percentage, dataString, thenum, progressBar;
 
-             	var url = null;
-                //url = "https://127.0.0.1:443/http://127.0.0.1:7007/Devices/Battery" ; // CORS-ANYWHERE    
-                // url = "https://127.0.0.1:443/http://192.168.1.66:7007/Devices/Battery" ; // CORS-ANYWHERE  
-    	        url = "https://127.0.0.1:443/http://"+mobiservUrl+"/Devices/Battery" ; // CORS-ANYWHERE  
-                setInterval(function() {
-    	            
-                    $.get(url, function(data) { 
-                        thenum = data;
-                        percentage = (data <= 100) ? data : 100; 
-                    });
-                    
-                    // rafraichissement de la jauge sur l'IHM Robot
-                    ihm.refreshJaugeBattery(percentage);
-                    // envoi des valeurs au pilote via le serveur
-                    navigation_interface.sendToPilote("battery_level",percentage)
+    if (fakeRobubox == true) {
 
-    	        }, delay);
+        
+        batteryInfo = getFakeBattery();
+        loopBattery = setInterval(function() {
+            // console.log('@@@@@@@@@@@@@@@ getBattery (Fake true)')
+
+            thenum = batteryInfo.Remaining ;
+            percentage = (thenum <= 100) ? thenum : 100; // 6- 
+            // rafraichissement de la jauge sur l'IHM Robot
+            ihm.refreshJaugeBattery(percentage);
+            // envoi des valeurs au pilote via le serveur
+            navigation_interface.sendToPilote("battery_level",percentage)
+         }, delay);
 
 
-             }
-                
-                
+    } else {
+
+    	var url = null;
+        //url = "https://127.0.0.1:443/http://127.0.0.1:7007/Devices/Battery" ; // CORS-ANYWHERE    
+        // url = "https://127.0.0.1:443/http://192.168.1.66:7007/Devices/Battery" ; // CORS-ANYWHERE  
+        url = "https://127.0.0.1:443/http://"+mobiservUrl+"/Devices/Battery" ; // CORS-ANYWHERE  
+        loopBattery = setInterval(function() {
+        
+            // console.log('@@@@@@@@@@@@@@@ getBattery (Fake false)')    
+
+            $.get(url, function(data) { 
+                thenum = data;
+                percentage = (data <= 100) ? data : 100; 
+            });
+
+            
+            // Debugg fakeRobubox via admin
+            //percentage = (25 <= 100) ? 25 : 100; 
 
 
-               
+            // rafraichissement de la jauge sur l'IHM Robot
+            ihm.refreshJaugeBattery(percentage);
+            // envoi des valeurs au pilote via le serveur
+            navigation_interface.sendToPilote("battery_level",percentage)
+
+        }, delay);
+
+
+    }
+                          
 } // End getBattery
 
 
@@ -302,7 +325,8 @@ exports.getBattery = function (){
 // TODO à tester...
 exports.sendFullStop = function (data){        
         
-    
+    if (fakeRobubox == null) return;
+
     console.log("@ sendFullStop()");
     stopFakeFollowTrajectory();
     robotInfo.State = 8;
@@ -340,17 +364,19 @@ exports.sendFullStop = function (data){
 exports.getListPOI = function (init){
 
 	
-    
+    if (fakeRobubox == null) return;
 
     var url = null;
     //url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/POI';
     //url = 'https://127.0.0.1:443/http://192.168.1.66:7007/Navigation/Map/POI';
     url = "https://127.0.0.1:443/http://"+mobiservUrl+"/Navigation/Map/POI";
     if (fakeRobubox == true) {  
-    listPOI = getFakelistPOI();
-    DEFFERED_listPOI.resolve();
+        
+        listPOI = getFakelistPOI();
+        DEFFERED_listPOI.resolve();
 
     } else {
+        
         
         if (url != null) {
 
@@ -362,6 +388,18 @@ exports.getListPOI = function (init){
 
             });
         }
+        /**/
+        
+        /*// Debugg fakeRobubox via admin
+        // listPOI = [];
+        listPOI = [
+            {"Name":"Poi1","Pose":{"X":-2.95,"Y":-2.3,"Theta":3.15}, "label":"Marne 1914" },
+            {"Name":"Poi2","Pose":{"X":7,"Y":0,"Theta":5.5}, "label":"Tranchées" },
+            {"Name":"Poi3","Pose":{"X":13,"Y":1,"Theta":4.8}, "label":"Tranchée Allemande" },
+            {"Name":"Poi4","Pose":{"X":20,"Y":1.5,"Theta":5}, "label":"Tranchée française" }
+        ] ;
+        DEFFERED_listPOI.resolve();
+        /**/
 
     }
 
@@ -378,7 +416,8 @@ exports.getListPOI = function (init){
 // Une sorte de pattern "Singleton"
 exports.getRobotInfo = function (init){
 
-	
+	if (fakeRobubox == null) return;
+    
 	var url = null;
 	//url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/Localization';
     //url = 'https://127.0.0.1:443/http://192.168.1.66:7007/Navigation/Map/Localization';
@@ -389,7 +428,8 @@ exports.getRobotInfo = function (init){
 
     } else {
     	
-    	if (url != null) {
+    	
+        if (url != null) {
 			$.get(url, function(data) { // la localisation du robot sur la carte
 		    robotInfo = JSON.parse(data);
 		    if (init == true) {
@@ -399,7 +439,12 @@ exports.getRobotInfo = function (init){
                 }
 			});
 		}
-
+        /**/
+        
+        /*// Debugg fakeRobubox via admin
+        robotInfo = {"Pose":{"Orientation":4.8,"Position":{"X":13,"Y":1,"Z":0}},"State":8,"Timestamp":2916720}
+        DEFFERED_RobotInfo.resolve();
+        /**/
     }
 
     // Pour tests
@@ -412,7 +457,7 @@ exports.getRobotInfo = function (init){
 // Note: Compatible avec la version de komNav/Mobiserve
 exports.getDataMap = function (){
 	
-	
+	if (fakeRobubox == null) return;
 	
 	//console.log ('get map metadatas');
     // Titi: Rebond proxy en https(Client Robot) > Http(Robubox/KomNav)
@@ -434,7 +479,9 @@ exports.getDataMap = function (){
     if (fakeRobubox == true) {  
         dataMap = getFakeDataMap();
         DEFFERED_DataMap.resolve();
+    
     } else {
+        
         
         if (url != null) {
             $.get(url, function(rep) { // Les informations de la carte 
@@ -445,6 +492,12 @@ exports.getDataMap = function (){
                 console.log(dataMap)
             }); 
         } 
+        /**/
+
+        /*// Debugg fakeRobubox via admin
+        dataMap = {"Offset":{"X":-17.4151232326,"Y":-21.3146600184},"Width":3942,"Stride":3944,"Height":1928,"Data":null,"Resolution":0.019999999553}
+        DEFFERED_DataMap.resolve();
+        /**/
     }  
 
 }

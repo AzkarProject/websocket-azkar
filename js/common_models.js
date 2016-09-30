@@ -62,6 +62,15 @@ exports.client = function client (id,pseudo,placeliste,typeClient,connectionDate
   this.peerCnxCollection = null;
 }
 
+// Urls des ressources (Robot, caméras IP)
+exports.ressourceUrl = function ressourceUrl (url,Label,description){
+  this.url = url;
+  this.Label = Label;
+  if (description ) this.description = description;
+}
+
+
+// Géolocalisation & Web sémantique
 
 // Objet POI (Pont d'intêret sur la carte)
 exports.pointOfInterest = function pointOfInterest (Name,Pose,Label){
@@ -73,9 +82,6 @@ exports.pointOfInterest = function pointOfInterest (Name,Pose,Label){
   this.Pose.Theta = Pose.Theta;
   this.tags = null;
 }
-
-
-
 
 // -- Objet Map
 // Todo Ontologie amo:MuseumMap

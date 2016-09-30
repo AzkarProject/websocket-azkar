@@ -4,7 +4,7 @@
 
 to download this branch:
 
-git clone -b 1to1-cnrs --single-branch https://github.com/AzkarProject/websocket-azkar.git
+git clone -b 1to1-generic --single-branch https://github.com/AzkarProject/websocket-azkar.git
 
 Copyright © CNRS (Laboratoire I3S) / université de Nice
 Contributeurs: Thierry Bergeron & Michel Buffa, 2015-2016
@@ -16,6 +16,22 @@ respectant les principes de diffusion des logiciels libres. Vous pouvez
 utiliser, modifier et/ou redistribuer ce programme sous les conditions
 de la licence CeCILL-C telle que diffusée par le CEA, le CNRS et l'INRIA 
 sur le site "http://www.cecill.info".
+
+Révision 1.6.0
+- Implémentation d'une couche de persistence sous MongoDB (non exploitée pour l'instant):
+- Implémentation d'une couche de web sémantique permettant:
+    - Selon le POI le plus proche, le téléchargement de ressources complémentaires
+    - L'affichage de ces ressources (Photos, vidéos, articles, données fournies par le musée)
+- Implémentation des commandes de caméra IP de type Foscam
+- Implémentation d'une interface d'administration permettant:
+    - l'éjection ou le reload forcé du pilote et du robot
+    - l'ajout, la sélection et la suppresion à la volée de maps pour la cartographie
+    - la bascule à la volée en mode de simulation robot "FakeRobubox"
+    - l'ajout, la sélection et la suppresion à la volée des IPs pour les caméras Foscam et les robots
+    - La persistence de ces configurations
+- Modification du Header des IHMs
+- Modification légère de l'IHM Robot
+
 
 Révision 1.5.2:
 - Abandon rétrocompatibilité systême embarqué "Robubox"

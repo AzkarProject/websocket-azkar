@@ -41,6 +41,8 @@ console.log("module_navigation_interface chargé");
 exports.sendToRobot = function (rpcMethodName, values,controlDevice, driveCommand){     
 
 
+       console.log(' navigation_interface.sendToRobot(rpcMethodName, values, controlDevice,"");');
+
         if (controlDevice == "kom-remote") {
             driveCommand = {
                  // driveSettings: this.settings.rpcMethod,
@@ -61,10 +63,23 @@ exports.sendToRobot = function (rpcMethodName, values,controlDevice, driveComman
         }
         // console.log("@ sendToRobot: "+driveCommand.command);
         
-        // envoi des valeurs au serveur par websocket
-        if (parameters.navCh == 'webSocket') socket.emit("piloteOrder", driveCommand);
-        // envoi des valeurs au serveur par webRtc
-        else if (parameters.navCh == 'webRTC') sendCommand(driveCommand);
+
+        if (type === "pilote-appelant") {
+
+            // envoi des valeurs au serveur par websocket
+            if (parameters.navCh == 'webSocket') socket.emit("piloteOrder", driveCommand);
+            // envoi des valeurs au serveur par webRtc
+            else if (parameters.navCh == 'webRTC') sendCommand(driveCommand);
+            
+        
+
+        } else {
+
+
+        }
+
+
+
 
 };
 
