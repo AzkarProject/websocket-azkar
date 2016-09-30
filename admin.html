@@ -283,8 +283,8 @@
 			if (response == true) {
 			    isFakeRobubox = boolean;
 
-				if (isFakeRobubox == true) txt = "Mode simulation activé ! <br/> Reload des IHM Pilote et Robot en cours...";
-				if (isFakeRobubox == false) txt = "Mode simulation désactivé <br/> Reload des IHM Pilote et Robot en cours...";
+				if (isFakeRobubox == true) txt = "Mode simulation activé !";
+				if (isFakeRobubox == false) txt = "Mode simulation désactivé !";
 
 				var data = { isFakeRobubox: isFakeRobubox};	
 				socket.emit('setFakeRobubox',data); // Envoi au serveur
@@ -529,7 +529,7 @@
             socket.emit('getIpRessources',""); 
         }
     
-        // A la réponse du serveur:
+        // Réponse du serveur au chargement de la page:
         socket.on("getIpRessources", function(data) { 
             
             console.log("socket.on('getIpRessources', data");
@@ -550,12 +550,15 @@
         
 
 
-        // A la réponse du serveur:
+        // Réponse du serveur après select/add/delete d'une IP caméra ou Robot:
         socket.on("setIpRessources", function(data) { 
             
             console.log("socket.on('setIpRessources', data");
             console.log(data);
 
+            var hasRobot = tools.searchInObjects(activeUsers,'typeClient','Robot','boolean');
+            if (hasRobot == true) socket.emit('reloadRobot',""); // Ordre au robot de reloader son IHM
+            
             ipFoscam = data.ipFoscam;
             ipRobot = data.ipRobot;
             listUrlsRobot = data.listUrlsRobot;
@@ -569,7 +572,7 @@
 
 
 
-
+        // Selection de l'ip caméra
         function setIp_Robot(parameter){
             
             console.log('setIp_Robot('+parameter+')');
@@ -585,6 +588,7 @@
         }
 
         
+        // Sélection de l'ip robot
         function setIp_Camera(parameter){
             
             console.log('setIp_Camera('+parameter+')');
@@ -602,6 +606,7 @@
 
 
 
+        // suppression d'une IP robot
         function deleteIp_Robot(parameter){
             console.log('deleteIp_Robot('+parameter+')');
             
@@ -618,6 +623,7 @@
             }
         }
 
+        // suppression d'une IP caméra
         function deleteIp_Camera(parameter){
             console.log('deleteIp_Camera('+parameter+')');
             
@@ -637,6 +643,10 @@
         }
 
        
+       
+       // Ajouts d'IPs caméra et robot
+
+
        newIpRobot = document.getElementById("newIP_Robot");
        newLabelRobot = document.getElementById("newLabel_Robot");
        newIpCamera = document.getElementById("newIP_Camera");
