@@ -79,7 +79,7 @@ appName = appSettings.appName();
 appBranch = appSettings.appBranch();
 appVersion = appSettings.appVersion();
 appCredit= appSettings.appCredit()
-appInstanceLabel = appSettings.appInstanceLabel();
+appInstanceTitle = appSettings.appInstanceTitle();
 
 // Si présence d'un fichier de config propre à la branche: Overwriting des settings,
 var appBranchSettings;
