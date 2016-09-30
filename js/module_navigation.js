@@ -116,7 +116,7 @@
 
         // Reception de données de navigation
         socket.on("navigation", function(data) {
-        console.log(">>> Socket.on(navigation)")   
+        // console.log(">>> Socket.on(navigation)")   
             
             if (data.command == "map_parameters2") {
     			 
@@ -540,7 +540,7 @@
           
           if (robotColor == 'green')  {
 
-                console.log("activeRecommandation:"+activeRecommandation)
+                // console.log("activeRecommandation:"+activeRecommandation)
                 // déclencer les traitements idoïnes en fonction du nearestPoiName
                 // Algo: boucler sur listPOI
                 var sceneName = null;
