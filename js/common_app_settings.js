@@ -72,8 +72,8 @@
 	// il faut veiller a préciser le numéro de port dans l'url
 	// pour se connecter à l'application. 
 	exports.appServerPort = function(){
-		return 443;
-		// return 80;
+		// return 443;
+		return 80;
 	}
 
 	// Retourne le nom d'instance de l'application
