@@ -536,11 +536,11 @@
     function webSemanticRecommandations() {
 
         
-        console.log("webSemanticRecommandations()")
+        
 
         // if (fakeRobubox != true) return    
         setInterval(function() {
-          
+          console.log("webSemanticRecommandations()")
           if (robotColor == 'green')  {
 
                 // console.log("activeRecommandation:"+activeRecommandation)
@@ -549,6 +549,7 @@
                 var sceneName = null;
                 //var title = null;
                 //var htmlContent = ""; 
+                console.log("webSemanticRecommandations(activeRecommandation = "+activeRecommandation+")")
                 for (poi in listPOI) {
                     
                     if (nearestPoiName == listPOI[poi].Name )  {
