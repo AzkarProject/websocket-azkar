@@ -146,12 +146,12 @@ exports.hideAllRecommandations = function() {
 
 cliquableLogo = '<div style="float:left; margin-right:20px"><a href="/">';
 cliquableLogo += '<img src="/images/logo/AZKAR-v2.png" alt="AZKAR PROJECT" title="Projet Azkar"  width="150px;" height="54px"/>';
-cliquableLogo += '</a></div>';
+// cliquableLogo += '</a></div>';
 
 exports.writeRecommandations = function (type,title,body,duration){
 	if (IS_illustrated == true) return
 	IS_illustrated = true
-	titleMessage = cliquableLogo+'<h3>'+title+'</h3>';
+	titleMessage = '<div style="float:left;>'+cliquableLogo+'</a><h3>'+title+'</h3></div>';
 	var textMessage = titleMessage+body;
 	$('.'+type).html(textMessage);
 	
