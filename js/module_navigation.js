@@ -560,7 +560,7 @@
                                     //var sceneName = selectElmt.options[selectElmt.selectedIndex].value;
                                     socket.emit('getSceneRessources', {scene: sceneName});
                                     console.log( "socket.emit('getSceneRessources', {scene: "+sceneName+"})"    )
-                                    //activeRecommandation = true;
+                                    activeRecommandation = true;
 
                                     wsTitle = "Ressources recommandées pour la scène '"+sceneName+"'";
                                     wsHtmlContent = "<div><p>Blabla quelconque...</p></div>";
