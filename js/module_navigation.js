@@ -805,10 +805,10 @@
 
 
 
-        test01 += '</div>'
+                test01 += '</div>'
 
             var wsTitle = "";
-            if (sceneNumber) wsTitle = "Scene n°"+ sceneNumber+ " : "+sceneTitle;
+            if (sceneNumber) wsTitle = logo+"Scene n°"+ sceneNumber+ " : "+sceneTitle;
             notifications.hideAllRecommandations()
             // 500 ms de tempo en paramètre pour laisser le temps 
             // au plugin lightbox de reparser la page...
