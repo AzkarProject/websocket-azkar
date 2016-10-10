@@ -530,9 +530,11 @@
     
     
     activeRecommandation = false;
+    lastPoiName = null
     var wsTitle = null;
     var wsHtmlContent = null;
-    var isLinkedToWS = false;
+    // var isLinkedToWS = false;
+    
     function webSemanticRecommandations() {
 
         
@@ -540,8 +542,10 @@
 
         // if (fakeRobubox != true) return    
         setInterval(function() {
-           console.log("-----------------------------------------------------------------------")  
+           console.log("---------------------------------")  
            console.log("webSemanticRecommandations(activeRecommandation = "+activeRecommandation+")") 
+           console.log("webSemanticRecommandations(lastPoiName = "+lastPoiName+")")
+           console.log("webSemanticRecommandations(nearestPoiName = "+nearestPoiName+")")
           if (robotColor == 'green')  {
 
                 // console.log("activeRecommandation:"+activeRecommandation)
@@ -561,7 +565,7 @@
                                 sceneName = listPOI[poi].label
 
                                 if (activeRecommandation === false) {
-                                    isLinkedToWS = true;
+                                    //isLinkedToWS = true;
                                     //var sceneName = selectElmt.options[selectElmt.selectedIndex].value;
                                     socket.emit('getSceneRessources', {scene: sceneName});
                                     console.log( "socket.emit('getSceneRessources', {scene: "+sceneName+"})"    )
@@ -575,7 +579,7 @@
                                 }
 
                             } else {
-                                isLinkedToWS = false;
+                                // isLinkedToWS = false;
                                 sceneName = nearestPoiName;
                                 wsTitle = "Nearest POI: '"+sceneName+"'";
                                 activeRecommandation = false;
@@ -585,46 +589,53 @@
                     } else {
 
                          sceneName = nearestPoiName;
-                         
+                         // Pour eviter les affichages en boucle
+                         if (lastPoiName != nearestPoiName) {
+                                console.log("webSemanticRecommandations(new PoiName !!!!)")
 
-                         /*
+                                /*
+                                if (sceneName == "Start") {
+                                        isLinkedToWS = true;
+                                        socket.emit('getSceneRessources', {scene: "Marne14"});
+                                        console.log( "socket.emit('getSceneRessources', {scene: START })"    )
+                                        activeRecommandation = true;
+                                        wsTitle = "Test POI START";
+                                        wsHtmlContent = "";
+                                }
+                                /**/
 
-                        if (sceneName == "Start") {
-                                isLinkedToWS = true;
-                                socket.emit('getSceneRessources', {scene: "Marne14"});
-                                console.log( "socket.emit('getSceneRessources', {scene: START })"    )
-                                activeRecommandation = true;
-                                wsTitle = "Test POI START";
-                                wsHtmlContent = "";
-                        }
-                        /**/
+                                if (sceneName == "PilierA") {
+                                        //isLinkedToWS = true;
+                                        socket.emit('getSceneRessources', {scene: "Marne14"});
+                                        console.log( "socket.emit('getSceneRessources', {scene: Marne14 })"    )
+                                        activeRecommandation = true;
 
-                        if (sceneName == "PilierA") {
-                                isLinkedToWS = true;
-                                socket.emit('getSceneRessources', {scene: "Marne14"});
-                                console.log( "socket.emit('getSceneRessources', {scene: Marne14 })"    )
-                                activeRecommandation = true;
+                                        wsTitle = "Ressources recommandées pour la scène 'Marne14'";
+                                        wsHtmlContent = "";
+                                
+                                } else if (sceneName == "PilierB") {
+                                        //isLinkedToWS = true;
+                                        socket.emit('getSceneRessources', {scene: "La_tranchee"});
+                                        console.log( "socket.emit('getSceneRessources', {scene: La_tranchee })"    )
+                                        activeRecommandation = true;
 
-                                wsTitle = "Ressources recommandées pour la scène 'Marne14'";
-                                wsHtmlContent = "";
-                        
-                        } else if (sceneName == "PilierB") {
-                                isLinkedToWS = true;
-                                socket.emit('getSceneRessources', {scene: "La_tranchee"});
-                                console.log( "socket.emit('getSceneRessources', {scene: La_tranchee })"    )
-                                activeRecommandation = true;
+                                        wsTitle = "Ressources recommandées pour la scène 'La_tranchee'";
+                                        wsHtmlContent = "";
+                                
 
-                                wsTitle = "Ressources recommandées pour la scène 'La_tranchee'";
-                                wsHtmlContent = "";
-                        
-
-                        } else {
-                            // isLinkedToWS = false;
-                            wsTitle = "Nearest POI: '"+sceneName+"'";
-                            activeRecommandation = false;
-                        }
+                                } else {
+                                    // isLinkedToWS = false;
+                                    wsTitle = "Nearest POI: '"+sceneName+"'";
+                                    activeRecommandation = false;
+                                }
 
 
+                                console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")   
+                                console.log("webSemanticRecommandations(activeRecommandation = "+activeRecommandation+")")
+                                //console.log("webSemanticRecommandations(isLinkedToWS = "+isLinkedToWS+")")
+                                notifications.writeRecommandations ("miscelleanous",wsTitle,"")
+
+                        } // if (lastPoiName != nearestPoiName) 
 
                     }
                 
@@ -632,16 +643,19 @@
 
             }
             
-            console.log("webSemanticRecommandations(nearestPoiName = "+nearestPoiName+")")
-            console.log("webSemanticRecommandations(activeRecommandation = "+activeRecommandation+")")
-            console.log("webSemanticRecommandations(isLinkedToWS = "+isLinkedToWS+")")
+            //console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")   
+            //console.log("webSemanticRecommandations(activeRecommandation = "+activeRecommandation+")")
+            //console.log("webSemanticRecommandations(isLinkedToWS = "+isLinkedToWS+")")
+            //notifications.writeRecommandations ("miscelleanous",wsTitle,"")
 
+            /*
             if (activeRecommandation === false && isLinkedToWS === true) {
                 notifications.writeRecommandations ("miscelleanous",wsTitle,"")
             }
+            /**/
           
           } else if (robotColor == 'blue'){
-
+               lastPoiName = null; 
                activeRecommandation = false;
                notifications.hideAllRecommandations()
           }
