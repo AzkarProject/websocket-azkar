@@ -631,7 +631,7 @@
                 }
 
             }
-           
+            console.log("webSemanticRecommandations(nearestPoiName = "+nearestPoiName+")")
             console.log("webSemanticRecommandations(activeRecommandation = "+activeRecommandation+")")
             console.log("webSemanticRecommandations(isLinkedToWS = "+isLinkedToWS+")")
 
