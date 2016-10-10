@@ -592,7 +592,7 @@
                          // Pour eviter les affichages en boucle
                          if (lastPoiName != nearestPoiName) {
                                 console.log("webSemanticRecommandations(new PoiName !!!!)")
-
+                                lastPoiName = nearestPoiName
                                 /*
                                 if (sceneName == "Start") {
                                         isLinkedToWS = true;
