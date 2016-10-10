@@ -61,7 +61,7 @@ $(document).ready(function(){
 
 		 // When recommandation is clicked, hide it
 		 $('.recommandations').click(function(){			  
-				  $(this).animate({top: -$(this).outerHeight()}, 500);
+				  // $(this).animate({top: -$(this).outerHeight()}, 500);
 		  });		 
 		 
 }); 
@@ -147,20 +147,20 @@ exports.writeRecommandations = function (type,title,body,duration){
 	if (IS_illustrated == true) return
 	IS_illustrated = true
 	titleMessage = '<h3>'+title+'</h3>';
-	var textMessage = titleMessage+'<p>'+body+'</p>';
+	var textMessage = titleMessage+body;
 	$('.'+type).html(textMessage);
-	//if (IS_illustrated != true) notifications.hideAllRecommandations();				  
+	
+
 	$('.'+type).animate({top:"0"}, 500);
 	
 	
 	if (duration) {
 		//setTimeout (set_IS_Notify(false),duration+500)
 		setTimeout(function(){
-         $('.'+type).animate({top: -$('.'+type).outerHeight()}, 500);
+         // $('.'+type).animate({top: -$('.'+type).outerHeight()}, 500);
+         	pprefresh(); // On rafraichit le listener de la lightbox
     	},duration);	
 	} else IS_illustrated = false;
-
-
 }
 
 

@@ -45,20 +45,25 @@ exports.test = function(){
     
     }
 
-  // Retourne une date préformatée [E-12:30:00:00:00]
-  // Paramètre: flag pour la première lettre...
+  // Retourne une date préformatée [h:mn:s:ms]
+  // Paramètre: flag pour ajouter la date en j/m/a
   exports.humanDateER = function (flag){
     var theDate = new Date();
+    var day= theDate.getDate() // jour 1-31
+    var month= theDate.getMonth() // mois 1-12
+    var year = theDate.getFullYear() // année sur 4 chiffres
     var h = theDate.getHours();
     var m = theDate.getMinutes();
     var s = theDate.getSeconds();
     var ms = theDate.getMilliseconds();
-    return '('+h+":"+m+":"+s+":"+ms+')';
+    // return '('+h+":"+m+":"+s+":"+ms+')';
+    var prefix = ""
+    if (flag) prefix = day+'/'+month+'/'+year+' > ';
+    return '('+prefix+h+":"+m+":"+s+":"+ms+')';
     }   
 
 
-  // Retourne une date préformatée [E-12:30:00:00:00]
-  // Paramètre: flag pour la première lettre...
+  // convertit un timestamp en date préformatée [h:m:s]
   exports.getHumanDate = function (timeStamp){
     var theDate = new Date(timeStamp);
     var h = theDate.getHours();

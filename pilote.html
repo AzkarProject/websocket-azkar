@@ -9,8 +9,67 @@
     <meta name='description' content='WebRTC benchmarks base for AZKAR project' />
     <meta name='viewport' content='width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1'>
     <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/prettyPhoto.css" type="text/css" media="screen" title="prettyPhoto main stylesheet" charset="utf-8" />
     <script src='/js/lib/jquery-1.11.3.min.js'></script>
     <link rel="import" href="/web_kom-remote/kom-remote.html">
+    
+        <!--
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js" type="text/javascript"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.0/jquery-ui.js"></script>
+        -->
+
+        <!-- Plugin lightbox -->
+        <script src="/js/lib/jquery.prettyPhoto.js" type="text/javascript" charset="utf-8"></script>
+        
+       <!-- 
+       <script src="/js/lib/jquery.coverflow.js"></script>
+        <script src="/js/lib/jquery.interpolate.min.js"></script>
+        <script src="/js/lib/jquery.touchSwipe.min.js"></script>
+        <script src="/js/lib/reflection.js"></script>
+		-->
+        <style>
+                
+            #preview {padding: 3px;}
+            #preview a:hover, a:visited, a:link, a:active {text-decoration: none;}
+			.pp_inline { height:90%;}
+			
+
+			.cover {
+				cursor:pointer;
+                width:60px;
+                height:60px;
+                margin:3px;
+				box-shadow: 0px 0px 150px #000000;
+				border-radius: 5px;
+				transition: all 200ms ease-in;
+    			transform: scale(1); 
+			}
+
+			/* l'élément survolé */
+			.cover:hover{
+			    /*transform: rotateY(0deg) scale(1.2);*/
+			    transition: all 200ms ease-in;
+    			transform: scale(1.5);
+
+			}
+					
+        </style>
+
+		<script>
+				
+				// Rafraichissement du listener de la lightbox
+				// pour les vignettes de recommandations chargées dynamiquement
+				$(document).ready(function(){
+				    pprefresh();
+				});
+
+				function pprefresh(){
+				    $("a[rel^='prettyPhoto']").prettyPhoto();
+				}
+
+
+		</script>
+
     <title>1to1-Pilote</title>
 </head>
 
@@ -18,8 +77,8 @@
 
 <body class="ihmPilote" id="bodyPilot">
     
-        <strong><span id="zone_info_server">WebRTC AZKAR</span></strong>
-        <hr/>
+    <strong><span id="zone_info_server">WebRTC AZKAR</span></strong>
+    <hr/>
         
 
         <section id="settingsArea" class="fullSizeContainerBox">
@@ -150,7 +209,7 @@
                       
                     <div id="drive-commands" style="display:none; text-align:center;">    
                         
-                        <canvas id="canvasGamepad" style="border: 1px solid grey"></canvas>
+                        <canvas id="canvasGamepad" style="border: 1px solid grey;" ></canvas>
 
                         
                         <div id = "gamePadInfos">
@@ -301,7 +360,7 @@
 
         <section id="TopNotification">
                    
-            <div id='recommandationMessage' class="miscelleanous recommandations">
+            <div id='recommandationMessage' class="miscelleanous recommandations" >
             </div>
 
             <div id='infoMessage' class="info message">
@@ -319,10 +378,6 @@
             <div id='standardMessage' class="standard message">
             </div>
         
-
-
-
-
 
         </section>
 
@@ -376,6 +431,24 @@
     <script src='/js/module_gamepad.js'></script>
     <script src="/js/module_logs.js"></script>  
  
+
+   
+
+     <script type="text/javascript" charset="utf-8">
+            
+            
+        $(document).ready(function(){
+            $("area[rel^='prettyPhoto']").prettyPhoto();
+            
+            $(".gallery:first a[rel^='prettyPhoto']").prettyPhoto({animation_speed:'normal',theme:'light_square',slideshow:3000, autoplay_slideshow: true});
+            $(".gallery:gt(0) a[rel^='prettyPhoto']").prettyPhoto({animation_speed:'fast',slideshow:10000, hideflash: true});
+
+        });
+            
+    </script>
+
+
+
 
     <script>                    
             // Affichage de l'entête

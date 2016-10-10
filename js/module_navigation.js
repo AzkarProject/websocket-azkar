@@ -673,10 +673,127 @@
                 if (collection[d].propriete == "hasVideo") sceneVideos[d] = collection[d].valeur; 
                 if (collection[d].propriete == "hasWebPage") sceneWebPages[d] = collection[d].valeur;
                 if (collection[d].propriete == "hasWikipedia") sceneWikiPedia[d] = collection[d].valeur;
-                if (collection[d].propriete == "hasDbdedia") sceneDbPedia[d] = collection[d].valeur;
+                if (collection[d].propriete == "hasDbpedia") sceneDbPedia[d] = collection[d].valeur;
      
             } // end for(d in collection) 
        
+            
+            
+
+            var test01 = '<div id="preview">'
+                                
+                test01 += '  <div id="preview-coverflow" class="gallery clearfix" >'
+            
+                        // Récupération Données Flora
+
+                        var txtFlora = "";
+                        if (sceneNumber) wsTitle = "Scene n°"+ sceneNumber+ " : "+sceneTitle;
+                        if (sceneDescription) txtFlora = "<b>Description:</b> "+sceneDescription+"<br/></br>"
+                        if (sceneHistoricalMessage) txtFlora += "<b>Contexte historique:</b> "+sceneHistoricalMessage+"<br/><br/>"
+                        if (tools.isEmpty(sceneComposedOf) == false) {
+                            txtFlora += "<p><b>Scène composée de:</b><ul>";
+                            for (obj in sceneComposedOf) {
+                                 txtFlora += "<li>"+sceneComposedOf[obj]+"</li>";
+                            }
+                            txtFlora += "</ul></p>"
+                        }
+                       // On remplace les simples et doubles quôtes, au cas ou
+                       var newTxtFlora = txtFlora.replace("'", "\'");
+                       newTxtFlora = newTxtFlora.replace('"', '\"');
+                       
+                       if ( txtFlora !=  "") {
+
+                            test01 += '<a href="#inline_content_01" rel="prettyPhoto">'
+                            test01 += '       <img src="../images/thumbnails/logo_flora.gif"' 
+                            test01 += '        class="cover"'
+                            test01 += '        alt="Museum Database Flora"' 
+                            test01 += '        title="Museum Database Flora"' 
+                            test01 += '        />'
+                            test01 += '</a>' 
+
+                            test01 += '<div id="inline_content_01" class="embed_content" style="display:none;">'
+                            test01 += '    <h1 style="margin-top:0px;padding-top:0px" >'+wsTitle+'</h1>'
+                            test01 += newTxtFlora;
+                            test01 += '</div>' 
+
+                       }
+
+
+                       // Traitement des photos - OK
+                       if (tools.isEmpty(scenePictures) == false) {
+                            for (obj in scenePictures) {
+                                test01 += '<a href="'+scenePictures[obj]+'" rel="prettyPhoto">'
+                                test01 += '        <img src="'+scenePictures[obj]+'" '
+                                test01 += '        class="cover"'
+                                test01 += '        alt="Image" '
+                                test01 += '        />'
+                                test01 += '</a>'
+                            }
+                        }
+                        /**/
+                        
+
+                        // Vidéos - BUG youtube !!!!! (Hatim, pa bien....)
+                        if (tools.isEmpty(sceneVideos) == false) {
+                            for (obj in sceneVideos) {
+                                // Correction des urls saisies par Hatim dans le dataset
+                                var url = sceneVideos[obj].replace("embed/", "watch?v=")
+                                // console.log ("@"+sceneVideos[obj]+"@ -- @"+url+"@")
+                                test01 += '<a href="'+url+'" rel="prettyPhoto" title="Video">'
+                                test01 += '     <img src="../images/thumbnails/movie.png" alt="Video" class="cover" />'
+                                test01 += '</a>'
+                            
+                            }
+                        }
+
+                        // Pages Web - OK
+                        if (tools.isEmpty(sceneWebPages) == false) {
+                            for (obj in sceneWebPages) {
+                                test01 += '<a href="'+sceneWebPages[obj]+'?iframe=true&amp;width=100%&amp;height=100%" '
+                                test01 += '        rel="prettyPhoto">'
+                                test01 += '        <img src="../images/thumbnails/web-page.jpg" alt="Web Page" class="cover" />'
+                                test01 += '</a>'
+
+                            }
+                        }
+
+
+                        if (tools.isEmpty(sceneWikiPedia) == false) {
+                            for (obj in sceneWikiPedia) {
+                                test01 += '<a href="'+sceneWikiPedia[obj]+'?iframe=true&amp;width=100%&amp;height=100%"' 
+                                test01 += '        rel="prettyPhoto">'
+                               test01 += '        <img src="../images/thumbnails/wikipedia-icon.jpg" alt="Wikipedia Article" class="cover"  />'
+                                test01 += '</a>'
+                            }
+                        }
+                        
+
+                        if (tools.isEmpty(sceneDbPedia) == false) {
+                            for (obj in sceneDbPedia) {
+                                test01 += '<a href="'+sceneDbPedia[obj]+'?iframe=true&amp;width=100%&amp;height=100%"' 
+                                test01 += '        rel="prettyPhoto">'
+                                
+                                 test01 += '        <img src="../images/thumbnails/dbPedia.jpg" alt="dbPedia"  class="cover" />'
+                                test01 += '</a>'
+                            }
+                        }
+
+                    test01 += '</div>'
+        
+            
+
+
+
+        test01 += '</div>'
+
+            var wsTitle = "";
+            if (sceneNumber) wsTitle = "Scene n°"+ sceneNumber+ " : "+sceneTitle;
+            notifications.hideAllRecommandations()
+            // 500 ms de tempo en paramètre pour laisser le temps 
+            // au plugin lightbox de reparser la page...
+            notifications.writeRecommandations ("miscelleanous",wsTitle,test01,500)
+            
+            /*
             var wsTitle = "";
             var wsHtmlContent = "";
 
@@ -695,16 +812,17 @@
 
             notifications.hideAllRecommandations()
             notifications.writeRecommandations ("miscelleanous",wsTitle,wsHtmlContent)
+            /**/
             
 
-            /*// Affichage des résultats en console
-            console.log("::::::::::::::::::::::::::::::::::::::::::::::")
+            // Affichage des résultats en console
+            // console.log("::::::::::::::::::::::::::::::::::::::::::::::")
             
-            if (sceneTitle) console.log(textTitle)
-            if (sceneDescription) console.log("Description: "+sceneDescription);
-            if (sceneHistoricalMessage) console.log("Contexte historique: "+sceneHistoricalMessage);
+            //if (sceneTitle) console.log(textTitle)
+            //if (sceneDescription) console.log("Description: "+sceneDescription);
+            //if (sceneHistoricalMessage) console.log("Contexte historique: "+sceneHistoricalMessage);
       
-            // Si l'objet sceneComposedOf n'est pas vide
+            /*// Si l'objet sceneComposedOf n'est pas vide
             if (tools.isEmpty(sceneComposedOf) == false) {
             console.log ("Scène composée de:");
             console.log (sceneComposedOf)
@@ -730,6 +848,8 @@
                 console.log (sceneDbPedia)
             }
             /**/
+
+            // -------------------------------------------------------
 
         })
     
