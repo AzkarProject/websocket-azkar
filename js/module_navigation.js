@@ -540,7 +540,8 @@
 
         // if (fakeRobubox != true) return    
         setInterval(function() {
-          console.log("webSemanticRecommandations()")
+           console.log("-----------------------------------------------------------------------")  
+           console.log("webSemanticRecommandations(activeRecommandation = "+activeRecommandation+")") 
           if (robotColor == 'green')  {
 
                 // console.log("activeRecommandation:"+activeRecommandation)
@@ -549,7 +550,7 @@
                 var sceneName = null;
                 //var title = null;
                 //var htmlContent = ""; 
-                console.log("webSemanticRecommandations(activeRecommandation = "+activeRecommandation+")")
+                
                 for (poi in listPOI) {
                     
                     if (nearestPoiName == listPOI[poi].Name )  {
@@ -585,6 +586,19 @@
 
                          sceneName = nearestPoiName;
                          
+
+                         /*
+
+                        if (sceneName == "Start") {
+                                isLinkedToWS = true;
+                                socket.emit('getSceneRessources', {scene: "Marne14"});
+                                console.log( "socket.emit('getSceneRessources', {scene: START })"    )
+                                activeRecommandation = true;
+                                wsTitle = "Test POI START";
+                                wsHtmlContent = "";
+                        }
+                        /**/
+
                         if (sceneName == "PilierA") {
                                 isLinkedToWS = true;
                                 socket.emit('getSceneRessources', {scene: "Marne14"});
@@ -605,7 +619,7 @@
                         
 
                         } else {
-                            isLinkedToWS = false;
+                            // isLinkedToWS = false;
                             wsTitle = "Nearest POI: '"+sceneName+"'";
                             activeRecommandation = false;
                         }
@@ -617,7 +631,13 @@
                 }
 
             }
-            if (activeRecommandation === false && isLinkedToWS === true) notifications.writeRecommandations ("miscelleanous",wsTitle,"")
+           
+            console.log("webSemanticRecommandations(activeRecommandation = "+activeRecommandation+")")
+            console.log("webSemanticRecommandations(isLinkedToWS = "+isLinkedToWS+")")
+
+            if (activeRecommandation === false && isLinkedToWS === true) {
+                notifications.writeRecommandations ("miscelleanous",wsTitle,"")
+            }
           
           } else if (robotColor == 'blue'){
 
