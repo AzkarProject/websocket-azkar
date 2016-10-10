@@ -542,18 +542,13 @@
 
         // if (fakeRobubox != true) return    
         setInterval(function() {
-           console.log("---------------------------------")  
-           console.log("webSemanticRecommandations(activeRecommandation = "+activeRecommandation+")") 
-           console.log("webSemanticRecommandations(lastPoiName = "+lastPoiName+")")
-           console.log("webSemanticRecommandations(nearestPoiName = "+nearestPoiName+")")
-          if (robotColor == 'green')  {
+           // console.log("---------------------------------")  
+           // console.log("webSemanticRecommandations(activeRecommandation = "+activeRecommandation+")") 
+           // console.log("webSemanticRecommandations(lastPoiName = "+lastPoiName+")")
+            // console.log("webSemanticRecommandations(nearestPoiName = "+nearestPoiName+")")
+            if (robotColor == 'green')  {
 
-                // console.log("activeRecommandation:"+activeRecommandation)
-                // déclencer les traitements idoïnes en fonction du nearestPoiName
-                // Algo: boucler sur listPOI
                 var sceneName = null;
-                //var title = null;
-                //var htmlContent = ""; 
                 
                 for (poi in listPOI) {
                     
@@ -575,7 +570,6 @@
                                     wsHtmlContent = "<div><p>Blabla quelconque...</p></div>";
                                     //console.log(wsTitle);
                                     /**/
-                                    
                                 }
 
                             } else {
@@ -585,25 +579,17 @@
                                 activeRecommandation = false;
                             }
 
-                    // if (fakeRobubox == false)        
-                    } else {
+                            notifications.writeRecommandations ("miscelleanous",wsTitle,"")
+
+                            
+                    } else { // if (fakeRobubox == false)
 
                          sceneName = nearestPoiName;
                          // Pour eviter les affichages en boucle
                          if (lastPoiName != nearestPoiName) {
-                                console.log("webSemanticRecommandations(new PoiName !!!!)")
+                                
                                 lastPoiName = nearestPoiName
-                                /*
-                                if (sceneName == "Start") {
-                                        isLinkedToWS = true;
-                                        socket.emit('getSceneRessources', {scene: "Marne14"});
-                                        console.log( "socket.emit('getSceneRessources', {scene: START })"    )
-                                        activeRecommandation = true;
-                                        wsTitle = "Test POI START";
-                                        wsHtmlContent = "";
-                                }
-                                /**/
-
+                                
                                 if (sceneName == "PilierA") {
                                         //isLinkedToWS = true;
                                         socket.emit('getSceneRessources', {scene: "Marne14"});
@@ -630,29 +616,16 @@
                                 }
 
 
-                                console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")   
-                                console.log("webSemanticRecommandations(activeRecommandation = "+activeRecommandation+")")
-                                //console.log("webSemanticRecommandations(isLinkedToWS = "+isLinkedToWS+")")
                                 notifications.writeRecommandations ("miscelleanous",wsTitle,"")
 
                         } // if (lastPoiName != nearestPoiName) 
 
-                    }
+                    } // if (fakeRobubox == false)   
                 
-                }
+                } // if (nearestPoiName == listPOI[poi].Name )
 
-            }
+            } // for (poi in listPOI)
             
-            //console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")   
-            //console.log("webSemanticRecommandations(activeRecommandation = "+activeRecommandation+")")
-            //console.log("webSemanticRecommandations(isLinkedToWS = "+isLinkedToWS+")")
-            //notifications.writeRecommandations ("miscelleanous",wsTitle,"")
-
-            /*
-            if (activeRecommandation === false && isLinkedToWS === true) {
-                notifications.writeRecommandations ("miscelleanous",wsTitle,"")
-            }
-            /**/
           
           } else if (robotColor == 'blue'){
                lastPoiName = null; 
