@@ -65,9 +65,9 @@
 	// 192.168.173.1 pour un serveur local accessible sur réseau wifi AdHoc (windows) 
 	// Sinon le nom de domaine du serveur distant (de préférence) ou son adresse IP 
 	exports.appServerIp = function(){
-		return "localhost";
-		//return "192.168.173.1"
-		//return "134.59.130.143"
+		//return "localhost";
+		//return "192.168.173.1" // réseau AdHoc 'Robulab_wiwi'
+		return "134.59.130.143" // VM 1 Sparks
 	}
 
 	// N° de port: Idéalement 443 pour du https.
@@ -75,8 +75,8 @@
 	// il faut veiller a préciser le numéro de port dans l'url
 	// pour se connecter à l'application. 
 	exports.appServerPort = function(){
-		return 443;
-		//return 80;
+		//return 443;
+		return 80;
 	}
 
 	// Retourne le nom d'instance de l'application
