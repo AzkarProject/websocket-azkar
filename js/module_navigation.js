@@ -556,82 +556,88 @@
                         
                         if (fakeRobubox == true) {
 
-                            if (listPOI[poi].label) { 
-                                sceneName = listPOI[poi].label
+                            if (lastPoiName != nearestPoiName) {
 
-                                if (activeRecommandation === false) {
-                                    //isLinkedToWS = true;
-                                    //var sceneName = selectElmt.options[selectElmt.selectedIndex].value;
-                                    socket.emit('getSceneRessources', {scene: sceneName});
-                                    console.log( "socket.emit('getSceneRessources', {scene: "+sceneName+"})"    )
-                                    activeRecommandation = true;
+                                if (listPOI[poi].label) { 
+                                    sceneName = listPOI[poi].label
 
-                                    wsTitle = "Ressources recommandées pour la scène '"+sceneName+"'";
-                                    wsHtmlContent = "<div><p>Blabla quelconque...</p></div>";
-                                    //console.log(wsTitle);
-                                    /**/
-                                }
-
-                            } else {
-                                // isLinkedToWS = false;
-                                sceneName = nearestPoiName;
-                                wsTitle = "Nearest POI: '"+sceneName+"'";
-                                activeRecommandation = false;
-                            }
-
-                            notifications.writeRecommandations ("miscelleanous",wsTitle,"")
-
-                            
-                    } else { // if (fakeRobubox == false)
-
-                         sceneName = nearestPoiName;
-                         // Pour eviter les affichages en boucle
-                         if (lastPoiName != nearestPoiName) {
-                                
-                                lastPoiName = nearestPoiName
-                                
-                                if (sceneName == "PilierA") {
+                                    if (activeRecommandation === false) {
                                         //isLinkedToWS = true;
-                                        socket.emit('getSceneRessources', {scene: "Marne14"});
-                                        console.log( "socket.emit('getSceneRessources', {scene: Marne14 })"    )
+                                        //var sceneName = selectElmt.options[selectElmt.selectedIndex].value;
+                                        socket.emit('getSceneRessources', {scene: sceneName});
+                                        console.log( "socket.emit('getSceneRessources', {scene: "+sceneName+"})"    )
                                         activeRecommandation = true;
 
-                                        wsTitle = "Ressources recommandées pour la scène 'Marne14'";
-                                        wsHtmlContent = "";
-                                
-                                } else if (sceneName == "PilierB") {
-                                        //isLinkedToWS = true;
-                                        socket.emit('getSceneRessources', {scene: "La_tranchee"});
-                                        console.log( "socket.emit('getSceneRessources', {scene: La_tranchee })"    )
-                                        activeRecommandation = true;
-
-                                        wsTitle = "Ressources recommandées pour la scène 'La_tranchee'";
-                                        wsHtmlContent = "";
-                                
+                                        wsTitle = "Ressources recommandées pour la scène '"+sceneName+"'";
+                                        wsHtmlContent = "<div><p>Blabla quelconque...</p></div>";
+                                        //console.log(wsTitle);
+                                        /**/
+                                    }
 
                                 } else {
+                                    
                                     // isLinkedToWS = false;
+                                    sceneName = nearestPoiName;
                                     wsTitle = "Nearest POI: '"+sceneName+"'";
                                     activeRecommandation = false;
                                 }
 
-
+                                lastPoiName = nearestPoiName
                                 notifications.writeRecommandations ("miscelleanous",wsTitle,"")
 
-                        } // if (lastPoiName != nearestPoiName) 
+                            } //if (lastPoiName != nearestPoiName)
+                            
+                        } else { // if (fakeRobubox == false)
 
-                    } // if (fakeRobubox == false)   
+                             sceneName = nearestPoiName;
+                             // Pour eviter les affichages en boucle
+                             if (lastPoiName != nearestPoiName) {
+                                    
+                                    lastPoiName = nearestPoiName
+                                    
+                                    if (sceneName == "PilierA") {
+                                            //isLinkedToWS = true;
+                                            socket.emit('getSceneRessources', {scene: "Marne14"});
+                                            console.log( "socket.emit('getSceneRessources', {scene: Marne14 })"    )
+                                            activeRecommandation = true;
+
+                                            wsTitle = "Ressources recommandées pour la scène 'Marne14'";
+                                            wsHtmlContent = "";
+                                    
+                                    } else if (sceneName == "PilierB") {
+                                            //isLinkedToWS = true;
+                                            socket.emit('getSceneRessources', {scene: "La_tranchee"});
+                                            console.log( "socket.emit('getSceneRessources', {scene: La_tranchee })"    )
+                                            activeRecommandation = true;
+
+                                            wsTitle = "Ressources recommandées pour la scène 'La_tranchee'";
+                                            wsHtmlContent = "";
+                                    
+
+                                    } else {
+                                        // isLinkedToWS = false;
+                                        wsTitle = "Nearest POI: '"+sceneName+"'";
+                                        activeRecommandation = false;
+                                    }
+
+
+                                    notifications.writeRecommandations ("miscelleanous",wsTitle,"")
+
+                            } // if (lastPoiName != nearestPoiName) 
+
+                        } // if (fakeRobubox == false)   
                 
-                } // if (nearestPoiName == listPOI[poi].Name )
+                    } // if (nearestPoiName == listPOI[poi].Name )
 
-            } // for (poi in listPOI)
+                } // for (poi in listPOI)
             
           
-          } else if (robotColor == 'blue'){
+            } else if (robotColor == 'blue'){
                lastPoiName = null; 
                activeRecommandation = false;
                notifications.hideAllRecommandations()
-          }
+            }
+        
         }, 1000);
  
 
