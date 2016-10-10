@@ -534,7 +534,7 @@
     var wsTitle = null;
     var wsHtmlContent = null;
     // var isLinkedToWS = false;
-    var logo = '<div style="float:left; margin-right:20px"><a href="/"><img src="/images/logo/AZKAR.png" alt="AZKAR PROJECT" title="Projet Azkar"  width="150px;" height="54px"/></a></div>';
+    
     
     function webSemanticRecommandations() {
 
@@ -579,7 +579,7 @@
                                     
                                     // isLinkedToWS = false;
                                     sceneName = nearestPoiName;
-                                    wsTitle = logo + "Nearest POI: '"+sceneName+"'";
+                                    wsTitle = "Nearest POI: '"+sceneName+"'";
                                     activeRecommandation = false;
                                 }
 
@@ -619,7 +619,7 @@
                                         // isLinkedToWS = false;
 
                                         // wsTitle = "Nearest POI: '"+sceneName+"'";
-                                        wsTitle = logo + "Nearest POI: '"+sceneName+"'";
+                                        wsTitle = "Nearest POI: '"+sceneName+"'";
                                         activeRecommandation = false;
                                     }
 
@@ -708,7 +708,7 @@
                         // Récupération Données Flora
 
                         var txtFlora = "";
-                        if (sceneNumber) wsTitle = logo+"Scene n°"+ sceneNumber+ " : "+sceneTitle;
+                        if (sceneNumber) wsTitle = "Scene n°"+ sceneNumber+ " : "+sceneTitle;
                         if (sceneDescription) txtFlora = "<b>Description:</b> "+sceneDescription+"<br/></br>"
                         if (sceneHistoricalMessage) txtFlora += "<b>Contexte historique:</b> "+sceneHistoricalMessage+"<br/><br/>"
                         if (tools.isEmpty(sceneComposedOf) == false) {
@@ -808,7 +808,13 @@
                 test01 += '</div>'
 
             var wsTitle = "";
-            if (sceneNumber) wsTitle = logo+"Scene n°"+ sceneNumber+ " : "+sceneTitle;
+            
+
+
+
+
+
+            if (sceneNumber) wsTitle = "Scene n°"+ sceneNumber+ " : "+sceneTitle;
             notifications.hideAllRecommandations()
             // 500 ms de tempo en paramètre pour laisser le temps 
             // au plugin lightbox de reparser la page...

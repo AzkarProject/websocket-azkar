@@ -143,10 +143,15 @@ exports.hideAllRecommandations = function() {
 // mais adaptée pour que la nofifiction persiste en dessous des autres
 // A déclencher quand on arrive sur un POI ou une Scène et a retirer quand on s'en éloigne
 // Servira a afficher des médias et des infos Web Sémantique concernant la Scène. 
+
+cliquableLogo = '<div style="float:left; margin-right:20px"><a href="/">';
+cliquableLogo += '<img src="/images/logo/AZKAR-v2.png" alt="AZKAR PROJECT" title="Projet Azkar"  width="150px;" height="54px"/>';
+cliquableLogo += '</a></div>';
+
 exports.writeRecommandations = function (type,title,body,duration){
 	if (IS_illustrated == true) return
 	IS_illustrated = true
-	titleMessage = '<h3>'+title+'</h3>';
+	titleMessage = cliquableLogo+'<h3>'+title+'</h3>';
 	var textMessage = titleMessage+body;
 	$('.'+type).html(textMessage);
 	
