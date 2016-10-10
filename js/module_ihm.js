@@ -138,12 +138,14 @@
 	exports.driveCommandBlock = function (order){
 		if ( order == 'open' ) {
 			activeGamePad = true;
-			$('#step-commands').hide();
-			$('#drive-commands').show();
+			$('#step-commands').hide(); // Kom-remote
+			$('#drive-commands').show(); // Drive Standard
+			$('#canvasGamepad').hide(); // Drive gauche full directionnel
 		} else if ( order == 'close' ) {
 			activeGamePad = false;
-			$('#step-commands').show();
-	   		$('#drive-commands').hide(); 
+			$('#step-commands').show(); // Kom-remote
+	   		$('#drive-commands').hide(); // Drive Standard
+	   		$('#canvasGamepad').hide(); // Drive gauche full directionnel
 		}
 	}
 

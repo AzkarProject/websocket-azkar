@@ -151,6 +151,9 @@
 	   connectedGamePad = true;
 	   //$('#connect-notice').replaceWith(" <span id ='connect-notice'>  -- Gamepad activé !</span>");
 	   ihm.driveConnectNotice("  -- Gamepad activé !");
+	   // On cache le Canvas Gamepad 
+	   // pour les commandes au stick gauche
+	   $('#canvasGamepad').hide();
 	});
 
 
