@@ -585,7 +585,7 @@
                                 isLinkedToWS = true;
                                 socket.emit('getSceneRessources', {scene: "Marne14"});
                                 console.log( "socket.emit('getSceneRessources', {scene: Marne14 })"    )
-                                    //activeRecommandation = true;
+                                activeRecommandation = true;
 
                                 wsTitle = "Ressources recommandées pour la scène 'Marne14'";
                                 wsHtmlContent = "";
@@ -594,7 +594,7 @@
                                 isLinkedToWS = true;
                                 socket.emit('getSceneRessources', {scene: "La_tranchee"});
                                 console.log( "socket.emit('getSceneRessources', {scene: La_tranchee })"    )
-                                    //activeRecommandation = true;
+                                activeRecommandation = true;
 
                                 wsTitle = "Ressources recommandées pour la scène 'La_tranchee'";
                                 wsHtmlContent = "";
@@ -704,7 +704,7 @@
                        if ( txtFlora !=  "") {
 
                             test01 += '<a href="#inline_content_01" rel="prettyPhoto">'
-                            test01 += '       <img src="../images/thumbnails/logo_flora.gif"' 
+                            test01 += '       <img src="../images/thumbnails/logo_Flora.gif"' 
                             test01 += '        class="cover"'
                             test01 += '        alt="Museum Database Flora"' 
                             test01 += '        title="Museum Database Flora"' 
