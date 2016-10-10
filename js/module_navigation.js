@@ -535,6 +535,9 @@
     var isLinkedToWS = false;
     function webSemanticRecommandations() {
 
+        
+        console.log("webSemanticRecommandations()")
+
         // if (fakeRobubox != true) return    
         setInterval(function() {
           
