@@ -534,6 +534,7 @@
     var wsTitle = null;
     var wsHtmlContent = null;
     // var isLinkedToWS = false;
+    var logo = '<div style="float:left; margin-right:20px"><a href="/"><img src="/images/logo/AZKAR.png" alt="AZKAR PROJECT" title="Projet Azkar"  width="150px;" height="54px"/></a></div>';
     
     function webSemanticRecommandations() {
 
@@ -578,7 +579,7 @@
                                     
                                     // isLinkedToWS = false;
                                     sceneName = nearestPoiName;
-                                    wsTitle = "Nearest POI: '"+sceneName+"'";
+                                    wsTitle = logo + "Nearest POI: '"+sceneName+"'";
                                     activeRecommandation = false;
                                 }
 
@@ -616,7 +617,9 @@
 
                                     } else {
                                         // isLinkedToWS = false;
-                                        wsTitle = "Nearest POI: '"+sceneName+"'";
+
+                                        // wsTitle = "Nearest POI: '"+sceneName+"'";
+                                        wsTitle = logo + "Nearest POI: '"+sceneName+"'";
                                         activeRecommandation = false;
                                     }
 
@@ -705,7 +708,7 @@
                         // Récupération Données Flora
 
                         var txtFlora = "";
-                        if (sceneNumber) wsTitle = "Scene n°"+ sceneNumber+ " : "+sceneTitle;
+                        if (sceneNumber) wsTitle = logo+"Scene n°"+ sceneNumber+ " : "+sceneTitle;
                         if (sceneDescription) txtFlora = "<b>Description:</b> "+sceneDescription+"<br/></br>"
                         if (sceneHistoricalMessage) txtFlora += "<b>Contexte historique:</b> "+sceneHistoricalMessage+"<br/><br/>"
                         if (tools.isEmpty(sceneComposedOf) == false) {
