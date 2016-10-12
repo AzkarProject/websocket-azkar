@@ -17,6 +17,16 @@ utiliser, modifier et/ou redistribuer ce programme sous les conditions
 de la licence CeCILL-C telle que diffusée par le CEA, le CNRS et l'INRIA 
 sur le site "http://www.cecill.info".
 
+Révision 1.6.1
+- Cartographie
+    - Refonte algorithme du mode tracking
+- Interface d'administration
+    - Activation/désactivation du Gamepad Physique
+    - Optimisation de l'ejection forcée des utilisateurs
+- Système de recommandations (web sémantique)
+    - Implémentation Menu de sélection type coverflow
+    - Implémentation d'une lihgtBox pour l'affichage des ressources
+
 Révision 1.6.0
 - Implémentation d'une couche de persistence sous MongoDB (non exploitée pour l'instant):
 - Implémentation d'une couche de web sémantique permettant:
@@ -31,7 +41,6 @@ Révision 1.6.0
     - La persistence de ces configurations
 - Modification du Header des IHMs
 - Modification légère de l'IHM Robot
-
 
 Révision 1.5.2:
 - Abandon rétrocompatibilité systême embarqué "Robubox"

@@ -152,7 +152,7 @@ exports.writeRecommandations = function (type,title,body,duration){
 	if (IS_illustrated == true) return
 	IS_illustrated = true
 	titleMessage = '<div style="float:left;>'+cliquableLogo+'</a><h3>'+title+'</h3></div>';
-	var textMessage = titleMessage+body;
+	var textMessage = titleMessage+'<div style="float:right;>'+body+'</div>';
 	$('.'+type).html(textMessage);
 	
 

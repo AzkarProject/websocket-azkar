@@ -177,89 +177,99 @@
         } 
 
         if (modeTraking == true) redrawTracking(initialX,initialY)
+        
         else {
         context.clearRect(-10000, -10000, 100000, 1000000);
         context.drawImage(backGroundMap,initialX,initialY, mapSize.width, mapSize.height); // Image taille resizée avec ratio
         drawRobot(initialX,initialY);
+        
         }
     }
 
-
-
+    // Activation du mode Tracking
+    var oldOffset = {x: 0 , y: 0}
+    var initActive = false;
     exports.activeTracking = function () {
         if (modeTraking == true) return // Si le modeTracking est déjà activé
         modeTraking = true; // Sinon on active le mode tracking
         initialContextSaved = false; // On prévient le systeme que le contexte de départ doit être réinitialisé
         context.restore(); // On rétablit contexte de départ
+        // On initialise la position du robot
+        oldOffset = {x: 0 , y: 0}; 
+        oldX =  robotInfo.Pose.Position.X;
+        oldY =  robotInfo.Pose.Position.Y;
+        // On réinitialise le drapeau de premier chargement
+        initActive = true;
+        /**/
 
     }
 
-
- 	function redrawTracking(initialX,initialY) {
-            
-        var halfCanvasX = canvasWidth/2;
-        var halfCanvasY = canvasHeight/2;
-        var halfMapX = mapSize.height/2;
-        var halfMapY = mapSize.height/2;
-
-        var drawRatio = mapSize.ratio;
-        // On essaie de convertir le point 0.0
-        var basePosition = {};
-        basePosition.X = 0;
-        basePosition.Y = 0;
-        var baseAxis = worldToMap(basePosition, dataMap);
-        
-
-        if (newOffset == null) {
-            newOffset = resizeOffset (baseAxis.X,baseAxis.Y,dataMap.Width, dataMap.Height, mapSize.width,mapSize.height);
-        }
-        //var newOffset = resizeOffset (baseAxis.X,baseAxis.Y,dataMap.Width, dataMap.Height, mapSize.width,mapSize.height);
-
-        
-        // Fix Titi (BUG passage de l'équateur):
-        var ry = -robotInfo.Pose.Position.Y / dataMap.Resolution
-        var rx = -robotInfo.Pose.Position.X / dataMap.Resolution
-
-        //var qz = robotInfo.Pose.Orientation.Z; // Taxinomie Robubox
-        var qz = robotInfo.Pose.Orientation; // Taxinomie Komnav
-       
-        // Titi: 
-        // Inversion des axes d'orientation (Carte en horizontal)
-        // et application du ratio de resize
-        qz = - qz;
-        rx = rx*drawRatio;
-        ry = ry*drawRatio;
-        
-        // Décalage de l'offset pour tenir compte du centrage sur le robot       
-        var newX = halfCanvasX-newOffset.width+rx; 
-        var newY = halfCanvasY-newOffset.height-ry;
-
-        context.clearRect(-10000, -10000, 100000, 1000000);
-        context.drawImage(backGroundMap,newX,newY, mapSize.width, mapSize.height); // Image taille resizée avec ratio
-        // drawRobot(initialX,initialY);
-
-        context.save(); // Sauvegarde du contexte AVANT le contexte Translate..
-        // context.translate(newOffset.width,newOffset.height);
-        var startArrowX = halfCanvasX+rx
-        var startArrowY = halfCanvasY-ry
-        
-        drawArrow(context, startArrowX, startArrowY, startArrowX+25, startArrowY, 1, "grey",'X'); // axe X
-        drawArrow(context, startArrowX, startArrowY, startArrowX, startArrowY-25, 1, "grey",'Y'); // axe Y
-
-                // dawListPointOfInterest("tracking",startArrowX, startArrowY,rx,ry) // BUG mode Traking - Les POIs dérivent...
-                // carto.drawTrajectory (context, path); // Todo...
-
-
-        //alert (rx +" / "+ ry)
-        circleWithDirection(halfCanvasX,halfCanvasY, qz, "red", 1, 1); 
-        // Titi: RAZ du context pour éviter la surimpression d'image décalée... 
-        context.restore();
+    function absoluteDifference(n, m){
+        return Math.abs(n - m)
+    }
+ 	
+      
+    function difference(num1, num2){
+      if (num1 > num2) return num1-num2
+      else return num2-num1
+    }
     
 
+    // Dessin de la carto en mode tracking
+    function redrawTracking(initialX,initialY) {
+            
+        // S'il y a eu mouvement, on compare
+        // l'ancienne position xy du robot avec l'actuelle
+        // et on fait faire une translation au canvas 
+        // correspondant aux différences de position du robot
+        if (robotInfo.Pose.Position.X != oldX && robotInfo.Pose.Position.Y != oldY) {
+            
+                var drawRatio = mapSize.ratio;
+                var ry = -robotInfo.Pose.Position.Y / dataMap.Resolution
+                var rx = -robotInfo.Pose.Position.X / dataMap.Resolution
+                var qz = robotInfo.Pose.Orientation; // Taxinomie Komnav
+                rx = rx*drawRatio;
+                ry = ry*drawRatio;
+                // Décalage du robot pour tenir compte du centrage horizontal
+                if (initialX) rx = rx-initialX;
+                var newOffset = {x: -rx , y: ry}
+
+                // Décalage des offsets
+                var difX = difference (oldOffset.x, newOffset.x)
+                var difY = difference (oldOffset.y, newOffset.y)
+                // Prise en compte du sens de déplacement du robot (gauche, bas, haut, droite )
+                if (oldX < robotInfo.Pose.Position.X) difX = - difX; // Axe X horizontal
+                if (oldY > robotInfo.Pose.Position.Y) difY = - difY; // Axe Y vertical
+                
+               
+                // Si c'est le premier lancement, oldOffset est a sa valeur par défaut.
+                // Il faut attendre la prochaine itération pour pouvoir faire une 
+                // comparaison avec le nouvel offset. On désactive donc le contex.translate
+                // pour ce premier passage...
+                if (initActive == true) {
+                    initActive = false;
+                } else {
+                    context.translate(difX,difY);
+                }
+
+                // On assigne les nouvelles valeurs pour les comparer
+                // lors de la prochaine itération.
+                oldOffset = newOffset;
+                oldX =  robotInfo.Pose.Position.X;
+                oldY =  robotInfo.Pose.Position.Y;
+        }
+
+             
+        context.clearRect(-10000, -10000, 100000, 1000000);
+        context.drawImage(backGroundMap,initialX,initialY, mapSize.width, mapSize.height); // Image taille resizée avec ratio
+        drawRobot(initialX,initialY);
+
     }
+
 
 
     robotColor = 'grey';
+    
     function drawRobot(initialX,initialY) {
         
         // Michaël...
@@ -341,18 +351,20 @@
         // circleWithDirection(geoloc.X, geoloc.Y, geoloc.Z, "blue", 3, 2);// OK sur I3S/: Inversion XY chez Robosoft...
         circleWithDirection(-rx, ry, qz, robotColor, 1, 1); // OK sur I3S/: Inversion XY chez Robosoft...
 
-
-
-
-
-
-
-
         // Titi: RAZ du context pour éviter la surimpression d'image décalée... 
         context.restore();
+
+
+
     }
 
-   // Desine un point d'intérêt 
+   function difference(n, m){
+        return Math.abs(n - m)
+    }
+
+
+
+   // Desine les points d'intérêt 
    function dawListPointOfInterest(mode, startArrowX, startArrowY,rx,ry) {
         
 
@@ -769,6 +781,18 @@
     exports.canvasMove = function (moveX,moveY){ 
    // function canvasMove(moveX,moveY) {
         //contextTranslateMemorize(moveX,moveY);
+
+    /*
+    if (direction == "Up") moveY = -1;
+    else if (direction == "Down") moveY = 1;
+    else if (direction == "Right") moveX = 1;
+    else if (direction == "Left") moveX = -1;
+    carto.canvasMove(moveX,moveY);
+    /**/
+
+
+
+
         context.translate(moveX,moveY);
         reDraw();
         // console.log(context);

@@ -48,7 +48,7 @@
 			/* l'élément survolé */
 			.cover:hover{
 			    /*transform: rotateY(0deg) scale(1.2);*/
-			    transition: all 200ms ease-in;
+			    transition: all 100ms ease-in;
     			transform: scale(1.5);
 
 			}
@@ -186,13 +186,14 @@
                     <strong>Robot controls</strong> <span id="connect-notice"></span>
                     <hr/>
 
-                    
+                    <!--
                     <span id="systemSetting" style="text-align:center;">
                     System: 
                         <input type="radio" name="controlSystem" value="Robubox" id="Robubox" onclick="setNavSystem('Robubox')" checked /> <label for="Robubox">Robubox</label>
                         <input type="radio" name="controlSystem" value="KomNAV" id="KomNAV" onclick="setNavSystem('KomNAV')"/> <label for="KomNAV">KomNAV</label>
                     </span>
                     <br/>
+                    -->
                     <span id="dataChannelSetting" style="text-align:center;">
                     Channel: 
                         <input type="radio" name="controlChannel" value="webSocket" id="webSocket" onclick="setNavChannel('webSocket')" checked /> <label for="webSocket">webSocket</label>

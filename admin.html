@@ -57,7 +57,7 @@
     <p>Si le client Robot n'est pas sur un Pc embarqué dans un Kompaï ou un autre robot,<br/>
     on émule un pseudo système embarqué pour la cartographie, la jauge de batterie et les commandes drive.</p>
 
-<hr>
+    <hr>
 	<strong>Carte chargée: </strong>	<span id="zone_info_maps"> ??? </span>		
 	<!--
 	<span id="getMaps">
@@ -83,7 +83,11 @@
       <span id = "status"></span>
     </form>
 
-
+  <hr/>   
+   <strong>Gamepad physique: </strong>
+    <input type="radio" name="gamePadRobot" value="true" id="GamePadTrue" onclick="setGamepad(true)" disabled="true"> <label for="gamePadTrue">Activé</label>
+    <input type="radio" name="gamePadRobot" value="false" id="GamePadFalse" onclick="setGamepad(false)" disabled="true" /> <label for="gamePadFalse">Désactivé</label>
+    <br/>
 
  <hr/>
     <div id="zone_info_Ip_Robot"></div>
@@ -162,6 +166,7 @@
         getFakeRobubox();
         getUsers();
         getIpRessources();
+        getIsGamepad();
         
         // Gestion du pseudo ----------------
 
@@ -275,7 +280,7 @@
 			if (isFakeRobubox == boolean) return
 
 			var message = "Attention ! \n \n"
-			message += "Vous êtes sur le point de d'activer ou de désactiver le mode de simulation ! ";
+			message += "Vous êtes sur le point d'activer ou de désactiver le mode de simulation ! ";
 			message += "\n Cela entrainera le reload automatique des IHM Robot et Pilote.";
 			var txt;
 			
@@ -469,7 +474,7 @@
             
             if (hasPilot == true) {
             		setTimeout(function(){
-                   		socket.emit('reloadPilot',""); // Ordre au robot de reloader son IHM
+                   		socket.emit('reloadPilot',""); // Ordre au pilote de reloader son IHM
                     }
                 , 3000);
             }
@@ -513,6 +518,88 @@
                 notifications.writeMessage ("success","Reload Pilote terminé !","",3000)
             }
             , 3500); 
+        }
+
+
+        
+
+
+        // -------------- Gestion du Gamepad Physique
+        
+        
+        // Drapeau d'activation de la détection du Gamepad
+        isGamepad = true;
+        console.log("isGamepad = "+isGamepad)
+        selectGamepadTrue = document.querySelector('input#GamepadTrue');
+        selectGamepadFalse= document.querySelector('input#GamepadFalse');
+
+
+        // On demande au serveur si la détection du Gamepad physique 
+        // est activée dans les paramètres
+        function getIsGamepad() {
+            socket.emit('getIsGamepad',""); 
+        }
+
+
+        // A la réponse du serveur:
+        socket.on("getIsGamepad", function(data) { 
+            //alert ("On getIsGamepad("+data.isGamepad+")")
+            console.log('socket.on("getIsGamepad"')
+            console.log(data)
+            isGamepad = data.isGamepad
+            setSelectGamepad(isGamepad)
+        });
+
+
+
+        function setGamepad(boolean) {
+            console.log("@ setGamepad("+boolean+")")
+            // Si le bouton radio est déjà sélectionné...
+            if (isGamepad == boolean) return
+
+            var hasPilot = tools.searchInObjects(activeUsers,'typeClient','Pilote','boolean');
+            var response = true;
+            if (hasPilot == true) {
+                var message = "Attention ! \n \n"
+                message += "Vous êtes sur le point d'activer ou de désactiver la détection du Gamepad physique ! ";
+                message += "\n Cela entrainera le reload automatique de l'IHM Pilote.";
+                var txt;
+                response = confirm(message);
+            } 
+
+            if (response == true) {
+                isGamepad = boolean;
+
+                if (isGamepad == true) txt = "Détection du Gamepad physique activée !";
+                if (isGamepad == false) txt = "Détection du Gamepad physique désactivée !";
+
+                var data = { isGamepad: isGamepad}; 
+                socket.emit('setGamepad',data); // Envoi au serveur
+                notifications.writeMessage ("info",txt,"",7000)
+                reloadClients();
+
+            } else if (response == false) {
+                setSelectGamepad(isGamepad)
+            }       
+            
+            console.log("isGamepad = "+isGamepad)           
+        }
+
+        // Contrôle formulaire du gamepad physique
+        function setSelectGamepad(isGamepad) {
+                
+                selectGamepadTrue.disabled=false;
+                selectGamepadFalse.disabled=false;
+
+                if (isGamepad == true) {
+                    selectGamepadTrue.checked = true;
+                    selectGamepadFalse.checked = false;
+                
+                } else if (isGamepad == false) {
+                    
+                    selectGamepadTrue.checked = false;
+                    selectGamepadFalse.checked = true;
+                }
         }
 
 

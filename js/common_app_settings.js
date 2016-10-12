@@ -49,7 +49,7 @@
 
 	// Numéro de version
 	exports.appVersion = function(){
-	    return '1.6.0';
+	    return '1.6.1';
 	};
 
 	// Crédits

@@ -41,7 +41,7 @@ console.log("module_navigation_interface chargé");
 exports.sendToRobot = function (rpcMethodName, values,controlDevice, driveCommand){     
 
 
-       console.log(' navigation_interface.sendToRobot(rpcMethodName, values, controlDevice,"");');
+       // console.log(' navigation_interface.sendToRobot(rpcMethodName, values, controlDevice,"");');
 
         if (controlDevice == "kom-remote") {
             driveCommand = {

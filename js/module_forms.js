@@ -142,6 +142,7 @@ function raZNavSystem() {
     
     console.log("@ raZNavSystem()")
     console.log("navSys =" + navSys)
+    /*
     if (navSys == 'KomNAV') {
         selectSystemKomNAV.checked = true;
         selectSystemRobubox.checked = false;
@@ -151,6 +152,7 @@ function raZNavSystem() {
         selectSystemRobubox.checked = true;
         parameters.navSys = "Robubox";
     }
+    /**/
 }
 // Au chargement du script...
 raZNavSystem();

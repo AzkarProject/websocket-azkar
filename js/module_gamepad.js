@@ -86,6 +86,29 @@
 	// Dernier bouton activé
 	var lastButtonName = "";
 
+	var isGamepad = false
+
+    // On demande au serveur si la détection du Gamepad physique 
+    // est activée dans les paramètres
+    function getIsGamepad() {
+        socket.emit('getIsGamepad',""); 
+    }
+
+
+    // A la réponse du serveur:
+    socket.on("getIsGamepad", function(data) { 
+        console.log('socket.on("getIsGamepad"')
+        isGamepad = data.isGamepad
+    
+        if (isGamepad == true) {
+	  		ihm.switchGamepadDisplayMode("jauges")
+        	setInterval(mainloop, 100);
+        }
+
+    });
+    /**/
+
+
 	// ----------------
 
 	window.onload = function() {
@@ -97,16 +120,20 @@
 	  leftRightValueBar = document.querySelector("#leftRight");
 
 
+	  
+	  getIsGamepad();
 	 // requestAnimationFrame(mainloop);
 	 // Note titi: un simple setInterval est amplement suffisant
 	 // pour envoyer des ordres de mouvement tous les 100 ms
-	  setInterval(mainloop, 100);
+	 // setInterval(mainloop, 100);
 
 
 	};
 
 	function mainloop() {
 	  
+	  
+
 	  // clear, draw objects, etc...
 	  scangamepads();
 	  
@@ -135,35 +162,48 @@
 
 
 	window.addEventListener("gamepadconnected", function(e) {
-	   // now as a global var
-	   gamepad = e.gamepad;
-	   var index = gamepad.index;
-	   var id = gamepad.id;
-	   var nbButtons = gamepad.buttons.length;
-	   var nbAxes = gamepad.axes.length;
 	   
-	   var  msg = "Gamepad N° " + index +"\n";
-	        msg += "ID: " + id + "\n";
-	        msg += "Buttons: " + nbButtons + "\n"; 
-	        msg += "Axes: " + nbAxes;
+		if (isGamepad == false) return;
 
-	   console.log(gamepad)
-	   connectedGamePad = true;
-	   //$('#connect-notice').replaceWith(" <span id ='connect-notice'>  -- Gamepad activé !</span>");
-	   ihm.driveConnectNotice("  -- Gamepad activé !");
+		// now as a global var
+		gamepad = e.gamepad;
+		var index = gamepad.index;
+		var id = gamepad.id;
+		var nbButtons = gamepad.buttons.length;
+		var nbAxes = gamepad.axes.length;
+
+		var  msg = "Gamepad N° " + index +"\n";
+		    msg += "ID: " + id + "\n";
+		    msg += "Buttons: " + nbButtons + "\n"; 
+		    msg += "Axes: " + nbAxes;
+
+		console.log(gamepad)
+		connectedGamePad = true;
+		//$('#connect-notice').replaceWith(" <span id ='connect-notice'>  -- Gamepad activé !</span>");
+		ihm.driveConnectNotice("  -- Gamepad activé !");
+	
 	});
 
 
 	window.addEventListener("gamepaddisconnected", function(e) {
-	   var gamepad = e.gamepad;
-	   var index = gamepad.index;
-	   // console.log("Gamepad No " + index + " has been disconnected");
-	   // alert("Gamepad No " + index + " has been disconnected")
-	   connectedGamePad = false;
-	   //$('#connect-notice').replaceWith(" <span id ='connect-notice'>  -- Gamepad déconnecté !</span>");
-	   ihm.driveConnectNotice("  -- Gamepad déconnecté !");
-	   ihm.driveCommandBlock('close')
+	   
+		if (isGamepad == false) return;
+
+		var gamepad = e.gamepad;
+		var index = gamepad.index;
+		// console.log("Gamepad No " + index + " has been disconnected");
+		// alert("Gamepad No " + index + " has been disconnected")
+		connectedGamePad = false;
+		//$('#connect-notice').replaceWith(" <span id ='connect-notice'>  -- Gamepad déconnecté !</span>");
+		ihm.driveConnectNotice("  -- Gamepad déconnecté !");
+		ihm.driveCommandBlock('close')
+
 	});
+
+	
+
+
+
 
 	function scangamepads() {
 	  var gamepads = navigator.getGamepads();

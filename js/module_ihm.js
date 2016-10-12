@@ -140,12 +140,12 @@
 			activeGamePad = true;
 			$('#step-commands').hide(); // Kom-remote
 			$('#drive-commands').show(); // Drive Standard
-			$('#canvasGamepad').hide(); // Drive gauche full directionnel
+			//$('#canvasGamepad').hide(); // Drive gauche full directionnel
 		} else if ( order == 'close' ) {
 			activeGamePad = false;
 			$('#step-commands').show(); // Kom-remote
 	   		$('#drive-commands').hide(); // Drive Standard
-	   		$('#canvasGamepad').hide(); // Drive gauche full directionnel
+	   		//$('#canvasGamepad').hide(); // Drive gauche full directionnel
 		}
 	}
 
@@ -383,6 +383,9 @@
 
 	// Gamepad - Affichage du module FullAxes (param 'jauges' ou 'joystick' ou 'none')
 	exports.switchGamepadDisplayMode = function (type) {
+		
+		//alert ("switchGamepadDisplayMode("+type+")")
+		
 		if ( type == 'jauges' ) {
 			$('#canvasGamepad').hide();
 			$('#gamePadInfos').show();

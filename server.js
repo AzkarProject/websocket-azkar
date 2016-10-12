@@ -203,6 +203,7 @@ defaultIpFoscam = null; // Ip par defaut de la Foscam
 urlsRobot = {} // Liste des différentes IPs Robubox/Mobiserve
 urlsFoscam = {} // Liste des différentes Ips Foscam
 config = null; // Fichier JSON de configuration (persistence)
+isGamepad = false; // Détection gamepad physique activé
 
 io.on('connection', function(socket, pseudo) {
 
@@ -721,6 +722,7 @@ io.on('connection', function(socket, pseudo) {
     } catch (e) {
        console.log("require('./config.json') FAILED !");
        config = {
+            isGamepad: false,
             isFakeRobubox: true,
             activeMap: 'map_unavailable.jpg',
             urlsRobot: urlsRobot, // Liste des urls disponibles pour le robot
@@ -810,11 +812,33 @@ io.on('connection', function(socket, pseudo) {
     });
 
 
-    // Adds du 16/09/2016 > Bouton ejection de tous les clients robot/Pilote et visiteurs
+    // Adds du 16/09/2016 > Ejection forcée de tous les clients robot/Pilote
     socket.on('ejectClients', function(data) {
+        
         var data = { url: indexUrl};  
-        socket.broadcast.emit('razConnexion',data); 
         console.log ("> socket.broadcast.emit('razConnexions',"+data.url+")");
+        socket.broadcast.emit('razConnexion',data); 
+        
+       // On réinitialise la liste des clients connectés aux IHM Pilote et Robot
+       // Pour éviter q'un client fantôme ne perturbe les contrôles d'accès
+       users2 = {};
+	   nbUsers2 = 0;
+
+       // On actualise le nombre de connectés coté serveur
+       nbUsers = tools.lenghtObject(users2)
+
+       // Au cas ou, on met à jour la liste des connectés coté client"
+       io.sockets.emit('updateUsers', {
+           listUsers: users2
+       });
+
+       // contrôle liste des connectés coté serveur
+       console.log("> Il reste " + nbUsers + " utilisateurs sur les pages Robot et Pilote");
+       displayUsers();
+       /**/
+
+
+
      });
     /**/
     
@@ -970,7 +994,7 @@ io.on('connection', function(socket, pseudo) {
         console.log ("> socket.emit('getIpRessources',data)");
     });
 
-    // Adds du 26/09/2016 > Met à jour les IP camer et robot
+    // Adds du 26/09/2016 > Met à jour les IP camera et robot
     socket.on("updateIpRessources", function(data) { 
                
         // console.log ("> socket.on(setIpRessources, data)");
@@ -1002,6 +1026,31 @@ io.on('connection', function(socket, pseudo) {
 
 
     });
+
+
+    // Adds du 10/10/2016 >  Demande le paramètre de détection du gamepad:
+    socket.on("getIsGamepad", function(data) { 
+        console.log("> socket.on(getIsGamepad)")
+        var data = { isGamepad: config.isGamepad}; 
+        socket.emit('getIsGamepad', data);
+        console.log ("> socket.emit('getIsGamepad',{ isGamepad: "+isGamepad+"})");
+    });
+
+    
+    // Adds du 10/10/2016 >  Modification le paramètre de détection du gamepad:
+    socket.on("setGamepad", function(data) { 
+        console.log("> socket.on(setGamepad)")
+        isGamepad = data.isGamepad;
+        config.isGamepad = isGamepad;
+        persistConfig(config);  
+        var data = { isGamepad: isGamepad};  
+        socket.broadcast.emit('setGamepad', data); 
+        console.log ("> socket.broadcast.emit('setGamepad',{ setGamepad: "+isGamepad+"})");
+    });
+
+
+
+
 
 
     // ----------------------- // Fin Ajouts pages d'amnisitration

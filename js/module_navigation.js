@@ -686,7 +686,7 @@
                 if (collection[d].propriete == "ComposedOf") {
                     var obj = collection[d].valeur;
                     obj = obj.substr(obj.lastIndexOf('#') + 1);
-                    obj=obj.replace(/_/g, " ");
+                    obj = obj.replace(/_/g, " ");
                     sceneComposedOf[d] = obj;
                 }
 
@@ -754,7 +754,7 @@
                         /**/
                         
 
-                        // Vidéos - BUG youtube !!!!! (Hatim, pa bien....)
+                        // Vidéos - BUG youtube !!!!! (Hatim, pas bien tes urls....)
                         if (tools.isEmpty(sceneVideos) == false) {
                             for (obj in sceneVideos) {
                                 // Correction des urls saisies par Hatim dans le dataset

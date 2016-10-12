@@ -246,10 +246,10 @@ exports.sendDrive = function (data){
         }  else {
             // On simule le déplacement du robot...
             // Modification de l'angle...
-            robotInfo.Pose.Orientation = robotInfo.Pose.Orientation+aSpeed/2;
+            robotInfo.Pose.Orientation = robotInfo.Pose.Orientation+aSpeed/4;
             // Marche avant/arrière selon l'angle...
-            var x2 = robotInfo.Pose.Position.X + Math.cos(robotInfo.Pose.Orientation) * lSpeed/2;
-            var y2 = robotInfo.Pose.Position.Y + Math.sin(robotInfo.Pose.Orientation) * lSpeed/2;
+            var x2 = robotInfo.Pose.Position.X + Math.cos(robotInfo.Pose.Orientation) * lSpeed/4;
+            var y2 = robotInfo.Pose.Position.Y + Math.sin(robotInfo.Pose.Orientation) * lSpeed/4;
             robotInfo.Pose.Position.X = x2;
             robotInfo.Pose.Position.Y = y2;
 
