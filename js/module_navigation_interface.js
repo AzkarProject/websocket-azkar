@@ -41,8 +41,6 @@ console.log("module_navigation_interface chargé");
 exports.sendToRobot = function (rpcMethodName, values,controlDevice, driveCommand){     
 
 
-       // console.log(' navigation_interface.sendToRobot(rpcMethodName, values, controlDevice,"");');
-
         if (controlDevice == "kom-remote") {
             driveCommand = {
                  // driveSettings: this.settings.rpcMethod,
@@ -60,12 +58,15 @@ exports.sendToRobot = function (rpcMethodName, values,controlDevice, driveComman
         } else if (controlDevice == "Gamepad") {
             driveCommand.driveSettings = rpcMethodName;
             driveCommand.channel = parameters.navCh;
+        
+        } else {
+            driveCommand.channel = parameters.navCh;
         }
-        // console.log("@ sendToRobot: "+driveCommand.command);
         
 
         if (type === "pilote-appelant") {
-
+            //console.log("navigation_interface.sendToRobot >>")
+            //console.log(driveCommand)
             // envoi des valeurs au serveur par websocket
             if (parameters.navCh == 'webSocket') socket.emit("piloteOrder", driveCommand);
             // envoi des valeurs au serveur par webRtc

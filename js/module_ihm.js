@@ -387,17 +387,30 @@
 		//alert ("switchGamepadDisplayMode("+type+")")
 		
 		if ( type == 'jauges' ) {
-			$('#canvasGamepad').hide();
+			$('#gamepadDefault').hide();
+			$('#fullAxesInfos').hide();
 			$('#gamePadInfos').show();
+			$('#cameraInfos').hide();
+		
 		} else if ( type == 'joystick' ) {
-			$('#canvasGamepad').show();
-	   		$('#gamePadInfos').hide(); 
-		}  else if ( type == 'nothing' ) { 
-			$('#canvasGamepad').hide();
-	   		$('#gamePadInfos').hide();	
+			$('#gamepadDefault').hide();
+			$('#fullAxesInfos').show();
+	   		$('#gamePadInfos').hide();
+	   		$('#cameraInfos').hide(); 
+		
+		}  else if ( type == 'camera' ) { 
+			$('#gamepadDefault').hide();
+			$('#fullAxesInfos').hide();
+	   		$('#gamePadInfos').hide();
+	   		$('#cameraInfos').show();	
+		
+		} else {
+			$('#gamepadDefault').show();
+			$('#fullAxesInfos').hide();
+	   		$('#gamePadInfos').hide();
+	   		$('#cameraInfos').hide();	
 		}
 	}
-
 
 
 

@@ -23,6 +23,55 @@
 :host(.is-pad) .joystick { display: none; }
 :host(.is-pad) .pad { display: block; }
 
+/* Adds titi pour la gestion des caméras */
+:host(.is-pad) .camera { display: none; }
+:host(.is-joystick) .joystick { display: block; }
+:host(.is-joystick) .pad { display: none; }
+:host(.is-joystick) .camera { display: none; }
+:host(.is-camera) .joystick { display: none; }
+:host(.is-camera) .pad { display: none; }
+:host(.is-camera) .camera { display: block; }
+
+.camera {
+	display: none;
+	position: relative;
+	width: 200px;
+	height: 150px;
+	margin: auto;
+}
+
+.pad-camera {
+	text-align:center;
+	margin:10px;
+}
+
+button{
+     font-family: Arial,sans-serif;
+     font-size: 12px;
+     font-weight: bold;
+     color: #fff;
+     min-width: 50px;
+     text-align: center;
+     color: #fff;
+     background: #444;
+     border-radius: 4px;
+     box-shadow: 0 0 5px rgba( 0, 0, 0, 0.5), 0 -1px 0 rgba( 255, 255, 255, 0.4);
+}
+
+button:hover{
+     color: yellow;
+     background: #555;
+     background: linear-gradient( #777, #333);
+}
+
+
+button:disabled{
+     color: grey;
+     background: #555;
+     background: linear-gradient( #777, #333);
+}
+/**/
+
 .joystick {
 	margin: auto;
 	position: relative;

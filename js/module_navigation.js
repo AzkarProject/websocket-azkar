@@ -596,7 +596,7 @@
                                     
                                     lastPoiName = nearestPoiName
                                     
-                                    if (sceneName == "PilierA") {
+                                    if (sceneName == "Marne14") {
                                             //isLinkedToWS = true;
                                             socket.emit('getSceneRessources', {scene: "Marne14"});
                                             console.log( "socket.emit('getSceneRessources', {scene: Marne14 })"    )
@@ -605,7 +605,7 @@
                                             wsTitle = "Ressources recommandées pour la scène 'Marne14'";
                                             wsHtmlContent = "";
                                     
-                                    } else if (sceneName == "PilierB") {
+                                    } else if (sceneName == "LesTranchées") {
                                             //isLinkedToWS = true;
                                             socket.emit('getSceneRessources', {scene: "La_tranchee"});
                                             console.log( "socket.emit('getSceneRessources', {scene: La_tranchee })"    )

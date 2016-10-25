@@ -82,6 +82,11 @@
 	var onCameraLeft = false;
 	/**/// ----------- End Add F Mazieras
 	
+	// ---------- Add Titi
+	var onCameraZoomIn = false;
+    var	onCameraZoomOut = false;	
+    var onCameraZoom = false;
+
 	var onMessage = false;
 	// Dernier bouton activé
 	var lastButtonName = "";
@@ -181,6 +186,7 @@
 		connectedGamePad = true;
 		//$('#connect-notice').replaceWith(" <span id ='connect-notice'>  -- Gamepad activé !</span>");
 		ihm.driveConnectNotice("  -- Gamepad activé !");
+
 	
 	});
 
@@ -255,8 +261,9 @@
 		// Check si le gamepad est un XBox 360
 		if(checkCompatibility(Gamepad) == false) return;
 
-
 		var atLeastOneButtonPressed = false;
+
+		//console.log(gamepad);
 
 		/*
 		for (var i = 0; i < gamepad.buttons.length; i++) {  
@@ -280,11 +287,11 @@
 
 		// mode normal (vert)
 		buttonA = gamepad.buttons[0]; 
-		// fermeture connexion (rouge) 
+		// Stop trajectoires (rouge)
 		buttonB = gamepad.buttons[1]; 
 		// mode précision (bleu)
 		buttonX = gamepad.buttons[2]; 
-		// ouverture connexion (orange)
+		// ouverture/fermeture connexion (orange)
 		buttonY = gamepad.buttons[3]; 
 
 		// frontal droit - Cycle sélection caméra distante up + connexion
@@ -301,10 +308,37 @@
 		buttonBack = gamepad.buttons[8]; // efface les notifications
 		buttonStart = gamepad.buttons[9]; // switche fullScreen
 
-		crossUp = gamepad.buttons[12]; // non utilisé
-		crossDown = gamepad.buttons[13]; // non utilisé
-		crossLeft = gamepad.buttons[14]; // non utilisé
-		crossRight = gamepad.buttons[15]; // non utilisé
+		buttonAxeLeft = gamepad.buttons[10]; // Homme/mort pour l'axe Droit (FulDrive)
+		buttonAxeRight = gamepad.buttons[11]; // non utilisé
+		
+		crossUp = gamepad.buttons[12]; // camera up
+		crossDown = gamepad.buttons[13]; // camera down
+		crossLeft = gamepad.buttons[14]; // camera left
+		crossRight = gamepad.buttons[15]; // camera right
+
+		
+		ihm.switchGamepadDisplayMode("default")
+
+
+
+		// contrôle de la caméra - Stop des mouvements
+		// si les boutons directionnels de caméra ne sont pas préssés...
+		if (crossUp.pressed === false 
+			&& crossDown.pressed === false 
+			&& crossLeft.pressed === false 
+			&& crossRight.pressed === false) {
+			// Et si la dernière commande est bien une commande d'axe de caméra...
+				if (lastButtonName == "crossUp" 
+					|| lastButtonName == "crossDown" 
+					|| lastButtonName == "crossLeft" 
+					|| lastButtonName == "crossRight" ) {
+						//sendCameraCommand(gamepad, null, null,"","onCameraStop" );
+						//sendCameraCommand(gamepad, null, null,"","onZoomStop" );
+						foscam.sendCameraOrder("onCameraStop");
+						// foscam.sendCameraOrder("onCameraZoomStop");
+						lastButtonName = null;
+				}
+			}
 
 		// Si les boutons homme mort sont préssés
 		// bouton Homme mort avec vitesses en mode normal
@@ -316,6 +350,7 @@
 		    onMove = true;
 		    lastButtonName = "buttonA";
 		    ihm.driveCommandBlock('open')
+
 		    return;
 
 		// Bouton Homme mort avec vitesses en mode précision
@@ -330,31 +365,111 @@
 		    return;
 		
 		
-		}   else if (crossUp.pressed) {
-				console.log('Gamepad UP');
+		}  else if (buttonAxeLeft.pressed) {
 				atLeastOneButtonPressed = true;
-		    	buttonStatusDiv.innerHTML = "(CrossUp) Drive mode full Axes";
+		    	fullDriveButtonStatus.innerHTML = "(10) Drive mode full Axes";
 		    	prepareDriveCommand(gamepad, buttonRT.value, buttonLT.value,"standard","onDriveAxe" );
 		    	btHommeMort = true;
 		    	onMove = true;
-		    	lastButtonName = "crossUp";
+		    	lastButtonName = "buttonAxeLeft";
 		    	ihm.driveCommandBlock('open');
+		   		return;
+		   		/**/
+
+		
+		}   else if (buttonAxeRight.pressed) {
+				atLeastOneButtonPressed = true;
+		    	lastButtonName = "buttonAxeRight";
+		    	ihm.driveCommandBlock('open');
+
+		    	
+		    	/*
+		    	if (crossUp.pressed) {
+						//console.log('Gamepad Up');
+						atLeastOneButtonPressed = true;
+				    	buttonStatusDiv.innerHTML = "(Zoom In) Foscam commands";
+				    	lastButtonName = "crossUp";
+				    	foscam.zoomCamera("onCameraZoomIn")
+				   		return;
+
+
+				}	else if (crossRight.pressed) {
+						//console.log('Gamepad Right');
+						atLeastOneButtonPressed = true;
+				    	buttonStatusDiv.innerHTML = "( !! ) Foscam commands";
+				    	lastButtonName = "crossRight";
+				    	// foscam.moveCamera("Right")
+				   		return;
+
+				}   else if (crossLeft.pressed) {
+						//console.log('Gamepad Left');
+						atLeastOneButtonPressed = true;
+				    	buttonStatusDiv.innerHTML = "( !! ) Foscam commands";
+				    	lastButtonName = "crossLeft";
+				    	// foscam.moveCamera("Left")
+				   		return;
+				
+
+				} else if (crossDown.pressed) {
+						//console.log('Gamepad Down');
+						atLeastOneButtonPressed = true;
+				    	buttonStatusDiv.innerHTML = "(Zoom out) Foscam commands";
+				    	lastButtonName = "crossDown";
+				    	foscam.zoomCamera("onCameraZoomOut")
+				   		return;  
+
+		   		}
+				/**/
+
+		} 	else if (crossUp.pressed) {
+				//console.log('Gamepad Up');
+				atLeastOneButtonPressed = true;
+				ihm.switchGamepadDisplayMode("camera")	
+		    	buttonStatusDivCam.innerHTML = "(CrossUp) Foscam commands";
+		    	//buttonStatusDiv.innerHTML = "(CrossUp) Foscam commands";
+		    	lastButtonName = "crossUp";
+		    	foscam.moveCamera("Up")
+		    	ihm.driveCommandBlock('open');
+
+
 		   		return;
 
 
-		} else if (crossDown.pressed) {
-				console.log('Gamepad Down');
+		}   else if (crossRight.pressed) {
+				//console.log('Gamepad Right');
 				atLeastOneButtonPressed = true;
-		    	buttonStatusDiv.innerHTML = "(CrossDown) Foscam commands";
-		    	stopCamera();
-		    	
-		    	//prepareCameraCommand(gamepad, gamepad.axes[0], gamepad.axes[1]);
-				//btHommeMort = false;
-				atLeastOneButtonPressed = true;
-
-
-		    	lastButtonName = "crossDown";
+				ihm.switchGamepadDisplayMode("camera")	
+		    	buttonStatusDivCam.innerHTML = "(CrossRight) Foscam commands";
+		    	//buttonStatusDiv.innerHTML = "(CrossRight) Foscam commands";
+		    	lastButtonName = "crossRight";
+		    	foscam.moveCamera("Right")
 		    	ihm.driveCommandBlock('open');
+
+		   		return;
+
+		}   else if (crossLeft.pressed) {
+				//console.log('Gamepad Left');
+				atLeastOneButtonPressed = true;
+				ihm.switchGamepadDisplayMode("camera")	
+		    	buttonStatusDivCam.innerHTML = "(CrossLeft) Foscam commands";
+		    	//buttonStatusDiv.innerHTML = "(CrossLeft) Foscam commands";
+		    	lastButtonName = "crossLeft";
+		    	foscam.moveCamera("Left")
+		    	ihm.driveCommandBlock('open');
+
+		   		return;
+		
+
+		} else if (crossDown.pressed) {
+				//console.log('Gamepad Down');
+				atLeastOneButtonPressed = true;
+				ihm.switchGamepadDisplayMode("camera")	
+		    	buttonStatusDivCam.innerHTML = "(CrossDown) Foscam commands";
+		    	//buttonStatusDiv.innerHTML = "(CrossDown) Foscam commands";
+		    	lastButtonName = "crossDown";
+		    	foscam.moveCamera("Down")
+		    	ihm.driveCommandBlock('open');
+
 		   		return;   		
 
 
@@ -384,10 +499,12 @@
 			      
 			      
 			      if (IS_WebRTC_Connected == true ) {
-			      	
-
+				   	
 				   	notifications.writeMessage ("standard","GAMEPAD","(Y) Fermeture connexion",3000)
 				   	notifications.spawnNotification("GAMEPAD","(Y) Fermeture connexion",3000)
+				   	// buttonStatusDiv.innerHTML = "(Y) Close WebRTC connection";
+				   	ihm.switchGamepadDisplayMode("camera")	
+		    		buttonStatusDivCam.innerHTML = "(Y) Close WebRTC connection";
 				   	usersConnection.closeRobotConnexion();
 				    lastButtonName = "buttonY";
 				    onMove = false;
@@ -401,6 +518,9 @@
 			      lastButtonName = "buttonY";
 			  	  notifications.writeMessage ("standard","GAMEPAD","(Y) Ouverture connexion",3000)
 			  	  notifications.spawnNotification("GAMEPAD","(Y) Ouverture connexion",3000)
+			  	  //buttonStatusDiv.innerHTML = "(Y) Open WebRTC connection";
+			  	  ihm.switchGamepadDisplayMode("camera")	
+		    	  buttonStatusDivCam.innerHTML = "(Y) Open WebRTC connection";
 			  	  usersConnection.openRobotConnexion();
 			      
 			      onMove = false;
@@ -410,6 +530,11 @@
 			// Fermeture connexion
 			} else if (buttonB.pressed) {
 			      // Test STOP
+			      
+			      ihm.switchGamepadDisplayMode("jauges")
+			      ihm.driveCommandBlock('open');
+			      buttonStatusDiv.innerHTML = " (B) Stop trajectory";
+			     
 			      var data = { command: 'onFullStop'}
 				  navigation_interface.sendToRobot("", "", "Gamepad",data);
 				  onMove = false;
@@ -443,6 +568,11 @@
 				  	notifications.writeMessage ("standard","GAMEPAD (LB)", selectCamText);
 
 				}
+
+				ihm.switchGamepadDisplayMode("camera")	
+		    	buttonStatusDivCam.innerHTML = "(LB) Camera Selection";
+				// buttonStatusDiv.innerHTML = "(LB) Camera Selection";
+				ihm.driveCommandBlock('open');
 				
 				return;
 
@@ -469,25 +599,41 @@
 
 
 			      } else {
-			    
-			    
+
 				    var idSelect = '#robot_camdef_select';
-				    var textCounter = 'Définitions caméras robot disponibles: ';
+				    var textCounter = 'Résolutions caméras robot disponibles: ';
 				    var selectDefText =  incrementSelectList(idSelect,textCounter)		  
 				  	notifications.writeMessage ("standard","GAMEPAD (RB)", selectDefText);
 
 			  	}
 
+			  	ihm.switchGamepadDisplayMode("camera")	
+		    	buttonStatusDivCam.innerHTML = "(RB) Resolution Selection";
+		    	ihm.driveCommandBlock('open');
+
+
+			  	// buttonStatusDiv.innerHTML = "(RB) Resolution Selection";
+
 				return;
 
 			// Ferme toutes les notifications
+			// et recentre la caméra en mode conduite (si activée)
 			} else if (buttonBack.pressed)  {
 				
 			    //console.log('Gamepad Bouton BACK');
 			    atLeastOneButtonPressed = true;
 			    lastButtonName = "buttonBack";
-				// hideAllMessages();
 				notifications.hideAllMessages();
+				ihm.switchGamepadDisplayMode("camera")	
+		    	buttonStatusDivCam.innerHTML = "(Reset) Foscam commands";
+		    	// buttonStatusDiv.innerHTML = "(Reset) Foscam commands";
+		    	foscam.resetCamera('BottomMost');
+		    	// We have 4 point default:LeftMost\RightMost\TopMost\BottomMost
+		    	// foscam.resetCamera('BottomMost');
+		    	ihm.driveCommandBlock('open');
+		    	
+
+
 			
 			// Switche mode embed/plein écran
 			} else if (buttonStart.pressed)  {
@@ -507,18 +653,12 @@
 				//ihm.navigationView('center','bottom');
 		    	ihm.toggleHUD();
 			
-			// Test Homme mort axe 2
-			}  
+			// 
+			}  else {
 
-				// ---------- Add F Mazieras
-				else  {
-				prepareCameraCommand(gamepad, gamepad.axes[0], gamepad.axes[1]);
-				btHommeMort = false;
-				atLeastOneButtonPressed = true;
-				ihm.driveCommandBlock('open');
-				return;
-				}
-				/**/// ---------- End Add F Mazieras
+				digitalZoom(gamepad)
+			
+			}
 
 
 
@@ -536,22 +676,89 @@
 	}
 
 
-		// ---------- Add F Mazieras
-		function prepareCameraCommand(gamepad, axe1, axe2) {
+	
+    function digitalZoom(gamepad) {
+	
+		var axeHorizontal = gamepad.axes[2]; // vitesse angulaire
+		var axeVertical = gamepad.axes[3]; // Vitesse linéaire
+
+		var speed = 1
+		/*// Variation de la vitesse de Zoom en fonction de l'ampleur du mouvement
+		// 1 = lent , 2 = moyen, 3 = rapide
 		
-		//console.log("@prepareCameraCommand("+gamepad+", "+axe1+", "+axe2+")")
+		
+		if (axeVertical > 0.10 && axeVertical <= 0.40 ) speed = 1
+		else if (axeVertical > 0.40 && axeVertical <= 0.70 ) speed = 2
+		else if (axeVertical > 0.70) speed = 3
+
+		else if (axeVertical < -0.10 && axeVertical >= -0.40 ) speed = 1
+		else if (axeVertical < -0.40 && axeVertical >= -0.70 ) speed = 2
+		else if (axeVertical < -0.70) speed = 3
+		/**/
+
+		
+		// Encore un Bug de l'API Foscam:
+		// Les commandes de vitesse de Zoom ne sont pas prises en compte...
+		// avec le bug qui empèche de supprimer un preset, ca fait beaucoup !!!
+		// Et bien entendu perssonne ne répond a mon ticket sur le forum de support...
+		// Ca me gonfle, j'ai passé 2 heures à mettre au point l'algo de Zoom
+		// en tenant compte de la vitesse, et tout ca pour rien.
+		// Conclusion: Foscam c'est vraiment de la MERDE !!!!!!
+
+
+		// ihm.driveCommandBlock('open');
+			
+		// buttonStatusDivCam.innerHTML = "(LB) Camera Selection";
+				// buttonStatusDiv.innerHTML = "(LB) Camera Selection";
+				
+
+		// Zoom in
+		if (axeVertical >= 0.10 ) {
+			ihm.switchGamepadDisplayMode("camera")
+			ihm.driveCommandBlock('open');
+			if (!onCameraZoom) {
+				//foscam.setCameraZoomSpeed(speed)
+				foscam.zoomCamera("onCameraZoomOut",speed)
+				onCameraZoom=true;
+				buttonStatusDivCam.innerHTML = "(Right Stick) Zoom out";
+			}
+		
+		} else if (axeVertical <= -0.10 ) {
+			ihm.switchGamepadDisplayMode("camera")
+			ihm.driveCommandBlock('open');
+			if (!onCameraZoom) {
+				//foscam.setCameraZoomSpeed(speed)
+				foscam.zoomCamera("onCameraZoomIn",speed)
+				onCameraZoom=true;
+				buttonStatusDivCam.innerHTML = "(Right Stick) Zoom in";
+			}
+
+		}  else {
+
+			if (onCameraZoom) {
+				foscam.sendCameraOrder("onCameraZoomStop");
+				onCameraZoom = false;
+			}
+
+		}
+		
+
+
+    }
+
+
+	/*// ---------- Add F Mazieras
+	// Note titi: obsolète. Remplacé par les touches directionnelles
+	// Et la fonction foscam.moveCamera(axe)
+	function prepareCameraCommandOLD(gamepad, axe1, axe2) {
+		
 		// haut 0,-1
 		// bas 0,1
 		// droite 1,0
 		// gauche -1,0
-		
-		//console.log('Gamepad gauche '+ axe1 + "," + axe2);
 		var camOrder = "??";
 		if (axe1 == 1) {
 			
-			
-			//console.log ("onCameraRight:"+onCameraRight);
-
 			if (!onCameraRight) {
 				//alert ("Faitchier");
 				camOrder = "onCameraRight";
@@ -567,7 +774,7 @@
 				prepareDriveCommand(gamepad, null, null,"","onCameraStop" );
 				onCameraRight=false;
 			}
-			/**/
+			
 		
 		}
 		
@@ -615,13 +822,17 @@
 				onCameraUp=false;
 			}
 		}
-		/**/
+		
 
 		// console.log ("camOrder:" + camOrder);
 		
 	
 	}
+	/**/
 
+	/*// ---------- Add F Mazieras 
+	// Note titi: obsolète. 
+	// Remplacé par la fonction foscam.sendCameraOrder("onCameraStop");
 	function stopCamera() {
 		if (onCameraUp) {
 			prepareDriveCommand(gamepad, buttonRT.value, buttonLT.value,"","onCameraStop" );
@@ -644,11 +855,6 @@
 
 	}
 	/**/// ---------- End Add F Mazieras
-
-
-
-
-
 
 
 
@@ -754,7 +960,6 @@
 				return selectText
 
 	}
-
 
 
 	// Thierry (Original): Construction & envoi de la commande Drive
@@ -891,12 +1096,14 @@
 			   navigation_interface.sendToRobot("", "", "Gamepad",driveCommand);
 	       	
 	    
-		// Suppression des Case/Break de Frédéric en if/else pour fixer les bugs d'enclosure des "drivecommand" précédents...
-	    //}  else if ( command == 'onCameraLeft' && command == 'onCameraStop' && command == 'onCameraRight' && command == 'onCameraDown' && command == 'onCameraUp' && command == 'onCameraGoToPreset1') {
+		// Suppression des tests de Frédéric Mazieras: Ca provoque des bugs d'enclosure des "drivecommand" précédents...
+		// tout passe maintenant par la classe "Foscam" du ficher module_foscam.js
+	    
 	    } else {
 	    	
 	    	console.log ("Command : "+command);
 
+			
 			var cmd = command;
 		    var cameraCommand = {
 		         driveSettings: '',
@@ -910,20 +1117,7 @@
 		         enable: 'true'
 		    }             
 			
-		    navigation_interface.sendToRobot("", "", "Gamepad",cameraCommand);
-		    
-		    /*
-		   
-		    if ( command == 'onCameraLeft' && command == 'onCameraStop' && command == 'onCameraRight' && command == 'onCameraDown' && command == 'onCameraUp' && command == 'onCameraGoToPreset1') {
-		    	
-		    	navigation_interface.sendToRobot("", "", "Gamepad",cameraCommand);
-		    
-
-		    } else  console.log ('command unknown');
-
-		    /**/
-			
-						
+		    navigation_interface.sendToRobot("", "", "Gamepad",cameraCommand);				
 
 	    } //
 	       	

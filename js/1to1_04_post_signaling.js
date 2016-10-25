@@ -173,7 +173,8 @@ function sendMessage() {
 
 // Pilote: Envoi au robot d'une commande par WebRTC
 function sendCommand(commandToSend) {
-    console.log ("@ sendCommand("+commandToSend.command+")");
+    
+    // console.log ("@ sendCommand("+commandToSend.command+")");
 
     // Affiche trace de la commande dans le chatlog webRTC local
     var dateE = tools.humanDateER('E');
@@ -314,7 +315,21 @@ socket.on("piloteOrder", function(data) {
         case "onCameraUp":
         case "onCameraDown":
         case "onCameraStop":
-        case "onCameraGoToPreset1":
+        case "onCameraSetSpeed":
+        case "onCameraGoToDefaultPosition":
+        case "onCameraGoToPresetTopMost":
+        case "onCameraGoToPresetBottomMost":
+        case "onCameraGoToPresetLeftMost":
+        case "onCameraGoToPresetRightMost":
+        case "onCameraDeletePoint":
+
+        case "onCameraZoomIn":
+        case "onCameraZoomOut":
+        case "onCameraZoomStop":
+        case "onCameraSetZoomSpeed":
+
+
+
             komcom.sendCamera(data);
             break;
 

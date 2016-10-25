@@ -306,7 +306,7 @@ function bindEvents() {
 
     };
 
-    // écouteur de reception message
+    // écouteur de reception message webRTC
     channel.onmessage = function(e) {
         //var dateR = Date.now();
         var dateR = tools.humanDateER('R');
@@ -328,13 +328,19 @@ function bindEvents() {
                 // Affiche la trace de la commande dans le chatlog webRTC
                 // $(chatlog).prepend(dateR+' '+cmd.command + "\n");
                 
-                // Envoi de la commande à la Robubox...
-                if (cmd.command == "onDrive") {
+                // Si le Device concerné est une caméra
+                if (cmd.target == "camera" ) {
+                    // Envoi de la commande à la caméra...
+                    komcom.sendCamera(cmd);
+
+                }
+
+               
+                else if (cmd.command == "onDrive") {
                     // Flags homme mort
                     onMove = true;
                     lastMoveTimeStamp = Date.now(); // on met a jour le timestamp du dernier ordre de mouvement...
-                    // Envoi commande  
-                    // robubox.sendDrive(cmd.enable, cmd.aSpeed, cmd.lSpeed);
+                    // Envoi de la commande à Robubox/KomNav/Mobiserv...
                     komcom.sendDrive(cmd);
                 }
                 
@@ -342,8 +348,7 @@ function bindEvents() {
                     // Flags homme mort
                     onMove = false;
                     lastMoveTimeStamp = 0;
-                    // Envoi commande    
-                    //robubox.sendDrive(cmd.enable, cmd.aSpeed, cmd.lSpeed);
+                    // Envoi de la commande à Robubox/KomNav/Mobiserv...
                     komcom.sendDrive(cmd);
                 }
                 

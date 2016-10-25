@@ -12,21 +12,10 @@
     <link rel="stylesheet" href="/css/prettyPhoto.css" type="text/css" media="screen" title="prettyPhoto main stylesheet" charset="utf-8" />
     <script src='/js/lib/jquery-1.11.3.min.js'></script>
     <link rel="import" href="/web_kom-remote/kom-remote.html">
-    
-        <!--
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js" type="text/javascript"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.0/jquery-ui.js"></script>
-        -->
 
         <!-- Plugin lightbox -->
         <script src="/js/lib/jquery.prettyPhoto.js" type="text/javascript" charset="utf-8"></script>
         
-       <!-- 
-       <script src="/js/lib/jquery.coverflow.js"></script>
-        <script src="/js/lib/jquery.interpolate.min.js"></script>
-        <script src="/js/lib/jquery.touchSwipe.min.js"></script>
-        <script src="/js/lib/reflection.js"></script>
-		-->
         <style>
                 
             #preview {padding: 3px;}
@@ -67,10 +56,32 @@
 				    $("a[rel^='prettyPhoto']").prettyPhoto();
 				}
 
+            // Prédéclaration d'une variable de fonction anonyme
+            // Pour la précharger dans le dom du document et du webComposant de'Hugo et François
+            // An attendant de la modifier par une vraie fonction a la fin du chargement de la page...
+            myWTF = null;
 
-		</script>
+		        
+        </script>
+
+    
+
+
+
 
     <title>1to1-Pilote</title>
+
+
+
+
+
+
+
+
+
+
+
+
 </head>
 
 
@@ -201,6 +212,9 @@
                         
                     </span>
                     <hr/>
+                            
+
+
 
                     <div id="step-commands">                   
                         <kom-remote class="kom-remote"></kom-remote>    
@@ -210,12 +224,39 @@
                       
                     <div id="drive-commands" style="display:none; text-align:center;">    
                         
-                        <canvas id="canvasGamepad" style="border: 1px solid grey;" ></canvas>
+                        
+
+                        <div id = "gamepadDefault"> 
+
+                           
+                            <div style="text-align:center">
+                                <br/><br/>
+                                <img src="/images/logo/gamepad360.png" style="width:200px;height:143px;" alt="" />
+                            </div> 
+
+
+
+                        </div> 
+
+
+
+                        <div id = "fullAxesInfos">
+
+                            <div style="text-align:center">
+                                </span><span id="fullDriveButtonStatus"></span>
+                            </div>  
+
+                            <canvas id="canvasGamepad" style="border: 1px solid grey;"></canvas>
+                        </div>
 
                         
                         <div id = "gamePadInfos">
                          
-                            
+                            <div style="text-align:center">
+                                <span>&nbsp;</span><span id="buttonStatus"></span>
+                            </div>
+
+                            <br/>
                             <b>Direction</b><br/>
                             <progress id="leftRight" value=1 max=2></progress><br><br/>
 
@@ -228,11 +269,26 @@
                             <br/>
                             <br/>
 
-                            <b>Commande</b><br/>
-                            <div id="buttonStatus"></div>
-                            
-
                         </div>
+
+                          <div id = "cameraInfos"> 
+
+
+                            <div style="text-align:center">
+                                <span>&nbsp;</span><span id="buttonStatusDivCam"></span>
+                            </div>
+
+
+                            
+                            <div style="text-align:center">
+                                <br/>
+                                <img src="/images/logo/webcam.png" style="width:200px;height:200px;" alt="" />
+                            </div> 
+
+
+
+                          </div> 
+                                      
                         
                        
                     </div>
@@ -391,6 +447,7 @@
 
          </section>
 
+    
     <script>
         var type = "pilote-appelant";
         var proto = "1to1";
@@ -408,13 +465,7 @@
     <script src="/js/common_tools.js"></script>
     <script src="/js/common_models.js"></script>
     <script src="/js/common_app_settings.js"></script>
-<!--     <script src="/js/branch_settings/common_app_branch_settings.js"></script>     -->  
     
-
-<script>
-    
-
-</script>
 
     <script src='/js/1to1_01_websocket.js'></script>
     <script src='/js/1to1_02_pre_signaling.js'></script>
@@ -430,6 +481,7 @@
     <script src='/js/module_navigation.js'></script>
     <script src='/js/module_komremote.js'></script>
     <script src='/js/module_forms.js'></script>
+    <script src='/js/module_foscam.js'></script>
     <script src='/js/module_gamepad.js'></script>
     <script src="/js/module_logs.js"></script>  
  
@@ -455,7 +507,22 @@
     <script>                    
             // Affichage de l'entête
             ihm.getHeaderPage(pseudo);
+
+            // Maintenant que le reste des scripts est chargé,
+            // on affecte a la variable anonyme pré-chargée une vraie fonction
+            // Ici, on fait passer les commandes de la caméra FOSCAM via le
+            // WebComposant d'Hugo et François
+            myWTF = function WTF_WebComposantDeHugoEtFrancois (commande) {
+                    foscam.WTF(commande)
+            }
+
+            
+    
+
     </script> 
+
+
+
 
 </body>
 

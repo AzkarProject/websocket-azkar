@@ -17,6 +17,18 @@ utiliser, modifier et/ou redistribuer ce programme sous les conditions
 de la licence CeCILL-C telle que diffusée par le CEA, le CNRS et l'INRIA 
 sur le site "http://www.cecill.info".
 
+Révision 1.6.2
+- Caméra Foscam
+    - Simplification du code source coté Gamepad
+    - Implémentation commandes de Zoom
+    - Implémentation commandes de reset caméra
+    - Factorisation du code dans une classe dédiée
+    - Modification mapping Gamepad des commandes caméra
+    - Implémentation d'une interface Web avec comandes en mode "pas a pas" et "continu"
+    - Ajouts d'icones et corrections de Bugs dans le bloc de commandes
+    - Todo: Implémentation de commandes au clavier
+    - Todo: Activation/Désactivation des commandes de la caméra coté admin
+
 Révision 1.6.1
 - Cartographie
     - Refonte algorithme du mode tracking

@@ -128,12 +128,55 @@ function localManageDevices() {
 }
 
 
+// ----------- Selecteurs d'affichage des flux videos locaux et distants ---------------------
+// > Permet d'économiser sur les postes client des ressources processeurs liées a l'affichage.
+
+
+function setPiloteLocalView(viewSetting) {
+    // parameters.lPview = lPVSet;
+    parameters.piloteLocalView = viewSetting;
+
+}
+
+function setRobotLocalView(viewSetting) {
+    // parameters.lRview = lRVSet;
+    parameters.robotLocalView = viewSetting
+
+}
+
+function setPiloteRemoteView(viewSetting) {
+    // parameters.rPview = rPVSet;
+    parameters.piloteRemoteView = viewSetting;
+}
+
+function setRobotRemoteView(viewSetting) {
+    // parameters.rRView = rRVSet;
+    parameters.robotRemoteView = viewSetting;
+
+}
+
+
+
+// --------- Résolution des caméras vidéos -----------------------
+
+// Génère les options des résolution
+var listOptionsDefinition = '<option value="144p">144p: 196x144</option>'; 
+listOptionsDefinition += '<option value="QVGA">QVGA: 320x240</option>'; 
+listOptionsDefinition += '<option value="VGA">VGA: 640x480</option>';
+listOptionsDefinition += '<option value="HD">HD: 1280x720</option>';
+listOptionsDefinition += '<option value="Full HD">Full HD: 1920x1080</option>';
+
+
+
+// Sélecteurs html des options de résolution
+$('#robot_camdef_select').html(listOptionsDefinition); 
+$('#pilot_camdef_select').html(listOptionsDefinition); 
 
 
 // --------- Système embarqué  (Robubox/KomNav) ------------------
 
 
-// Formulaire de sélection systeme embarqué (Robubox/KomNav)
+/*// Formulaire de sélection systeme embarqué (Robubox/KomNav)
 selectSystemRobubox = document.querySelector('input#Robubox');
 selectSystemKomNAV = document.querySelector('input#KomNAV');
 
@@ -142,7 +185,7 @@ function raZNavSystem() {
     
     console.log("@ raZNavSystem()")
     console.log("navSys =" + navSys)
-    /*
+    
     if (navSys == 'KomNAV') {
         selectSystemKomNAV.checked = true;
         selectSystemRobubox.checked = false;
@@ -152,7 +195,6 @@ function raZNavSystem() {
         selectSystemRobubox.checked = true;
         parameters.navSys = "Robubox";
     }
-    /**/
 }
 // Au chargement du script...
 raZNavSystem();
@@ -168,7 +210,7 @@ setNavSystem = function (navSysSet) {
         navSystem: navSysSet
     }); 
 }
-
+/**/
 
 // --------- Canal de commande (WebRTC/WebSocket) -----------------
 
@@ -286,60 +328,7 @@ function  stopTrajectory() {
 
 
 
-// ----------- Selecteurs d'affichage des flux videos locaux et distants ---------------------
-// > Permet d'économiser sur les postes client des ressources processeurs liées a l'affichage.
 
-
-function setPiloteLocalView(viewSetting) {
-    // parameters.lPview = lPVSet;
-    parameters.piloteLocalView = viewSetting;
-
-}
-
-function setRobotLocalView(viewSetting) {
-    // parameters.lRview = lRVSet;
-    parameters.robotLocalView = viewSetting
-
-}
-
-function setPiloteRemoteView(viewSetting) {
-    // parameters.rPview = rPVSet;
-    parameters.piloteRemoteView = viewSetting;
-}
-
-function setRobotRemoteView(viewSetting) {
-    // parameters.rRView = rRVSet;
-    parameters.robotRemoteView = viewSetting;
-
-}
-
-
-
-// --------- Résolution des caméras vidéos -----------------------
-
-// Génère les options des résolution
-/*var listOptionsDefinition = '<option value="VLD" selected="selected" >Very Low: 100*52</option>';   
-listOptionsDefinition += '<option value="144p">144p: 196*144</option>'; 
-listOptionsDefinition += '<option value="244p">244p: 350*240</option>';
-listOptionsDefinition += '<option value="360p">360p: 480*360</option>'; 
-listOptionsDefinition += '<option value="VGA">VGA: 640*480</option>';
-listOptionsDefinition += '<option value="858p">858p: 858*480</option>';
-listOptionsDefinition += '<option value="720p">720p: 1280*720</option>';
-listOptionsDefinition += '<option value="1080p">1080p: 1920*1080</option>';
-/**/
-
-
-var listOptionsDefinition = '<option value="144p">144p: 196x144</option>'; 
-listOptionsDefinition += '<option value="QVGA">QVGA: 320x240</option>'; 
-listOptionsDefinition += '<option value="VGA">VGA: 640x480</option>';
-listOptionsDefinition += '<option value="HD">HD: 1280x720</option>';
-listOptionsDefinition += '<option value="Full HD">Full HD: 1920x1080</option>';
-
-
-
-// Sélecteurs html des options de résolution
-$('#robot_camdef_select').html(listOptionsDefinition); 
-$('#pilot_camdef_select').html(listOptionsDefinition); 
 
 
 

@@ -201,6 +201,8 @@ exports.sendGotoPOI = function (data) {
 exports.sendDrive = function (data){        
         
     if (fakeRobubox == null) return;
+    //console.log("sendDrive")
+    //console.log(data)
 
     var enable = data.enable;
     var aSpeed = data.aSpeed;
@@ -359,7 +361,6 @@ exports.sendFullStop = function (data){
 }
 
 
-// 
 // Note: Compatible avec la version de komNav/Mobiserve
 exports.getListPOI = function (init){
 
@@ -503,7 +504,8 @@ exports.getDataMap = function (){
 }
 
 // ---------- Author F Mazieras
-exports.sendCamera = function (data){        
+// Note titi: obsolète. 
+exports.sendCameraOld = function (data){        
     /* /decoder_control.cgi?command=[&onestep=&degree=&user=&pwd=&next_url=]
       
     // 0 up
@@ -537,7 +539,10 @@ exports.sendCamera = function (data){
         case "onCameraDown":
             cmd = "ptzMoveDown";
             break;
-        case "onCameraGoToPreset1":
+       case "onCameraGoToDefaultPosition":
+            cmd = "ptzReset";
+            break;
+       case "onCameraGoToPreset1":
             cmd = "31";
             break;
         default:
@@ -562,6 +567,184 @@ exports.sendCamera = function (data){
    
 
 }
+
+
+// ---------- Author F Mazieras & Thierry Bergeron
+exports.sendCamera = function (data){        
+    
+    var proxyUrl = "https://127.0.0.1:443/http://";
+    var cgiUrl = foscamUrl+"/cgi-bin/CGIProxy.fcgi";
+    var cmdUrl = "?cmd=";
+    var usrUrl = "&usr=webvisite&pwd=230458DS";
+    var valueUrl = "";
+    var command = data.command;
+     
+    var value = null;
+    if (data.value) value = data.value;
+    
+     // console.log ("komcom.sendCamera(command = "+ command +", value = "+value+")");
+     //console.log ("komcom.sendCamera()");
+     //console.log(data);
+    
+    switch (command) {
+
+        case "onCameraLeft":
+            cmd = "ptzMoveLeft";
+            break;
+        case "onCameraRight":
+            cmd = "ptzMoveRight";
+            break;
+        case "onCameraUp":
+            cmd = "ptzMoveUp";
+            break;
+        case "onCameraDown":
+            cmd = "ptzMoveDown";
+            break;
+
+        case "onCameraStop":
+            cmd = "ptzStopRun";
+            break;        
+        case "onCameraGoToDefaultPosition":
+            cmd = "ptzReset";
+            break;
+
+        
+        // Speed = 0:very slow, 1:Slow, 2:Normal speed, 3:Fast , 4:Very Fast
+        // /cgi-bin/CGIProxy.fcgi?cmd=setPTZSpeed&speed=2&usr=admin&pwd=    
+        case "onCameraSetSpeed":
+            cmd = "setPTZSpeed";
+            valueUrl = "&speed="+value;
+            break;
+
+
+        // ptzAddPresetPoint
+        // /cgi-bin/CGIProxy.fcgi?cmd=ptzAddPresetPoint&name=test&usr=admin&pwd
+
+        // ptzDeletePresetPoint
+        // /cgi-bin/CGIProxy.fcgi?cmd=ptzDeletePresetPoint&name=test&usr=admin&pwd=
+        case "onCameraDeletePoint":
+            cmd = "ptzDeletePresetPoint";
+            valueUrl = "&name="+value;
+            break;
+        
+        // We have 4 point default:LeftMost\RightMost\TopMost\BottomMost
+        case "onCameraGoToPresetTopMost":
+            cmd = "ptzGotoPresetPoint";
+            valueUrl = "&name=TopMost";
+            break;
+        
+        case "onCameraGoToPresetBottomMost":
+            cmd = "ptzGotoPresetPoint";
+            valueUrl = "&name=BottomMost";
+            break;
+
+        case "onCameraGoToPresetLeftMost":
+            cmd = "ptzGotoPresetPoint";
+            valueUrl = "&name=LeftMost";
+            break;
+
+        case "onCameraGoToPresetRightMost":
+            cmd = "ptzGotoPresetPoint";
+            valueUrl = "&name=RightMost";
+            break;    
+
+
+        // zoomIn
+        // /cgi-bin/CGIProxy.fcgi?cmd=zoomIn
+        case "onCameraZoomIn":
+            cmd = "zoomIn";
+            break;  
+
+        // zoomOut
+        // /cgi-bin/CGIProxy.fcgi?cmd=zoomOut
+        case "onCameraZoomOut":
+            cmd = "zoomOut";
+            break;  
+
+        // zoomStop
+        // /cgi-bin/CGIProxy.fcgi?cmd=zoomStop
+        case "onCameraZoomStop":
+            cmd = "zoomStop";
+            break;  
+
+        // setZoomSpeed
+        // Speed: 1 = Slow, 2= Normal, 3= Fast
+        // /cgi-bin/CGIProxy.fcgi?cmd=setZoomSpeed&usr=admin&pwd=&speed=1
+        case "onCameraSetZoomSpeed":
+            cmd = "setZoomSpeed";
+            valueUrl = "&Speed="+value;
+            break;  
+
+
+        default:
+            console.log("Unknown command: "+cmd);
+            break;
+            
+    }
+    //  var url = "https://127.0.0.1:443/http://"+foscamUrl+"/cgi-bin/CGIProxy.fcgi?cmd="+cmd+"&usr=webvisite&pwd=230458DS";
+    var url = proxyUrl+cgiUrl+cmdUrl+cmd+valueUrl+usrUrl; 
+    //console.log ("komcom.sendCamera("+ url +")");
+        
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url);
+    xhr.send();
+    xhr.closed;
+   
+
+}
+
+
+
+
+
+
+
+
+// Récupère les infos de la caméra Foscam 
+// Todo: A finir !!!!!
+exports.getCameraInfos = function (query){
+    
+    if (fakeRobubox == null) return;
+    
+    //console.log ('get map metadatas');
+    // Titi: Rebond proxy en https(Client Robot) > Http(Robubox/KomNav)
+    var url = null;
+    var url = "https://127.0.0.1:443/http://"+foscamUrl+"/cgi-bin/CGIProxy.fcgi?cmd="+cmd+"&usr=webvisite&pwd=230458DS"; 
+    console.log ("komcom.getCameraInfos("+ url +")");
+    
+    if (fakeRobubox == true) {  
+
+    
+    } else {
+        
+        
+
+        // Todo:
+
+        // getPTZPresetPointList
+        // /cgi-bin/CGIProxy.fcgi?cmd=getPTZPresetPointList&usr=admin&pwd=
+        // We have 4 point default:LeftMost\RightMost\TopMost\BottomMost
+        // Return cnt = Current preset point count
+        // Return pointN = The name of point N
+
+        // getPTZSpeed
+        // /cgi-bin/CGIProxy.fcgi?cmd=getPTZSpeed&usr=admin&pwd=
+        // Return Speed = 0:very slow, 1:Slow, 2:Normal speed, 3:Fast , 4:Very Fast
+
+        // getZoomSpeed
+        // /cgi-bin/CGIProxy.fcgi?cmd=getZoomSpeed&usr=admin&pwd=
+        // Return Speed = 0:Slow, 1:Normal, 3:Fast
+
+        if (url != null) {
+            $.get(url, function(rep) {
+                console.log (rep);
+            }); 
+        } 
+    }  
+
+}
+
+
 
 
 })(typeof exports === 'undefined'? this['komcom']={}: exports);

@@ -1,9 +1,11 @@
 <template id="kom-remote">
 	<div class="hidden-komcom-connected">En attente d'une connexion</div>
 	<div class="visible-komcom-connected">
+		
 		<form class="komremote-switch">
 			<label><input type="radio" name="switch-remote" value="joystick" checked /> Joystick</label>
 			<label><input type="radio" name="switch-remote" value="pad" /> Pad</label>
+			<label><input type="radio" name="switch-remote" value="camera" /> Camera</label>
 		</form>
 
 		<div class="joystick">
@@ -16,6 +18,41 @@
 			<span class="pad-arrow pad-arrow-bottom" data-direction="bottom"></span>
 			<span class="pad-arrow pad-arrow-left" data-direction="left"></span>
 		</div>
+	
+		<div class="camera">
+			
+		
+
+		<div id="cameraButtons">
+
+               <div class="pad-camera">              					
+					<button id="camCenter" onclick="myWTF('onCameraUp')"> &#8593; </button>
+				</div>	
+				
+				<div class="pad-camera"> 
+					<button id="camLeft" onclick="myWTF('onCameraLeft')"> &#8592; </button>
+					<button id="camCenter" onclick="myWTF('onStop')"> STOP </button>
+                    <button id="camRight" onclick="myWTF('onCameraRight')"> &#8594; </button>
+				</div>
+				
+				<div class="pad-camera"> 
+					<button id="camDown" onclick="myWTF('onCameraDown')"> &#8595; </button>
+				</div>
+
+				<div class="pad-camera"> 
+					<button id="camZoomIn" onclick="myWTF('onCameraZoomIn')">Zoom +</button>
+                    <button id="camCenter" onclick="myWTF('onCameraGoToDefaultPosition')"> &#64; </button>
+                    <button id="camZoomOut" onclick="myWTF('onCameraZoomOut')">Zoom -</button>
+				</div> 
+				<hr/>
+					<label><input type="radio" name="controlModeCam" id="modeSbS" value="SbS" onclick="myWTF('modeSbS')" checked /> Step by step</label>
+					<label><input type="radio" name="controlModeCam" id="modeContinue" value="Continue" onclick="myWTF('modeContinue')" /> Continue</label>
+				<hr/>
+		</div>
+
+
+
+
 	</div>
 	<style>
 	@import "/web_kom-remote/styles/kom-remote.css";
