@@ -736,12 +736,13 @@
 
        newIpRobot = document.getElementById("newIP_Robot");
        newLabelRobot = document.getElementById("newLabel_Robot");
+       
        newIpCamera = document.getElementById("newIP_Camera");
        newLabelCamera = document.getElementById("newLabel_Camera");
 
        function addRessource(type) {
             if (!type) return;
-            console.log("@ addressource()")
+            console.log("@ addressource("+type+")")
             
             var newListRessources = {}, newRessource = null, label = null, ip = null, cible = null;;
 
@@ -754,7 +755,7 @@
                 newListRessources = listUrlsRobot;
 
             } else if (type == 'Camera') {
-                cible: 'listUrlsFoscam',
+                cible = 'listUrlsFoscam',
                 label = newLabelCamera.value;
                 ip = newIpCamera.value
                 newRessource = new models.ressourceUrl(ip, label, "");
@@ -767,6 +768,7 @@
                     cible: cible,
                     newData: newListRessources
                 }
+                console.log(data);
                 socket.emit('updateIpRessources', data);
 
             
