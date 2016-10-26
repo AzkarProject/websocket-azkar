@@ -1083,7 +1083,7 @@ urlsRobot[urlRobotCSI.Label] = urlRobotCSI;
 var urlFoscamI3S = new models.ressourceUrl("192.168.1.50:88", "IP Foscam I3S", "");
 urlsFoscam[urlFoscamI3S.Label] = urlFoscamI3S;
 
-var urlFoscamCSI = new models.ressourceUrl("127.0.0.1:7007", "IP Foscam CSI", "");
+var urlFoscamCSI = new models.ressourceUrl("10.0.15.50:88", "IP Foscam CSI", "");
 urlsFoscam[urlFoscamCSI.Label] = urlFoscamCSI;
 
 defaultIpRobot = urlRobotI3S;
