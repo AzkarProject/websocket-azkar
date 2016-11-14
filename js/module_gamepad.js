@@ -382,44 +382,6 @@
 		    	lastButtonName = "buttonAxeRight";
 		    	ihm.driveCommandBlock('open');
 
-		    	
-		    	/*
-		    	if (crossUp.pressed) {
-						//console.log('Gamepad Up');
-						atLeastOneButtonPressed = true;
-				    	buttonStatusDiv.innerHTML = "(Zoom In) Foscam commands";
-				    	lastButtonName = "crossUp";
-				    	foscam.zoomCamera("onCameraZoomIn")
-				   		return;
-
-
-				}	else if (crossRight.pressed) {
-						//console.log('Gamepad Right');
-						atLeastOneButtonPressed = true;
-				    	buttonStatusDiv.innerHTML = "( !! ) Foscam commands";
-				    	lastButtonName = "crossRight";
-				    	// foscam.moveCamera("Right")
-				   		return;
-
-				}   else if (crossLeft.pressed) {
-						//console.log('Gamepad Left');
-						atLeastOneButtonPressed = true;
-				    	buttonStatusDiv.innerHTML = "( !! ) Foscam commands";
-				    	lastButtonName = "crossLeft";
-				    	// foscam.moveCamera("Left")
-				   		return;
-				
-
-				} else if (crossDown.pressed) {
-						//console.log('Gamepad Down');
-						atLeastOneButtonPressed = true;
-				    	buttonStatusDiv.innerHTML = "(Zoom out) Foscam commands";
-				    	lastButtonName = "crossDown";
-				    	foscam.zoomCamera("onCameraZoomOut")
-				   		return;  
-
-		   		}
-				/**/
 
 		} 	else if (crossUp.pressed) {
 				//console.log('Gamepad Up');
@@ -703,14 +665,7 @@
 		// Et bien entendu perssonne ne répond a mon ticket sur le forum de support...
 		// Ca me gonfle, j'ai passé 2 heures à mettre au point l'algo de Zoom
 		// en tenant compte de la vitesse, et tout ca pour rien.
-		// Conclusion: Foscam c'est vraiment de la MERDE !!!!!!
-
-
-		// ihm.driveCommandBlock('open');
-			
-		// buttonStatusDivCam.innerHTML = "(LB) Camera Selection";
-				// buttonStatusDiv.innerHTML = "(LB) Camera Selection";
-				
+		// Conclusion: Foscam c'est vraiment de la MERDE !!!!!!		
 
 		// Zoom in
 		if (axeVertical >= 0.10 ) {

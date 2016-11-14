@@ -605,7 +605,7 @@
                                             wsTitle = "Ressources recommandées pour la scène 'Marne14'";
                                             wsHtmlContent = "";
                                     
-                                    } else if (sceneName == "LesTranchées") {
+                                    } else if (sceneName == "Tranchees") {
                                             //isLinkedToWS = true;
                                             socket.emit('getSceneRessources', {scene: "La_tranchee"});
                                             console.log( "socket.emit('getSceneRessources', {scene: La_tranchee })"    )
