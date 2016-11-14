@@ -602,16 +602,16 @@
                                             console.log( "socket.emit('getSceneRessources', {scene: Marne14 })"    )
                                             activeRecommandation = true;
 
-                                            wsTitle = "Ressources recommandées pour la scène 'Marne14'";
+                                            wsTitle = "Ressources recommandées pour la scène 'Marne 1914'";
                                             wsHtmlContent = "";
                                     
-                                    } else if (sceneName == "Tranchees") {
+                                    } else if (sceneName == "Les_Tranchees") {
                                             //isLinkedToWS = true;
                                             socket.emit('getSceneRessources', {scene: "La_tranchee"});
                                             console.log( "socket.emit('getSceneRessources', {scene: La_tranchee })"    )
                                             activeRecommandation = true;
 
-                                            wsTitle = "Ressources recommandées pour la scène 'La_tranchee'";
+                                            wsTitle = "Ressources recommandées pour la scène 'Les tranchèes'";
                                             wsHtmlContent = "";
                                     
 
