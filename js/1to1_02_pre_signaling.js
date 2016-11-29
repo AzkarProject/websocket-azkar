@@ -61,6 +61,12 @@ piloteLocalView = 'show';
 robotLocalView = 'show';
 piloteRemoteView = 'show';
 robotRemoteView = 'show';
+// Add du 29/11/2016
+echoCancellation= true;
+autoGainControl= true;
+noiseSuppression= true;
+highpassFilter= true;
+typingNoiseDetection= true;
 
 
 // Objet paramètres
@@ -70,7 +76,13 @@ parameters = {
     piloteLocalView: piloteLocalView,
     robotLocalView:  robotLocalView,
     piloteRemoteView: piloteRemoteView,
-    robotRemoteView: robotRemoteView
+    robotRemoteView: robotRemoteView,
+    // Add du 29/11/2016
+    echoCancellation: echoCancellation,
+    autoGainControl: autoGainControl,
+    noiseSuppression: noiseSuppression,
+    highpassFilter: highpassFilter,
+    typingNoiseDetection: typingNoiseDetection,
 };
 
 
@@ -498,7 +510,21 @@ function getLocalConstraint() {
     
     var camDef = "HD";
     if (type == "pilote-appelant") camDef = parameters.camDefPilote;
-    else if (type == "robot-appelé") camDef = parameters.camDefRobot;
+    else if (type == "robot-appelé") {
+        camDef = parameters.camDefRobot;
+
+        echoCancellation= parameters.echoCancellation;
+        autoGainControl= parameters.autoGainControl;
+        noiseSuppression= parameters.noiseSuppression;
+        highpassFilter= parameters.highpassFilter;
+        typingNoiseDetection= parameters.typingNoiseDetection;
+    }
+    
+
+
+
+
+
     var minCamWidth = 100, minCamHeight = 52;
     var maxCamWidth = 1920, maxCamHeight = 1080;
 
@@ -603,15 +629,46 @@ function getLocalConstraint() {
     }
     /**/
 
+    /*
     localConstraints = { 
        mandatory: {OfferToReceiveAudio: true, OfferToReceiveVideo: true},
-       audio: {deviceId: audioSource ? {exact: audioSource} : undefined},
+       // audio: {deviceId: audioSource ? {exact: audioSource} : undefined},
+       audio: true,
        video: {
                 deviceId: videoSource ? {exact: videoSource} : undefined, 
                 width: {min:minCamWidth ,ideal: maxCamWidth}, 
                 height: {min:minCamHeight ,ideal: maxCamHeight}
         }
     }
+    /**/
+  
+    localConstraints = { 
+       mandatory: {OfferToReceiveAudio: true, OfferToReceiveVideo: true},
+
+        audio: {
+            mandatory: {
+                googEchoCancellation: echoCancellation,
+                googAutoGainControl: autoGainControl,
+                googNoiseSuppression: noiseSuppression,
+                googHighpassFilter: highpassFilter,
+                googTypingNoiseDetection: typingNoiseDetection,
+                //googAudioMirroring: true, // For some reason setting googAudioMirroring causes a navigator.getUserMedia error:  NavigatorUserMediaError
+            },
+            optional: [],
+        },
+        video: {
+                deviceId: videoSource ? {exact: videoSource} : undefined, 
+                width: {min:minCamWidth ,ideal: maxCamWidth}, 
+                height: {min:minCamHeight ,ideal: maxCamHeight}
+        }
+    }
+    /**/
+
+
+
+
+
+
 
     return localConstraints;
 } 

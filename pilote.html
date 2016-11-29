@@ -98,7 +98,7 @@
                 <strong> Settings </strong>
                 <hr/>
 
-                <span id="robotVideoSetting" class="">
+                <span id="robotVideoSetting" class="appParameters">
                     IHM Robot - Local view: 
                     <input type="radio" name="RlVidSetting" value="show" id="RlVshow" checked onclick="setRobotLocalView('show')"> <label for="RlVshow">Show</label>
                     <input type="radio" name="RlVidSetting" value="hide" id="RlVhide" onclick="setRobotLocalView('hide')"/> <label for="RlVhide">Hide</label>
@@ -111,7 +111,7 @@
                 </span>
                 <br/>
                 
-                <span id="piloteVideoSetting" class="">
+                <span id="piloteVideoSetting" class="appParameters">
                     IHM Pilote - Local view: 
                     <input type="radio" name="PlVidSetting" value="show" id="PlVshow" checked onclick="setPiloteLocalView('show')"> <label for="PlVshow">Show</label>
                     <input type="radio" name="PlVidSetting" value="hide" id="PlVhide" onclick="setPiloteLocalView('hide')"/> <label for="PlVhide">Hide</label>
@@ -123,6 +123,26 @@
                         <select id="pilot_camdef_select"></select>
                 </span>
                 <hr/>
+                <span id="AudioSettings" class="appParameters">
+                    Echo Cancellation:
+                    <input type="radio" name="echo" value="show" id="echoYes" checked onclick="setEchoCancellation(true)"> <label>yes</label>
+                    <input type="radio" name="echo" value="hide" id="echoNo" onclick="setEchoCancellation(false)"/> <label>no</label>
+                    &nbsp;&nbsp; || &nbsp;&nbsp; Auto Gain Control: 
+                    <input type="radio" name="autoGain" value="show" id="autoGainYes" checked onclick="setAutoGainControl(true)"> <label>yes</label>
+                    <input type="radio" name="autoGain" value="hide" id="autoGainNo" onclick="setAutoGainControl(false)"/> <label>no</label>
+                    &nbsp;&nbsp; || &nbsp;&nbsp; Noise Suppression: 
+                    <input type="radio" name="noiseSupp" value="show" id="noiseSuppYes" checked onclick="setNoiseSuppression(true)"> <label>yes</label>
+                    <input type="radio" name="noiseSupp" value="hide" id="noiseSuppNo" onclick="setNoiseSuppression(false)"/> <label>no</label>
+                    &nbsp;&nbsp; || &nbsp;&nbsp; Highpass Filter: 
+                    <input type="radio" name="highpass" value="show" id="highpassYes" checked onclick="setnoiseDetectFilter(true)"> <label>yes</label>
+                    <input type="radio" name="highpass" value="hide" id="highpassNo" onclick="setHighpassFilter(false)"/> <label>no</label>
+                    &nbsp;&nbsp; || &nbsp;&nbsp; Typing Noise Detection: 
+                    <input type="radio" name="noiseDetect" value="show" id="noiseDetectYes" checked onclick="setTypingNoiseDetection(true)"> <label>yes</label>
+                    <input type="radio" name="noiseDetect" value="hide" id="noiseDetectNo" onclick="setTypingNoiseDetection(false)"/> <label>no</label>
+
+
+
+                </span>
                 <div id="laboInteraction" class=""></div>
             </div>
 

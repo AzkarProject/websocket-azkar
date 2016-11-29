@@ -260,6 +260,12 @@ video {
 .ihmPilote #robotInfos .jauge #speed_robot {width: 300px;}
 
 
+.appParameters {
+    font-family: "Arial Narrow", Arial, "Helvetica Condensed", Helvetica, sans-serif;
+    font-weight:bold;
+    font-size:14px;
+}
+
 /* Formulaires devices de base */
 .devices {
     

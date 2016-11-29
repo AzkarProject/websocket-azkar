@@ -74,7 +74,9 @@ function initLocalMedia(peerCnxId) {
 
     // Récupération et affectation des caméras et micros selectionnés  
     constraint = getLocalConstraint();
-
+    console.log ("-------------constraint------------")
+    console.log (constraint)
+    console.log ("-----------------------------------")
     
     // On renseigne le Flag d'ouverture de session webRTC
     sessionConnection = "Launched";

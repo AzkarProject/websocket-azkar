@@ -327,7 +327,23 @@ function  stopTrajectory() {
 }
 
 
+// ------ 329/11/2016 - Paramètres du son -------------
 
+function setEchoCancellation (value) {
+    parameters.echoCancellation = value;
+}
+function setAutoGainControl (value){
+    parameters.autoGainControl = value;
+}
+function setNoiseSuppression (value){
+    parameters.noiseSuppression = value;
+}
+function setHighpassFilter (value){
+    parameters.highpassFilter = value;
+}
+function setTypingNoiseDetection (value){
+    parameters.typingNoiseDetection = value
+}
 
 
 
