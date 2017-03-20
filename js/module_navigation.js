@@ -543,10 +543,14 @@
 
         // if (fakeRobubox != true) return    
         setInterval(function() {
-           // console.log("---------------------------------")  
-           // console.log("webSemanticRecommandations(activeRecommandation = "+activeRecommandation+")") 
-           // console.log("webSemanticRecommandations(lastPoiName = "+lastPoiName+")")
-            // console.log("webSemanticRecommandations(nearestPoiName = "+nearestPoiName+")")
+           
+           /*
+           console.log("---------------------------------")  
+           console.log("webSemanticRecommandations(activeRecommandation = "+activeRecommandation+")") 
+           console.log("webSemanticRecommandations(lastPoiName = "+lastPoiName+")")
+           console.log("webSemanticRecommandations(nearestPoiName = "+nearestPoiName+")")
+           /**/
+           /**/
             if (robotColor == 'green')  {
 
                 var sceneName = null;
@@ -557,7 +561,10 @@
                         
                         if (fakeRobubox == true) {
 
+                            /*
                             if (lastPoiName != nearestPoiName) {
+
+                                
 
                                 if (listPOI[poi].label) { 
                                     sceneName = listPOI[poi].label
@@ -571,9 +578,10 @@
 
                                         wsTitle = "Ressources recommandées pour la scène '"+sceneName+"'";
                                         wsHtmlContent = "<div><p>Blabla quelconque...</p></div>";
-                                        //console.log(wsTitle);
-                                        /**/
                                     }
+                                    
+
+                          
 
                                 } else {
                                     
@@ -587,7 +595,61 @@
                                 notifications.writeRecommandations ("miscelleanous",wsTitle,"")
 
                             } //if (lastPoiName != nearestPoiName)
-                            
+                            /**/
+                        
+
+                             sceneName = nearestPoiName;
+                             // Pour eviter les affichages en boucle
+                             if (lastPoiName != nearestPoiName) {
+                                    
+                                    
+                                if (activeRecommandation === false) {
+
+                                    lastPoiName = nearestPoiName
+                                    
+                                    
+
+                                    if (sceneName == "Poi1") {
+                                            //isLinkedToWS = true;
+                                            socket.emit('getSceneRessources', {scene: "Marne14"});
+                                            console.log( "socket.emit('getSceneRessources', {scene: Marne14 })"    )
+                                            activeRecommandation = true;
+
+                                            wsTitle = "Ressources recommandées pour la scène 'Marne 1914'";
+                                            wsHtmlContent = "";
+                                    
+                                    } else if (sceneName == "Poi2") {
+                                            //isLinkedToWS = true;
+                                            socket.emit('getSceneRessources', {scene: "La_tranchee"});
+                                            console.log( "socket.emit('getSceneRessources', {scene: La_tranchee })"    )
+                                            activeRecommandation = true;
+
+                                            wsTitle = "Ressources recommandées pour la scène 'Les tranchèes'";
+                                            wsHtmlContent = "";
+                                    
+
+                                    } else {
+                                        // isLinkedToWS = false;
+
+                                        // wsTitle = "Nearest POI: '"+sceneName+"'";
+                                        wsTitle = "Nearest POI: '"+sceneName+"'";
+                                        activeRecommandation = false;
+                                    }
+
+
+
+                                    notifications.writeRecommandations ("miscelleanous",wsTitle,"")
+
+                                } // if (activeRecommandation === false)
+
+                            } // if (lastPoiName != nearestPoiName) 
+
+
+
+
+
+
+
                         } else { // if (fakeRobubox == false)
 
                              sceneName = nearestPoiName;
@@ -658,6 +720,7 @@
         //alert(JSON.stringify(data.sentData))
        
             console.log(">> socket.on('onSceneRessources',data)");
+            //console.log(data);
             activeRecommandation = true;
             // Variables & Objets des ressources
             var collection = data.sentData

@@ -133,13 +133,13 @@ if (typeof appDevBranch != 'undefined') fakeRobubox = appDevBranch.isFakeRobubox
 function getFakeDataMap() {
 
     // Simu Map 26 Labo
-    var dataMap = {"Offset":{"X":-20.7969943946,"Y":-3.02713963867},"Width":1485,"Stride":1488,"Height":1187,"Data": null,"Resolution":0.019999999553}
+    //var dataMap = {"Offset":{"X":-20.7969943946,"Y":-3.02713963867},"Width":1485,"Stride":1488,"Height":1187,"Data": null,"Resolution":0.019999999553}
 
     // Simu map MGG offset d'origine mais faux...
     //var dataMap = {"Offset":{"X":-52.8251232326,"Y":-63.9346600184},"Width":3942,"Stride":3944,"Height":1928,"Data":null,"Resolution":0.019999999553}
     
     // Simu map MGG offsets corrigés
-    //var dataMap = {"Offset":{"X":-17.4151232326,"Y":-21.3146600184},"Width":3942,"Stride":3944,"Height":1928,"Data":null,"Resolution":0.019999999553}
+    var dataMap = {"Offset":{"X":-17.4151232326,"Y":-21.3146600184},"Width":3942,"Stride":3944,"Height":1928,"Data":null,"Resolution":0.019999999553}
 
     /**/
 
@@ -153,14 +153,14 @@ function getFakeRobotInfo() {
     //var robotInfo = {"Pose":{"Orientation":0.014824313679471759,"Position":{"X":-0.01693115491662614,"Y":-0.011192893436510892,"Z":0}},"State":8,"Timestamp":2916720}
     
     // Simu map Labo - web Sémantique - Position Armoire.
-    var robotInfo = {"Pose":{"Orientation":0.014824313679471759,"Position":{"X":0.327408414727309,"Y":3.37158208322273,"Z":0}},"State":8,"Timestamp":2916720}
+    //var robotInfo = {"Pose":{"Orientation":0.014824313679471759,"Position":{"X":0.327408414727309,"Y":3.37158208322273,"Z":0}},"State":8,"Timestamp":2916720}
     
     // Simu map MGG positon Marne 1914
     // var robotInfo = {"Pose":{"Orientation":3.15,"Position":{"X":-2.95,"Y":-2.3,"Z":0}},"State":8,"Timestamp":2916720}
 
 
     // Simu map MGG position départ XY - OK
-    //var robotInfo = {"Pose":{"Orientation":0,"Position":{"X":0,"Y":0,"Z":0}},"State":8,"Timestamp":2916720}
+    var robotInfo = {"Pose":{"Orientation":0,"Position":{"X":0,"Y":0,"Z":0}},"State":8,"Timestamp":2916720}
 
     // Simu map MGG position Tranchées - OK
     // var robotInfo = {"Pose":{"Orientation":5.5,"Position":{"X":7,"Y":0,"Z":0}},"State":8,"Timestamp":2916720}
@@ -206,7 +206,7 @@ function getFakelistPOI() {
                 ]
     /**/
 
-    // Simu map Labo avec infos Web Sémantique:
+    /*// Simu map Labo avec infos Web Sémantique:
     var listPOI = [
                     {"Name":"PilierA","Pose":{"X":2.3736454829404003,"Y":6.2584240093506871,"Theta":0},"label":"Marne14" },
                     {"Name":"PilierB","Pose":{"X":2.1479895820222588,"Y":11.719296811569686,"Theta":0}, "label":"La_tranchee" },
@@ -214,14 +214,15 @@ function getFakelistPOI() {
                     {"Name":"PilierD","Pose":{"X":-10.263084968475466,"Y":5.8973745678816627,"Theta":0}},
                     {"Name":"Armoire","Pose":{"X":0.327408414727309,"Y":3.37158208322273,"Theta":0}}
     ]
+    /**/
 
     // Simu Map Sans POI
 	// var listPOI = []
     
-    /*// Simu POIs Map MGG
+    // Simu POIs Map MGG
     var listPOI = [
         {"Name":"Poi1","Pose":{"X":-2.95,"Y":-2.3,"Theta":3.15}, "label":"Marne 1914" },
-        {"Name":"Poi2","Pose":{"X":7,"Y":0,"Theta":5.5}, "label":"Tranchées" },
+        {"Name":"Poi2","Pose":{"X":7,"Y":0,"Theta":5.5}, "label":"La_tranchee" },
         {"Name":"Poi3","Pose":{"X":13,"Y":1,"Theta":4.8}, "label":"Tranchée Allemande" },
         // {"Name":"Poi n°4","Pose":{"X":16.5,"Y":1.25,"Theta":4.9},"label":"No Man's Land" },
         {"Name":"Poi4","Pose":{"X":20,"Y":1.5,"Theta":5}, "label":"Tranchée française" }

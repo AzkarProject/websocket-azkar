@@ -89,6 +89,49 @@
     <input type="radio" name="gamePadRobot" value="false" id="GamePadFalse" onclick="setGamepad(false)" disabled="true" /> <label for="gamePadFalse">Désactivé</label>
     <br/>
 
+ 
+ <hr/>
+    <div id="zone_info_Select_Cameras">
+        
+        <div class="select">
+            
+            <strong>Caméra 1 (Conduite): </strong>    <span id="zone_info_cam1"> ??? </span>  
+            <label for="Cams_list">Caméras disponibles:</label>
+            <select id="Cams_list">
+            </select>
+            <button id="admin_ButtonCamSelect" onclick="selectCam1()">Changer</button>
+            <br/>
+        
+            <strong>Caméra 2 (Sol): </strong>    <span id="zone_info_cam2"> ??? </span>  
+            <label for="Cams_list">Caméras disponibles:</label>
+            <select id="Cams_list">
+            </select>
+            <button id="admin_ButtonCamSelect" onclick="selectCam2()">Changer</button>
+            <br/>
+            
+            <strong>Caméra 3 (Visite): </strong>    <span id="zone_info_cam3"> ??? </span>  
+            <label for="Cams_list">Caméras disponibles:</label>
+            <select id="Cams_list">
+            </select>
+            <button id="admin_ButtonCamSelect" onclick="selectCam3()">Changer</button>
+
+
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
  <hr/>
     <div id="zone_info_Ip_Robot"></div>
     Label: <input type='text' id='newLabel_Robot'> | Ip: <input type='text' id='newIP_Robot'>

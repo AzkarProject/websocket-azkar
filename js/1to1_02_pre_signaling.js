@@ -148,6 +148,11 @@ peerCnx1to1 = "Pilote-to-Robot"; // connexion principale Pilote/Robot
 peerCnxId = "default"; // Nom par défaut
 
 
+peerCnxId2 = "sol"; // Nom de la connexion secondaire pour la caméra au sol
+
+
+
+
 // 1to1 pilote + Robot
 localStream = null;
 remoteStream = null; // 
