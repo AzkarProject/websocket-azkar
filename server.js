@@ -149,23 +149,23 @@ app.get('/pilote/', function(req, res) {
 });
 
 
-app.get('/robotv1/', function(req, res) {
-    res.sendFile(__dirname + '/robotv1.html');
+app.get('/robotV1/', function(req, res) {
+    res.sendFile(__dirname + '/robotV1.html');
 });
 
 
-app.get('/pilotev1/', function(req, res) {
-    res.sendFile(__dirname + '/pilotev1.html');
+app.get('/piloteV1/', function(req, res) {
+    res.sendFile(__dirname + '/piloteV1.html');
 });
 
 
-app.get('/robotv2/', function(req, res) {
-    res.sendFile(__dirname + '/robotv2.html');
+app.get('/robotV2/', function(req, res) {
+    res.sendFile(__dirname + '/robotV2.html');
 });
 
 
-app.get('/pilotev2/', function(req, res) {
-    res.sendFile(__dirname + '/pilotev2.html');
+app.get('/piloteV2/', function(req, res) {
+    res.sendFile(__dirname + '/piloteV2.html');
 });
 
 
