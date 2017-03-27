@@ -1,57 +1,206 @@
 <template id="kom-remote">
 	<div class="hidden-komcom-connected">En attente d'une connexion</div>
-	<div class="visible-komcom-connected">
+	<div class="visible-komcom-connected" style="background-color:none; height:200px">
 		
-		<form class="komremote-switch">
-			<label><input type="radio" name="switch-remote" value="joystick" checked /> Joystick</label>
+		
+		<style>
+			/* Add titi: transformation des boutons radios en boutons normaux;*/
+			
+			input[name=switch-remote] {
+			    display:none
+			}
+
+			
+			.komremote-switch {
+				height:25px;
+				width:228px;
+				overflow:hidden;
+				background-color:black;
+			}
+			
+			
+			.komremote-switch label {
+			    padding:5px;
+			    -webkit-appearance: button;
+			    appearance: button;
+			}
+			/**/
+
+
+			.komremote-switch label { 
+			     font-family: Arial,sans-serif;
+			     font-size: 12px;
+			     font-weight: bold;
+			     color: #fff;
+			     min-width: 50px;
+			     text-align: center;
+			     color: #fff;
+			     background: #444;
+			     border-radius: 4px;
+			     box-shadow: 0 0 5px rgba( 0, 0, 0, 0.5), 0 -1px 0 rgba( 255, 255, 255, 0.4);
+			}
+
+			.komremote-switch label:hover{
+			     color: yellow;
+			     background: #555;
+			     background: linear-gradient( #777, #333);
+			}
+
+
+			.komremote-switch label :disabled{
+			     color: grey;
+			     background: #555;
+			     background: linear-gradient( #777, #333);
+			}
+
+
+			.komremote-switch label:active{
+			     color: green;
+			     background: #444;
+			     background: linear-gradient( #555, #2C2C2C);
+			     box-shadow: 1px 1px 10px black inset, 0 1px 0 rgba( 255, 255, 255, 0.4);
+			}
+
+			
+			.camera {
+				background-color:black;
+			}
+
+			.pad-camera button {
+				height:30px;
+			}
+
+			.joystick {
+				overflow: hidden;
+				position: relative;
+				width: 200px;
+				height: 200px;
+				background: rgba(221,221,221,0.1);
+				margin: auto;
+				border-radius: 50%;
+				margin:0 0 0 15px;"
+			}
+
+			.joystick-stick {
+				position: absolute;
+				cursor:pointer;
+				top: 80px;
+				left: 80px;
+				display: inline-block;
+				width: 40px;
+				height: 40px;
+				border-radius: 50%;
+				background: blue;
+				transition: 0.2s;
+				vertical-align: middle;
+			}
+
+			.joystick-stick:hover {
+				background: green;
+			}
+
+
+			.pad {
+				display: none;
+				position: relative;
+				width: 100px;
+				height: 100px;
+				margin: auto;
+				background-color: none;
+				margin-top:25%;
+			}
+
+			.pad-arrow {
+				position: absolute;
+				display: block;
+				background: blue;
+				cursor:pointer;
+				border-radius: 4px;
+				text-align:center;
+
+
+			}
+
+			.pad-arrow:hover {
+				background-color:green;
+
+			}
+
+			.pad-arrow-top,
+			.pad-arrow-bottom {
+				width: 30px;
+				height: 35px;
+				left: 100px;
+				line-height: 35px; /* centrage vertical: hauteur de ligne identique au width */
+			}
+
+			.pad-arrow-left,
+			.pad-arrow-right {
+				width: 35px;
+				height: 30px;
+				top: 100px;
+				line-height: 30px ;
+			}
+
+			.pad-arrow-top { top: 0px; left:35px;}
+			.pad-arrow-right { right:0px; top: 35px;}
+			.pad-arrow-left { left:0px;top:35px; }
+			.pad-arrow-bottom { bottom: 0px;left:35px;}
+
+		
+		</style>
+
+
+
+		<form class="komremote-switch" class='draggable'>
+			<label><input type="radio" name="switch-remote" value="joystick" checked /> Stick</label>
 			<label><input type="radio" name="switch-remote" value="pad" /> Pad</label>
 			<label><input type="radio" name="switch-remote" value="camera" /> Camera</label>
 		</form>
-
-		<div class="joystick">
-			<span class="joystick-stick"></span>
-		</div>
-
-		<div class="pad">
-			<span class="pad-arrow pad-arrow-top" data-direction="top"></span>
-			<span class="pad-arrow pad-arrow-right" data-direction="right"></span>
-			<span class="pad-arrow pad-arrow-bottom" data-direction="bottom"></span>
-			<span class="pad-arrow pad-arrow-left" data-direction="left"></span>
-		</div>
-	
-		<div class="camera">
-			
 		
+		<div id='komRemoteControls'>
 
-		<div id="cameraButtons">
+			<div class="joystick">
+				<span class="joystick-stick"></span>
+			</div>
 
-               <div class="pad-camera">              					
-					<button id="camCenter" onclick="myWTF('onCameraUp')"> &#8593; </button>
-				</div>	
+			<div class="pad">
+				<span class="pad-arrow pad-arrow-top" data-direction="top"> &#8593; </span>
+				<span class="pad-arrow pad-arrow-right" data-direction="right"> &#8594; </span>
+				<span class="pad-arrow pad-arrow-bottom" data-direction="bottom"> &#8595; </span>
+				<span class="pad-arrow pad-arrow-left" data-direction="left"> &#8592; </span>
+			</div>
+
+			<div class="camera" >
 				
-				<div class="pad-camera"> 
-					<button id="camLeft" onclick="myWTF('onCameraLeft')"> &#8592; </button>
-					<button id="camCenter" onclick="myWTF('onStop')"> STOP </button>
-                    <button id="camRight" onclick="myWTF('onCameraRight')"> &#8594; </button>
+
+				<div id="cameraButtons" >
+
+			           <div class="pad-camera">              					
+							<button id="camCenter" onclick="myWTF('onCameraUp')"> &#8593; </button>
+						</div>	
+						
+						<div class="pad-camera"> 
+							<button id="camLeft" onclick="myWTF('onCameraLeft')"> &#8592; </button>
+							<button id="camCenter" onclick="myWTF('onStop')"> STOP </button>
+			                <button id="camRight" onclick="myWTF('onCameraRight')"> &#8594; </button>
+						</div>
+						
+						<div class="pad-camera"> 
+							<button id="camDown" onclick="myWTF('onCameraDown')"> &#8595; </button>
+						</div>
+
+						<div class="pad-camera"> 
+							<button id="camZoomIn" onclick="myWTF('onCameraZoomIn')">Zoom +</button>
+			                <button id="camCenter" onclick="myWTF('onCameraGoToDefaultPosition')"> &#64; </button>
+			                <button id="camZoomOut" onclick="myWTF('onCameraZoomOut')">Zoom -</button>
+						</div> 
+						<hr/>
+							<label><input type="radio" name="controlModeCam" id="modeSbS" value="SbS" onclick="myWTF('modeSbS')" checked /> Step by step</label>
+							<label><input type="radio" name="controlModeCam" id="modeContinue" value="Continue" onclick="myWTF('modeContinue')" /> Continue</label>
 				</div>
-				
-				<div class="pad-camera"> 
-					<button id="camDown" onclick="myWTF('onCameraDown')"> &#8595; </button>
-				</div>
 
-				<div class="pad-camera"> 
-					<button id="camZoomIn" onclick="myWTF('onCameraZoomIn')">Zoom +</button>
-                    <button id="camCenter" onclick="myWTF('onCameraGoToDefaultPosition')"> &#64; </button>
-                    <button id="camZoomOut" onclick="myWTF('onCameraZoomOut')">Zoom -</button>
-				</div> 
-				<hr/>
-					<label><input type="radio" name="controlModeCam" id="modeSbS" value="SbS" onclick="myWTF('modeSbS')" checked /> Step by step</label>
-					<label><input type="radio" name="controlModeCam" id="modeContinue" value="Continue" onclick="myWTF('modeContinue')" /> Continue</label>
-				<hr/>
-		</div>
-
-
-
+			</div>
 
 	</div>
 	<style>

@@ -44,17 +44,17 @@
 
 	// Nom de la branche
 	exports.appBranch = function(){
-	    return '1to1-cnrs';
+	    return '1to1-2017';
 	};
 
 	// Numéro de version
 	exports.appVersion = function(){
-	    return '1.6.2';
+	    return '2.0.0';
 	};
 
 	// Crédits
 	exports.appCredit = function(){
-	   return '© 2015-2016 - CNRS (Laboratoire I3S) / Université de Nice';
+	   return '© 2015-2017 - CNRS (Laboratoire I3S) / Université de Nice';
 	};
 
 	// Adresse Ip ou nom de domaine du serveur de l'application

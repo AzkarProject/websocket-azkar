@@ -148,6 +148,33 @@ app.get('/pilote/', function(req, res) {
     res.sendFile(__dirname + '/pilote.html');
 });
 
+
+app.get('/robotv1/', function(req, res) {
+    res.sendFile(__dirname + '/robotv1.html');
+});
+
+
+app.get('/pilotev1/', function(req, res) {
+    res.sendFile(__dirname + '/pilotev1.html');
+});
+
+
+app.get('/robotv2/', function(req, res) {
+    res.sendFile(__dirname + '/robotv2.html');
+});
+
+
+app.get('/pilotev2/', function(req, res) {
+    res.sendFile(__dirname + '/pilotev2.html');
+});
+
+
+
+
+
+
+
+
 // Add 16/09/16 - titi
 app.get('/i3s/', function(req, res) {
     res.sendFile(__dirname + '/admin.html');

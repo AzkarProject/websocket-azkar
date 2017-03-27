@@ -497,10 +497,14 @@ KomRemoteElementPrototype.onpadpressed = function(event) {
 	}
 };
 
-
+KomRemoteElementPrototype.testFunction = function(){
+	alert('testfonction')
+}
 
 KomRemoteElementPrototype.onswitch = function(event) {
-	//alert("onSwitch")
+	//alert(event)
+	console.log(event);
+	console.log(this.$element)
 	var type = event.target.value;
 	switch (type) {
 		// Ahout titi

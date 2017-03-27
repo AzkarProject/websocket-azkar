@@ -111,6 +111,8 @@
         }
 
     });
+
+    // nbGamepad = 0;
     /**/
 
 
@@ -165,7 +167,6 @@
 	// gamepad utility code
 	//----------------------------------
 
-
 	window.addEventListener("gamepadconnected", function(e) {
 	   
 		if (isGamepad == false) return;
@@ -182,10 +183,22 @@
 		    msg += "Buttons: " + nbButtons + "\n"; 
 		    msg += "Axes: " + nbAxes;
 
-		console.log(gamepad)
-		connectedGamePad = true;
+		//console.log(gamepad)
+		//console.log("connectedGamePad = "+connectedGamePad)
+		
+		if (connectedGamePad == false ) {
+			//connectedGamePad = true;
+			//alert(" Listener GamepadConnected -- Gamepad déconnecté !");
+			//ihm.driveConnectNotice("  -- Gamepad activé !");
+		} else {
+			connectedGamePad = false;
+			//alert("  Listener GamepadConnected  -- Gamepad déconnecté !");
+			ihm.driveCommandBlock('close')
+			//ihm.driveConnectNotice("  -- Gamepad désactivé !");
+		}
 		//$('#connect-notice').replaceWith(" <span id ='connect-notice'>  -- Gamepad activé !</span>");
-		ihm.driveConnectNotice("  -- Gamepad activé !");
+		// alert("  -- Gamepad activé !");
+		
 
 	
 	});
@@ -201,7 +214,8 @@
 		// alert("Gamepad No " + index + " has been disconnected")
 		connectedGamePad = false;
 		//$('#connect-notice').replaceWith(" <span id ='connect-notice'>  -- Gamepad déconnecté !</span>");
-		ihm.driveConnectNotice("  -- Gamepad déconnecté !");
+		//alert(" Listener GamepadDisconnect -- Gamepad déconnecté !");
+		//ihm.driveConnectNotice("  -- Gamepad déconnecté !");
 		ihm.driveCommandBlock('close')
 
 	});
@@ -212,8 +226,26 @@
 
 
 	function scangamepads() {
+	  
+
 	  var gamepads = navigator.getGamepads();
 	  
+	  if(gamepads[0] != null) {
+	  	if (gamepads[0].id == "Xbox 360 Controller (XInput STANDARD GAMEPAD)") {
+	  		if (isGamepad == true ) {
+		  		ihm.driveCommandBlock('open');
+		  		xboxGamepad = true;
+	  		}
+	  	
+	  	} else {
+	  		// isGamepad = false;
+	  		ihm.driveCommandBlock('close');
+	  		xboxGamepad = false;
+	  	}
+	  }
+
+
+
 	  for (var i = 0; i < gamepads.length; i++) {
 	    if(gamepads[i])
 	        gamepad = gamepads[i]; 
@@ -226,6 +258,9 @@
 	  	if (gamepads[0]) {
 	  		//$('#connect-notice').replaceWith(" <span id ='connect-notice'>  -- Gamepad connecté !</span>");
 	  		ihm.driveConnectNotice("  -- Gamepad connecté !");
+	  		//alert('scangamepads() > Gamepad connecté')
+	  	} else {
+	  		//alert('scangamepads() > Gamepad non connecté')
 	  	}
 	 
 	  }
@@ -243,9 +278,11 @@
 		
 		var isCompatible = false ;
 		if ( gamepad.id == "Xbox 360 Controller (XInput STANDARD GAMEPAD)") {
-			isCompatible = true;	
+			isCompatible = true;
+			connectedGamePad = true;	
 		} else {
 			ihm.driveConnectNotice("  -- Gamepad Incompatible !");
+			connectedGamePad = false;
 		}
 		return isCompatible
 		/**/
@@ -912,9 +949,14 @@
 	    			prefix = "  ", selectClass = "";
 				});
 
+			    // Pour compatiblité avec boutons IHM V2
+			    var groupButton = ['144p','QVGA','VGA','SVGA','HD'];
+				ihm.manageGroupButtons(null,newIndex,groupButton);
+
 				return selectText
 
 	}
+
 
 
 	// Thierry (Original): Construction & envoi de la commande Drive

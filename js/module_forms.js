@@ -347,7 +347,81 @@ function setTypingNoiseDetection (value){
 
 
 
+// Add pour IHM V2
+// Add pour IHM V2
+function openDef(camDef) {
+    //alert('toto')
+    setResolutionAndOpenCamV2(camDef);
+}
 
 
+function setResolutionAndOpenCamV2(camDef) {
+
+    callback1(); 
 
 
+    function callback1() {
+        console.log("on déconnecte");
+        usersConnection.closeRobotConnexion();
+        //onMove = false;
+        setTimeout(callback2, 500);
+
+    }
+
+    function callback2() {   
+       var idSelect = '#robot_camdef_select';
+       var selectDefText =  setCamRésolution(camDef)          
+       notifications.writeMessage ("standard","Ouverture caméra", selectDefText);
+       setTimeout(callback3, 1000);
+
+    }
+
+    function callback3() {
+        console.log("on connecte");
+        setTimeout(usersConnection.openRobotConnexion(),100)
+        //onMove = false;
+
+    }
+
+}
+
+
+// author: thierry
+// fonction passerelle pour l'IHM V2
+// sélection d'une définition via un simple bouton
+// basé sur le formulaire caché de selection de résolution
+// Todo >>> Bypasser le formulaire IHM en refaisant le sélecteur de résolution
+// Todo >>> Déplacer cette fonction dans une classe dédiée a la sélection de résolution
+function setCamRésolution (camDef) {
+
+    var idSelect = '#robot_camdef_select';
+    var indexSelect = 0;
+    var group = ['144p','QVGA','VGA','SVGA','HD'];
+    
+    ihm.manageGroupButtons (camDef, null, group);
+
+    // On affecte l'index du fomulaire de la V1
+    for (var i= 0; i < group.length; i++){
+        if (group[i] == camDef) indexSelect = i            
+    }
+
+    // Modification du formulaire de la V1
+    $(idSelect+' option').eq(indexSelect).prop('selected',true); 
+    
+    // Envoi d'info pour la notification
+    var prefix = ">>>>>> "; 
+    var selectClass = "Resolution"; 
+    var selectText = "<br><span class ='"+selectClass+"'>"+ prefix + " " +camDef+"</span>";
+    return selectText  
+
+
+}
+
+
+// author: thierry
+// fonction passerelle pour l'IHM V2
+function switchDisplay(idElement, openClose) {
+    ihm.setDisplay(idElement, openClose)
+    // if (openClose == 'open') $('#'+idElement).show();
+    // else if (openClose == 'close') $('#'+idElement).hide();                     
+}

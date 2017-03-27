@@ -17,7 +17,13 @@
 
 .komremote-switch {
 	text-align: center;
-	margin-bottom: 50px;
+	margin: 5px 0 5px 0;
+}
+
+
+.komremote-switch {
+	text-align: center;
+	margin: 5px 0 5px 0;
 }
 
 :host(.is-pad) .joystick { display: none; }
@@ -35,8 +41,8 @@
 .camera {
 	display: none;
 	position: relative;
-	width: 200px;
-	height: 150px;
+	width: 228px;
+	height: 228px;
 	margin: auto;
 }
 
@@ -72,14 +78,16 @@ button:disabled{
 }
 /**/
 
+/* Originale
 .joystick {
 	margin: auto;
 	position: relative;
 	width: 160px;
 	height: 160px;
-	background: #ddd;
+	background: rgba(221,221,221,0.1);
 	border-radius: 50%;
 }
+
 
 .joystick-stick {
 	position: absolute;
@@ -93,6 +101,7 @@ button:disabled{
 	transition: 0.2s;
 	vertical-align: middle;
 }
+
 
 .pad {
 	display: none;
@@ -122,7 +131,10 @@ button:disabled{
 	top: 35px;
 }
 
-.pad-arrow-top { top: 0; }
-.pad-arrow-right { right: 0; }
-.pad-arrow-bottom { bottom: 0; }
-.pad-arrow-left { left: 0; }
+/**/
+
+
+
+
+
+

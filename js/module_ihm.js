@@ -123,11 +123,16 @@
 	exports.closeConnectionButton = function  (order,userID){
 		console.log ("closeConnectionButton("+order+")");
 		if (order == "activate") {
-			var buttonClose1to1 = '<button class="shadowBlack txtRed" id="openCnx'+userID+'" onclick="usersConnection.closeCnxwith(\''+userID+'\')">Fermer la connexion</button>';
+			// IHM V2: ajout class groupDefCam
+			var buttonClose1to1 = '<button class="shadowBlack txtRed groupDefCam" id="openCnx'+userID+'" onclick="usersConnection.closeCnxwith(\''+userID+'\')">CLOSE</button>';
 			document.getElementById('closeConnection').innerHTML = buttonClose1to1;
 		} else if (order == "deactivate") {
 			var buttonClose1to1 = '';
 			document.getElementById('closeConnection').innerHTML = buttonClose1to1;
+			// ADD IHM V2
+			// Remise a zero des boutons camDef
+		    var groupButton = ['144p','QVGA','VGA','SVGA','HD'];
+			ihm.manageGroupButtons(null,null,groupButton);
 		}
 
 	}
@@ -272,7 +277,8 @@
 
 	    // Cercle orange
 	    context.beginPath();
-		context.fillStyle="#FF4422"
+		//context.fillStyle="#FF4422"
+		context.fillStyle ="rgba(255, 255, 255, 0.5)";
 		context.arc(canvasWidth/2, canvasHeight/2, diametre, 0, 2 * Math.PI);
 		context.fill();
 
@@ -448,11 +454,13 @@
             style = '';
 			$('#1to1_remoteVideo').attr('style',style);
             remoteCameraView = "embed";
+
     	} else {
             ihm.toggleModules('hide');
             style = 'position:fixed;top:0;right:0;bottom:0;left:0;height:100%;width:100%;'
 		 	$('#1to1_remoteVideo').attr('style',style);
             remoteCameraView = "full";
+            // if (xboxGamepad == false) ihm.driveCommandBlock('close');
 	    } 
 	}
 
@@ -529,7 +537,7 @@
 
 	// On ne peux pas déplacer l'élément vidéo du DOM
     // Sinon celui-ci n'est plus lié au Stream et l'image se fige...
-    // PAr contre, pour les autres elements, R.A.S
+    // Par contre, pour les autres elements, R.A.S
 	exports.toggleHUD = function() {
 		// alert ('toogleFullScreen');
 		var style = null;
@@ -575,8 +583,8 @@
 	document.addEventListener("keydown", function(e) {
 	  // console.log(e);
 	  if (e.keyCode == 9) {
-	    ihm.toggleFullScreen();
-	    ihm.toggleHUD();
+	    //ihm.toggleFullScreen();
+	    //ihm.toggleHUD();
 	  } 
 	}, false);
 
@@ -702,6 +710,38 @@
 		$('#zone_info_Ip_'+typeIp).replaceWith(html);
 
 	}
+
+
+
+	// Gestion d'un groupe de boutons
+	// IndexSelect pour rétrocompatibilité avec la commande cycleSelect du Gamepad
+	// function manageGroupButtons (camDef,indexSelect,group) {
+	exports.manageGroupButtons = function(camDef,indexSelect,group) {
+
+	    // On vire les classes selected de tous les boutons
+	    for (var i= 0; i < group.length; i++){
+	        $( '#'+group[i] ).removeClass( "buttonSelected" );
+	    }
+
+
+	    if (camDef != null ) {
+	        // On met une classe selected au bouton 
+	        $('#'+camDef).addClass( "buttonSelected" );
+
+	    } else if  (indexSelect != null ){
+			$('#'+group[indexSelect] ).addClass( "buttonSelected" );
+	    }
+
+	}
+
+
+	// author: thierry
+	// fonction pour l'IHM V2
+	exports.setDisplay = function (idElement, openClose) {
+	   if (openClose == 'open') $('#'+idElement).show();
+	   else if (openClose == 'close') $('#'+idElement).hide();                     
+	}
+
 	
  
 

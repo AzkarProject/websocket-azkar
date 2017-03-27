@@ -327,18 +327,10 @@ button{
      font-weight: bold;
      color: #fff;
      min-width: 50px;
-     /*width: 200px;*/
-     /*height: 30px;*/
-     /*padding-top: 7px; /*permet le centrage vertical*/
      text-align: center;
      color: #fff;
      background: #444;
-    
     border-radius: 4px;
-    /*text-shadow: 0px 1px 0px white;*/
-    /*text-shadow: 0px 1px 0px rgba( 255, 255, 255, 0.2);*/
-    
-    
      box-shadow: 0 0 5px rgba( 0, 0, 0, 0.5), 0 -1px 0 rgba( 255, 255, 255, 0.4);
 }
 
@@ -355,15 +347,42 @@ button:disabled{
      background: linear-gradient( #777, #333);
 }
 
-/*
-button:hover{
+
+button:active{
      color: green;
      background: #444;
      background: linear-gradient( #555, #2C2C2C);
      box-shadow: 1px 1px 10px black inset, 0 1px 0 rgba( 255, 255, 255, 0.4);
 }
-*/
 
+.buttonSelected {
+  color: green;
+  background: #444;
+  background: linear-gradient( #555, #2C2C2C);
+  box-shadow: 1px 1px 10px black inset, 0 1px 0 rgba( 255, 255, 255, 0.4);
+}
+
+.groupDefCam {
+    width:80px;
+    height:25px;
+    margin:0px 10px 5px 10px;
+}
+
+.groupCarto {
+    /*width:80px;*/
+    height:30px;
+    margin:0 0 0 0;
+}
+
+
+
+.groupNav {
+    width:80px;
+    height:30px;
+    margin:0px 10px 5px 10px;
+}
+
+/* ---------------------------------------------- */
 
 /* Containers Flex */
 .flex-container {
@@ -673,5 +692,3 @@ http://red-team-design.com/cool-notification-messages-with-css3-jquery/
   height:232px;
 }
 
-/*#canvasGamepad {display:none};*/
-/*div #gamePadInfos{ border:1px solid #000;background-repeat:no-repeat;}*/

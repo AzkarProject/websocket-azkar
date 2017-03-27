@@ -244,7 +244,8 @@ piloteConstraints = {
 };
 
 
-
+// Gamepad
+xboxGamepad = false;
 
 
  // ------ fonctions de la phase présignaling --------------------------------

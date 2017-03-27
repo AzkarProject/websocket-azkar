@@ -429,6 +429,16 @@ socket.on("answer", function(data) {
         //console.log("- peerconnection: " + data.peerCnxId);
         //console.log (data.message);
         peerCnxCollection[data.peerCnxId].setRemoteDescription(new SessionDescription(data.message));
+
+
+
+
+
+
+
+
+
+
     }
 });
 
