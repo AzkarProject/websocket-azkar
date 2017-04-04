@@ -564,10 +564,12 @@ function getLocalConstraint() {
     listOptionsDefinition += '<option value="Full HD">Full HD: 1920x1080</option>';
 
     if (camDef == '144p') {minCamWidth = 100; minCamHeight = 56, maxCamWidth = 196; maxCamHeight = 110}
+    //if (camDef == '144p') {minCamWidth = 1268; minCamHeight = 520, maxCamWidth = 1268; maxCamHeight = 520}
     else if (camDef == 'QVGA') {minCamWidth = 196; minCamHeight = 144, maxCamWidth = 320; maxCamHeight = 240}  
     else if (camDef == 'VGA') {minCamWidth = 320; minCamHeight = 240, maxCamWidth = 640; maxCamHeight = 480}
     else if (camDef == 'HD') {minCamWidth = 640; minCamHeight = 480, maxCamWidth = 1280; maxCamHeight = 720}
     else if (camDef == 'Full HD') {minCamWidth = 1280; minCamHeight = 720, maxCamWidth = 1920; maxCamHeight = 1080} 
+
 
     var framerate = 24;
 

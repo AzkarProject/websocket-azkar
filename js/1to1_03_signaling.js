@@ -457,7 +457,10 @@ socket.on("candidate", function(data) {
     }
 });
 
-// Pour débugg:
+
+
+
+/*// Pour débugg:
 video1.addEventListener("playing", function () {
     console.log ("LocalStream dimensions: " + video1.videoWidth + "x" + video1.videoHeight)
 });
@@ -465,6 +468,7 @@ video1.addEventListener("playing", function () {
 video2.addEventListener("playing", function () {
     console.log ("RemoteStream dimensions: " + video2.videoWidth + "x" + video2.videoHeight)
 });
+/**/
 
 
 

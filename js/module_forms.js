@@ -303,7 +303,19 @@ function trakingMode() {
 function gotoPOI() {
     list_POI_select = document.querySelector('select#list_POI');
     var valuePOI = list_POI_select.value;
+    console.log ("list_POI_select.value:"+valuePOI)
 
+
+    var validGoto = true;
+    if (robotInfo.Differential.Status != 0) {
+        alert("Robot in move ! Stop it or wait the end of the translation");
+        validGoto = false;
+    } else if (robotInfo.Differential.Status != 0) {
+        alert("Robot in move ! Stop it or wait the end of the translation")
+        validGoto = false;
+    }
+    if (validGoto == false) return;
+   
    socket.emit('gotoPOI', {
         objUser: localObjUser,
         poi: valuePOI
@@ -421,7 +433,17 @@ function setCamRésolution (camDef) {
 // author: thierry
 // fonction passerelle pour l'IHM V2
 function switchDisplay(idElement, openClose) {
+    
     ihm.setDisplay(idElement, openClose)
     // if (openClose == 'open') $('#'+idElement).show();
     // else if (openClose == 'close') $('#'+idElement).hide();                     
+}
+
+function hideNotification(type){
+    if (type == 'message') notifications.hideAllMessages();
+    else if (type == 'recommandation') notifications.hideAllRecommandations();
+    else {
+         notifications.hideAllMessages();
+         notifications.hideAllRecommandations();
+    }
 }

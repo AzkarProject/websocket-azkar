@@ -94,23 +94,7 @@
 		        
         </script>
 
-    
-
-
-
-
     <title>1to1-Pilote</title>
-
-
-
-
-
-
-
-
-
-
-
 
 </head>
 
@@ -127,10 +111,21 @@
     <section id="viewPortPilote" class="" style="" >
 
    
-   		
+   			<div id="remoteCam" class='draggable resizable' 
+   			style="position:absolute;top:0px; left:0px;float:left;width:1230px; height:375px;border:1px solid #ccc;border-radius: 10px;margin: 5px 5px 10px 5px">
+			                		            		
+
+				<video id='1to1_remoteVideo' 
+					width="100%" height="100%" 
+					style="background-color:black; margin: 0 auto;" 
+					autoplay controls="controls">
+
+				</video>
+			</div>	
 
 			
-			<div id="localCam" class='draggable' style="float:left;z-index:100;height:160px;width:160px; border:1px solid #ccc;border-radius: 10px;margin: 100px 0 0 100px">
+			<div id="localCam" class='draggable' 
+			style="position:absolute;top:150px; left:100px;float:left;z-index:100;height:160px;width:160px; border:1px solid #ccc;border-radius: 10px;margin: 0">
 		                						  	 	
 			
 				<video id='1to1_localVideo'
@@ -140,19 +135,8 @@
     		 	</video>
 			</div>	
 
-			<div id="remoteCam" class='draggable resizable' style="float:left;width:1230px; height:375px;border:1px solid #ccc;border-radius: 10px;margin: -260px 5px 10px 5px">
-			                		            		
-
-				<video id='1to1_remoteVideo' 
-					width="100%" height="100%" 
-					style="background-color:black; margin: 0 auto;" 
-					autoplay controls="controls">
-
-				</video>
-			</div>		
-									
-
-			<div id="moduleCarto " class='draggable resizable' style="color:white;float:left; width:495px;height:230px;background-color: black;border:1px solid #ccc; border-radius: 10px;margin:0 0 0 5px;padding:5px;overflow:hidden;background:rgba(221,221,221,0.1);">	
+			<div id="map" class='draggable' 
+			style="position:absolute;top:390px; left:0px;color:white;float:left; width:495px;height:230px;border:1px solid #ccc; border-radius: 10px;margin:0 0 0 5px;padding:5px;overflow:hidden;background:rgba(221,221,221,0.1);">	
 
 				<div id="navButtons" style="text-align:center; float:left;">
                     
@@ -171,12 +155,11 @@
                  	
                  	<!--<canvas id="myCanvas" width="520" height="200" style="border:1px solid #ccc; margin: 0 auto;background-color: black; border-radius: 10px;"></canvas>-->
                  	<canvas class="noDraggable" id="myCanvas" width="495" height="200"></canvas>
-                 	
-                 
                 </div>
 			</div>
 
-			<div id="driveCommands" class='draggable' style="color:white;float:left; z-index:100;width:230px;height:230px;background-color: black;border:1px solid #ccc; border-radius: 10px;margin:0 0 0 5px;padding:5px;overflow:hidden; background:rgba(221,221,221,0.1);">
+			<div id="drive" class='draggable' 
+			style="position:absolute;top:390px; left:510px; color:white;float:left; z-index:100;width:230px;height:230px;background-color: black;border:1px solid #ccc; border-radius: 10px;margin:0 0 0 5px;padding:5px;overflow:hidden; background:rgba(221,221,221,0.1);">
 
 				<div id="contentFloorCamera" class="noDraggable" style="width:228px;height:228px; margin: 0;">
 			 	
@@ -291,11 +274,11 @@
 					</div>
 
 				</div>           
-
 			</div>                   
 
 
-			<div id="navOrders" class='draggable' style="float:left; width:335px;height:230px;background-color: black;border:1px solid #ccc; border-radius: 10px;margin:0 0 0 5px;padding:5px; background:rgba(221,221,221,0.1);">
+			<div id="nav" class='draggable' 
+			style="position:absolute;top:390px; left:755px; float:left; width:335px;height:230px;background-color: black;border:1px solid #ccc; border-radius: 10px;margin:0 0 0 5px;padding:5px; background:rgba(221,221,221,0.1);">
 
 				
 
@@ -311,6 +294,7 @@
 				<div style="width:100%;text-align:center;margin: 0 0 5px 0">
 			    	<button id="goto_POI" style='height:50px' onclick="gotoPOI()">GO</button>
 			    	<button id="stop_Trajectory" class="txtRed" style='height:50px' onclick="stopTrajectory()">STOP TRAJECTORY</button>
+			    	<button id="relocalize" class="" style='height:50px' onclick="relocalize()">Relocalize</button>
 			    </div>
 
 				<div style="width:100%;text-align:center" class='noDraggable'>
@@ -327,36 +311,12 @@
 			    		<span id="robotStatusMessage"><span>
 			    	</h5>
 			    </div>
-			    <hr/>
-
-			
-				<div id="AdvancedMenu" style="text-align:center; float:left ;margin: 0 auto ">
-			       
-							<button class="shadowBlack" style=""  id="closeSettings" onclick="switchDisplay('oldForms','open')">
-								Advanced Settings
-							</button>
-
-			          </div>
-	            
-
-
-	            <div id="batteryJauge" style="float:right; text-align:center;color:white;">
-	                <label for="battery_level">Battery Level:</label>
-	                <progress id="battery_level" max="100" style="width:100px"></progress>
-	            </div>
-			    
-			
-
-
-
-
-
-
-
+			   
 			</div>
 
 
-			<div id="connexionsOrders" class='draggable' style="float:left; z-index:125; width:100px;height:230px;background-color: black;color:white;border:1px solid #ccc; border-radius: 10px;margin:0 0 0 5px;padding:5px; background:rgba(221,221,221,0.1);">
+			<div id="connexion" class='draggable' 
+			style="position:absolute ;top:390px; left:1110px; float:left; z-index:125; width:110px;height:230px;background-color: black;color:white;border:1px solid #ccc; border-radius: 10px;margin:0 0 0 5px;padding:5px; background:rgba(221,221,221,0.1);">
 
 				<div style="text-align:center">Résolutions</div>
 
@@ -405,19 +365,17 @@
 			</div>
 
 
-			<div id="oldForms"  class='draggable'
-				style="position:absolute;top:50px; left:300px;display:none;float:left; width:770px;border:1px solid #ccc; border-radius: 10px;margin:10px 5px 5px 5px;padding:5px; background:rgba(221,221,221,0.6);z-index:999999">
+			<div id="settings"  class='draggable'
+			style="position:absolute;top:50px; left:300px;display:none;float:left; width:770px;border:1px solid #ccc; border-radius: 10px;margin:10px 5px 5px 5px;padding:5px; background:rgba(221,221,221,0.6);z-index:999998">
 
 
 				<div class="conrolAdvancedSettingsDiv">
 					
-						<div id="settingsButtons" style="text-align:center; float:right ;margin: 0 auto ">
-			        
-							<button class="shadowBlack" style=""  id="closeSettings" onclick="switchDisplay('oldForms','close')">
-								close
-							</button>
-
-			          </div>
+					<div id="settingsButtons" style="text-align:center; float:right ;margin: 0 auto ">
+		        		<button class="shadowBlack" style=""  id="closeSettings" onclick="switchDisplay('settings','close')">
+							close
+						</button>
+					</div>
 
 				</div>
 				<hr/>
@@ -530,41 +488,94 @@
 	            </div>    
    
 					
-				<div id = 'tchatsModule' style="display:none">
 
-				        <div id="websocketChat"  style="height:200px">
-		                    <strong> Websocket Messages & Chat</strong>
-		                    <hr/>
-		                    <form action="/" method="post" id="formulaire_chat_websoket">
-		                        <input type="text" name="message" id="message" placeholder="Votre message..." size="28" autofocus />
-		                        <button id="envoi_message" type="submit">Envoyer</button>
-		                    </form>
-		                    <hr class="hrForm">
-		                    <textarea class="input" id="zone_chat_websocket" readonly="readonly" placeholder="Once upon a time..." size="20" style="height:100px"></textarea>
-		                    <form id="text-options1">
-		                        <label><input type="text1" class="filename" id="text-filename1" placeholder="Pilote_WS_LOGS" />.txt</label>
-		                        <button id="saveLogs_webSocket" type="submit" value="Save" />Save</button>
-		                    </form>
-		                </div>
-					
+			</div>
 
-				        <div id="dataChannelArea">
-		                        <strong> WebRTC dataChannel Log </strong>
-		                        <hr/>
-		                        <div id="formulaire_chat_webRTC" class="pseudoForm">
-		                            <input type="text" name="message" id="input_chat_WebRTC" disabled placeholder="Waiting open channel..." size="28" autofocus />
-		                            <button id="env_msg_WebRTC" disabled onclick="sendMessage()">Envoyer</button>
-		                        </div>
-		                        <hr class="hrForm">
-		                        <textarea class="input" id="zone_chat_WebRTC" readonly="readonly" placeholder="Once upon a time..." size="20" style="height:100px"></textarea>
-		                        <form id="text-options2">
-		                            <label><input type="text" class="filename" id="text-filename2" placeholder="Pilote_WebRTC_LOGS" />.txt</label>
-		                            <button id="saveLogs_webRTC" type="submit" value="Save" />Save</button>
-		                        </form>
-		                </div>
-				</div>
-			
-			
+
+
+			<div id = 'tchat' class='draggable' 
+			style="position:absolute;top:50px; left:300px;display:none;float:left; width:770px;border:1px solid #ccc; border-radius: 10px;margin:10px 5px 5px 5px;padding:5px;background-color:grey; z-index:999997">
+
+			        <div id="websocketChat"  style="height:200px">
+	                    <strong> Websocket Messages & Chat</strong>
+	                    <hr/>
+	                    <form action="/" method="post" id="formulaire_chat_websoket">
+	                        <input type="text" name="message" id="message" placeholder="Votre message..." size="28" autofocus />
+	                        <button id="envoi_message" type="submit">Envoyer</button>
+	                    </form>
+	                    <hr class="hrForm">
+	                    <textarea class="input" id="zone_chat_websocket" readonly="readonly" placeholder="Once upon a time..." size="20" style="height:100px"></textarea>
+	                    <form id="text-options1">
+	                        <label><input type="text1" class="filename" id="text-filename1" placeholder="Pilote_WS_LOGS" />.txt</label>
+	                        <button id="saveLogs_webSocket" type="submit" value="Save" />Save</button>
+	                    </form>
+	                </div>
+				
+
+			        <div id="dataChannelArea">
+	                        <strong> WebRTC dataChannel Log </strong>
+	                        <hr/>
+	                        <div id="formulaire_chat_webRTC" class="pseudoForm">
+	                            <input type="text" name="message" id="input_chat_WebRTC" disabled placeholder="Waiting open channel..." size="28" autofocus />
+	                            <button id="env_msg_WebRTC" disabled onclick="sendMessage()">Envoyer</button>
+	                        </div>
+	                        <hr class="hrForm">
+	                        <textarea class="input" id="zone_chat_WebRTC" readonly="readonly" placeholder="Once upon a time..." size="20" style="height:100px"></textarea>
+	                        <form id="text-options2">
+	                            <label><input type="text" class="filename" id="text-filename2" placeholder="Pilote_WebRTC_LOGS" />.txt</label>
+	                            <button id="saveLogs_webRTC" type="submit" value="Save" />Save</button>
+	                        </form>
+	                </div>
+			</div>
+
+
+			<div id="iHmControls" class="draggable"
+			style="position:absolute;top:340px;width:800px;left:300px;float:left;border:1px solid #ccc; border-radius: 10px;margin:10px 5px 5px 5px;padding:5px; background:blue;z-index:999999">
+				
+				<div id="batteryJauge" style="float:left; text-align:center;color:white;">
+	                <label for="battery_level">Battery Level:</label>
+	                <progress id="battery_level" max="100" style="width:100px"></progress>
+	            </div>
+
+				<div id="AdvancedMenu" style="color:white; text-align:center; float:left ;margin: 0 auto ">
+			     	&nbsp;&nbsp;
+
+			     	Modules:
+
+					<button class="shadowBlack" style=""  id="switchsettings" onclick="switchDisplay('settings','open')">
+						Settings
+					</button>
+
+					<button class="shadowBlack" style=""  id="switchmap" onclick="switchDisplay('map','close')">
+						Map
+					</button>
+
+					<button class="shadowBlack" style=""  id="switchdrive" onclick="switchDisplay('drive','close')">
+						Drive
+					</button>
+
+					<button class="shadowBlack" style=""  id="switchnav" onclick="switchDisplay('nav','close')">
+						Nav
+					</button>
+
+					<button class="shadowBlack" style=""  id="switchconnexion" onclick="switchDisplay('connexion','close')">
+						Connexion
+					</button>
+
+					<button class="shadowBlack" style=""  id="switchtchat" onclick="switchDisplay('tchat','close')">
+						Tchat
+					</button>
+
+			    	<button class="shadowBlack" style=""  id="resetIhm" onclick="switchDisplay(null,'reset')">
+						Reset
+					</button>
+
+
+			    </div>
+
+
+
+
 			</div>
 
 		<!--</div>-->
@@ -592,7 +603,8 @@
 
         <div id='standardMessage' class="standard message">
         </div>
-    </section>
+   
+   </section>
 
 
     <section id="HudFullScreen">
@@ -606,6 +618,7 @@
     <script>
         var type = "pilote-appelant";
         var proto = "1to1";
+        var ihmVersion = "V2";
         // On initialise les flages du mode simulateur
         var fakeRobubox = null;
 
@@ -659,10 +672,16 @@
         });
 
 
+        /*
+        video1.addEventListener("playing", function () {
+		    console.log ("LocalStream dimensions: " + video1.videoWidth + "x" + video1.videoHeight)
+		});
 
-        $( function() {
+		video2.addEventListener("playing", function () {
+		    console.log ("RemoteStream dimensions: " + video2.videoWidth + "x" + video2.videoHeight)
+		});
+		/**/
 
-		  } );
             
     </script>
 

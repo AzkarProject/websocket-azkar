@@ -35,7 +35,7 @@
 
 (function(exports){
 
-console.log ("module_komcom V2 chargé");
+console.log ("module_komcom chargé");
 // console.log("fakeRobubox = "+fakeRobubox)
 
 // ------------ 05/2016 -- Versions adaptées pour KomNav/MobiServ -------------------
@@ -69,21 +69,12 @@ getIpRessources();
 exports.sendGotoPOI = function (data) {
 
        
-    console.log("komcom.sendGotoPOI("+data+")");
-    console.log (data);
-    var IdPoi = parseInt(data.poiname)
-    //console.log (listPOI);
-    //console.log (robotInfo);
-    //console.log (robotInfo.Differential.Status);
-
     if (fakeRobubox == null) return;
-    //else if (robotInfo.Differential.Status != 0) alert("Robot in move ! Stop it or wait the end of the translation")
-    //else if (robotInfo.Localization.Localized != true ) alert("Robot is not correctly localized ! move it manually on a Point of interest, select the POI in the form and click on the reset button")
 
-
-    // if ( robotInfo.State === 16) return; // si le robot est en mouvement...
+    if ( robotInfo.State === 16) return; // si le robot est en mouvement...
    
-
+    console.log("komcom.sendGotoPOI("+data.poiname+")");
+    
     
     // On n'envoie la commande que si le robot est branché
 
@@ -94,54 +85,15 @@ exports.sendGotoPOI = function (data) {
         var url = null
         //url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/POI" ; // CORS-ANYWHERE
         //url = "https://127.0.0.1:443/http://192.168.1.66:7007/Navigation/Goto/POI" ; // CORS-ANYWHERE
-        //url = "https://127.0.0.1:443/http://"+mobiservUrl+"/Navigation/Goto/POI" ; // CORS-ANYWHERE
-        url = "https://127.0.0.1:443/http://"+mobiservUrl+"/navigation/destination/poi" ; // CORS-ANYWHERE
+        url = "https://127.0.0.1:443/http://"+mobiservUrl+"/Navigation/Goto/POI" ; // CORS-ANYWHERE
 
         if ( url != null) {
-            
             var xhr = new XMLHttpRequest();
-            
-
-            //Ecouteur pour traiter les réponses HTTP
-            var statusCode = null
-            var statusTitle = null
-            var statusComment = null
-            xhr.onreadystatechange = function() {
-                
-                
-                statusCode = xhr.status;
-
-                if (statusCode == 202) statusTitle = "Accepted";
-                else if (statusCode == 400) statusTitle = "Bad Request : The specified point of interest doesn't exist";
-                else if (statusCode == 404) {
-                    statusTitle = "Not Found : the robot couldn't compute a trajectory.";
-                    statusComment = "This could happen for two reasons. Either the destination is unreachable or outside of the free mapped area, or the localization is bad and indicates the robot is in an occupied area "
-                }
-                else if (statusCode == 500) statusTitle = "Internal Error : There was an error while sending the trajectory to the low level controller ";
-                
-                // On informe l'autre client du résultat de la requête
-                var response = {"statusCode":statusCode, "statusTitle": statusTitle, "statusComment": statusComment };
-                socket.emit("gotoStateReturn", response);
-                // console.log(response)
-                // Si la commande est acceptée, on lance la récupération de la trajectoire:
-                if (statusCode == 202) getTrajectoryPath();
-                /**/
-               
-
-                
-            }
-
-
-
-
-
-
-
-            xhr.open('PUT', url);
+            xhr.open('POST', url);
             xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
             //xhr.send(data);
             xhr.send(JSON.stringify({
-                    "Id": IdPoi,
+                    "poiname": data.poiname,
                 }));
             xhr.closed;
         
@@ -152,41 +104,7 @@ exports.sendGotoPOI = function (data) {
    
     }         
 
-    
-    function getTrajectoryPath() {
-
-        console.log ("@ getTrajectoryPath()")
-        // si on est en mode simulation
-        // On récupère un dataset correspondant à la trajectoire demandée
-        // la commande getFakeTrajectory étant sensée simuler 
-        // ce que renverrai le vrai robot...
-        if (fakeRobubox == true) {  
-            
-            getFakeTrajectory(data);
-
-        } else {
-
-            var url = null
-            //url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/State" ; // CORS-ANYWHERE
-            //url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Goto/Status" ; // CORS-ANYWHERE
-            //url = "https://127.0.0.1:443/http://192.166.1.66:7007/Navigation/Goto/Status" ; // CORS-ANYWHERE
-            url = "https://127.0.0.1:443/http://"+mobiservUrl+"/navigation/trajectory" ;
-            
-            if (url != null) {
-                $.get(url, function(data) { // la localisation du robot sur la carte
-                path = JSON.parse(data);
-                socket.emit("gotoTrajectory",{path});
-                carto.convertPath()
-                });
-            }
-        }
-
-
-    }
-
-
-
-    /*// Petite tempo avant de récupérer la trajectoire du robot; le temps pour lui de la calculer...
+    // Petite tempo avant de récupérer la trajectoire du robot; le temps pour lui de la calculer...
     var result = setTimeout(function() { getTrajectoryPath(); }, 500); 
 
 
@@ -259,11 +177,12 @@ exports.sendGotoPOI = function (data) {
                 //console.log(gotoState);
                 
                 // Version sans activeGoto..
-                // -- Detection de fin de déplacement...
-                    // if (gotoState.Status == 0) { // 0 = status 'Waiting'
-                    //    clearInterval(result);
-                    //    console.log("Trajectory Statut: Stopped!")
-                    // }
+                /*// Detection de fin de déplacement...
+                if (gotoState.Status == 0) { // 0 = status 'Waiting'
+                     clearInterval(result);
+                     console.log("Trajectory Statut: Stopped!")
+                }
+                /**/
                 socket.emit("gotoStateReturn",{gotoState});
                 
                 });
@@ -272,7 +191,6 @@ exports.sendGotoPOI = function (data) {
 
 
     }
-    /**/
 
 }
 
@@ -308,16 +226,14 @@ exports.sendDrive = function (data){
          	var url = null
             //url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Speed" ; // CORS-ANYWHERE
             //url = "https://127.0.0.1:443/http://192.168.1.66:7007/Navigation/Speed" ; // CORS-ANYWHERE
-            // url = "https://127.0.0.1:443/http://"+mobiservUrl+"/Navigation/Speed" ; // CORS-ANYWHERE
-            url = "https://127.0.0.1:443/http://"+mobiservUrl+"/differential/command" ; // CORS-ANYWHERE
-            
+            url = "https://127.0.0.1:443/http://"+mobiservUrl+"/Navigation/Speed" ; // CORS-ANYWHERE
 
             if ( url != null) {
 	           	// function sendDrive(url, enable, aSpeed,lSpeed) {
 	            var btnA = (enable == 'true' ? true : false); //  
 	            //return Q.Promise(function(resolve, reject, notify) {  
 	            var xhr = new XMLHttpRequest();
-	            xhr.open('PUT', url);
+	            xhr.open('POST', url);
 	            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 	            //xhr.send(data);
 	            xhr.send(JSON.stringify({
@@ -378,11 +294,7 @@ exports.getBattery = function (){
     	var url = null;
         //url = "https://127.0.0.1:443/http://127.0.0.1:7007/Devices/Battery" ; // CORS-ANYWHERE    
         // url = "https://127.0.0.1:443/http://192.168.1.66:7007/Devices/Battery" ; // CORS-ANYWHERE  
-        // url = "https://127.0.0.1:443/http://"+mobiservUrl+"/Devices/Battery" ; // CORS-ANYWHERE  
-        
-        url = "https://127.0.0.1:443/http://"+mobiservUrl+"/battery/state" ; // CORS-ANYWHERE 
-
-
+        url = "https://127.0.0.1:443/http://"+mobiservUrl+"/Devices/Battery" ; // CORS-ANYWHERE  
         loopBattery = setInterval(function() {
         
             // console.log('@@@@@@@@@@@@@@@ getBattery (Fake false)')    
@@ -435,21 +347,15 @@ exports.sendFullStop = function (data){
         var url = null
         //url = "https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Stop" ; // CORS-ANYWHERE
         //url = "https://127.0.0.1:443/http://192.168.1.66:7007/Navigation/Stop" ; // CORS-ANYWHERE
-        //url = "https://127.0.0.1:443/http://"+mobiservUrl+"/Navigation/Stop" ; // CORS-ANYWHERE
-        url = "https://127.0.0.1:443/http://"+mobiservUrl+"/navigation/stop" ; // CORS-ANYWHERE
-
-
+        url = "https://127.0.0.1:443/http://"+mobiservUrl+"/Navigation/Stop" ; // CORS-ANYWHERE
         if ( url != null) {
             var xhr = new XMLHttpRequest();
-            xhr.open('PUT', url);
+            xhr.open('POST', url);
             xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
             //xhr.send(data);
             xhr.send();
             xhr.closed;
         }
-
-        var response = {"statusTitle": "Stopped"};
-        socket.emit("gotoStateReturn", response);
 
     }      
 }
@@ -464,9 +370,7 @@ exports.getListPOI = function (init){
     var url = null;
     //url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/POI';
     //url = 'https://127.0.0.1:443/http://192.168.1.66:7007/Navigation/Map/POI';
-    //url = "https://127.0.0.1:443/http://"+mobiservUrl+"/Navigation/Map/POI";
-    url = "https://127.0.0.1:443/http://"+mobiservUrl+"/pois";
-
+    url = "https://127.0.0.1:443/http://"+mobiservUrl+"/Navigation/Map/POI";
     if (fakeRobubox == true) {  
         
         listPOI = getFakelistPOI();
@@ -518,14 +422,8 @@ exports.getRobotInfo = function (init){
 	var url = null;
 	//url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/Localization';
     //url = 'https://127.0.0.1:443/http://192.168.1.66:7007/Navigation/Map/Localization';
-    // url = "https://127.0.0.1:443/http://"+mobiservUrl+"/Navigation/Map/Localization";
-	//url = "https://127.0.0.1:443/http://"+mobiservUrl+"/localization/state";
-    url = "https://127.0.0.1:443/http://"+mobiservUrl+"/aggregate";
-    
-    // console.log("************ getRobotInfo() ****");
-
-    if (fakeRobubox == true) {  
-       
+    url = "https://127.0.0.1:443/http://"+mobiservUrl+"/Navigation/Map/Localization";
+	if (fakeRobubox == true) {  
        robotInfo = getFakeRobotInfo();
        DEFFERED_RobotInfo.resolve();
 
@@ -535,29 +433,20 @@ exports.getRobotInfo = function (init){
         if (url != null) {
 			$.get(url, function(data) { // la localisation du robot sur la carte
 		    robotInfo = JSON.parse(data);
-		    // console.log(robotInfo)
-            //robotInfo = {"Pose":{"Orientation":4.8,"Position":{"X":13,"Y":1,"Z":0}},"State":8,"Timestamp":2916720}
-            
-            if (init == true) {
+		    if (init == true) {
                 console.log("get first robot position (init)")
                 console.log(robotInfo)
                 DEFFERED_RobotInfo.resolve();
                 }
 			});
-
 		}
-
-        //url = "https://127.0.0.1:443/http://"+mobiservUrl+"/aggregate";
-
-        // Pour debug, test du 
-
+        /**/
         
         /*// Debugg fakeRobubox via admin
         robotInfo = {"Pose":{"Orientation":4.8,"Position":{"X":13,"Y":1,"Z":0}},"State":8,"Timestamp":2916720}
         DEFFERED_RobotInfo.resolve();
         /**/
     }
-
 
     // Pour tests
     //robotInfo = getFakeRobotInfo();
@@ -586,8 +475,7 @@ exports.getDataMap = function (){
     // Cette nouvelle fonction est dans mobiserve/Runtime/WebAPI.cs ligne 285   
     //url = 'https://127.0.0.1:443/http://127.0.0.1:7007/Navigation/Map/Metadatas'; 
     //url = 'https://127.0.0.1:443/http://192.168.1.66:7007/Navigation/Map/Metadatas'; 
-    //url = "https://127.0.0.1:443/http://"+mobiservUrl+"/Navigation/Map/Metadatas"; 
-    url = "https://127.0.0.1:443/http://"+mobiservUrl+"/map/properties"; 
+    url = "https://127.0.0.1:443/http://"+mobiservUrl+"/Navigation/Map/Metadatas"; 
     
     if (fakeRobubox == true) {  
         dataMap = getFakeDataMap();

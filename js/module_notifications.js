@@ -144,15 +144,27 @@ exports.hideAllRecommandations = function() {
 // A déclencher quand on arrive sur un POI ou une Scène et a retirer quand on s'en éloigne
 // Servira a afficher des médias et des infos Web Sémantique concernant la Scène. 
 
-cliquableLogo = '<div style="float:left; margin-right:20px"><a href="/">';
-cliquableLogo += '<img src="/images/logo/AZKAR-v2.png" alt="AZKAR PROJECT" title="Projet Azkar"  width="150px;" height="54px"/>';
-// cliquableLogo += '</a></div>';
+cliquableLogo = '<div style="float:left; margin: -5px 10px 0 10px"><a href="/">';
+cliquableLogo += '<img src="/images/logo/AZKAR-v2.png" alt="AZKAR PROJECT" title="Projet Azkar"  width="75px;" height="27px"/>';
+cliquableLogo += '</a></div>';
 
 exports.writeRecommandations = function (type,title,body,duration){
 	if (IS_illustrated == true) return
 	IS_illustrated = true
-	titleMessage = '<div style="float:left;>'+cliquableLogo+'</a><h3>'+title+'</h3></div>';
-	var textMessage = titleMessage+'<div style="float:right;>'+body+'</div>';
+	
+	//titleMessage = '<div style="float:left;width:150px;background-color:red">'+cliquableLogo+'</a></div>';
+	
+	titleMessage = cliquableLogo
+	titleMessage += '<div style="float:left;"><h3>'+title+'&nbsp;&nbsp;&nbsp;</h3></div>';
+
+
+	//titleMessage += '<div style="float:left"><h3>'+title+'</h3><hr/>';
+	var closeButton = ' <span style="text-align:center; float:right ;margin: 0 auto ">';
+	closeButton +='<button class="shadowBlack" id="closeNotification" onclick="hideNotification(\'recommandation\')">close</button></span><hr/>';
+
+	// var textMessage = titleMessage+closeButton+'<div>'+'<div style="float:right;>'+body+'</div>';
+	var textMessage = titleMessage+closeButton+'<div style="float:right;>'+body+'</div>';
+	
 	$('.'+type).html(textMessage);
 	
 

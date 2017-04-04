@@ -196,8 +196,8 @@
         context.restore(); // On rétablit contexte de départ
         // On initialise la position du robot
         oldOffset = {x: 0 , y: 0}; 
-        oldX =  robotInfo.Pose.Position.X;
-        oldY =  robotInfo.Pose.Position.Y;
+        oldX =  robotInfo.Localization.X;
+        oldY =  robotInfo.Localization.Y;
         // On réinitialise le drapeau de premier chargement
         initActive = true;
         /**/
@@ -222,12 +222,12 @@
         // l'ancienne position xy du robot avec l'actuelle
         // et on fait faire une translation au canvas 
         // correspondant aux différences de position du robot
-        if (robotInfo.Pose.Position.X != oldX && robotInfo.Pose.Position.Y != oldY) {
+        if (robotInfo.Localization.X != oldX && robotInfo.Localization.Y != oldY) {
             
                 var drawRatio = mapSize.ratio;
-                var ry = -robotInfo.Pose.Position.Y / dataMap.Resolution
-                var rx = -robotInfo.Pose.Position.X / dataMap.Resolution
-                var qz = robotInfo.Pose.Orientation; // Taxinomie Komnav
+                var ry = -robotInfo.Localization.Y / dataMap.Resolution
+                var rx = -robotInfo.Localization.X / dataMap.Resolution
+                var qz = robotInfo.Localization.T; // Taxinomie Komnav
                 rx = rx*drawRatio;
                 ry = ry*drawRatio;
                 // Décalage du robot pour tenir compte du centrage horizontal
@@ -238,8 +238,8 @@
                 var difX = difference (oldOffset.x, newOffset.x)
                 var difY = difference (oldOffset.y, newOffset.y)
                 // Prise en compte du sens de déplacement du robot (gauche, bas, haut, droite )
-                if (oldX < robotInfo.Pose.Position.X) difX = - difX; // Axe X horizontal
-                if (oldY > robotInfo.Pose.Position.Y) difY = - difY; // Axe Y vertical
+                if (oldX < robotInfo.Localization.X) difX = - difX; // Axe X horizontal
+                if (oldY > robotInfo.Localization.Y) difY = - difY; // Axe Y vertical
                 
                
                 // Si c'est le premier lancement, oldOffset est a sa valeur par défaut.
@@ -255,8 +255,8 @@
                 // On assigne les nouvelles valeurs pour les comparer
                 // lors de la prochaine itération.
                 oldOffset = newOffset;
-                oldX =  robotInfo.Pose.Position.X;
-                oldY =  robotInfo.Pose.Position.Y;
+                oldX =  robotInfo.Localization.X;
+                oldY =  robotInfo.Localization.Y;
         }
 
              
@@ -305,22 +305,22 @@
         context.translate(newOffset.width,newOffset.height);
         
         /*// BUG au passage de l'équateur...        
-        if (Math.round(Math.abs(robotInfo.Pose.Position.Y)) === 0) var ry = 0;
-        else if (robotInfo.Pose.Position.Y > 0) ry = -robotInfo.Pose.Position.Y /0.02  ; // BUG
-        else ry = robotInfo.Pose.Position.Y / 0.02; // BUG Idem
-        //else  ry = -robotInfo.Pose.Position.Y /0.02  ; // Test Fix Titi 
+        if (Math.round(Math.abs(robotInfo.Localization.Y)) === 0) var ry = 0;
+        else if (robotInfo.Localization.Y > 0) ry = -robotInfo.Localization.Y /0.02  ; // BUG
+        else ry = robotInfo.Localization.Y / 0.02; // BUG Idem
+        //else  ry = -robotInfo.Localization.Y /0.02  ; // Test Fix Titi 
         /**/
         /*// Fix Titi (BUG passage de l'équateur):
-        var ry = -robotInfo.Pose.Position.Y /0.02
-        var rx = -robotInfo.Pose.Position.X / 0.02
-        var qz = robotInfo.Pose.Orientation.Z;
+        var ry = -robotInfo.Localization.Y /0.02
+        var rx = -robotInfo.Localization.X / 0.02
+        var qz = robotInfo.Localization.T.Z;
         /**/
 
-        var ry = -robotInfo.Pose.Position.Y / dataMap.Resolution
-        var rx = -robotInfo.Pose.Position.X / dataMap.Resolution
+        var ry = -robotInfo.Localization.Y / dataMap.Resolution
+        var rx = -robotInfo.Localization.X / dataMap.Resolution
 
-        //var qz = robotInfo.Pose.Orientation.Z; // Taxinomie Robubox
-        var qz = robotInfo.Pose.Orientation; // Taxinomie Komnav
+        //var qz = robotInfo.Localization.T.Z; // Taxinomie Robubox
+        var qz = robotInfo.Localization.T; // Taxinomie Komnav
 
         
         // Titi: 
@@ -526,17 +526,107 @@
     /**/
 
 
-
-
-    // Convertit la trajectoire Goto (un tableau de  positions XY) native fournie par le robot
+   // Convertit la trajectoire Goto (un tableau de  positions XY) native fournie par le robot
     // en coordonnées XY adapées au Canvas...
     exports.convertPath = function () {
 
-        return
+       
         
         if (! path) return;
 
         var drawRatio = mapSize.ratio;
+        // console.log (path)
+
+        for (position in path) {
+                
+           
+            var StartX = path[position].Start.X;
+            var StartY = path[position].Start.Y;
+            var EndX = path[position].End.X;
+            var EndY = path[position].End.Y;
+
+
+            StartX = -StartX / dataMap.Resolution
+            StartY = -StartY / dataMap.Resolution
+            EndX = -EndX / dataMap.Resolution
+            EndY = -EndY / dataMap.Resolution
+
+            // Inversion des axes d'orientation (Carte en horizontal)
+            // et application du ratio de resize
+            // Theta = - Theta;
+            StartY = StartY*drawRatio;
+            StartX = StartX*drawRatio;
+            EndY = EndY*drawRatio;
+            EndX = EndX*drawRatio;
+
+            // Décalage pour tenir compte du centrage de la carte
+            if (initialX) StartX = StartX-initialX;
+            if (initialY) StartY = StartY-initialY;
+
+            if (initialX) EndX = EndX-initialX;
+            if (initialY) EndY = EndY-initialY;
+
+
+            path[position].Start.X = -StartX;
+            path[position].Start.Y = StartY;
+            path[position].End.X = -EndX;
+            path[position].End.Y = EndY;
+
+
+            //console.log(poi.Name)
+            // ihm.drawLine(ctx, -PoseX, PoseY, -EndX, EndY, 'red');
+            // circleWithDirection(-PoseX, PoseY, Theta, "orange", 1, 1); // OK sur I3S/: Inversion XY chez Robosoft...
+
+
+
+
+        }  
+
+     }
+     /**/
+
+    
+
+    // Dessine la trajectoire d'un Goto sur le Canvas
+    exports.drawTrajectory = function (ctx, path) {
+
+        
+        if (! path) return;
+
+
+        for (position in path) {
+                      
+                var path_fromX = path[position].Start.X;
+                var path_fromY = path[position].Start.Y;
+                var path_toX = path[position].End.X;
+                var path_toY = path[position].End.Y;   
+        
+                ihm.drawLine(ctx, path_fromX, path_fromY, path_toX, path_toY, 'red');
+        
+        }
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+    // Convertit la trajectoire Goto (un tableau de  positions XY) native fournie par le robot
+    /*// en coordonnées XY adapées au Canvas...
+    exports.convertPathOLD = function () {
+
+       
+        
+        if (! path) return;
+
+        var drawRatio = mapSize.ratio;
+        console.log (path)
 
         for (position in path.Trajectory) {
                 
@@ -584,11 +674,13 @@
         }  
 
      }
+     /**/
 
 
     // Dessine la trajectoire d'un Goto sur le Canvas
-    exports.drawTrajectory = function (ctx, path) {
+    exports.drawTrajectoryOLD = function (ctx, path) {
 
+        
         if (! path) return;
 
 

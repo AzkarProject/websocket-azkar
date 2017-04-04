@@ -94,7 +94,8 @@
         
         // reception d'un ordre gotoPOI
         socket.on("gotoPOI", function(data) {
-            
+            console.log("***********received a GotoPoi************");
+            console.log(data);
             // Mémo:
             // >>> POST: Commande "Aller vers un point d'intérêt"
             // http://127.0.0.1:7007/Navigation/Goto/POI
@@ -141,25 +142,10 @@
                 robotColor = robotInfo.robotColor;
                 statusPath = robotInfo.statusPath;
 
-                if (fakeRobubox == true) ihm.displayTrajectoryStatus(statusPath)
-
-
-                if (robotInfo.State == 0) textState = "Invalid";
-                else if (robotInfo.State == 1) textState = "Metric";
-                else if (robotInfo.State ==  2) textState = "Decimetric";
-                else if (robotInfo.State ==  4) textState = "Centimetric";
-                else if (robotInfo.State ==  8) textState = "Proprioceptive";
-                else if (robotInfo.State ==  16) textState = "Exteroceptive";
-                else if (robotInfo.State ==  32) textState = "Error";
-
-    			
-                // if (robotInfo.State != 16)  { path=null;} // Plante en version non simulée...
-
-
-                if (OldTextState != textState ) { 
-                    // console.log("New Robot State: "+textState)
-                    OldTextState = textState;
-                }
+                // Sile robot n'est pas sur une trajectoire, 
+                // on vide le tableau de trajectoire pourl'effacer de la carte
+                if (robotInfo.Navigation.Status == 0) path = null;
+                
                 refresh();
     		}
 
@@ -169,11 +155,28 @@
         //-----------
 
 
+        // Reception d'un resultat de Goto
+         socket.on('gotoStateReturn', function(data) {
+            // var response = {"statusCode":statusCode, "statusTitle": statusTitle, "statusComment": statusComment };
+            // socket.emit("gotoResult", response);
+            console.log(data)
+            var textDisplay = null;
+            textDisplay = data.statusTitle;
+            if (data.statusComment != null) {
+                textDisplay+="<br/>"+data.statusComment
+                ihm.displayTrajectoryStatus(textDisplay);
+                if (data.statusCode == 404) notifications.writeMessage ("error","Navigation:",textDisplay,5000)    
+            }
+
+           
+
+        });
+
+
         // Reception d'une trajectoire de Goto 
         socket.on('gotoTrajectory', function(data) {
             //console.log(data);
             //console.log(data.gotoState.Status)
-            var textStatus = "???";
             path = data.path;
             carto.convertPath();
 
@@ -186,32 +189,12 @@
             else if (data.gotoState.Status == 5) textStatus = "Error";
             /**/
             
+            /*
             var dateR = tools.humanDateER('R');
-            var msg = dateR+' Receive Trajectory path: '+textStatus;
-
+            var msg = dateR+' Receive Trajectory path: ';
             console.log(msg)
-            // console.log(data)
-        
-        });
-
-
-
-        // Reception du Statut (et trajectoire) d'une commande Goto 
-        socket.on('gotoStateReturn', function(data) {
-            //console.log(data);
-            //console.log(data.gotoState.Status)
-            var textStatus = "???";
-            var trajectory = data.gotoState.Trajectory;
-            if (data.gotoState.Status == 0) textStatus = "Waiting";
-            else if (data.gotoState.Status == 1) textStatus = "Following";
-            else if (data.gotoState.Status == 2) textStatus = "Aiming";
-            else if (data.gotoState.Status == 3) textStatus = "Translating";
-            else if (data.gotoState.Status == 4) textStatus = "Rotating";
-            else if (data.gotoState.Status == 5) textStatus = "Error";
-
-            if (fakeRobubox == false) {
-                ihm.displayTrajectoryStatus(textStatus)
-            }
+            console.log(data)
+            /**/
         
         });
 
@@ -255,11 +238,6 @@
             init(load);
         });
 
-
-
-
-        
-        
 
     }
 
@@ -375,10 +353,13 @@
 
             for (poi in listPOI) {
                 var option = document.createElement('option');
-                option.id = listPOI[poi].Name;
-                option.value = listPOI[poi].Name;
-                if (listPOI[poi].label) option.text = listPOI[poi].Name+" : "+listPOI[poi].label;
-                else option.text = listPOI[poi].Name;
+                option.id = listPOI[poi].Id;
+                option.value = listPOI[poi].Id;
+                option.text = listPOI[poi].Id+":"+listPOI[poi].Name;
+                if (listPOI[poi].label) option.text +="("+listPOI[poi].label+")";
+                
+                //if (listPOI[poi].label) option.text = listPOI[poi].Name+" : "+listPOI[poi].label;
+                //else option.text = listPOI[poi].Name;
                 list_POI_select.appendChild(option);
             }
 
@@ -419,8 +400,11 @@
         var oldNearestPoiName = nearestPoiName; // Mémorisation du POI précedent
         var testCase = null; // Message de débug
         
-        var rX = robotInfo.Pose.Position.X;
-        var rY = robotInfo.Pose.Position.Y;
+        //var rX = robotInfo.Pose.Position.X;
+        //var rY = robotInfo.Pose.Position.Y;
+
+        var rX = robotInfo.Localization.X;
+        var rY = robotInfo.Localization.Y;
 
         // On arrondit tout ca a 2 décimales pour une meilleure lisibilité des offsets
         rX = Math.round(rX*100)/100;
@@ -537,9 +521,6 @@
     
     
     function webSemanticRecommandations() {
-
-        
-        
 
         // if (fakeRobubox != true) return    
         setInterval(function() {

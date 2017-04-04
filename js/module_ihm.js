@@ -106,7 +106,8 @@
 	        animation = ""; 
 
 	    } 
-	    document.getElementById(cibleForm).className = cssClass+cibleColor+shadowColor+animation;
+
+	    if (ihmVersion == "V1") document.getElementById(cibleForm).className = cssClass+cibleColor+shadowColor+animation;
 	}
 
 
@@ -631,7 +632,7 @@
 
 	}
 
-
+	// Pour l'interface d'admin
 	exports.displayListUsers = function(listUsers) {
 		// alert (listUsers)
 		var html = ""
@@ -663,7 +664,7 @@
 
 	}
 
-
+	// Pour l'interface d'admin
 	exports.displayFormIp = function(typeIp,listIp,defaultIp) {
 		
 		console.log('@ ihm.displayFormIp()');
@@ -735,11 +736,147 @@
 	}
 
 
+	// IHM V2
+	// Flags d'état pour l'affichage des modules.
+	moduleSettings = false; $('#switchsettings').addClass('txtRed');
+	moduleMap = true; $('#switchmap').addClass('buttonSelected');
+	moduleDrive = true; $('#switchdrive').addClass('buttonSelected');
+	moduleNav = true; $('#switchnav').addClass('buttonSelected');
+	moduleConnexion = true; $('#switchconnexion').addClass('buttonSelected');
+	moduleTchat = false; $('#switchtchat').addClass('txtRed');
+
 	// author: thierry
 	// fonction pour l'IHM V2
 	exports.setDisplay = function (idElement, openClose) {
-	   if (openClose == 'open') $('#'+idElement).show();
-	   else if (openClose == 'close') $('#'+idElement).hide();                     
+	   
+	   // alert (idElement +'>>>'+ openClose)
+
+	   if (idElement == 'settings') {
+	   		
+	   		if (openClose == 'open' ) {
+	   			moduleSettings = true;
+	   			$('#switch'+idElement).removeClass('txtRed');
+	   			$('#switch'+idElement).addClass('buttonSelected');
+	   		
+
+
+	   		} else if (openClose == 'close' ){
+	   			moduleSettings = false;
+	   			$('#switch'+idElement).removeClass('buttonSelected');
+	   			$('#switch'+idElement).addClass('txtRed');
+
+	   		}
+	   } 
+
+
+	   	if (idElement == 'map') {
+	   		
+	   		if (moduleMap == false ) {
+	   			moduleMap = true;
+	   			openClose = 'open';
+	   			$('#switch'+idElement).removeClass('txtRed');
+	   			$('#switch'+idElement).addClass('buttonSelected');
+	   		
+
+
+	   		} else if (moduleMap == true){
+	   			moduleMap = false;
+	   			openClose = 'close';
+	   			$('#switch'+idElement).removeClass('buttonSelected');
+	   			$('#switch'+idElement).addClass('txtRed');
+
+	   		}
+	   } 
+
+
+	   if (idElement == 'drive') {
+	   		
+	   		if (moduleDrive == false ) {
+	   			moduleDrive = true;
+	   			openClose = 'open';
+	   			$('#switch'+idElement).removeClass('txtRed');
+	   			$('#switch'+idElement).addClass('buttonSelected');
+	   		
+
+
+	   		} else if (moduleDrive == true){
+	   			moduleDrive = false;
+	   			openClose = 'close';
+	   			$('#switch'+idElement).removeClass('buttonSelected');
+	   			$('#switch'+idElement).addClass('txtRed');
+
+	   		}
+	   } 
+
+	   if (idElement == 'nav') {
+	   		
+	   		if (moduleNav == false ) {
+	   			moduleNav = true;
+	   			openClose = 'open';
+	   			$('#switch'+idElement).removeClass('txtRed');
+	   			$('#switch'+idElement).addClass('buttonSelected');
+	   		
+
+
+	   		} else if (moduleNav == true){
+	   			moduleNav = false;
+	   			openClose = 'close';
+	   			$('#switch'+idElement).removeClass('buttonSelected');
+	   			$('#switch'+idElement).addClass('txtRed');
+
+	   		}
+	   } 
+
+
+	   if (idElement == 'connexion') {
+	   		
+	   		if (moduleConnexion == false ) {
+	   			moduleConnexion = true;
+	   			openClose = 'open';
+	   			$('#switch'+idElement).removeClass('txtRed');
+	   			$('#switch'+idElement).addClass('buttonSelected');
+	   		
+
+
+	   		} else if (moduleConnexion == true){
+	   			moduleConnexion = false;
+	   			openClose = 'close';
+	   			$('#switch'+idElement).removeClass('buttonSelected');
+	   			$('#switch'+idElement).addClass('txtRed');
+
+	   		}
+	   } 
+
+
+	   	if (idElement == 'tchat') {
+	   		
+	   		if (moduleTchat == false ) {
+	   			moduleTchat = true;
+	   			openClose = 'open';
+	   			$('#switch'+idElement).removeClass('txtRed');
+	   			$('#switch'+idElement).addClass('buttonSelected');
+	   		
+
+
+	   		} else if (moduleTchat == true){
+	   			moduleTchat = false;
+	   			openClose = 'close';
+	   			$('#switch'+idElement).removeClass('buttonSelected');
+	   			$('#switch'+idElement).addClass('txtRed');
+
+	   		}
+	   } 
+
+
+
+	   if (openClose == 'open') {
+	   		$('#'+idElement).show();
+	   		// alert (idElement +'>>>'+ openClose)
+	   	}
+	   else if (openClose == 'close') {
+	   	 	$('#'+idElement).hide();
+	   	 	// alert (idElement +'>>>'+ openClose)
+	   }                      
 	}
 
 	
