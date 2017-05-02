@@ -477,7 +477,8 @@ KomRemoteElementPrototype.onjoystickmove = function(event) {
 
 KomRemoteElementPrototype.onpadpressed = function(event) {
 	
-	console.log(event);
+	// console.log(event);
+	
 	switch (event.originalEvent.detail.direction) {
 		case 'top':
 			this.differentialDrive.update(0.2, 0);
@@ -503,8 +504,8 @@ KomRemoteElementPrototype.testFunction = function(){
 
 KomRemoteElementPrototype.onswitch = function(event) {
 	//alert(event)
-	console.log(event);
-	console.log(this.$element)
+	//console.log(event);
+	//console.log(this.$element)
 	var type = event.target.value;
 	switch (type) {
 		// Ahout titi

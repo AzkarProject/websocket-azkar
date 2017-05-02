@@ -124,7 +124,11 @@ exports.sendGotoPOI = function (data) {
                 socket.emit("gotoStateReturn", response);
                 // console.log(response)
                 // Si la commande est acceptée, on lance la récupération de la trajectoire:
-                if (statusCode == 202) getTrajectoryPath();
+                if (statusCode == 202) {
+                    //getTrajectoryPath();
+                    // Petite tempo avant de récupérer la trajectoire du robot, pour éviter les effacements accidentels...
+                    var result = setTimeout(function() { getTrajectoryPath(); }, 1000);
+                }
                 /**/
                
 
@@ -175,6 +179,12 @@ exports.sendGotoPOI = function (data) {
             if (url != null) {
                 $.get(url, function(data) { // la localisation du robot sur la carte
                 path = JSON.parse(data);
+                
+                console.log(path)
+
+
+
+
                 socket.emit("gotoTrajectory",{path});
                 carto.convertPath()
                 });

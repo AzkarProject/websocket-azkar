@@ -380,6 +380,11 @@
 		// Si les boutons homme mort sont préssés
 		// bouton Homme mort avec vitesses en mode normal
 		if (buttonA.pressed) {
+
+			// On stoppe toute trajectoire en cours pour reprendre la main...
+			var data = { command: 'onFullStop'}
+			navigation_interface.sendToRobot("", "", "Gamepad",data);
+
 		    atLeastOneButtonPressed = true;
 		    buttonStatusDiv.innerHTML = "(A) Drive mode standard";
 		    prepareDriveCommand(gamepad, buttonRT.value, buttonLT.value,"standard","onDrive" );
@@ -392,6 +397,11 @@
 
 		// Bouton Homme mort avec vitesses en mode précision
 		} else if (buttonX.pressed) {
+
+			// On stoppe toute trajectoire en cours pour reprendre la main...
+			var data = { command: 'onFullStop'}
+			navigation_interface.sendToRobot("", "", "Gamepad",data);
+
 		    atLeastOneButtonPressed = true;
 		    buttonStatusDiv.innerHTML = " (X) Drive mode précision";
 		    prepareDriveCommand(gamepad, buttonRT.value, buttonLT.value,"precision","onDrive" )
@@ -403,6 +413,11 @@
 		
 		
 		}  else if (buttonAxeLeft.pressed) {
+				
+				// On stoppe toute trajectoire en cours pour reprendre la main...
+				var data = { command: 'onFullStop'}
+				navigation_interface.sendToRobot("", "", "Gamepad",data);
+
 				atLeastOneButtonPressed = true;
 		    	fullDriveButtonStatus.innerHTML = "(10) Drive mode full Axes";
 		    	prepareDriveCommand(gamepad, buttonRT.value, buttonLT.value,"standard","onDriveAxe" );
@@ -532,8 +547,7 @@
 			      
 			      ihm.switchGamepadDisplayMode("jauges")
 			      ihm.driveCommandBlock('open');
-			      buttonStatusDiv.innerHTML = " (B) Stop trajectory";
-			     
+			      buttonStatusDiv.innerHTML = " (B) Stop trajectory";			     
 			      var data = { command: 'onFullStop'}
 				  navigation_interface.sendToRobot("", "", "Gamepad",data);
 				  onMove = false;
@@ -738,115 +752,6 @@
 
     }
 
-
-	/*// ---------- Add F Mazieras
-	// Note titi: obsolète. Remplacé par les touches directionnelles
-	// Et la fonction foscam.moveCamera(axe)
-	function prepareCameraCommandOLD(gamepad, axe1, axe2) {
-		
-		// haut 0,-1
-		// bas 0,1
-		// droite 1,0
-		// gauche -1,0
-		var camOrder = "??";
-		if (axe1 == 1) {
-			
-			if (!onCameraRight) {
-				//alert ("Faitchier");
-				camOrder = "onCameraRight";
-				prepareDriveCommand(gamepad, null, null,"","onCameraRight" );
-				onCameraRight=true;
-			}
-		
-		} else {
-			
-			
-			if (onCameraRight) {
-				camOrder = "onCameraStop";
-				prepareDriveCommand(gamepad, null, null,"","onCameraStop" );
-				onCameraRight=false;
-			}
-			
-		
-		}
-		
-		
-		if (axe1 == -1 ) {
-			if (!onCameraLeft) {
-				camOrder = "onCameraLeft";
-				prepareDriveCommand(gamepad, null, null,"","onCameraLeft" );
-				onCameraLeft=true;
-			}
-		} else {
-			if (onCameraLeft) {
-				camOrder = "onCameraStop";
-				prepareDriveCommand(gamepad, null, null,"","onCameraStop" );
-				onCameraLeft=false;
-			}
-		}
-		
-
-		if (axe2 == 1) {
-			if (!onCameraDown) {
-				camOrder = "onCameraDown";
-				prepareDriveCommand(gamepad, null, null,"","onCameraDown" );
-				onCameraDown=true;
-			}
-		} else {
-			if (onCameraDown) {
-				camOrder = "onCameraStop";
-				prepareDriveCommand(gamepad, null, null,"","onCameraStop" );
-				onCameraDown=false;
-			}
-		}
-
-
-		if (axe2 == -1) {
-			if (!onCameraUp) {
-				camOrder = "onCameraUp";
-				prepareDriveCommand(gamepad, null, null,"","onCameraUp" );
-				onCameraUp=true;
-			}
-		} else {
-			if (onCameraUp) {
-				camOrder = "onCameraStop";
-				prepareDriveCommand(gamepad, null, null,"","onCameraStop" );
-				onCameraUp=false;
-			}
-		}
-		
-
-		// console.log ("camOrder:" + camOrder);
-		
-	
-	}
-	/**/
-
-	/*// ---------- Add F Mazieras 
-	// Note titi: obsolète. 
-	// Remplacé par la fonction foscam.sendCameraOrder("onCameraStop");
-	function stopCamera() {
-		if (onCameraUp) {
-			prepareDriveCommand(gamepad, buttonRT.value, buttonLT.value,"","onCameraStop" );
-			onCameraUp=false;
-		}
-		if (onCameraDown) {
-			prepareDriveCommand(gamepad, buttonRT.value, buttonLT.value,"","onCameraStop" );
-			onCameraDown=false;
-		}
-		if (onCameraRight) {
-			prepareDriveCommand(gamepad, buttonRT.value, buttonLT.value,"","onCameraStop" );
-			onCameraRight=false;
-		}
-		if (onCameraLeft) {
-			prepareDriveCommand(gamepad, buttonRT.value, buttonLT.value,"","onCameraStop" );
-			onCameraLeft=false;
-		}
-		prepareDriveCommand(gamepad, buttonRT.value, buttonLT.value,"","onCameraGoToPreset1" );
-		
-
-	}
-	/**/// ---------- End Add F Mazieras
 
 
 

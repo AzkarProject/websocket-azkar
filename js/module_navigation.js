@@ -140,12 +140,36 @@
 
                 nearestPoiName = robotInfo.nearestPoiName;
                 robotColor = robotInfo.robotColor;
-                statusPath = robotInfo.statusPath;
+                driveStatus = robotInfo.Differential.Status
+                statusPath = robotInfo.Navigation.Status;
+                linearSpeed = data.robotInfo.Differential.CurrentLinearSpeed;
+                angularSpeed = data.robotInfo.Differential.CurrentAngularSpeed;
 
+
+                // console.log (data.robotInfo.Differential)
+                // console.log ("Drive Status: "+robotInfo.Differential.Status+" / Speed: "+linearSpeed+ " & " + angularSpeed)
+                // console.log ("Navigation Status:"+robotInfo.Navigation.Status +" - avoided:"+robotInfo.Navigation.Avoided)
+                
+                if (statusPath == 0 && driveStatus == 0) {
+                    statusPath = "Stop"; 
+                    // path = null;
+                }
+                else if (statusPath == 0 && driveStatus != 0) {
+                    statusPath = "" ; 
+                    path = null;
+                }
+                
+                else if (statusPath == 1) statusPath = "Following";
+                else if (statusPath == 2) statusPath = "Aiming";
+                else if (statusPath == 3) statusPath = "Translating";
+                else if (statusPath == 4) statusPath = "Rotating";
+                else if (statusPath == 5) statusPath = "Error";
+                ihm.displayTrajectoryStatus(statusPath);
+                //ihm.displayTrajectoryStatus(statusPath);    
                 // Sile robot n'est pas sur une trajectoire, 
                 // on vide le tableau de trajectoire pourl'effacer de la carte
-                if (robotInfo.Navigation.Status == 0) path = null;
-                
+                // if (robotInfo.Navigation.Status == 0) path = null;
+                // if (statusPath == "Stop") path = null;
                 refresh();
     		}
 
@@ -159,14 +183,19 @@
          socket.on('gotoStateReturn', function(data) {
             // var response = {"statusCode":statusCode, "statusTitle": statusTitle, "statusComment": statusComment };
             // socket.emit("gotoResult", response);
-            console.log(data)
+            ///console.log(data)
+            //console.log(data.statusCode)
+            //console.log(data.statusTitle)
+            //console.log(data.statusComment)
+
             var textDisplay = null;
             textDisplay = data.statusTitle;
-            if (data.statusComment != null) {
+            if (data.statusCode == 202) ihm.displayTrajectoryStatus(textDisplay);
+            else if (data.statusComment != null) {
                 textDisplay+="<br/>"+data.statusComment
                 ihm.displayTrajectoryStatus(textDisplay);
                 if (data.statusCode == 404) notifications.writeMessage ("error","Navigation:",textDisplay,5000)    
-            }
+            } else ihm.displayTrajectoryStatus("");
 
            
 

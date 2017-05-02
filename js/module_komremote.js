@@ -54,6 +54,11 @@ var myTransportSession = {
 
         } else {
 
+			// On stoppe toute trajectoire en cours pour reprendre la main...
+			var data = { command: 'onFullStop'}
+			navigation_interface.sendToRobot("", "", "Gamepad",data);
+
+
 			navigation_interface.sendToRobot(rpcMethodName, values, controlDevice,"");
 		}
 	}
