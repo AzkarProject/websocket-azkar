@@ -650,6 +650,7 @@ function getLocalConstraint() {
     }
     /**/
   
+    /*// semble planter avec la V58 de Chrome couplée à unice.hotspot
     localConstraints = { 
        mandatory: {OfferToReceiveAudio: true, OfferToReceiveVideo: true},
 
@@ -672,7 +673,16 @@ function getLocalConstraint() {
     }
     /**/
 
-
+    localConstraints = { 
+       mandatory: {OfferToReceiveAudio: true, OfferToReceiveVideo: true},
+        audio: true,
+        },
+        video: {
+                deviceId: videoSource ? {exact: videoSource} : undefined, 
+                width: {min:minCamWidth ,ideal: maxCamWidth}, 
+                height: {min:minCamHeight ,ideal: maxCamHeight}
+        }
+    }
 
 
 

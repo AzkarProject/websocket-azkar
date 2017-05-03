@@ -145,6 +145,7 @@ socket.on('service2', function(data) {
 // --------- écouteurs de contrôle d'accès via websocket...
 
 socket.on('error', errorHandler);
+
 socket.on('rejectConnexion', function(data) {
     console.log(">> socket.on('rejectConnexion',...");
     // notifyAndRedirect("error", data.message,data.url)
