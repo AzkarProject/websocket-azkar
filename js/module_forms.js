@@ -304,8 +304,9 @@ function gotoPOI() {
     list_POI_select = document.querySelector('select#list_POI');
     var valuePOI = list_POI_select.value;
     console.log ("list_POI_select.value:"+valuePOI)
+    console.log (" >>> "+robotInfo.Differential.Status)
 
-
+    /*
     var validGoto = true;
     if (robotInfo.Differential.Status != 0) {
         alert("Robot in move ! Stop it or wait the end of the translation");
@@ -315,6 +316,8 @@ function gotoPOI() {
         validGoto = false;
     }
     if (validGoto == false) return;
+    /**/
+
    
    socket.emit('gotoPOI', {
         objUser: localObjUser,
