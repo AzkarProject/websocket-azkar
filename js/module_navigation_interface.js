@@ -59,6 +59,10 @@ exports.sendToRobot = function (rpcMethodName, values,controlDevice, driveComman
             driveCommand.driveSettings = rpcMethodName;
             driveCommand.channel = parameters.navCh;
         
+        } else if (controlDevice == "Keyboard") {
+            driveCommand.driveSettings = rpcMethodName;
+            driveCommand.channel = parameters.navCh;
+
         } else {
             driveCommand.channel = parameters.navCh;
         }

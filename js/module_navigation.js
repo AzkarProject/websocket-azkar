@@ -144,12 +144,13 @@
                 statusPath = robotInfo.Navigation.Status;
                 linearSpeed = data.robotInfo.Differential.CurrentLinearSpeed;
                 angularSpeed = data.robotInfo.Differential.CurrentAngularSpeed;
-
+                // console.log (angularSpeed)
 
                 // console.log (data.robotInfo.Differential)
                 // console.log ("Drive Status: "+robotInfo.Differential.Status+" / Speed: "+linearSpeed+ " & " + angularSpeed)
                 // console.log ("Navigation Status:"+robotInfo.Navigation.Status +" - avoided:"+robotInfo.Navigation.Avoided)
                 
+                /*
                 if (statusPath == 0 && driveStatus == 0) {
                     statusPath = "Stop"; 
                     // path = null;
@@ -158,7 +159,9 @@
                     statusPath = "" ; 
                     path = null;
                 }
+                /**/
                 
+                if (statusPath == 0) {statusPath = "Waiting"; path = null;}
                 else if (statusPath == 1) statusPath = "Following";
                 else if (statusPath == 2) statusPath = "Aiming";
                 else if (statusPath == 3) statusPath = "Translating";

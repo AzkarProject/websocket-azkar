@@ -299,6 +299,8 @@ exports.sendDrive = function (data){
     var enable = data.enable;
     var aSpeed = data.aSpeed;
     var lSpeed = data.lSpeed;
+
+    if (data.source == "Homme-Mort") console.log ("Homme-Mort");
     
         //console.log ("komcom.sendDrive()");
        

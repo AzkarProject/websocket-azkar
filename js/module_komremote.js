@@ -26,10 +26,13 @@ var myTransportSession = {
 		// Rewrite with your own call method
 		// console.log('send on my transport: ' + rpcMethodName + '[' + values + ']');
 		var controlDevice = "kom-remote";
+		// console.log("WTF")
 		
 		 if (type === "robot-appelé") {
 
+			//console.log(controlDevice)
 			
+
 			driveCommand = {
                  // driveSettings: this.settings.rpcMethod,
                  driveSettings: rpcMethodName,
@@ -56,9 +59,8 @@ var myTransportSession = {
 
 			// On stoppe toute trajectoire en cours pour reprendre la main...
 			var data = { command: 'onFullStop'}
+			// console.log(data)
 			navigation_interface.sendToRobot("", "", "Gamepad",data);
-
-
 			navigation_interface.sendToRobot(rpcMethodName, values, controlDevice,"");
 		}
 	}

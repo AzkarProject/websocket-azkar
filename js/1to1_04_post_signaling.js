@@ -221,7 +221,7 @@ if (type == "robot-appelé") {
             
             var test = now - lastMoveTimeStamp;
             if (test >= 1000 ) {
-               komcom.sendDrive(data); // Envoi de la commande a la Robubox
+               // komcom.sendDrive(data); // Envoi de la commande a la Robubox
                //console.log("@ >> deathMan() ---> STOP");
             }
         }

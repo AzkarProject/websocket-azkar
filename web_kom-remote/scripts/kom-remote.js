@@ -4,6 +4,8 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
 
 (function(name, factory) {
 
+	//console.log("---------------joystick factory---------------")
+
 	// Establish the root object, `window` (`self`) in the browser, or `global` on the server.
 	// We use `self` instead of `window` for `WebWorker` support.
 	var root = (typeof self == 'object' && self.self == self && self) ||
@@ -121,6 +123,8 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
 	return Joystick;
 }));
 
+// -------------------------- End Joystick
+
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
 },{}],2:[function(require,module,exports){
@@ -128,6 +132,10 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
 'use strict';
 
 (function(name, factory) {
+
+	//console.log("---------------pad factory---------------")
+
+
 
 	// Establish the root object, `window` (`self`) in the browser, or `global` on the server.
 	// We use `self` instead of `window` for `WebWorker` support.
@@ -164,6 +172,7 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
     }
 
     Pad.prototype.init = function() {
+    	//console.log("---------------pad factory init---------------")
     	this.$element
     		.off('mousedown.' + pluginName, '.pad-arrow')
 			.on('mousedown.' + pluginName, '.pad-arrow', $.proxy(Pad.prototype.onmousedown, this));
@@ -176,6 +185,7 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
     };
 
     Pad.prototype.onmousedown = function(event) {
+    	//console.log("---------------pad factory onmousedown---------------")
     	$document
     		.off('mouseup.' + pluginName)
 			.on('mouseup.' + pluginName, $.proxy(Pad.prototype.onmouseup, this));
@@ -187,6 +197,7 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
 
     Pad.prototype.trigger = function(direction) {
     	// Without jQuery because jQuery events do not bubble
+    	//console.log("---------------pad factory trigger ("+direction+")---------------")	
 		var e = new CustomEvent(pluginName + ':pressed', {
     		bubbles: true,
     		detail: {
@@ -212,14 +223,66 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
         });
     };
 
+
+   /*// Ecouteurs Keyup, Keydown 
+   // source : http://nokarma.org/2011/02/27/javascript-game-development-keyboard-input/
+   var Key = {
+	  	_pressed: {},
+
+	  	LEFT: 37,
+	  	UP: 38,
+	  	RIGHT: 39,
+  		DOWN: 40,
+  
+  		isDown: function(keyCode) {
+    		return this._pressed[keyCode];
+  		},
+  
+  		onKeydown: function(event) {
+    		this._pressed[event.keyCode] = true;
+    		console.log("Key "+event.keyCode+" pressed")
+    		//emulatePad()
+  		},
+  
+  		onKeyup: function(event) {
+    		delete this._pressed[event.keyCode];
+    		console.log("Key "+event.keyCode+" released")
+    		//Pad.trigger();
+  		}
+	};	
+
+
+   	window.addEventListener('keyup', function(event) { 
+   			Key.onKeyup(event); 
+   	}, false);
+   
+    window.addEventListener('keydown', function(event) { 
+    		Key.onKeydown(event); 
+    }, false);		
+
+
+    function emulatePad() {
+	  	console.log("emulatePad()")
+	  	//if (Key.isDown(Key.UP)) this.trigger('top');
+	  	//if (Key.isDown(Key.LEFT)) this.trigger('left');
+	 	//if (Key.isDown(Key.DOWN)) this.trigger('bottom');
+	  	//if (Key.isDown(Key.RIGHT)) this.trigger('right');
+	};
+	/**/
+
+    //console.log(Pad)
+
 	return Pad;
 }));
 
+
+// -------------------------------------------------------------------
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
 },{}],3:[function(require,module,exports){
 (function (global){
 'use strict';
+
 
 var utils = {
 	round: function(value, decimals) {
@@ -412,7 +475,27 @@ function onDocumentReady(callback) {
 	} else {
 		document.addEventListener('DOMContentLoaded', function() {
 			callback();
+
+
+
+
 		});
+
+		
+	/**/
+
+
+
+
+
+
+
+
+
+
+
+
+	// --------------------------------------------------		
 	}
 }
 
@@ -433,6 +516,8 @@ var template = document.currentScript.ownerDocument.querySelector('#kom-remote')
 var KomRemoteElementPrototype = Object.create(HTMLElement.prototype);
 
 KomRemoteElementPrototype.init = function() {
+	
+	console.log("--------------KomRemote INIT----------")
 	this.$element = $(this);
 	var $shadow = this.$shadow = $(this.shadowRoot);
 
@@ -440,6 +525,7 @@ KomRemoteElementPrototype.init = function() {
 		radiusMax = Math.min($joystickContainer.innerWidth(), $joystickContainer.outerWidth()) / 2;
 	this.$joystick = $shadow.find('.joystick-stick').joystick({ radiusMax: radiusMax });
 	this.$pad = $shadow.find('.pad').pad();
+
 	this.$switch = $shadow.find('input[name=switch-remote]');
 
 	this.$switch.on('change.komremote', this.onswitch.bind(this));
@@ -447,6 +533,9 @@ KomRemoteElementPrototype.init = function() {
 	// kom-remote custom element is now ready for use!
 	this.ready = true;
 	this.dispatchEvent(new CustomEvent('ready'));
+
+	// Add Titi: Tentative d'instanciation de l'objet Keyboard (comme pad et k=joystick)
+	// this.$wtf = keyboard();
 
 	return this;
 };
@@ -456,6 +545,7 @@ KomRemoteElementPrototype.init = function() {
  * @return {KomRemoteElementPrototype}
  */
 KomRemoteElementPrototype.destroy = function() {
+	console.log("--------------KomRemote DESTROY----------")
 	this.$element.off('joystick:move.komremote pad:pressed.komremote');
 	this.$joystick.data('joystick').destroy();
 	this.$pad.data('joystick').destroy();
@@ -463,10 +553,56 @@ KomRemoteElementPrototype.destroy = function() {
 };
 
 KomRemoteElementPrototype.start = function(options) {
+	
+	console.log("--------------KomRemote START----------")
 	this.differentialDrive = new DifferentialDrive(options);
+	
 	this.$element.on('joystick:move.komremote', this.onjoystickmove.bind(this));
 	this.$element.on('pad:pressed.komremote', this.onpadpressed.bind(this));
+
+	// Instancie Queue Dalle !!!!!!
+	// this.$element.on('keyboard:pressed.komremote', this.onpadpressed.bind(this));
 	
+
+	/* // A déplacer vers plugin Keyboard
+	document.addEventListener("keydown", function(e) {
+			  
+			console.log(toto)
+		   	
+	   		$('.pad-arrow-right').removeClass('buttonSelected');
+	   		$('#switch'+idElement).addClass('txtRed');
+
+
+		   	var key = e.keyCode || e.which; 
+		    switch (key) {
+
+			    case 37: //(flèche left)
+			    console.log("left")	
+			    	   				
+	   				//KomRemoteElementPrototype.onpadpressed("left","Keyboard")
+			        break;
+			    case 39: //(flèche right)
+			    console.log("right")
+					//KomRemoteElementPrototype.onpadpressed("right","Keyboard")
+			        break;
+			    case 38: //(flèche up)
+			    console.log("top")
+					//KomRemoteElementPrototype.onpadpressed("top","Keyboard")
+			        break;
+			    case 40: //(flèche down)
+			    console.log("bottom")
+			        //KomRemoteElementPrototype.onpadpressed("bottom","Keyboard")
+			        break;
+
+			    default:
+			        break;
+		    
+		    }
+					
+
+	});	
+	/**/
+
 	return this;
 };
 
@@ -475,32 +611,60 @@ KomRemoteElementPrototype.onjoystickmove = function(event) {
 	this.differentialDrive.update(-values.ratioY / 2, -values.ratioX);
 };
 
-KomRemoteElementPrototype.onpadpressed = function(event) {
+KomRemoteElementPrototype.onpadpressed = function(event,source) {
 	
-	// console.log(event);
+	//console.log(this.differentialDrive);
+	//console.log(event.originalEvent);
+	// console.log($pad)
+
+	//console.log(this);
+
+	if (source == "Keyboard") {
+
+		/*
+		switch (event) {
+			case 'top':
+				this.differentialDrive.update(0.2, 0);
+				break;
+			case 'right':
+				this.differentialDrive.update(0, -0.2);
+				break;
+			case 'bottom':
+				this.differentialDrive.update(-0.2, 0);
+				break;
+			case 'left':
+				this.differentialDrive.update(0, 0.2);
+				break;
+			default:
+				this.differentialDrive.update(0, 0);
+				break;
+		}	
+		/**/
+
 	
-	switch (event.originalEvent.detail.direction) {
-		case 'top':
-			this.differentialDrive.update(0.2, 0);
-			break;
-		case 'right':
-			this.differentialDrive.update(0, -0.2);
-			break;
-		case 'bottom':
-			this.differentialDrive.update(-0.2, 0);
-			break;
-		case 'left':
-			this.differentialDrive.update(0, 0.2);
-			break;
-		default:
-			this.differentialDrive.update(0, 0);
-			break;
+	} else {
+	
+		switch (event.originalEvent.detail.direction) {
+			case 'top':
+				this.differentialDrive.update(0.2, 0);
+				break;
+			case 'right':
+				this.differentialDrive.update(0, -0.2);
+				break;
+			case 'bottom':
+				this.differentialDrive.update(-0.2, 0);
+				break;
+			case 'left':
+				this.differentialDrive.update(0, 0.2);
+				break;
+			default:
+				this.differentialDrive.update(0, 0);
+				break;
+		}
+
 	}
 };
 
-KomRemoteElementPrototype.testFunction = function(){
-	alert('testfonction')
-}
 
 KomRemoteElementPrototype.onswitch = function(event) {
 	//alert(event)

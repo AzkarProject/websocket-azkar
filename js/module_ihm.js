@@ -580,16 +580,7 @@
 	}
 
 
-	// Ecouteur Full Screen d'évènement clavier (touche tab)
-	document.addEventListener("keydown", function(e) {
-	  // console.log(e);
-	  if (e.keyCode == 9) {
-	    //ihm.toggleFullScreen();
-	    //ihm.toggleHUD();
-	  } 
-	}, false);
 
-	
 	
 	// Bandeau supérieur
 	// Pour le logo
@@ -880,6 +871,238 @@
 	}
 
 	
+
+
+	// Ecouteur  d'évènements clavier (touche tab)
+	document.addEventListener("keydown", function(e) {
+	  
+		// linearSpeed = data.robotInfo.Differential.CurrentLinearSpeed;
+        // angularSpeed = data.robotInfo.Differential.CurrentAngularSpeed;
+
+        // console.log(angularSpeed)
+
+		var flagSendToRobot = true;
+	   	var key = e.keyCode || e.which;
+	   	var keyboardASpeed = 0;
+	    var keyboardLSpeed = 0;
+		    
+	    switch (key) {
+	    	//console.log(key)
+		    case 9: // (tab)
+		    	ihm.toggleFullScreen();
+		    	flagSendToRobot = false;
+		    	break;
+		    
+		    /*
+		    case 37: //(flèche left)
+		    	//keyboardASpeed = -0.05;
+   				keyboardASpeed =  -0.2 - angularSpeed /2
+   				keyboardLSpeed = linearSpeed;
+   				
+		        break;
+		    case 39: //(flèche right)
+		        keyboardASpeed = 0.2 - angularSpeed / 2
+   				keyboardLSpeed = linearSpeed
+		        break;
+		    case 38: //(flèche up)
+		        keyboardASpeed =angularSpeed
+   				keyboardLSpeed = -0.2 - linearSpeed / 2
+		        break;
+		    case 40: //(flèche down)
+		        keyboardASpeed = angularSpeed
+   				keyboardLSpeed = 0.2 - linearSpeed / 2
+		        break;
+		    /**/    
+
+
+		    /*
+		    case 37: //(flèche left)
+		    	//keyboardASpeed = -0.05;
+   				keyboardASpeed =  -0.3 - keyboardASpeed
+   				keyboardLSpeed = 0
+   				
+		        break;
+		    case 39: //(flèche right)
+		        keyboardASpeed = 0.2
+   				keyboardLSpeed = 0
+
+
+   				//$("pad-arrow-right").trigger("clic");
+		        break;
+		    case 38: //(flèche up)
+		        keyboardASpeed = 0
+   				keyboardLSpeed = -0.2 - linearSpeed
+		        break;
+		    case 40: //(flèche down)
+		        keyboardASpeed = 0
+   				keyboardLSpeed = 0.2 - linearSpeed
+		        break; 
+
+		    /**/   
+		   
+		    
+
+		    default:
+		        break;
+	    
+	    }
+
+
+
+
+
+
+		}, 
+
+	false);
+	/**/
+
+   function sendArrowsToRobot (keyboardASpeed,keyboardLSpeed ) {
+
+   			 // envoi de l'ordre
+			     var driveCommand = {
+			         driveSettings: '',
+			         channel: parameters.navCh,
+			         system: parameters.navSys,
+			         source:"Keyboard",
+			         dateA: '',
+			         command: 'onDrive',
+			         aSpeed: -keyboardASpeed,
+			         lSpeed: -keyboardLSpeed,
+			         enable: 'true'
+			     }             
+				    
+			   navigation_interface.sendToRobot("", "", "Keyboard",driveCommand);
+   }
+
+
+   // Ecouteurs Keyup, Keydown 
+   // source : http://nokarma.org/2011/02/27/javascript-game-development-keyboard-input/
+   var Key = {
+	  	_pressed: {},
+
+	  	LEFT: 37,
+	  	UP: 38,
+	  	RIGHT: 39,
+  		DOWN: 40,
+  
+  		isDown: function(keyCode) {
+    		return this._pressed[keyCode];
+  		},
+  
+  		onKeydown: function(event) {
+    		this._pressed[event.keyCode] = true;
+    		//console.log("Key "+event.keyCode+" pressed")
+    		//emulatePad()
+  		},
+  
+  		onKeyup: function(event) {
+    		delete this._pressed[event.keyCode];
+    		//console.log("Key "+event.keyCode+" released")
+    		//Pad.trigger();
+  		}
+	};	
+
+
+   	window.addEventListener('keyup', function(event) { 
+   			Key.onKeyup(event);  emulatePad();
+   	}, false);
+   
+    window.addEventListener('keydown', function(event) { 
+    		Key.onKeydown(event);  emulatePad();
+    }, false);		
+
+    var lastDirectionnal = "relase";
+    // Pente d'arrêt (décéllération) en cours (flag)
+    // Pour éviter les accès concurrents le temps de finir l'arrêt.
+    var decreaseDirectionnal = false; 
+    function emulatePad() {
+	  	// console.log("emulatePad()")
+	  	var stepLinearSpeed = 0.05;
+	  	var stepAngularSpeed = 0.2;
+	  	// Si touche up appuyée et aucune décéllération en cours... 
+	  	if (Key.isDown(Key.UP) && decreaseDirectionnal == false) {
+	  		lastDirectionnal = "top";
+		    keyboardASpeed = angularSpeed
+			keyboardLSpeed = -stepLinearSpeed - linearSpeed / 1.5
+	  		sendArrowsToRobot (keyboardASpeed,keyboardLSpeed )
+	  		//console.log('top');
+	  	} else if (Key.isDown(Key.DOWN)  && decreaseDirectionnal == false) {
+	  		lastDirectionnal = "bottom";
+	  		keyboardASpeed = angularSpeed
+			keyboardLSpeed = stepLinearSpeed - linearSpeed / 1.5
+	  		sendArrowsToRobot (keyboardASpeed,keyboardLSpeed )
+	  		//console.log('bottom'); 
+
+	  	} else if (Key.isDown(Key.LEFT) && decreaseDirectionnal == false) {
+	  		lastDirectionnal = "left";
+	  		keyboardASpeed =  -stepAngularSpeed - angularSpeed /2
+				keyboardLSpeed = linearSpeed;	
+	  		sendArrowsToRobot (keyboardASpeed,keyboardLSpeed )
+	  		//console.log('left'); 
+	  
+	  	} else if (Key.isDown(Key.RIGHT)  && decreaseDirectionnal == false) {
+	  		lastDirectionnal = "right";
+	  		keyboardASpeed = stepAngularSpeed - angularSpeed /2
+			keyboardLSpeed = linearSpeed;	
+	  		sendArrowsToRobot (keyboardASpeed,keyboardLSpeed )
+	  		//console.log('right');
+	  	} else if (decreaseDirectionnal == false){
+	  		decreaseDirectionnal = true; // On déclenche la pente d'arrêt...
+	  		
+	  		
+	  		//keyboardASpeed = 0
+			//keyboardLSpeed = 0	
+	  		//sendArrowsToRobot (keyboardASpeed,keyboardLSpeed )
+	  		
+	  			
+
+
+
+
+	  		/*// Todo fonction boucle de pente d'arret...
+	  		// linearStop(lastDirectionnal,angularSpeed;linearSpeed)
+	  		var speedToDecrease = null;
+	  		var stepDecrease = 0;
+	  		var speedAxe = null;
+	  		if (lastDirectionnal == "top") {
+	  			speedAxe = "vertical";
+	  			speedToDecrease = linearSpeed; 
+	  			stepDecrease = stepLinearSpeed
+	  		
+	  		} else if (lastDirectionnal == "bottom") {
+	  			speedAxe = "vertical";
+	  			speedToDecrease = linearSpeed; 
+	  			stepDecrease = stepLinearSpeed
+	  		
+	  		} else if (lastDirectionnal == "left") {
+	  			speedAxe = "horizontal";
+	  			speedToDecrease = -angularSpeed;
+	  			stepDecrease = stepLinearSpeed
+	  		
+	  		} else if (lastDirectionnal == "right") {
+	  			speedAxe = "horizontal";
+	  			speedToDecrease = angularSpeed;
+	  			stepDecrease = stepLinearSpeed
+	  		}	
+	  		
+	  		do	{  		
+			  	speedToDecrease = speedToDecrease - stepDecrease;
+	  			if (speedAxe == "vertical") sendArrowsToRobot (keyboardASpeed,speedToDecrease);
+			 	else if (speedAxe == "horizontal") sendArrowsToRobot (speedToDecrease,keyboardLSpeed)	
+			 	console.log("STOP Drive >>>> "+speedToDecrease)
+			} while (speedToDecrease == 0);
+			/**/
+			
+			decreaseDirectionnal = false;
+			lastDirectionnal = "relase";
+
+
+	  	}
+	};
+
+    //console.log(Pad)
+
  
 
 })(typeof exports === 'undefined'? this['ihm']={}: exports);

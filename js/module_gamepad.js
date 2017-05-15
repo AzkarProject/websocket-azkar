@@ -1011,7 +1011,7 @@
 		         driveSettings: '',
 		         channel: parameters.navCh,
 		         system: parameters.navSys,
-		         source:"Gamepad",
+		         source:"Keyboar",
 		         dateA: '',
 		         command: cmd,
 		         aSpeed: '',
@@ -1028,7 +1028,8 @@
 	}
 	    
 
-
+	//keyboardASpeed = 0;
+	//keyboardLSpeed = 0;
 
 
 
