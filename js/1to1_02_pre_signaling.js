@@ -467,8 +467,10 @@ function populateListDevices(result,sourceDevices) {
 function populateFormDevices(device,sourceDevices) {
 
     console.log("@ populateFormDevices()");
-    //console.log(sourceDevices);
-    //console.log(device);
+    console.log(" ---- sourceDevices >>>>>");
+    console.log(sourceDevices);
+    console.log(" ---- device >>>>>");
+    console.log(device);
 
     var option = document.createElement('option');
     option.id = device.id;
