@@ -140,9 +140,13 @@ function getFakeDataMap() {
     //var dataMap = {"Offset":{"X":-52.8251232326,"Y":-63.9346600184},"Width":3942,"Stride":3944,"Height":1928,"Data":null,"Resolution":0.019999999553}
     
     // Simu map MGG offsets corrigés
-    var dataMap = {"Offset":{"X":-17.4151232326,"Y":-21.3146600184},"Width":3942,"Stride":3944,"Height":1928,"Data":null,"Resolution":0.019999999553}
+    // var dataMap = {"Offset":{"X":-17.4151232326,"Y":-21.3146600184},"Width":3942,"Stride":3944,"Height":1928,"Data":null,"Resolution":0.019999999553}
 
     /**/
+
+    // Version KomNAv 2 - map labo
+    var dataMap = {"Name":"C:\\Maps\\labo261.png","Offset":{"X":-20.7969943946,"Y":-3.02713963867},"Width":1485,"Stride":1488,"Height":1187,"Resolution":0.019999999553}
+
 
     return dataMap;
 }
@@ -161,10 +165,6 @@ function getFakeRobotInfo() {
     // Simu map MGG positon Marne 1914
     // var robotInfo = {"Pose":{"Orientation":3.15,"Position":{"X":-2.95,"Y":-2.3,"Z":0}},"State":8,"Timestamp":2916720}
 
-
-    // Simu map MGG position départ XY - OK
-    var robotInfo = {"Pose":{"Orientation":0,"Position":{"X":0,"Y":0,"Z":0}},"State":8,"Timestamp":2916720}
-
     // Simu map MGG position Tranchées - OK
     // var robotInfo = {"Pose":{"Orientation":5.5,"Position":{"X":7,"Y":0,"Z":0}},"State":8,"Timestamp":2916720}
 
@@ -176,8 +176,14 @@ function getFakeRobotInfo() {
 
     // Simu map MGG position Tranchée Française
     //var robotInfo = {"Pose":{"Orientation":4.8,"Position":{"X":13,"Y":1,"Z":0}},"State":8,"Timestamp":2916720}
+    
+
+    // Simu map MGG position départ XY - OK
+    // var robotInfo = {"Pose":{"Orientation":0,"Position":{"X":0,"Y":0,"Z":0}},"State":8,"Timestamp":2916720}
 
 
+    // Version KomNAv 2 - map labo - POI Cafeteria
+    var robotInfo = {"Battery":{"Remaining":0,"Status":3},"Localization":{"X":-8.33099131944067,"Y":12.65681669457598,"T":0.58402320585646672,"Localized":true},"Anticollision":{"Enabled":true,"Locked":false,"Forward":0,"Reverse":0,"Left":0,"Right":0},"Navigation":{"Status":0,"Avoided":0},"Differential":{"Status":0,"TargetLinearSpeed":0,"CurrentLinearSpeed":0,"TargetAngularSpeed":0,"CurrentAngularSpeed":0}}
     /**/
 
     return robotInfo;
@@ -224,7 +230,7 @@ function getFakelistPOI() {
     // Simu Map Sans POI
 	// var listPOI = []
     
-    // Simu POIs Map MGG
+    /*// Simu POIs Map MGG
     var listPOI = [
         {"Name":"Poi1","Pose":{"X":-2.95,"Y":-2.3,"Theta":3.15}, "label":"Marne 1914" },
         {"Name":"Poi2","Pose":{"X":7,"Y":0,"Theta":5.5}, "label":"La_tranchee" },
@@ -233,6 +239,16 @@ function getFakelistPOI() {
         {"Name":"Poi4","Pose":{"X":20,"Y":1.5,"Theta":5}, "label":"Tranchée française" }
         ]
     /**/
+
+    // Version KomNAv 2 - liste des POI
+    var listPOI = [
+        {"Id":0,"Name":"default","Label":"default","Pose":{"X":0,"Y":0,"T":0}},
+        {"Id":1,"Name":"poinumero1","Label":null,"Pose":{"X":2.657378405937024,"Y":6.2462976540686714,"T":0}},
+        {"Id":2,"Name":"poinumero2","Label":null,"Pose":{"X":2.4719096600822503,"Y":11.699078782199011,"T":0}},
+        {"Id":3,"Name":"transit","Label":null,"Pose":{"X":0,"Y":0,"T":0}},
+        {"Id":4,"Name":"Cafétèria","Label":null,"Pose":{"X":-10.89460775413475,"Y":10.917516728817986,"T":0}},
+        {"Id":5,"Name":"Marne14","Label":null,"Pose":{"X":-10.124021004815544,"Y":5.938340810140021,"T":0}}
+        ]
    
 
     return listPOI;

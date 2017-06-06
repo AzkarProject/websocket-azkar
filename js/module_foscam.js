@@ -36,10 +36,11 @@
 
 (function(exports){
 
-
+	// if (isPanTiltCamera == false) return
+	
 	console.log ("module_foscam chargé");
 
-
+	
 	// Mode de controle de la caméra au clavier
 	// Pas a pas ou continu. par défaut c'est pas a pas...
 	var modeKeyboard = "modeSbS"; // "modeContinue"

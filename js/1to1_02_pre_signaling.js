@@ -40,6 +40,15 @@ console.log("1to1_02_pre_signaling chargé")
 
 //------ PHASE 1 : Pré-signaling ----------------------------------------------------------
 
+// 23/05/17: PROVISOIRE
+// Désativation provisoire des commandes caméras (pour expo valerian)
+// todo: A mettre en paramètrs admin
+isPanTiltCamera = false;
+
+
+
+
+
 // Initialisation des variables, objets et paramètres du script
 // NB toutes les variables sont déclarées en global...
 

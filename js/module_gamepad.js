@@ -438,8 +438,8 @@
 		} 	else if (crossUp.pressed) {
 				//console.log('Gamepad Up');
 				atLeastOneButtonPressed = true;
-				ihm.switchGamepadDisplayMode("camera")	
-		    	buttonStatusDivCam.innerHTML = "(CrossUp) Foscam commands";
+				if ( isPanTiltCamera == true ) ihm.switchGamepadDisplayMode("camera")	
+		    	if ( isPanTiltCamera == true ) buttonStatusDivCam.innerHTML = "(CrossUp) Pan&Tilt commands";
 		    	//buttonStatusDiv.innerHTML = "(CrossUp) Foscam commands";
 		    	lastButtonName = "crossUp";
 		    	foscam.moveCamera("Up")
@@ -452,8 +452,8 @@
 		}   else if (crossRight.pressed) {
 				//console.log('Gamepad Right');
 				atLeastOneButtonPressed = true;
-				ihm.switchGamepadDisplayMode("camera")	
-		    	buttonStatusDivCam.innerHTML = "(CrossRight) Foscam commands";
+				if ( isPanTiltCamera == true ) ihm.switchGamepadDisplayMode("camera")	
+		    	if ( isPanTiltCamera == true ) buttonStatusDivCam.innerHTML = "(CrossRight) Pan&Tilt commands";
 		    	//buttonStatusDiv.innerHTML = "(CrossRight) Foscam commands";
 		    	lastButtonName = "crossRight";
 		    	foscam.moveCamera("Right")
@@ -464,8 +464,8 @@
 		}   else if (crossLeft.pressed) {
 				//console.log('Gamepad Left');
 				atLeastOneButtonPressed = true;
-				ihm.switchGamepadDisplayMode("camera")	
-		    	buttonStatusDivCam.innerHTML = "(CrossLeft) Foscam commands";
+				if ( isPanTiltCamera == true ) ihm.switchGamepadDisplayMode("camera")	
+		    	if ( isPanTiltCamera == true ) buttonStatusDivCam.innerHTML = "(CrossLeft) Pan&Tilt commands";
 		    	//buttonStatusDiv.innerHTML = "(CrossLeft) Foscam commands";
 		    	lastButtonName = "crossLeft";
 		    	foscam.moveCamera("Left")
@@ -477,8 +477,8 @@
 		} else if (crossDown.pressed) {
 				//console.log('Gamepad Down');
 				atLeastOneButtonPressed = true;
-				ihm.switchGamepadDisplayMode("camera")	
-		    	buttonStatusDivCam.innerHTML = "(CrossDown) Foscam commands";
+				if ( isPanTiltCamera == true ) ihm.switchGamepadDisplayMode("camera")	
+		    	if ( isPanTiltCamera == true ) buttonStatusDivCam.innerHTML = "(CrossDown) Pan&Tilt commands";
 		    	//buttonStatusDiv.innerHTML = "(CrossDown) Foscam commands";
 		    	lastButtonName = "crossDown";
 		    	foscam.moveCamera("Down")
@@ -719,24 +719,27 @@
 		// Conclusion: Foscam c'est vraiment de la MERDE !!!!!!		
 
 		// Zoom in
+		var zoomDisplayMessage = null;
 		if (axeVertical >= 0.10 ) {
-			ihm.switchGamepadDisplayMode("camera")
-			ihm.driveCommandBlock('open');
+			//ihm.switchGamepadDisplayMode("camera")
+			//ihm.driveCommandBlock('open');
 			if (!onCameraZoom) {
 				//foscam.setCameraZoomSpeed(speed)
 				foscam.zoomCamera("onCameraZoomOut",speed)
 				onCameraZoom=true;
-				buttonStatusDivCam.innerHTML = "(Right Stick) Zoom out";
+				zoomDisplayMessage = "(Right Stick) Pan&Tilt Zoom out";
+				displayCamOrder(zoomDisplayMessage);
 			}
 		
 		} else if (axeVertical <= -0.10 ) {
-			ihm.switchGamepadDisplayMode("camera")
-			ihm.driveCommandBlock('open');
+			//ihm.switchGamepadDisplayMode("camera")
+			//ihm.driveCommandBlock('open');
 			if (!onCameraZoom) {
 				//foscam.setCameraZoomSpeed(speed)
 				foscam.zoomCamera("onCameraZoomIn",speed)
 				onCameraZoom=true;
-				buttonStatusDivCam.innerHTML = "(Right Stick) Zoom in";
+				zoomDisplayMessage = "(Right Stick) Pan&Tilt Zoom in";
+				displayCamOrder(zoomDisplayMessage);
 			}
 
 		}  else {
@@ -746,6 +749,13 @@
 				onCameraZoom = false;
 			}
 
+		}
+
+		function displayCamOrder (message) {
+			if ( isPanTiltCamera == false ) return
+			ihm.switchGamepadDisplayMode("camera")
+			ihm.driveCommandBlock('open');
+			buttonStatusDivCam.innerHTML = message;
 		}
 		
 
@@ -1011,7 +1021,7 @@
 		         driveSettings: '',
 		         channel: parameters.navCh,
 		         system: parameters.navSys,
-		         source:"Keyboar",
+		         source:"keyboard",
 		         dateA: '',
 		         command: cmd,
 		         aSpeed: '',

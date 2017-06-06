@@ -729,6 +729,8 @@
 
 	// IHM V2
 	// Flags d'état pour l'affichage des modules.
+
+	moduleSetDisplay = false; $('#switchdisplaySettings').addClass('txtRed');
 	moduleSettings = false; $('#switchsettings').addClass('txtRed');
 	moduleMap = true; $('#switchmap').addClass('buttonSelected');
 	moduleDrive = true; $('#switchdrive').addClass('buttonSelected');
@@ -736,11 +738,35 @@
 	moduleConnexion = true; $('#switchconnexion').addClass('buttonSelected');
 	moduleTchat = false; $('#switchtchat').addClass('txtRed');
 
-	// author: thierry
-	// fonction pour l'IHM V2
+	// IHM V2
+	// Comportement Barre de settings
 	exports.setDisplay = function (idElement, openClose) {
 	   
-	   // alert (idElement +'>>>'+ openClose)
+
+	   	if (idElement == 'displaySettings') {
+	   		
+	   		// console.log(" ********************************************* ");
+	   		// console.log(moduleSetDisplay);
+	   		// console.log(openClose);
+	   		
+	   		if (moduleSetDisplay == false ) {
+	   			moduleSetDisplay = true;
+	   			openClose = 'open';
+	   			$('#switch'+idElement).removeClass('txtRed');
+	   			$('#switch'+idElement).addClass('buttonSelected');
+	   		
+
+
+	   		} else if (moduleSetDisplay == true){
+	   			moduleSetDisplay = false;
+	   			openClose = 'close';
+	   			$('#switch'+idElement).removeClass('buttonSelected');
+	   			$('#switch'+idElement).addClass('txtRed');
+
+	   		}
+	   } 
+
+
 
 	   if (idElement == 'settings') {
 	   		
@@ -868,9 +894,177 @@
 	   	 	$('#'+idElement).hide();
 	   	 	// alert (idElement +'>>>'+ openClose)
 	   }                      
+	
+
+	    if (openClose == 'reset') {
+	    	resetDisplay();
+	    }
+
+
+
 	}
 
+	// IHM V2
+	// RAZ de l'affichage
+	function resetDisplay () {
+		
 	
+		// Flags d'état pour l'affichage des modules.
+		moduleSetDisplay = false; $('#displaySettings').hide();$('#switchdisplaySettings').addClass('txtRed');$('#switchdisplaySettings').removeClass('buttonSelected');
+		moduleSettings = false; $('#switchsettings').addClass('txtRed');$('#switchsettings').removeClass('buttonSelected');$('#settings').hide();
+		moduleMap = true; $('#switchmap').addClass('buttonSelected');$('#switchmap').addClass('buttonSelected');$('#map').show();
+		moduleDrive = true; $('#switchdrive').addClass('buttonSelected');$('#switchdrive').addClass('buttonSelected');$('#drive').show();
+		moduleNav = true; $('#switchnav').addClass('buttonSelected');$('#switchnav').addClass('buttonSelected');$('#nav').show();
+		moduleConnexion = true; $('#switchconnexion').addClass('buttonSelected');$('#switchconnexion').addClass('buttonSelected');$('#connexion').show();
+		moduleTchat = false; $('#switchtchat').addClass('txtRed');$('#switchtchat').removeClass('buttonSelected');$('#tchat').hide();
+
+
+		// Regles CSS par défaut chaqu'un des modules
+		var divModule = null;
+		//<div id="remoteCam" class='draggable resizable' 
+   		//style="position:absolute;top:0px; left:0px;float:left;width:1230px; height:375px;border:1px solid #ccc;border-radius: 10px;margin: 5px 5px 10px 5px">
+   		divModule = '#remoteCam';
+		$(divModule).css('position', 'absolute');
+		$(divModule).css('top', '0px');
+		$(divModule).css('left', '0px');
+		$(divModule).css('width', '1230px');
+		$(divModule).css('height', '375px');
+		$(divModule).css('border', '1px solid #ccc');
+		$(divModule).css('border-radius', '10px');
+		$(divModule).css('margin', '5px 5px 10px 5px');
+		$(divModule).css('background', 'rgba(221,221,221,0.1)');
+
+		// <div id="localCam" class='draggable' 
+		// style="position:absolute;top:150px; left:100px;float:left;z-index:100;height:160px;width:160px; border:1px solid #ccc;border-radius: 10px;margin: 0">
+		// style="position:absolute;top:200px; left:20px;float:left;z-index:100;height:100px;width:100px; border:1px solid #ccc;border-radius: 10px;margin: 0">
+		divModule = '#localCam';
+		$(divModule).css('position', 'absolute');
+		$(divModule).css('top', '200px');
+		$(divModule).css('left', '20px');
+		$(divModule).css('float', 'left');
+		$(divModule).css('z-index', '100');
+		$(divModule).css('height', '100px');
+		$(divModule).css('width', '100px');
+		$(divModule).css('border', '1 px solid #ccc');
+		$(divModule).css('border-radius', '10 px');
+		$(divModule).css('margin', '0');
+		$(divModule).css('background', 'rgba(221,221,221,0.1)');
+
+		//<div id="map" class='draggable' 
+		//style="position:absolute;top:390px; left:0px;color:white;float:left; width:495px;height:230px;border:1px solid #ccc; border-radius: 10px;margin:0 0 0 5px;padding:5px;overflow:hidden;background:rgba(221,221,221,0.1);">	
+		divModule = '#map';
+		$(divModule).css('position', 'absolute');
+		$(divModule).css('top', '390px');
+		$(divModule).css('left', '5px');
+		$(divModule).css('float', 'left');
+		$(divModule).css('color', 'white');
+		$(divModule).css('height', '230px');
+		$(divModule).css('width', '495px');
+		$(divModule).css('border', '1 px solid #ccc');
+		$(divModule).css('border-radius', '10 px');
+		$(divModule).css('margin', '0 0 0');
+		$(divModule).css('background', 'rgba(221,221,221,0.1)');
+
+
+		divModule = '#drive';
+		$(divModule).css('position', 'absolute');
+		$(divModule).css('top', '390px');
+		$(divModule).css('left', '510px');
+		$(divModule).css('float', 'left');
+		$(divModule).css('color', 'white');
+		$(divModule).css('z-index', '100');
+		$(divModule).css('height', '230px');
+		$(divModule).css('width', '230px');
+		$(divModule).css('background-color', 'black');
+		$(divModule).css('border', '1 px solid #ccc');
+		$(divModule).css('border-radius', '10 px');
+		$(divModule).css('margin', '0 0 0 5px');
+		$(divModule).css('padding', '5px');
+		$(divModule).css('overflow', 'hidden');
+		$(divModule).css('background', 'rgba(221,221,221,0.1)');
+		/**/
+
+		divModule = '#nav';
+		$(divModule).css('position', 'absolute');
+		$(divModule).css('top', '390px');
+		$(divModule).css('left', '755px');
+		$(divModule).css('float', 'left');
+		$(divModule).css('width', '335px');
+		$(divModule).css('height', '230px');
+		$(divModule).css('background-color', 'black');
+		$(divModule).css('color', 'white');
+		$(divModule).css('border', '1 px solid #ccc');
+		$(divModule).css('border-radius', '10 px');		
+		$(divModule).css('margin', '0 0 0 5px');
+		$(divModule).css('padding', '5px');
+		$(divModule).css('overflow', 'hidden');
+		$(divModule).css('background', 'rgba(221,221,221,0.1)');
+
+
+		divModule = '#connexion';
+		$(divModule).css('position', 'absolute');
+		$(divModule).css('top', '390px');
+		$(divModule).css('left', '1110px');
+		$(divModule).css('float', 'left');
+		$(divModule).css('z-index', '125');
+		$(divModule).css('width', '110px');
+		$(divModule).css('height', '230px');
+		$(divModule).css('background-color', 'black');
+		$(divModule).css('color', 'white');
+		$(divModule).css('border', '1 px solid #ccc');
+		$(divModule).css('border-radius', '10 px');		
+		$(divModule).css('margin', '0 0 0 5px');
+		$(divModule).css('padding', '5px');
+		$(divModule).css('overflow', 'hidden');
+		$(divModule).css('background', 'rgba(221,221,221,0.1)');
+
+
+		divModule = '#appSettings';
+		$(divModule).css('position', 'absolute');
+		$(divModule).css('top', '100px');
+		$(divModule).css('left', '10px');
+		$(divModule).css('float', 'left');
+		$(divModule).css('width', '100px');
+		$(divModule).css('border', '1 px solid #ccc');
+		$(divModule).css('border-radius', '10 px');		
+		$(divModule).css('margin', '10px 5px 5px 5px');
+		$(divModule).css('padding', '5px');
+		$(divModule).css('overflow', 'hidden');
+		$(divModule).css('background', 'rgba(221,221,221,0.1)');
+
+
+		/*<div id="displaySettings" class="draggable"
+			style="
+			position:absolute;
+			top:100px;
+			left:130px;
+			float:left;
+			border: 1px solid #ccc; 
+			border-radius: 10px;
+			margin:10px 5px 5px 5px;
+			padding:5px;
+			 background:rgba(221,221,221,0.1);
+			z-index:999999">
+		/**/
+		divModule = '#displaySettings';
+		$(divModule).css('position', 'absolute');
+		$(divModule).css('top', '100px');
+		$(divModule).css('left', '130px');
+		$(divModule).css('float', 'left');
+		$(divModule).css('border', '1 px solid #ccc');
+		$(divModule).css('border-radius', '10 px');		
+		$(divModule).css('margin', '10px 5px 5px 5px');
+		$(divModule).css('padding', '5px');
+		$(divModule).css('background', 'rgba(221,221,221,0.1)');
+		$(divModule).css('z-index', '999999');
+
+
+	}
+
+	// Au chargement de la paddingge on fait un resetDisplay
+	if (type == "pilote-appelant") resetDisplay()
+
+	// Gestion evenements clavier
 
 
 	// Ecouteur  d'évènements clavier (touche tab)
@@ -985,6 +1179,7 @@
 	  	UP: 38,
 	  	RIGHT: 39,
   		DOWN: 40,
+  		CTRL: 17,
   
   		isDown: function(keyCode) {
     		return this._pressed[keyCode];
@@ -1005,100 +1200,62 @@
 
 
    	window.addEventListener('keyup', function(event) { 
-   			Key.onKeyup(event);  emulatePad();
+   			Key.onKeyup(event);  keyboardControl();
    	}, false);
    
     window.addEventListener('keydown', function(event) { 
-    		Key.onKeydown(event);  emulatePad();
+    		Key.onKeydown(event);  keyboardControl();
     }, false);		
 
     var lastDirectionnal = "relase";
     // Pente d'arrêt (décéllération) en cours (flag)
     // Pour éviter les accès concurrents le temps de finir l'arrêt.
     var decreaseDirectionnal = false; 
-    function emulatePad() {
-	  	// console.log("emulatePad()")
+    
+
+    function keyboardControl() {
+	  	// console.log("keyboardControl()")
+	  	// return
 	  	var stepLinearSpeed = 0.05;
 	  	var stepAngularSpeed = 0.2;
 	  	// Si touche up appuyée et aucune décéllération en cours... 
-	  	if (Key.isDown(Key.UP) && decreaseDirectionnal == false) {
-	  		lastDirectionnal = "top";
-		    keyboardASpeed = angularSpeed
-			keyboardLSpeed = -stepLinearSpeed - linearSpeed / 1.5
-	  		sendArrowsToRobot (keyboardASpeed,keyboardLSpeed )
-	  		//console.log('top');
-	  	} else if (Key.isDown(Key.DOWN)  && decreaseDirectionnal == false) {
-	  		lastDirectionnal = "bottom";
-	  		keyboardASpeed = angularSpeed
-			keyboardLSpeed = stepLinearSpeed - linearSpeed / 1.5
-	  		sendArrowsToRobot (keyboardASpeed,keyboardLSpeed )
-	  		//console.log('bottom'); 
+	  	
+	  	// Touche CTRL appuyée...
+	  	if (Key.isDown(Key.CTRL) ) {
 
-	  	} else if (Key.isDown(Key.LEFT) && decreaseDirectionnal == false) {
-	  		lastDirectionnal = "left";
-	  		keyboardASpeed =  -stepAngularSpeed - angularSpeed /2
+		  	if (Key.isDown(Key.UP) && decreaseDirectionnal == false) {
+		  		lastDirectionnal = "top";
+			    keyboardASpeed = angularSpeed
+				keyboardLSpeed = -stepLinearSpeed - linearSpeed / 1.5
+		  		sendArrowsToRobot (keyboardASpeed,keyboardLSpeed )
+		  		//console.log('top');
+		  	} else if (Key.isDown(Key.DOWN)  && decreaseDirectionnal == false) {
+		  		lastDirectionnal = "bottom";
+		  		keyboardASpeed = angularSpeed
+				keyboardLSpeed = stepLinearSpeed - linearSpeed / 1.5
+		  		sendArrowsToRobot (keyboardASpeed,keyboardLSpeed )
+		  		//console.log('bottom'); 
+
+		  	} else if (Key.isDown(Key.LEFT) && decreaseDirectionnal == false) {
+		  		lastDirectionnal = "left";
+		  		keyboardASpeed =  -stepAngularSpeed - angularSpeed /2
 				keyboardLSpeed = linearSpeed;	
-	  		sendArrowsToRobot (keyboardASpeed,keyboardLSpeed )
-	  		//console.log('left'); 
-	  
-	  	} else if (Key.isDown(Key.RIGHT)  && decreaseDirectionnal == false) {
-	  		lastDirectionnal = "right";
-	  		keyboardASpeed = stepAngularSpeed - angularSpeed /2
-			keyboardLSpeed = linearSpeed;	
-	  		sendArrowsToRobot (keyboardASpeed,keyboardLSpeed )
-	  		//console.log('right');
-	  	} else if (decreaseDirectionnal == false){
-	  		decreaseDirectionnal = true; // On déclenche la pente d'arrêt...
-	  		
-	  		
-	  		//keyboardASpeed = 0
-			//keyboardLSpeed = 0	
-	  		//sendArrowsToRobot (keyboardASpeed,keyboardLSpeed )
-	  		
-	  			
+		  		sendArrowsToRobot (keyboardASpeed,keyboardLSpeed )
+		  		//console.log('left'); 
+		  
+		  	} else if (Key.isDown(Key.RIGHT)  && decreaseDirectionnal == false) {
+		  		lastDirectionnal = "right";
+		  		keyboardASpeed = stepAngularSpeed - angularSpeed /2
+				keyboardLSpeed = linearSpeed;	
+		  		sendArrowsToRobot (keyboardASpeed,keyboardLSpeed )
+		  		//console.log('right');
+		  	}  else if (decreaseDirectionnal == false){
+		  		decreaseDirectionnal = true; // On déclenche la pente d'arrêt...
+				decreaseDirectionnal = false;
+				lastDirectionnal = "relase";
 
-
-
-
-	  		/*// Todo fonction boucle de pente d'arret...
-	  		// linearStop(lastDirectionnal,angularSpeed;linearSpeed)
-	  		var speedToDecrease = null;
-	  		var stepDecrease = 0;
-	  		var speedAxe = null;
-	  		if (lastDirectionnal == "top") {
-	  			speedAxe = "vertical";
-	  			speedToDecrease = linearSpeed; 
-	  			stepDecrease = stepLinearSpeed
-	  		
-	  		} else if (lastDirectionnal == "bottom") {
-	  			speedAxe = "vertical";
-	  			speedToDecrease = linearSpeed; 
-	  			stepDecrease = stepLinearSpeed
-	  		
-	  		} else if (lastDirectionnal == "left") {
-	  			speedAxe = "horizontal";
-	  			speedToDecrease = -angularSpeed;
-	  			stepDecrease = stepLinearSpeed
-	  		
-	  		} else if (lastDirectionnal == "right") {
-	  			speedAxe = "horizontal";
-	  			speedToDecrease = angularSpeed;
-	  			stepDecrease = stepLinearSpeed
-	  		}	
-	  		
-	  		do	{  		
-			  	speedToDecrease = speedToDecrease - stepDecrease;
-	  			if (speedAxe == "vertical") sendArrowsToRobot (keyboardASpeed,speedToDecrease);
-			 	else if (speedAxe == "horizontal") sendArrowsToRobot (speedToDecrease,keyboardLSpeed)	
-			 	console.log("STOP Drive >>>> "+speedToDecrease)
-			} while (speedToDecrease == 0);
-			/**/
-			
-			decreaseDirectionnal = false;
-			lastDirectionnal = "relase";
-
-
-	  	}
+		  	}
+		}
 	};
 
     //console.log(Pad)

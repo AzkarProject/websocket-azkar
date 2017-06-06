@@ -38,9 +38,12 @@
 // todo: rename module_navigation_interface
 console.log("module_navigation_interface chargé");
 
-exports.sendToRobot = function (rpcMethodName, values,controlDevice, driveCommand){     
+exports.sendToRobot = function (rpcMethodName, values, controlDevice, driveCommand){     
 
-
+        //From keyboard: navigation_interface.sendToRobot("", "", "Keyboard",driveCommand);
+        //console.log(" @sendToRobot")
+        //console.log(" rpcMethodName: " + rpcMethodName + " values: " + values + " controlDevice: " + controlDevice + " driveCommand: " + driveCommand)
+        
         if (controlDevice == "kom-remote") {
             driveCommand = {
                  // driveSettings: this.settings.rpcMethod,

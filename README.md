@@ -2,10 +2,6 @@
 
 # AZKAR PROJECT 
 
-to download this branch:
-
-git clone -b 1to1-generic --single-branch https://github.com/AzkarProject/websocket-azkar.git
-
 Copyright © CNRS (Laboratoire I3S) / université de Nice
 Contributeurs: Thierry Bergeron & Michel Buffa, 2015-2016
 
@@ -16,6 +12,53 @@ respectant les principes de diffusion des logiciels libres. Vous pouvez
 utiliser, modifier et/ou redistribuer ce programme sous les conditions
 de la licence CeCILL-C telle que diffusée par le CEA, le CNRS et l'INRIA 
 sur le site "http://www.cecill.info".
+
+
+Revision 2.0.1
+- Caméra Pan / Tilt
+    - Do: Abandon du système FOSCAM
+    - Todo: Detection ID caméra Pan / Tilt
+    - Todo: Module de commande pan/tilt
+    - Todo: Commandes IHM
+    - Todo: Commandes Gamepad
+    - Todo: Commandes Keyboard
+- Caméra au sol
+    - Todo: Detection ID caméra sol
+    - Todo: Signaling & Connexion auto
+- Interface d'administration
+    - Todo: Gestion caméra pilotage (selection, persistance configuration, défaut)
+    - Todo: Gestion caméra sol (selection, persistance configuration, défaut)
+- IHM Pilote
+    - Do: Réorganisation modules
+    - Do: Fonctions reset Display
+    - Todo: Système touch Screen
+- Cartographie
+    - Todo: Clic & Go POI
+- Fiabilisation solution embarquée Kompaï Robotics
+    - Todo: KomServer (V2 - version webSocket)
+- Commandes Drive
+    - Do: Ajout commandes directionnelles clavier
+
+
+Revision 2.0.0
+- IHM Robot V2
+    - Refonte & Simplification en blocs IHM Robot
+    - Création modules (Map, localCam, remoteCam,Tchat)  
+    - Ajout Système Drag&Drop (souris)
+- IHM Pilote V2
+    - Refonte & Simplification en blocs IHM Pilote
+    - Création modules (Map, Drive, Navigation, Video Quality, localCam, remoteCam, Setings, Tchat)  
+    - Ajout Système Drag&Drop (souris)
+- Fiabilisation solution embarquée Kompaï Robotics
+    - Abandon Mobiserv pour KomServer (V1 - version http)
+    - Refonte Services & donné&es KomServer<>1to1
+    - Modification algorithmes d'affichages trajectoires 
+    - Modification des messages d'erreur
+    - Modification du système FakeRobubox
+- Caméra au sol
+    - intégration ds module Drive IHM
+    
+
 
 Révision 1.6.2
 - Caméra Foscam

@@ -343,6 +343,8 @@ exports.sendDrive = function (data){
 
         }  else {
             // On simule le déplacement du robot...
+            console.log(robotInfo)
+            /*// Version 1
             // Modification de l'angle...
             robotInfo.Pose.Orientation = robotInfo.Pose.Orientation+aSpeed/4;
             // Marche avant/arrière selon l'angle...
@@ -350,6 +352,19 @@ exports.sendDrive = function (data){
             var y2 = robotInfo.Pose.Position.Y + Math.sin(robotInfo.Pose.Orientation) * lSpeed/4;
             robotInfo.Pose.Position.X = x2;
             robotInfo.Pose.Position.Y = y2;
+            /**/
+
+            // Version Aggregate (komnav 2)
+            // modification de l'angle
+            robotInfo.Localization.T = robotInfo.Localization.T+aSpeed/4;
+            // Marche avant/arrière selon l'angle...
+            var x2 = robotInfo.Localization.X + Math.cos(robotInfo.Localization.T) * lSpeed/4;
+            var y2 = robotInfo.Localization.Y + Math.sin(robotInfo.Localization.T) * lSpeed/4;
+            robotInfo.Localization.X = x2;
+            robotInfo.Localization.Y = y2;
+
+
+            /**/
 
         }
 
@@ -696,6 +711,19 @@ exports.sendCameraOld = function (data){
 // ---------- Author F Mazieras & Thierry Bergeron
 exports.sendCamera = function (data){        
     
+    
+    console.log ("komcom.sendCamera *********");
+    console.log (data);
+    
+    if ( isPanTiltCamera == false ) {
+        console.log ("isPanTiltCamera == false");
+        return
+    } else {
+        console.log ("isPanTiltCamera == true");
+    }
+
+
+
     var proxyUrl = "https://127.0.0.1:443/http://";
     var cgiUrl = foscamUrl+"/cgi-bin/CGIProxy.fcgi";
     var cmdUrl = "?cmd=";
@@ -828,6 +856,9 @@ exports.sendCamera = function (data){
 // Todo: A finir !!!!!
 exports.getCameraInfos = function (query){
     
+    console.log ("komcom.getCameraInfos *********");
+
+    if ( isPanTiltCamera == false ) return
     if (fakeRobubox == null) return;
     
     //console.log ('get map metadatas');
@@ -836,6 +867,10 @@ exports.getCameraInfos = function (query){
     var url = "https://127.0.0.1:443/http://"+foscamUrl+"/cgi-bin/CGIProxy.fcgi?cmd="+cmd+"&usr=webvisite&pwd=230458DS"; 
     console.log ("komcom.getCameraInfos("+ url +")");
     
+    
+
+
+
     if (fakeRobubox == true) {  
 
     
@@ -861,7 +896,7 @@ exports.getCameraInfos = function (query){
 
         if (url != null) {
             $.get(url, function(rep) {
-                console.log (rep);
+                //console.log (rep);
             }); 
         } 
     }  

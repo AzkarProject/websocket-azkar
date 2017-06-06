@@ -20,8 +20,6 @@
     -->
 	
 	<script src='/js/lib/jquery-1.11.3.min.js'></script>
-	
-	
 	<script src="/js/lib/jquery-1-11-4/jquery-ui.js"></script>
 	<link href="/js/lib/jquery-1-11-4/jquery-ui.css" rel="stylesheet">
 	
@@ -73,7 +71,11 @@
 				background:rgba(221,221,221,0.1);
 			}
 
-			.hidden
+			.hidden {}
+
+			.hrIhmV2 {
+				border: 1px solid #fff;
+			}
 					
         </style>
 
@@ -113,10 +115,10 @@
 
     <section id="viewPortPilote" class="" style="" >
 
-   
+
    			<div id="remoteCam" class='draggable resizable' 
    			style="position:absolute;top:0px; left:0px;float:left;width:1230px; height:375px;border:1px solid #ccc;border-radius: 10px;margin: 5px 5px 10px 5px">
-			                		            		
+              		            		
 
 				<video id='1to1_remoteVideo' 
 					width="100%" height="100%" 
@@ -128,13 +130,13 @@
 
 			
 			<div id="localCam" class='draggable' 
-			style="position:absolute;top:150px; left:100px;float:left;z-index:100;height:160px;width:160px; border:1px solid #ccc;border-radius: 10px;margin: 0">
+			style="position:absolute;top:200px; left:20px;float:left;z-index:100;height:100px;width:100px; border:1px solid #ccc;border-radius: 10px;margin: 0">
 		                						  	 	
 			
 				<video id='1to1_localVideo'
-    				width="160" height="160"
+    				width="100" height="100"
     				style="background-color:black; margin: 0 auto;" 
-    				autoplay muted controls="controls">
+    				autoplay muted>
     		 	</video>
 			</div>	
 
@@ -287,7 +289,7 @@
 
 			    
 			    <div style="width:100%;text-align:center">
-			    	<span id="pointOfinterestTitle" style="color:white;"> Navigation</span>
+			    	<span id="pointOfinterestTitle" style="color:white;"> Auto Pilot</span>
 			    </div>
 			    
 			   	<br/>
@@ -321,7 +323,7 @@
 			<div id="connexion" class='draggable' 
 			style="position:absolute ;top:390px; left:1110px; float:left; z-index:125; width:110px;height:230px;background-color: black;color:white;border:1px solid #ccc; border-radius: 10px;margin:0 0 0 5px;padding:5px; background:rgba(221,221,221,0.1);">
 
-				<div style="text-align:center">Résolutions</div>
+				<div style="text-align:center">Video quality</div>
 
 					<br/>				
 						
@@ -330,31 +332,31 @@
 			        
 
 							<button class="shadowBlack groupDefCam" style=""  id="144p" onclick="openDef('144p')">
-								Très basse
+								Very low
 							</button>
 
 							<br/>
 							
 							<button class="shadowBlack groupDefCam" style="" id="QVGA" onclick="openDef('QVGA')">
-			                   Basse
+			                   low
 			                </button>
 
 			                <br/>
 
 			                <button class="shadowBlack groupDefCam" style="" id="VGA" onclick="openDef('VGA')">
-			                    Moyenne
+			                    Medium
 			                </button>
 
 			                <br/>
 
 			                <button class="shadowBlack groupDefCam" style="" id="SVGA" onclick="openDef('SVGA')">
-			                    Haute
+			                    Hight
 			                </button>
 
 			                <br/>
 
 			                <button class="shadowBlack groupDefCam" style="" id="HD" onclick="openDef('HD')">
-			                    Très haute
+			                    Very hight
 			                </button>
 
 
@@ -532,14 +534,36 @@
 			</div>
 
 
-			<div id="iHmControls" class="draggable"
-			style="position:absolute;top:340px;width:800px;left:300px;float:left;border:1px solid #ccc; border-radius: 10px;margin:10px 5px 5px 5px;padding:5px; background:blue;z-index:999999">
+			<div id="appSettings" class="draggable"
+			
+			style="position:absolute;
+			top:100px;
+			width:100px;
+			left:10px;
+			float:left;
+			border:1px solid #ccc;
+			border-radius: 10px;
+			margin:10px 5px 5px 5px;
+			padding:5px; 
+			background:rgba(221,221,221,0.1);
+			z-index:999999">
 				
 				<div id="batteryJauge" style="float:left; text-align:center;color:white;">
-	                <label for="battery_level">Battery Level:</label>
-	                <progress id="battery_level" max="100" style="width:100px"></progress>
-	            </div>
+	                
+	                <label for="battery_level" style="margin-bottom:5px;">Battery Level</label>
+	                
+	                <progress id="battery_level" max="100" style="width:100px; "></progress>
+	           	        
+		            <button class="shadowBlack" style="margin-top:5px;"  id="switchdisplaySettings" onclick="switchDisplay('displaySettings','open')">
+						Display
+					</button>
 
+	           </div>
+
+
+
+
+				<!--
 				<div id="AdvancedMenu" style="color:white; text-align:center; float:left ;margin: 0 auto ">
 			     	&nbsp;&nbsp;
 
@@ -575,11 +599,105 @@
 
 
 			    </div>
-
-
-
+			    -->
 
 			</div>
+
+		
+
+			
+			
+			<div id="displaySettings" class="draggable"
+			style="
+			position:absolute;
+			top:100px;
+			left:130px;
+			float:left;
+			border: 1px solid #ccc; 
+			border-radius: 10px;
+			margin:10px 5px 5px 5px;
+			padding:5px;
+			 background:rgba(221,221,221,0.1);
+			z-index:999999">
+
+
+				<div id="batteryJauge" style="float:left; text-align:center;color:white;">
+	                
+	                <label for="displaySettings" style="margin-bottom:5px;">Display</label>
+					<br/>
+					<button class="shadowBlack" style="margin-top:5px; width:90px"  id="switchsettings" onclick="switchDisplay('settings','open')">
+						Setting App
+					</button>
+					<br/>
+					<button class="shadowBlack" style="margin-top:5px;width:90px"  id="switchmap" onclick="switchDisplay('map','close')">
+						Map
+					</button>
+					<br/>
+					<button class="shadowBlack" style="margin-top:5px;width:90px"  id="switchdrive" onclick="switchDisplay('drive','close')">
+						Drive
+					</button>
+					<br/>
+					<button class="shadowBlack" style="margin-top:5px;width:90px"  id="switchnav" onclick="switchDisplay('nav','close')">
+						AutoPilot
+					</button>
+					<br/>
+					<button class="shadowBlack" style="margin-top:5px;width:90px"  id="switchconnexion" onclick="switchDisplay('connexion','close')">
+						Video quality
+					</button>
+					<br/>
+					<button class="shadowBlack" style="margin-top:5px;width:90px"  id="switchtchat" onclick="switchDisplay('tchat','close')">
+						Tchat
+					</button>
+					<br/>
+			    	<button class="shadowBlack" style="margin-top:5px;width:90px"  id="resetIhm" onclick="switchDisplay(null,'reset')">
+						Reset
+					</button>
+					<br/>
+
+				<!--
+				<div id="AdvancedMenu" style="color:white; text-align:center; float:left ;margin: 0 auto ">
+			     	&nbsp;&nbsp;
+
+			     	Display
+			     	<br/>
+					<button class="shadowBlack" style=""  id="switchmap" onclick="switchDisplay('map','close')">
+						Map
+					</button>
+					<br/>
+					<button class="shadowBlack" style=""  id="switchdrive" onclick="switchDisplay('drive','close')">
+						Drive
+					</button>
+					<br/>
+					<button class="shadowBlack" style=""  id="switchnav" onclick="switchDisplay('nav','close')">
+						AutoPilot
+					</button>
+					<br/>
+					<button class="shadowBlack" style=""  id="switchconnexion" onclick="switchDisplay('connexion','close')">
+						Video quality
+					</button>
+					<br/>
+					<button class="shadowBlack" style=""  id="switchtchat" onclick="switchDisplay('tchat','close')">
+						Tchat
+					</button>
+					<br/>
+			    	<button class="shadowBlack" style=""  id="resetIhm" onclick="switchDisplay(null,'reset')">
+						Reset
+					</button>
+			    </div>
+			    -->
+
+			</div>
+
+
+
+
+
+
+
+
+
+
+
 
 		<!--</div>-->
 
@@ -664,13 +782,14 @@
             
         $(document).ready(function(){
             
+            // Icones et popup ressources complémentaires en web sémantique
             $("area[rel^='prettyPhoto']").prettyPhoto();
-            
             $(".gallery:first a[rel^='prettyPhoto']").prettyPhoto({animation_speed:'normal',theme:'light_square',slideshow:3000, autoplay_slideshow: true});
             $(".gallery:gt(0) a[rel^='prettyPhoto']").prettyPhoto({animation_speed:'fast',slideshow:10000, hideflash: true});
+
+            // Drag & Drop modules IHM
 		    $( ".draggable" ).draggable({ cursor: "move", cancel: ".noDraggable" });
 		    $( ".resizable" ).resizable();
-
 
         });
 
