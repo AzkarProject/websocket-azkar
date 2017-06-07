@@ -305,29 +305,73 @@ function gotoPOI() {
     var valuePOI = list_POI_select.value;
     console.log ("list_POI_select.value:"+valuePOI)
     console.log (" >>> "+robotInfo.Differential.Status)
+    closeMenuNav();
 
-    /*
-    var validGoto = true;
-    if (robotInfo.Differential.Status != 0) {
-        alert("Robot in move ! Stop it or wait the end of the translation");
-        validGoto = false;
-    } else if (robotInfo.Differential.Status != 0) {
-        alert("Robot in move ! Stop it or wait the end of the translation")
-        validGoto = false;
-    }
-    if (validGoto == false) return;
-    /**/
 
-   
+ 
    socket.emit('gotoPOI', {
         objUser: localObjUser,
         poi: valuePOI
     }); 
 }
+
+
+function relocalize() {
+    list_POI_select = document.querySelector('select#list_POI');
+    var idPoi = list_POI_select.value;
+    console.log ("list_POI_select.value:"+idPoi)
+    console.log (" >>> Relocalize")
+    closeMenuNav()
+
+
+    console.log(listPOI);
+    var xyzPoi = tools.searchInObjects(listPOI,'Id',idPoi,'object')
+    console.log(xyzPoi);
+
+
+    // Fonction générique de recherche dans un tableau d'objet
+    // Source: Thierry Bergeron
+    // - hasTable > Nom du tableau d'objet
+    // - key > Propriété à tester
+    // - value > Valeur à rechercher
+    // - typeReturn > boolean ou count ou object
+    //exports.searchInObjects = function (hashTable,key,value,typeReturn){
+   
+    
+    socket.emit('relocalizeOnPOI', {
+        objUser: localObjUser,
+        poi: xyzPoi
+    }); 
+    /**/
+}
+
+
+
+function closeMenuNav() {
+    ihm.setDisplay('nav-inside','close')
+    ihm.setDisplay('nav-Relocalize','close')
+    ihm.setDisplay('nav-GotoPoi','close')
+    ihm.setDisplay('nav-ListPoi','close')
+    ihm.setDisplay('nav-RobotStatus','open')
+}
+
+function openMenuNav (menu) {
+    closeMenuNav(); // Préventif...
+    ihm.setDisplay('nav-inside','open')
+    ihm.setDisplay(menu,'open')
+    ihm.setDisplay('nav-ListPoi','open')
+    ihm.setDisplay('nav-RobotStatus','close')
+   
+}
+
 /**/
 
 
+
+
+
 function  stopTrajectory() {
+    closeMenuNav(); 
     var data = { command: 'onFullStop'}
     navigation_interface.sendToRobot("", "", "Gamepad",data);
     onMove = false;

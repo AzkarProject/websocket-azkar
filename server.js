@@ -485,6 +485,16 @@ io.on('connection', function(socket, pseudo) {
     });
     
 
+    
+    // Navigation: envoi d'une commande de relocalization au robot
+    socket.on('relocalizeOnPOI', function(data) {
+        console.log(">>>>>>relocalizeOnPOI")
+        io.to(wsIdRobot).emit('relocalizeOnPOI', data);
+    });
+
+
+
+
     // ----------------------------------------------------------------------------------
     // Partie 'signaling'. Ces messages transitent par websocket 
     // mais n'ont pas vocation à s'afficher dans le tchat client...

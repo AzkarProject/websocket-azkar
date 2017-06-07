@@ -96,16 +96,22 @@
         socket.on("gotoPOI", function(data) {
             console.log("***********received a GotoPoi************");
             console.log(data);
-            // Mémo:
-            // >>> POST: Commande "Aller vers un point d'intérêt"
-            // http://127.0.0.1:7007/Navigation/Goto/POI
-            // Envoi: {"poiname":"PilierA"}
-            // Réponse: HTTP 204 (No content) / 
-            // alert (data)
             var toSend = {"poiname":data.poi}
             komcom.sendGotoPOI(toSend)
             
         });       
+
+
+
+        // réception d'un demande de relocalization sur un POI
+        socket.on("relocalizeOnPOI", function(data) {
+            console.log("***********received a relocalizeOnPOI************");
+            console.log(data); 
+            komcom.sendWTF(data)
+        });   
+
+
+
 
     }
 

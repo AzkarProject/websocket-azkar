@@ -888,7 +888,7 @@
 
 	   if (openClose == 'open') {
 	   		$('#'+idElement).show();
-	   		// alert (idElement +'>>>'+ openClose)
+	   		 // alert (idElement +'>>>'+ openClose)
 	   	}
 	   else if (openClose == 'close') {
 	   	 	$('#'+idElement).hide();
@@ -909,6 +909,14 @@
 	function resetDisplay () {
 		
 	
+		$('#nav-GotoPoi').hide();
+		$('#nav-Relocalize').hide();
+		$('#nav-ListPoi').hide();
+		$('#nav-RobotStatus').show();
+
+		// ihm.setDisplay('openListPoi','close')
+
+
 		// Flags d'état pour l'affichage des modules.
 		moduleSetDisplay = false; $('#displaySettings').hide();$('#switchdisplaySettings').addClass('txtRed');$('#switchdisplaySettings').removeClass('buttonSelected');
 		moduleSettings = false; $('#switchsettings').addClass('txtRed');$('#switchsettings').removeClass('buttonSelected');$('#settings').hide();

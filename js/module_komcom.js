@@ -157,6 +157,14 @@ exports.sendGotoPOI = function (data) {
     }         
 
     
+  
+
+
+
+
+
+
+
     function getTrajectoryPath() {
 
         console.log ("@ getTrajectoryPath()")
@@ -285,6 +293,160 @@ exports.sendGotoPOI = function (data) {
     /**/
 
 }
+
+
+
+exports.sendWTF = function (data) {
+    console.log("komcom.sendWTF("+data+")");
+    console.log (data);
+
+    var xPoi = data.poi.Pose.X;
+    var yPoi = data.poi.Pose.Y;
+    var tPoi = data.poi.Pose.Z;
+
+    if (fakeRobubox == true) {  
+            
+            // getFakeTrajectory(data);
+
+    } else {
+
+        // { "X" : 1.2, "Y" : 3.4, "T" : 0.5 }
+
+        var url = null
+        url = "https://127.0.0.1:443/http://"+mobiservUrl+"/localization/pose" ; // CORS-ANYWHERE
+
+        if ( url != null) {
+            
+            var xhr = new XMLHttpRequest();
+            //Ecouteur pour traiter les réponses HTTP
+            var statusCode = null
+            var statusTitle = null
+            var statusComment = null
+            xhr.onreadystatechange = function() {
+                
+                statusCode = xhr.status;
+
+                // Si la commande est acceptée
+                if (statusCode == 202) statusTitle = "Accepted";
+                else if (statusCode == 400) statusTitle = "Bad Request : The specified point of interest doesn't exist";
+                else if (statusCode == 404) {
+                    statusTitle = "Not Found : the robot couldn't be relocalized.";
+                    statusComment = "This could happen because the selected localization not corresponding to the real robot position "
+                }
+                else if (statusCode == 500) statusTitle = "Internal Error : There was an error while sending the relocalisation position to the low level controller ";
+                
+                // On informe l'autre client du résultat de la requête
+                var response = {"statusCode":statusCode, "statusTitle": statusTitle, "statusComment": statusComment };
+                socket.emit("gotoStateReturn", response);
+                console.log("Response:" +response)
+    
+                
+            }
+
+            
+            xhr.open('PUT', url);
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            //xhr.send(data);
+            xhr.send(JSON.stringify({
+                    "X": xPoi,
+                    "Y": yPoi,
+                    "T": tPoi
+                }));
+            xhr.closed;
+            /**/
+
+
+        }
+
+
+
+
+
+
+    }
+}
+
+
+
+exports.sendRelocalizeOnPOI = function (data) {
+
+   
+    console.log("komcom.sendRelocalizeOnPOI("+data+")");
+    console.log (data);
+    
+
+    var IdPoi = parseInt(data.poiname)
+
+
+    if (fakeRobubox == null) return;
+
+
+    if (fakeRobubox == false) {
+         
+        //console.log
+
+        var url = null
+        url = "https://127.0.0.1:443/http://"+mobiservUrl+"/navigation/localization/pose" ; // CORS-ANYWHERE
+
+        if ( url != null) {
+            
+            var xhr = new XMLHttpRequest();
+            
+
+            //Ecouteur pour traiter les réponses HTTP
+            var statusCode = null
+            var statusTitle = null
+            var statusComment = null
+            xhr.onreadystatechange = function() {
+                
+                
+                statusCode = xhr.status;
+
+                if (statusCode == 202) statusTitle = "Accepted";
+                else if (statusCode == 400) statusTitle = "Bad Request : The specified point of interest doesn't exist";
+                else if (statusCode == 404) {
+                    statusTitle = "Not Found : the robot couldn't be relocalized.";
+                    statusComment = "This could happen because the selected localization not corresponding to the real robot position "
+                }
+                else if (statusCode == 500) statusTitle = "Internal Error : There was an error while sending the relocalisation position to the low level controller ";
+                
+                // On informe l'autre client du résultat de la requête
+                var response = {"statusCode":statusCode, "statusTitle": statusTitle, "statusComment": statusComment };
+                socket.emit("gotoStateReturn", response);
+                console.log("Response:" +response)
+                // Si la commande est acceptée
+                if (statusCode == 202) {
+                    // todo
+                }
+                
+               
+
+                
+            }
+
+
+
+
+
+
+       
+            xhr.open('PUT', url);
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            //xhr.send(data);
+            xhr.send(JSON.stringify({
+                    "Id": IdPoi,
+                }));
+            xhr.closed;
+            
+
+
+        }
+
+   
+    }
+    /**/ 
+}     
+
 
 
 // Envoi d'une commande de type "Drive" au robot

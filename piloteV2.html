@@ -116,6 +116,91 @@
     <section id="viewPortPilote" class="" style="" >
 
 
+   		<div id="appSettings" class="draggable"
+			
+			style="position:absolute;
+			top:100px;
+			width:100px;
+			left:10px;
+			float:left;
+			border:1px solid #ccc;
+			border-radius: 10px;
+			margin:10px 5px 5px 5px;
+			padding:5px; 
+			background:rgba(221,221,221,0.1);
+			z-index:999999">
+				
+				<div id="batteryJauge" style="float:left; text-align:center;color:white;">
+	                
+	                <label for="battery_level" style="margin-bottom:5px;">Battery Level</label>
+	                
+	                <progress id="battery_level" max="100" style="width:100px; "></progress>
+	           	        
+		            <button class="shadowBlack" style="margin-top:5px;"  id="switchdisplaySettings" onclick="switchDisplay('displaySettings','open')">
+						Display
+					</button>
+
+	           </div>
+			
+		</div>
+
+		
+
+			
+			
+			<div id="displaySettings" class="draggable"
+				style="
+				position:absolute;
+				top:100px;
+				left:130px;
+				float:left;
+				border: 1px solid #ccc; 
+				border-radius: 10px;
+				margin:10px 5px 5px 5px;
+				padding:5px;
+				 background:rgba(221,221,221,0.1);
+				z-index:999999">
+
+
+					<div id="batteryJauge" style="float:left; text-align:center;color:white;">
+		                
+		                <label for="displaySettings" style="margin-bottom:5px;">Display</label>
+						<br/>
+						<button class="shadowBlack" style="margin-top:5px; width:90px"  id="switchsettings" onclick="switchDisplay('settings','open')">
+							Setting App
+						</button>
+						<br/>
+						<button class="shadowBlack" style="margin-top:5px;width:90px"  id="switchmap" onclick="switchDisplay('map','close')">
+							Map
+						</button>
+						<br/>
+						<button class="shadowBlack" style="margin-top:5px;width:90px"  id="switchdrive" onclick="switchDisplay('drive','close')">
+							Drive
+						</button>
+						<br/>
+						<button class="shadowBlack" style="margin-top:5px;width:90px"  id="switchnav" onclick="switchDisplay('nav','close')">
+							AutoPilot
+						</button>
+						<br/>
+						<button class="shadowBlack" style="margin-top:5px;width:90px"  id="switchconnexion" onclick="switchDisplay('connexion','close')">
+							Video quality
+						</button>
+						<br/>
+						<button class="shadowBlack" style="margin-top:5px;width:90px"  id="switchtchat" onclick="switchDisplay('tchat','close')">
+							Tchat
+						</button>
+						<br/>
+				    	<button class="shadowBlack" style="margin-top:5px;width:90px"  id="resetIhm" onclick="switchDisplay(null,'reset')">
+							Reset
+						</button>
+						<br/>
+
+				</div>
+			</div>
+
+
+
+
    			<div id="remoteCam" class='draggable resizable' 
    			style="position:absolute;top:0px; left:0px;float:left;width:1230px; height:375px;border:1px solid #ccc;border-radius: 10px;margin: 5px 5px 10px 5px">
               		            		
@@ -168,9 +253,18 @@
 
 				<div id="contentFloorCamera" class="noDraggable" style="width:228px;height:228px; margin: 0;">
 			 	
+				 	<!--
 				 	<video id='floor_localVideo' 
 						width="200" height="200"
 						style="background-color: black;background-image: url('images/floor200par150.jpg');background-repeat: no-repeat;background-position: center;margin:30px 0 0 14px;" 
+						autoplay muted ">
+				 	</video>
+				 	-->
+
+
+				 	<video id='floor_localVideo' 
+						width="200" height="200"
+						style="background-color: black;background-repeat: no-repeat;background-position: center;margin:30px 0 0 14px;" 
 						autoplay muted ">
 				 	</video>
 
@@ -282,6 +376,7 @@
 			</div>                   
 
 
+			<!--
 			<div id="nav" class='draggable' 
 			style="position:absolute;top:390px; left:755px; float:left; width:335px;height:230px;background-color: black;border:1px solid #ccc; border-radius: 10px;margin:0 0 0 5px;padding:5px; background:rgba(221,221,221,0.1);">
 
@@ -318,6 +413,121 @@
 			    </div>
 			   
 			</div>
+			-->
+
+
+			<div id="nav" class='draggable' 
+			style="position:absolute;top:390px; left:755px; float:left; width:335px;height:230px;background-color: black;border:1px solid #ccc; border-radius: 10px;margin:0 0 0 5px;padding:5px; background:rgba(221,221,221,0.1);">
+
+				
+
+			    
+			    <div style="width:100%;text-align:center">
+			    	<span id="pointOfinterestTitle" style="color:white;"> Auto Pilot</span>
+			    </div>
+			    
+			   	<br/>
+				
+				
+				<div style="width:100%;text-align:center;margin: 0 0 15px 0" class='noDraggable'>
+			    	
+					<button id="stop_Trajectory" class="txtRed" style='height:30px; margin: 0 0 10px 0;' onclick="stopTrajectory()">STOP TRAJECTORY</button><br/>
+			    			    	
+					
+					<button class="shadowBlack" style='height:30px'  id="switchopenGotoDiv" onclick="openMenuNav('nav-GotoPoi')">
+						Navigation Menu
+					</button>
+
+
+					<button class="shadowBlack" style='height:30px'  id="switchopenRelocalizeDiv" onclick="openMenuNav('nav-Relocalize')">
+						Localization Menu
+					</button>
+					
+
+			   </div>	
+
+
+				<div id="nav-inside" class='noDraggable' 
+				style="height:90px;background-color: black;border:1px solid #ccc; border-radius: 10px;margin:auto 0 0 auto ;padding:5px; background:rgba(221,221,221,0.1);">
+
+						
+					<div class="conrol-nav-inside">
+					
+						<div id="button-nav-inside" style="text-align:center; float:right ;margin: -15px 0 0 0">
+			        		<button class="shadowBlack" style=""  id="close-nav-insides" onclick="closeMenuNav('close')">
+								close
+							</button>
+						</div>
+
+					</div>	
+
+
+
+
+
+						<br/>
+
+
+
+
+						<div id="nav-GotoPoi" class='noDraggable' >
+
+							<div style="width:100%;text-align:center;margin: 0 0 5px 0">
+						    	<button id="goto_POI" style='height:30px' onclick="gotoPOI()">GO to POI Selected</button>
+						    </div>
+
+					    </div>
+
+
+						<div id="nav-Relocalize" class='noDraggable'>
+
+							<div style="width:100%;text-align:center;margin: 0 0 5px 0">
+						    	<button id="relocalize" class="" style='height:30px' onclick="relocalize()">Localize the robot on a selected POI</button>
+						    </div>
+						</div>
+
+						
+
+						<div id='nav-ListPoi' style="width:100%;text-align:center" class='noDraggable'>
+						        
+						        <div class="select">
+							        <select id="list_POI">
+						        </select>
+						            
+						    </div>
+						</div> 
+				
+				</div> 
+
+
+
+
+			
+			    
+			   
+
+
+
+
+
+
+			   <div id="nav-RobotStatus" style="width:100%;height: 90px;text-align:center;color:white;overflow:hidden" class='noDraggable'>
+
+			    	<h5> Robot Status:</h4>
+			    	<h6>
+			    		<span id="robotStatusMessage"><span>
+			    	</h6>
+			    </div>
+			   
+			
+
+			</div>
+
+
+
+
+
+
 
 
 			<div id="connexion" class='draggable' 
@@ -491,9 +701,6 @@
 	                    </button>
 	                </span>
 	            </div>    
-   
-					
-
 			</div>
 
 
@@ -534,159 +741,7 @@
 			</div>
 
 
-			<div id="appSettings" class="draggable"
-			
-			style="position:absolute;
-			top:100px;
-			width:100px;
-			left:10px;
-			float:left;
-			border:1px solid #ccc;
-			border-radius: 10px;
-			margin:10px 5px 5px 5px;
-			padding:5px; 
-			background:rgba(221,221,221,0.1);
-			z-index:999999">
-				
-				<div id="batteryJauge" style="float:left; text-align:center;color:white;">
-	                
-	                <label for="battery_level" style="margin-bottom:5px;">Battery Level</label>
-	                
-	                <progress id="battery_level" max="100" style="width:100px; "></progress>
-	           	        
-		            <button class="shadowBlack" style="margin-top:5px;"  id="switchdisplaySettings" onclick="switchDisplay('displaySettings','open')">
-						Display
-					</button>
 
-	           </div>
-
-
-
-
-				<!--
-				<div id="AdvancedMenu" style="color:white; text-align:center; float:left ;margin: 0 auto ">
-			     	&nbsp;&nbsp;
-
-			     	Modules:
-
-					<button class="shadowBlack" style=""  id="switchsettings" onclick="switchDisplay('settings','open')">
-						Settings
-					</button>
-
-					<button class="shadowBlack" style=""  id="switchmap" onclick="switchDisplay('map','close')">
-						Map
-					</button>
-
-					<button class="shadowBlack" style=""  id="switchdrive" onclick="switchDisplay('drive','close')">
-						Drive
-					</button>
-
-					<button class="shadowBlack" style=""  id="switchnav" onclick="switchDisplay('nav','close')">
-						Nav
-					</button>
-
-					<button class="shadowBlack" style=""  id="switchconnexion" onclick="switchDisplay('connexion','close')">
-						Connexion
-					</button>
-
-					<button class="shadowBlack" style=""  id="switchtchat" onclick="switchDisplay('tchat','close')">
-						Tchat
-					</button>
-
-			    	<button class="shadowBlack" style=""  id="resetIhm" onclick="switchDisplay(null,'reset')">
-						Reset
-					</button>
-
-
-			    </div>
-			    -->
-
-			</div>
-
-		
-
-			
-			
-			<div id="displaySettings" class="draggable"
-			style="
-			position:absolute;
-			top:100px;
-			left:130px;
-			float:left;
-			border: 1px solid #ccc; 
-			border-radius: 10px;
-			margin:10px 5px 5px 5px;
-			padding:5px;
-			 background:rgba(221,221,221,0.1);
-			z-index:999999">
-
-
-				<div id="batteryJauge" style="float:left; text-align:center;color:white;">
-	                
-	                <label for="displaySettings" style="margin-bottom:5px;">Display</label>
-					<br/>
-					<button class="shadowBlack" style="margin-top:5px; width:90px"  id="switchsettings" onclick="switchDisplay('settings','open')">
-						Setting App
-					</button>
-					<br/>
-					<button class="shadowBlack" style="margin-top:5px;width:90px"  id="switchmap" onclick="switchDisplay('map','close')">
-						Map
-					</button>
-					<br/>
-					<button class="shadowBlack" style="margin-top:5px;width:90px"  id="switchdrive" onclick="switchDisplay('drive','close')">
-						Drive
-					</button>
-					<br/>
-					<button class="shadowBlack" style="margin-top:5px;width:90px"  id="switchnav" onclick="switchDisplay('nav','close')">
-						AutoPilot
-					</button>
-					<br/>
-					<button class="shadowBlack" style="margin-top:5px;width:90px"  id="switchconnexion" onclick="switchDisplay('connexion','close')">
-						Video quality
-					</button>
-					<br/>
-					<button class="shadowBlack" style="margin-top:5px;width:90px"  id="switchtchat" onclick="switchDisplay('tchat','close')">
-						Tchat
-					</button>
-					<br/>
-			    	<button class="shadowBlack" style="margin-top:5px;width:90px"  id="resetIhm" onclick="switchDisplay(null,'reset')">
-						Reset
-					</button>
-					<br/>
-
-				<!--
-				<div id="AdvancedMenu" style="color:white; text-align:center; float:left ;margin: 0 auto ">
-			     	&nbsp;&nbsp;
-
-			     	Display
-			     	<br/>
-					<button class="shadowBlack" style=""  id="switchmap" onclick="switchDisplay('map','close')">
-						Map
-					</button>
-					<br/>
-					<button class="shadowBlack" style=""  id="switchdrive" onclick="switchDisplay('drive','close')">
-						Drive
-					</button>
-					<br/>
-					<button class="shadowBlack" style=""  id="switchnav" onclick="switchDisplay('nav','close')">
-						AutoPilot
-					</button>
-					<br/>
-					<button class="shadowBlack" style=""  id="switchconnexion" onclick="switchDisplay('connexion','close')">
-						Video quality
-					</button>
-					<br/>
-					<button class="shadowBlack" style=""  id="switchtchat" onclick="switchDisplay('tchat','close')">
-						Tchat
-					</button>
-					<br/>
-			    	<button class="shadowBlack" style=""  id="resetIhm" onclick="switchDisplay(null,'reset')">
-						Reset
-					</button>
-			    </div>
-			    -->
-
-			</div>
 
 
 
