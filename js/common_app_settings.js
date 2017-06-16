@@ -76,7 +76,7 @@
 	// il faut veiller a préciser le numéro de port dans l'url
 	// pour se connecter à l'application. 
 	exports.appServerPort = function(){
-		return 443; (utilisé avec localHost)
+		return 443; // (utilisé avec localHost)
 		//return 80; // (utilisé avec VM 1 Sparks & réseau AD Hoc)
 	}
 
