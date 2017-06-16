@@ -646,6 +646,24 @@
                                             wsTitle = "Ressources recommandées pour la scène 'Les tranchèes'";
                                             wsHtmlContent = "";
                                     
+                                    } else if (sceneName == "Univers") {
+
+                                            //isLinkedToWS = true;
+                                            socket.emit('getSceneRessources', {scene: "Univers"});
+                                            console.log( "socket.emit('getSceneRessources', {scene: Univers })"    )
+                                            activeRecommandation = true;
+
+                                            wsTitle = "Ressources recommandées";
+                                            wsHtmlContent = "";
+                                   
+
+
+
+
+
+
+
+
 
                                     } else {
                                         // isLinkedToWS = false;
@@ -682,24 +700,85 @@
                                             socket.emit('getSceneRessources', {scene: "Marne14"});
                                             console.log( "socket.emit('getSceneRessources', {scene: Marne14 })"    )
                                             activeRecommandation = true;
-
-                                            wsTitle = "Ressources recommandées pour la scène 'Marne 1914'";
+                                            wsTitle = "Ressources complémentaires pour la scène 'Marne 1914'";
                                             wsHtmlContent = "";
                                     
-                                   
-
-
-
 
                                     } else if (sceneName == "Tranchées") {
                                             //isLinkedToWS = true;
                                             socket.emit('getSceneRessources', {scene: "La_tranchee"});
                                             console.log( "socket.emit('getSceneRessources', {scene: La_tranchee })"    )
                                             activeRecommandation = true;
-
-                                            wsTitle = "Ressources recommandées pour la scène 'Les tranchèes'";
+                                            wsTitle = "Ressources complémentaires pour la scène 'Les tranchèes'";
                                             wsHtmlContent = "";
                                     
+
+                                    
+                                    } else if (sceneName == "Univers") {
+                                            //isLinkedToWS = true;
+                                            socket.emit('getSceneRessources', {scene: "Univers"});
+                                            console.log( "socket.emit('getSceneRessources', {scene: Univers })"    )
+                                            activeRecommandation = true;
+                                            wsTitle = "Ressources complémentaires pour la scène 'L'univers de Valérian'";
+                                            wsHtmlContent = "";
+
+                                    
+
+                                    } else if (sceneName == "Civilisations") {
+                                            //isLinkedToWS = true;
+                                            socket.emit('getSceneRessources', {scene: "Civilisations"});
+                                            console.log( "socket.emit('getSceneRessources', {scene: Civilisations })"    )
+                                            activeRecommandation = true;
+                                            wsTitle = "Ressources complémentaires pour la scène 'Civilisations'";
+                                            wsHtmlContent = "";
+
+
+
+                                    } else if (sceneName == "Diversité") {
+                                            //isLinkedToWS = true;
+                                            socket.emit('getSceneRessources', {scene: "Diversité"});
+                                            console.log( "socket.emit('getSceneRessources', {scene: Diversité })"    )
+                                            activeRecommandation = true;
+                                            wsTitle = "Ressources complémentaires pour la scène 'Diversité'";
+                                            wsHtmlContent = "";
+
+
+                                    } else if (sceneName == "PolitiqueFiction") {
+                                            //isLinkedToWS = true;
+                                            socket.emit('getSceneRessources', {scene: "PolitiqueFiction"});
+                                            console.log( "socket.emit('getSceneRessources', {scene: PolitiqueFiction })"    )
+                                            activeRecommandation = true;
+                                            wsTitle = "Ressources complémentaires pour la scène 'Politique Fiction'";
+                                            wsHtmlContent = "";
+
+                                    } else if (sceneName == "Inspirations") {
+                                            //isLinkedToWS = true;
+                                            socket.emit('getSceneRessources', {scene: "InspirationsEtAlbums"});
+                                            console.log( "socket.emit('getSceneRessources', {scene: InspirationsEtAlbums })"    )
+                                            activeRecommandation = true;
+                                            wsTitle = "Ressources complémentaires pour la scène 'Inspiration et albums'";
+                                            wsHtmlContent = "";
+
+                                    } else if (sceneName == "Scénario1") {
+                                            //isLinkedToWS = true;
+                                            socket.emit('getSceneRessources', {scene: "AventureContinue"});
+                                            console.log( "socket.emit('getSceneRessources', {scene: AventureContinue })"    )
+                                            activeRecommandation = true;
+                                            wsTitle = "Ressources complémentaires pour la scène 'L'aventure continue'";
+                                            wsHtmlContent = "";
+
+                                    } else if (sceneName == "Scénario2") {
+                                            //isLinkedToWS = true;
+                                            socket.emit('getSceneRessources', {scene: "DuScénarioALaBd"});
+                                            console.log( "socket.emit('getSceneRessources', {scene: DuScénarioALaBd })"    )
+                                            activeRecommandation = true;
+                                            wsTitle = "Ressources complémentaires pour la scène 'Du scénario à la BD";
+                                            wsHtmlContent = "";
+
+
+
+
+
 
                                     } else {
                                         // isLinkedToWS = false;

@@ -67,8 +67,8 @@
 	exports.appServerIp = function(){
 		//return "localhost";
 		//return "192.168.173.1" // réseau AdHoc 'Robulab_wifi'
-		return "134.59.130.143" // VM 1 Sparks
-		//return "134.59.130.142" // VM 2 Sparks
+		//return "134.59.130.143" // VM 1 Sparks
+		return "134.59.130.142" // VM 2 Sparks
 	}
 
 	// N° de port: Idéalement 443 pour du https.
@@ -76,8 +76,8 @@
 	// il faut veiller a préciser le numéro de port dans l'url
 	// pour se connecter à l'application. 
 	exports.appServerPort = function(){
-		//return 443; (utilisé avec localHost)
-		return 80; // (utilisé avec VM 1 Sparks & réseau AD Hoc)
+		return 443; (utilisé avec localHost)
+		//return 80; // (utilisé avec VM 1 Sparks & réseau AD Hoc)
 	}
 
 	// Retourne le nom d'instance de l'application
