@@ -386,7 +386,7 @@
 			navigation_interface.sendToRobot("", "", "Gamepad",data);
 
 		    atLeastOneButtonPressed = true;
-		    buttonStatusDiv.innerHTML = "(A) Drive mode standard";
+		    buttonStatusDiv.innerHTML = "<span style='color:green;font-weight:bold'>(A)</span><span style='font-size:small'> Normal Speed</span>";
 		    prepareDriveCommand(gamepad, buttonRT.value, buttonLT.value,"standard","onDrive" );
 		    btHommeMort = true;
 		    onMove = true;
@@ -403,7 +403,7 @@
 			navigation_interface.sendToRobot("", "", "Gamepad",data);
 
 		    atLeastOneButtonPressed = true;
-		    buttonStatusDiv.innerHTML = " (X) Drive mode précision";
+		    buttonStatusDiv.innerHTML = " <span style='color:blue;font-weight:bold'>(X)</span><span style='font-size:small'>  Precision Speed </span>";
 		    prepareDriveCommand(gamepad, buttonRT.value, buttonLT.value,"precision","onDrive" )
 		    btHommeMort = true;
 		    onMove = true;

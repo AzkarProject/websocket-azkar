@@ -292,8 +292,9 @@
 				                </div> 
 				            </div> 
 
-				            <div id = "fullAxesInfos" ">
-								<span id="fullDriveButtonStatus"></span>
+				            <div id = "fullAxesInfos" style="width:228px; margin:0 auto">
+								
+								
 				                
 				                <div 
 				                
@@ -303,23 +304,27 @@
 										width: 200px;
 										height: 200px;
 										background: rgba(221,221,221,0.1);
+										margin:0 0 0 15px;
 										margin: auto;
 										border-radius: 50%;
-										margin:0 0 0 15px;
 										">
 				                    
 				                   <canvas id="canvasGamepad" width="200"; height="200"; style=""></canvas>
 				                
-				                </div>  
+				                </div>
+
+								<span id="fullDriveButtonStatus"></span>
+
 							</div>
 						
 						
 						</div>
 
 				    
-				        <div id = "gamePadInfos" class="noDraggable" style="display:none; text-align:center;">
+				        <div id = "gamePadInfos" class="noDraggable" 
+				        style="display:none; text-align:center;margin: 35px 0 0 0;">
 				         
-				            <span id="buttonStatus"></span>
+				           
 
 							<div 
 				                
@@ -329,20 +334,25 @@
 										width: 200px;
 										height: 200px;
 										background: rgba(221,221,221,0.1);
-										margin: auto;
-										border-radius: 50%;
+										/*margin: auto;*/
 										margin:0 0 0 15px;
+										border-radius: 50%;
+										/*background-color:red;*/
 										">
 				                    
-				                 <div id="classicDrive" style="margin-top:20px"> 
-					                <b>Direction</b><br/>
+				                 <div id="classicDrive" style="margin-top:20px">
+					                <b>&#x21E6; | &#x21E8;</b><br/>
 						            <progress id="leftRight" value=1 max=2></progress><br><br/>
-
-						            <b>Speed</b><br/>
-						             Avance:<br/><progress  id="advanceValue" value=0 min=0 max=1></progress>
-						             <br/>
-						             Reverse:<br/><progress id="reverseValue" value=0 min=0 max=1></progress>
+						             <b>&#x21E7;</b>
+						             <progress  id="advanceValue" value=0 min=0 max=1></progress>
+						             <b>&#x21E7;</b>
+						             <br/><br/>
+						             <b>&#x21E9;</b>
+						             <progress id="reverseValue" value=0 min=0 max=1></progress>
+						             <b>&#x21E9;</b>
 					             </div>
+								<br/>
+					              <span id="buttonStatus"></span>
 				            
 
 
@@ -461,14 +471,7 @@
 
 					</div>	
 
-
-
-
-
 						<br/>
-
-
-
 
 						<div id="nav-GotoPoi" class='noDraggable' >
 
@@ -500,17 +503,6 @@
 				</div> 
 
 
-
-
-			
-			    
-			   
-
-
-
-
-
-
 			   <div id="nav-RobotStatus" style="width:100%;height: 90px;text-align:center;color:white;overflow:hidden" class='noDraggable'>
 
 			    	<h5> Robot Status:</h4>
@@ -522,12 +514,6 @@
 			
 
 			</div>
-
-
-
-
-
-
 
 
 			<div id="connexion" class='draggable' 
@@ -593,6 +579,7 @@
 					</div>
 
 				</div>
+
 				<hr/>
 
 				<div id="camerasAdvancedSettings" style="float:left;width:370px">
@@ -604,7 +591,8 @@
 		                <hr/>
 		                <div class="select noDraggable">
 		                    <label for="remote_videoSource" style='width:150px;background-color:black' >Video: </label>
-		                    <select id="remote_videoSource" style='width:200px;'></select>
+		                    <select id="remote_videoSource" style='width:200px;'>
+		                    </select>
 		                </div>
 		                <div class="select noDraggable"">
 		                    <label for="remote_audioSource" style='width:150px;background-color:black' >Audio: </label>
@@ -629,6 +617,7 @@
 		                </div>
 
 	                </div>
+                
                 </div>	
 
 
@@ -669,18 +658,9 @@
 		        
 		        </div>
 		        
-
-				               
-
-
 				<!-- pour compatibilité avec l'ancienne version -->
 				<div id="robotDevices" style="display:none"></div>
 				<div id="pilotDevices" style="display:none"></div>
-
-
-
-
-
 
 
 				<div id="dataChannelSetting"
@@ -702,7 +682,6 @@
 	                </span>
 	            </div>    
 			</div>
-
 
 
 			<div id = 'tchat' class='draggable' 
@@ -739,19 +718,6 @@
 	                        </form>
 	                </div>
 			</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 		<!--</div>-->

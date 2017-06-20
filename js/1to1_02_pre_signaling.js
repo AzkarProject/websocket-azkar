@@ -424,8 +424,20 @@ function populateListDevices(result,sourceDevices) {
     }
 
     
+    // Creation d'une option vidéo "Par défaut"
+    var optionDefault = document.createElement('option');
+    optionDefault.id = "0";
+    optionDefault.value = "default";
+    optionDefault.text = "Default Camera";
+    
+
+
     if (sourceDevices == "remote") {
        
+
+    	remote_VideoSelect.appendChild(optionDefault);
+        
+
         if (result.allMdiaDevices) {
             result.allMdiaDevices.forEach(function(sourceInfo) {
                 populateFormDevices(sourceInfo,sourceDevices)
@@ -440,6 +452,8 @@ function populateListDevices(result,sourceDevices) {
 
     } else if (sourceDevices == "local") {
 
+    	if (type == "robot-appelé") local_VideoSelect.appendChild(optionDefault);
+        
         var countEatch = 0;
         result.allMdiaDevices.forEach(function(sourceInfo) {
 
@@ -524,6 +538,8 @@ function getLocalConstraint() {
     
     audioSource = local_AudioSelect.value;
     videoSource = local_VideoSelect.value;
+
+    //console.log(videoSource);
     
     var camDef = "HD";
     if (type == "pilote-appelant") camDef = parameters.camDefPilote;
@@ -663,6 +679,9 @@ function getLocalConstraint() {
   
     
     // Avec la gestion des filtres...
+    
+    if (videoSource != "default") {
+
     localConstraints = { 
        mandatory: {OfferToReceiveAudio: true, OfferToReceiveVideo: true},
         audio: {
@@ -682,12 +701,31 @@ function getLocalConstraint() {
                 height: {min:minCamHeight ,ideal: maxCamHeight}
         }
     }
+    
+  } else if (videoSource == "default") {
+
+    // Idem, mais la constraint d'ID de caméra vide...
+    localConstraints = { 
+       mandatory: {OfferToReceiveAudio: true, OfferToReceiveVideo: true},
+        audio: {
+            mandatory: {
+                googEchoCancellation: echoCancellation,
+                googAutoGainControl: autoGainControl,
+                googNoiseSuppression: noiseSuppression,
+                googHighpassFilter: highpassFilter,
+                googTypingNoiseDetection: typingNoiseDetection,
+                //googAudioMirroring: true, // For some reason setting googAudioMirroring causes a navigator.getUserMedia error:  NavigatorUserMediaError
+            },
+            optional: [],
+        },
+        video: {
+                width: {min:minCamWidth ,ideal: maxCamWidth}, 
+                height: {min:minCamHeight ,ideal: maxCamHeight}
+        }
+    }
     /**/
 
-
-
-
-
+  }
 
 
     return localConstraints;
@@ -729,6 +767,7 @@ socket.on("readyForSignaling", function(data) {
 // Coté serveur >> socket.broadcast.emit('selectedRemoteDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
 socket.on('selectedRemoteDevices', function(data) {
     console.log(">> socket.on('selectedRemoteDevices',...");
+    console.log(data);
 
     if (type == "robot-appelé") {
         // On rebalance au formulaire les caméras/micros choisies par le pilote
