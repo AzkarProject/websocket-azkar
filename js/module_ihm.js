@@ -441,7 +441,7 @@
 	    }
 	}
 
-
+	// Deprecated pour IHM V2 /: Todo a modifier
 	// FullScreen en full CSS
 	// Remplace l'API requestFullScreen qui bloque sous Chrome
 	// L'élément vidéo étant bizarrement inaccessible par sa classe ou son id css
@@ -466,7 +466,7 @@
 	}
 
 
-
+	// Deprecated pour IHM V2
     // On cache certains blocs pour éviter la superposition. 
 	// parce que modifier le z-index de la vidéo fullScreen ne fonctionne pas
 	exports.toggleModules = function(value) {
@@ -536,6 +536,7 @@
 	}
 
 
+	// Deprecated pour IHM V2
 	// On ne peux pas déplacer l'élément vidéo du DOM
     // Sinon celui-ci n'est plus lié au Stream et l'image se fige...
     // Par contre, pour les autres elements, R.A.S
@@ -581,7 +582,7 @@
 
 
 
-	
+	// Admin et Accueil
 	// Bandeau supérieur
 	// Pour le logo
     azkarLogo = '<div style="float:left; margin-right:20px"><a href="/">';
@@ -729,7 +730,6 @@
 
 	// IHM V2
 	// Flags d'état pour l'affichage des modules.
-
 	moduleSetDisplay = false; $('#switchdisplaySettings').addClass('txtRed');
 	moduleSettings = false; $('#switchsettings').addClass('txtRed');
 	moduleMap = true; $('#switchmap').addClass('buttonSelected');
