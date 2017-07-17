@@ -49,7 +49,7 @@
 
 	// Numéro de version
 	exports.appVersion = function(){
-	    return '2.0.1';
+	    return '2.0.2';
 	};
 
 	// Crédits
@@ -69,6 +69,7 @@
 		//return "192.168.173.1" // réseau AdHoc 'Robulab_wifi'
 		return "134.59.130.143" // VM 1 Sparks
 		//return "134.59.130.142" // VM 2 Sparks
+		//return "134.59.130.147" // VM 3 Sparks
 	}
 
 	// N° de port: Idéalement 443 pour du https.

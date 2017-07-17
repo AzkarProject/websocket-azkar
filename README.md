@@ -14,30 +14,36 @@ de la licence CeCILL-C telle que diffusée par le CEA, le CNRS et l'INRIA
 sur le site "http://www.cecill.info".
 
 
-Revision 2.0.1
+Revision 2.0.2
 - Caméra Pan / Tilt
-    - Do: Abandon du système FOSCAM
-    - Todo: Detection ID caméra Pan / Tilt
-    - Todo: Module de commande pan/tilt
-    - Todo: Commandes IHM
-    - Todo: Commandes Gamepad
+    - Todo: Intégration module commande AnotherWorld dans application
+    - Todo: Detection ID caméra Pan / Tilt dans l'administration
     - Todo: Commandes Keyboard
 - Caméra au sol
     - Todo: Detection ID caméra sol
-    - Todo: Signaling & Connexion auto
+    - Todo: Switch auto caméra (mode conduite/précision)
 - Interface d'administration
-    - Todo: Gestion caméra pilotage (selection, persistance configuration, défaut)
-    - Todo: Gestion caméra sol (selection, persistance configuration, défaut)
-- IHM Pilote
-    - Do: Réorganisation modules
-    - Do: Fonctions reset Display
+    - Changement carte par défaut du mode FakeRobubox
+    - Réorganisation modules grestion IP robot et IP caméra
+    - Encours: Gestion caméra pilotage (selection, persistance configuration, défaut)
+    - Encours: Gestion caméra sol (selection, persistance configuration, défaut)
+- IHM
+    - Do: Epuration CSS coté pilote
+    - Do: Reprise ergonomique module cartographie
     - Todo: Système touch Screen
+    - Todo: centrage IHM
 - Cartographie
     - Todo: Clic & Go POI
-- Fiabilisation solution embarquée Kompaï Robotics
-    - Todo: KomServer (V2 - version webSocket)
+
+
+Revision 2.0.1
+- Caméra Pan / Tilt
+    - Abandon système FOSCAM
+- IHM Pilote
+    - Réorganisation modules
+    - Fonction reset Display
 - Commandes Drive
-    - Do: Ajout commandes directionnelles clavier
+    - Ajout commandes directionnelles clavier
 
 
 Revision 2.0.0

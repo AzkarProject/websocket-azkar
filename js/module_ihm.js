@@ -937,8 +937,8 @@
 		$(divModule).css('left', '0px');
 		$(divModule).css('width', '1230px');
 		$(divModule).css('height', '375px');
-		$(divModule).css('border', '1px solid #ccc');
-		$(divModule).css('border-radius', '10px');
+		//$(divModule).css('border', '1px solid #ccc');
+		//$(divModule).css('border-radius', '10px');
 		$(divModule).css('margin', '5px 5px 10px 5px');
 		$(divModule).css('background', 'rgba(221,221,221,0.1)');
 
@@ -953,8 +953,8 @@
 		$(divModule).css('z-index', '100');
 		$(divModule).css('height', '100px');
 		$(divModule).css('width', '100px');
-		$(divModule).css('border', '1 px solid #ccc');
-		$(divModule).css('border-radius', '10 px');
+		//$(divModule).css('border', '1 px solid #ccc');
+		//$(divModule).css('border-radius', '10 px');
 		$(divModule).css('margin', '0');
 		$(divModule).css('background', 'rgba(221,221,221,0.1)');
 
@@ -968,8 +968,8 @@
 		$(divModule).css('color', 'white');
 		$(divModule).css('height', '230px');
 		$(divModule).css('width', '495px');
-		$(divModule).css('border', '1 px solid #ccc');
-		$(divModule).css('border-radius', '10 px');
+		//$(divModule).css('border', '1 px solid #ccc');
+		//$(divModule).css('border-radius', '10 px');
 		$(divModule).css('margin', '0 0 0');
 		$(divModule).css('background', 'rgba(221,221,221,0.1)');
 
@@ -984,8 +984,8 @@
 		$(divModule).css('height', '230px');
 		$(divModule).css('width', '230px');
 		$(divModule).css('background-color', 'black');
-		$(divModule).css('border', '1 px solid #ccc');
-		$(divModule).css('border-radius', '10 px');
+		//$(divModule).css('border', '1 px solid #ccc');
+		//$(divModule).css('border-radius', '10 px');
 		$(divModule).css('margin', '0 0 0 5px');
 		$(divModule).css('padding', '5px');
 		$(divModule).css('overflow', 'hidden');
@@ -1001,8 +1001,8 @@
 		$(divModule).css('height', '230px');
 		$(divModule).css('background-color', 'black');
 		$(divModule).css('color', 'white');
-		$(divModule).css('border', '1 px solid #ccc');
-		$(divModule).css('border-radius', '10 px');		
+		//$(divModule).css('border', '1 px solid #ccc');
+		//$(divModule).css('border-radius', '10 px');		
 		$(divModule).css('margin', '0 0 0 5px');
 		$(divModule).css('padding', '5px');
 		$(divModule).css('overflow', 'hidden');
@@ -1019,8 +1019,8 @@
 		$(divModule).css('height', '230px');
 		$(divModule).css('background-color', 'black');
 		$(divModule).css('color', 'white');
-		$(divModule).css('border', '1 px solid #ccc');
-		$(divModule).css('border-radius', '10 px');		
+		//$(divModule).css('border', '1 px solid #ccc');
+		//$(divModule).css('border-radius', '10 px');		
 		$(divModule).css('margin', '0 0 0 5px');
 		$(divModule).css('padding', '5px');
 		$(divModule).css('overflow', 'hidden');
@@ -1033,8 +1033,8 @@
 		$(divModule).css('left', '10px');
 		$(divModule).css('float', 'left');
 		$(divModule).css('width', '100px');
-		$(divModule).css('border', '1 px solid #ccc');
-		$(divModule).css('border-radius', '10 px');		
+		//$(divModule).css('border', '1 px solid #ccc');
+		//$(divModule).css('border-radius', '10 px');		
 		$(divModule).css('margin', '10px 5px 5px 5px');
 		$(divModule).css('padding', '5px');
 		$(divModule).css('overflow', 'hidden');
@@ -1059,8 +1059,8 @@
 		$(divModule).css('top', '100px');
 		$(divModule).css('left', '130px');
 		$(divModule).css('float', 'left');
-		$(divModule).css('border', '1 px solid #ccc');
-		$(divModule).css('border-radius', '10 px');		
+		//$(divModule).css('border', '1 px solid #ccc');
+		//$(divModule).css('border-radius', '10 px');		
 		$(divModule).css('margin', '10px 5px 5px 5px');
 		$(divModule).css('padding', '5px');
 		$(divModule).css('background', 'rgba(221,221,221,0.1)');

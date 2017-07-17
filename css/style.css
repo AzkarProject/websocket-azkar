@@ -316,11 +316,12 @@ video {
 
 
 .txtGreen {color: green;}
-.txtRed {color: red;}
+/*.txtRed {color: red;}*/
 
 
 
 /* forme, taille et couleurs des boutons */
+/*
 button{
      font-family: Arial,sans-serif;
      font-size: 12px;
@@ -355,12 +356,55 @@ button:active{
      box-shadow: 1px 1px 10px black inset, 0 1px 0 rgba( 255, 255, 255, 0.4);
 }
 
+
 .buttonSelected {
   color: green;
   background: #444;
   background: linear-gradient( #555, #2C2C2C);
   box-shadow: 1px 1px 10px black inset, 0 1px 0 rgba( 255, 255, 255, 0.4);
 }
+/**/ 
+
+/* Buttons V2 */
+
+button {
+     font-family: Arial,sans-serif;
+     font-size: 12px;
+     font-weight: bold;
+     color: #696969;
+     min-width: 50px;
+     text-align: center;
+}
+
+button:hover {
+    color: #000;
+}
+
+
+button:disabled {
+     color: grey;
+}
+
+
+button:active{
+     color: #000;
+}
+
+
+.buttonSelected {
+  color: #000;
+  /*
+  background: #444;
+  background: linear-gradient( #555, #2C2C2C);
+  box-shadow: 1px 1px 10px black inset, 0 1px 0 rgba( 255, 255, 255, 0.4);
+  /**/
+}
+
+
+
+/* Fin des boutons */
+
+
 
 .groupDefCam {
     width:80px;

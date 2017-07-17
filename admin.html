@@ -17,114 +17,126 @@
 
 <body>
 
-    <strong>
-    	<div id="zone_info_server">
-		</div>
-	</strong>
-    <hr/>
-    <p>
-        <a href="/">  <<< Retour Index</a>   |   <a href="/robot/"> IHM Robot</a>   |   <a href="/pilote/"> IHM Pilote</a>
-        <span>  |  </span>
-        <span id="changeLogin">
-            <button class="shadowBlack" id="admin_changePseudo" onclick="changePseudo()">
-              Modifier votre pseudo
-            </button>
-        </span>
-    </p> 
-    <hr/>
-    <strong> Clients connectés: </strong><br/>
-    <div id="zone_info_users"></div>
-    <br/>
-    <span id="reloadAllClients">
-        <button class="shadowBlack" id="admin_ReloadClients" onclick="reloadClients()">
-            Reload de tous les clients
-        </button>
-    </span>
-    <span> | </span>
-    <span id="ejectAllClients">
-        <button class="shadowBlack" id="admin_RazConnexion" onclick="ejectClients()">
-           Ejection de tous les clients
-        </button>
-    </span>
-      
+    <div id="manageClients">  
+	    <strong>
+	    	<div id="zone_info_server">
+			</div>
+		</strong>
+	    <hr/>
+	    <p>
+	        <a href="/">  <<< Retour Index</a>   |   <a href="/robot/"> IHM Robot</a>   |   <a href="/pilote/"> IHM Pilote</a>
+	        <span>  |  </span>
+	        <span id="changeLogin">
+	            <button class="shadowBlack" id="admin_changePseudo" onclick="changePseudo()">
+	              Modifier votre pseudo
+	            </button>
+	        </span>
+	    </p> 
+	    <hr/>
+	    <strong> Clients connectés: </strong><br/>
+	    <div id="zone_info_users"></div>
+	    <br/>
+	    <span id="reloadAllClients">
+	        <button class="shadowBlack" id="admin_ReloadClients" onclick="reloadClients()">
+	            Reload de tous les clients
+	        </button>
+	    </span>
+	    <span> | </span>
+	    <span id="ejectAllClients">
+	        <button class="shadowBlack" id="admin_RazConnexion" onclick="ejectClients()">
+	           Ejection de tous les clients
+	        </button>
+	    </span>
+	   <hr/> 
+	</div>
+   	
+   	<div id="manageFakeRobubox">  
+	   <strong>Mode de simulation "FakeRobubox": </strong>
+	    <input type="radio" name="FakeRobot" value="true" id="FakeTrue" onclick="setFakeRobubox(true)" disabled="true"> <label for="FakeTrue">Activé</label>
+	    <input type="radio" name="FakeRobot" value="false" id="FakeFalse" onclick="setFakeRobubox(false)" disabled="true" /> <label for="FakeFalse">Désactivé</label>
+	    <br/>
+	    <p>Fakerobubox: émulation logicielle d'un pseudo système embarqué pour la cartographie, la jauge de batterie et les commandes drive.<br/>
+	    Si activé, ne tient pas compte de la carte chargée. Simulation basée sur la carte du laboratoire I3S (Labo261.png) </br>
+	    La navigation automatique par POI et les commandes de relocalisations sont désactivées.</p>
+	    <hr>
+	</div>
+	
 
 
-   <hr/>   
-   <strong>Mode de simulation "FakeRobubox": </strong>
-    <input type="radio" name="FakeRobot" value="true" id="FakeTrue" onclick="setFakeRobubox(true)" disabled="true"> <label for="FakeTrue">Activé</label>
-    <input type="radio" name="FakeRobot" value="false" id="FakeFalse" onclick="setFakeRobubox(false)" disabled="true" /> <label for="FakeFalse">Désactivé</label>
-    <br/>
-    <p>Si le client Robot n'est pas sur un Pc embarqué dans un Kompaï ou un autre robot,<br/>
-    on émule un pseudo système embarqué pour la cartographie, la jauge de batterie et les commandes drive.</p>
+	<div id="manageMap">
+		<strong>Carte chargée: </strong>	<span id="zone_info_maps"> ??? </span>		
+		<!--
+		<span id="getMaps">
+	        <button class="shadowBlack" id="admin_getMaps" onclick="getMaps()">Get Maps</button>
+	    </span>
+	    -->
+		  <br/><br/>
+		    <div class="select">
+		        <label for="Maps_list">Cartes disponibles:</label><br/>
+		        <select id="Maps_list">
+		        </select>
+		        <button id="admin_ButtonMapsSelect" onclick="selectMap()">Sélectionner</button>
+		        <button id="admin_ButtonMapsDelete" onclick="deleteMap()">Supprimer</button>
+		    </div>
+		  <br/>
+		 
+		    <form id="uploadForm"
+		          enctype="multipart/form-data"
+		          action='/i3s/'
+		          method="post">
+		      <input type="file" name="userPhoto" />
+		      <input type="submit" value="Upload Map" name="submit">
+		      <span id = "status"></span>
+		    </form>
 
-    <hr>
-	<strong>Carte chargée: </strong>	<span id="zone_info_maps"> ??? </span>		
-	<!--
-	<span id="getMaps">
-        <button class="shadowBlack" id="admin_getMaps" onclick="getMaps()">Get Maps</button>
-    </span>
-    -->
-  <br/><br/>
-    <div class="select">
-        <label for="Maps_list">Cartes disponibles:</label><br/>
-        <select id="Maps_list">
-        </select>
-        <button id="admin_ButtonMapsSelect" onclick="selectMap()">Sélectionner</button>
-        <button id="admin_ButtonMapsDelete" onclick="deleteMap()">Supprimer</button>
-    </div>
-  <br/>
- 
-    <form id="uploadForm"
-          enctype="multipart/form-data"
-          action='/i3s/'
-          method="post">
-      <input type="file" name="userPhoto" />
-      <input type="submit" value="Upload Map" name="submit">
-      <span id = "status"></span>
-    </form>
-
-  <hr/>   
-   <strong>Gamepad physique: </strong>
-    <input type="radio" name="gamePadRobot" value="true" id="GamePadTrue" onclick="setGamepad(true)" disabled="true"> <label for="gamePadTrue">Activé</label>
-    <input type="radio" name="gamePadRobot" value="false" id="GamePadFalse" onclick="setGamepad(false)" disabled="true" /> <label for="gamePadFalse">Désactivé</label>
-    <br/>
-
- 
- <hr/>
-    <div id="zone_info_Select_Cameras">
-        
-        <div class="select">
-            
-            <strong>Caméra 1 (Conduite): </strong>    <span id="zone_info_cam1"> ??? </span>  
-            <label for="Cams_list">Caméras disponibles:</label>
-            <select id="Cams_list">
-            </select>
-            <button id="admin_ButtonCamSelect" onclick="selectCam1()">Changer</button>
-            <br/>
-        
-            <strong>Caméra 2 (Sol): </strong>    <span id="zone_info_cam2"> ??? </span>  
-            <label for="Cams_list">Caméras disponibles:</label>
-            <select id="Cams_list">
-            </select>
-            <button id="admin_ButtonCamSelect" onclick="selectCam2()">Changer</button>
-            <br/>
-            
-            <strong>Caméra 3 (Visite): </strong>    <span id="zone_info_cam3"> ??? </span>  
-            <label for="Cams_list">Caméras disponibles:</label>
-            <select id="Cams_list">
-            </select>
-            <button id="admin_ButtonCamSelect" onclick="selectCam3()">Changer</button>
+		  <hr/>
+	</div> 
 
 
+   <div id="manageGamepad">  
+	   <strong>Gamepad physique: </strong>
+	    <input type="radio" name="gamePadRobot" value="true" id="GamePadTrue" onclick="setGamepad(true)" disabled="true"> <label for="gamePadTrue">Activé</label>
+	    <input type="radio" name="gamePadRobot" value="false" id="GamePadFalse" onclick="setGamepad(false)" disabled="true" /> <label for="gamePadFalse">Désactivé</label>
+	    <br/>
+	 	<hr/>
+ 	</div>
 
 
-        </div>
+ 	<div id="manageCameras"> 
+	    <div id="zone_info_Select_Cameras">
+	        
+	        <div class="select">
+	            
+	            <strong>Caméra 1 (Conduite): </strong>    <span id="zone_info_cam1"> ??? </span>  
+	            <label for="Cams_list">Caméras disponibles:</label>
+	            <select id="Cams_list">
+	            </select>
+	            <button id="admin_ButtonCamSelect" onclick="selectCam1()">Changer</button>
+	            <br/>
+	        
+	            <strong>Caméra 2 (Sol): </strong>    <span id="zone_info_cam2"> ??? </span>  
+	            <label for="Cams_list">Caméras disponibles:</label>
+	            <select id="Cams_list">
+	            </select>
+	            <button id="admin_ButtonCamSelect" onclick="selectCam2()">Changer</button>
+	            <br/>
+	            
+	            <strong>Caméra 3 (Visite): </strong>    <span id="zone_info_cam3"> ??? </span>  
+	            <label for="Cams_list">Caméras disponibles:</label>
+	            <select id="Cams_list">
+	            </select>
+	            <button id="admin_ButtonCamSelect" onclick="selectCam3()">Changer</button>
+				<br/>
 
+	            <div id="zone_info_Ip_Camera"></div>
+		    		Label: <input type='text' id='newLabel_Camera'> | Ip: <input type='text' id='newIP_Camera'>
+		    		<span ><button id="addRessource_Camera" onclick="addRessource('Camera')">Ajouter cette caméra</button></span><br/>
 
-
-    </div>
-
-
+	        	</div>
+	    
+	    </div>
+	    <hr/>
+	</div>
 
 
 
@@ -132,17 +144,19 @@
 
 
 
- <hr/>
-    <div id="zone_info_Ip_Robot"></div>
-    Label: <input type='text' id='newLabel_Robot'> | Ip: <input type='text' id='newIP_Robot'>
-    <span ><button id="addRessource_Robot" onclick="addRessource('Robot')">Ajouter ce robot</button></span><br/>
-    <br/>
-    <div id="zone_info_Ip_Camera"></div>
-    Label: <input type='text' id='newLabel_Camera'> | Ip: <input type='text' id='newIP_Camera'>
-    <span ><button id="addRessource_Camera" onclick="addRessource('Camera')">Ajouter cette caméra</button></span><br/>
+	<div id="manageIpRobot"> 
+	 
+		    <div id="zone_info_Ip_Robot"></div>
+		    Label: <input type='text' id='newLabel_Robot'> | Ip: <input type='text' id='newIP_Robot'>
+		    <span ><button id="addRessource_Robot" onclick="addRessource('Robot')">Ajouter ce robot</button></span><br/>
+		    <br/>
+		    <div id="zone_info_Ip_Camera"></div>
+		    Label: <input type='text' id='newLabel_Camera'> | Ip: <input type='text' id='newIP_Camera'>
+		    <span ><button id="addRessource_Camera" onclick="addRessource('Camera')">Ajouter cette caméra</button></span><br/>
 
- <hr/>
-  
+		 <hr/>
+	 </div>
+	  
 
 
 
