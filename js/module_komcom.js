@@ -45,6 +45,8 @@ console.log ("module_komcom V2 chargé");
 
 // ------------ 09/2016 -- Ajouts IPs dynamiques pour Robot et caméra
 
+// ------------ 03/08/2017 -- Modification pour PTZ Optics... 
+
 mobiservUrl = null; // MobiServ Kompaï LaVilette
 foscamUrl = null; // Foscam Kompaï LaVilette
 
@@ -805,9 +807,9 @@ exports.getDataMap = function (){
 }
 
 // ---------- Author F Mazieras
-// Note titi: obsolète. 
+/*// Note titi: obsolète. 
 exports.sendCameraOld = function (data){        
-    /* /decoder_control.cgi?command=[&onestep=&degree=&user=&pwd=&next_url=]
+    //decoder_control.cgi?command=[&onestep=&degree=&user=&pwd=&next_url=]
       
     // 0 up
     // 1 stop up
@@ -817,7 +819,7 @@ exports.sendCameraOld = function (data){
     // 5 stop left
     // 6 right
     // 7 stop right
-    */
+    
 
     // console.log ("komcom.sendCamera("+ url +")");
 
@@ -865,13 +867,13 @@ exports.sendCameraOld = function (data){
         xhr.open('GET', url);
         xhr.send();
         xhr.closed;
-   
-
 }
+/**/
 
 
 // ---------- Author F Mazieras & Thierry Bergeron
-exports.sendCamera = function (data){        
+/*// Obsolète: (ajout switch caméra ptz optics)
+exports.sendCameraOld2 = function (data){        
     
     
     console.log ("komcom.sendCamera *********");
@@ -1003,20 +1005,12 @@ exports.sendCamera = function (data){
     xhr.open('GET', url);
     xhr.send();
     xhr.closed;
-   
-
 }
-
-
-
-
-
-
-
+/**/
 
 // Récupère les infos de la caméra Foscam 
-// Todo: A finir !!!!!
-exports.getCameraInfos = function (query){
+/*// Todo: A finir !!!!!
+exports.getCameraInfosOld = function (query){
     
     console.log ("komcom.getCameraInfos *********");
 
@@ -1062,8 +1056,285 @@ exports.getCameraInfos = function (query){
             }); 
         } 
     }  
+}
+/**/
+
+
+
+
+// --------- 03/08/2017 ------ Switch Foscam/ptz optics
+
+
+// ---------- Author F Mazieras
+function getFoscamCommand(data) {
+
+   console.log("getFoscamCommand("+data+")") 
+
+    var cgiUrl = foscamUrl+"/cgi-bin/CGIProxy.fcgi";
+    var cmdUrl = "?cmd=";
+    var usrUrl = "&usr=webvisite&pwd=230458DS";
+    var valueUrl = "";
+    var command = data.command;
+
+    var value = null;
+    if (data.value) value = data.value;
+    
+     // console.log ("komcom.sendCamera(command = "+ command +", value = "+value+")");
+     //console.log ("komcom.sendCamera()");
+     //console.log(data);
+    
+    switch (command) {
+
+        case "onCameraLeft":
+            cmd = "ptzMoveLeft";
+            break;
+        case "onCameraRight":
+            cmd = "ptzMoveRight";
+            break;
+        case "onCameraUp":
+            cmd = "ptzMoveUp";
+            break;
+        case "onCameraDown":
+            cmd = "ptzMoveDown";
+            break;
+
+        case "onCameraStop":
+            cmd = "ptzStopRun";
+            break;        
+        case "onCameraGoToDefaultPosition":
+            cmd = "ptzReset";
+            break;
+
+        
+        // Speed = 0:very slow, 1:Slow, 2:Normal speed, 3:Fast , 4:Very Fast
+        // /cgi-bin/CGIProxy.fcgi?cmd=setPTZSpeed&speed=2&usr=admin&pwd=    
+        case "onCameraSetSpeed":
+            cmd = "setPTZSpeed";
+            valueUrl = "&speed="+value;
+            break;
+
+
+        // ptzAddPresetPoint
+        // /cgi-bin/CGIProxy.fcgi?cmd=ptzAddPresetPoint&name=test&usr=admin&pwd
+
+        // ptzDeletePresetPoint
+        // /cgi-bin/CGIProxy.fcgi?cmd=ptzDeletePresetPoint&name=test&usr=admin&pwd=
+        case "onCameraDeletePoint":
+            cmd = "ptzDeletePresetPoint";
+            valueUrl = "&name="+value;
+            break;
+        
+        // We have 4 point default:LeftMost\RightMost\TopMost\BottomMost
+        case "onCameraGoToPresetTopMost":
+            cmd = "ptzGotoPresetPoint";
+            valueUrl = "&name=TopMost";
+            break;
+        
+        case "onCameraGoToPresetBottomMost":
+            cmd = "ptzGotoPresetPoint";
+            valueUrl = "&name=BottomMost";
+            break;
+
+        case "onCameraGoToPresetLeftMost":
+            cmd = "ptzGotoPresetPoint";
+            valueUrl = "&name=LeftMost";
+            break;
+
+        case "onCameraGoToPresetRightMost":
+            cmd = "ptzGotoPresetPoint";
+            valueUrl = "&name=RightMost";
+            break;    
+
+
+        // zoomIn
+        // /cgi-bin/CGIProxy.fcgi?cmd=zoomIn
+        case "onCameraZoomIn":
+            cmd = "zoomIn";
+            break;  
+
+        // zoomOut
+        // /cgi-bin/CGIProxy.fcgi?cmd=zoomOut
+        case "onCameraZoomOut":
+            cmd = "zoomOut";
+            break;  
+
+        // zoomStop
+        // /cgi-bin/CGIProxy.fcgi?cmd=zoomStop
+        case "onCameraZoomStop":
+            cmd = "zoomStop";
+            break;  
+
+        // setZoomSpeed
+        // Speed: 1 = Slow, 2= Normal, 3= Fast
+        // /cgi-bin/CGIProxy.fcgi?cmd=setZoomSpeed&usr=admin&pwd=&speed=1
+        case "onCameraSetZoomSpeed":
+            cmd = "setZoomSpeed";
+            valueUrl = "&Speed="+value;
+            break;  
+
+
+        default:
+            console.log("Unknown command: "+cmd);
+            break;
+            
+    }
+    //  var url = "https://127.0.0.1:443/http://"+foscamUrl+"/cgi-bin/CGIProxy.fcgi?cmd="+cmd+"&usr=webvisite&pwd=230458DS";
+    return cgiUrl+cmdUrl+cmd+valueUrl+usrUrl; 
 
 }
+
+// ---------- Author F Mazieras
+function getPtzOpticsCommand(data) {
+
+    console.log("getPtzOpticsCommand("+data+")")
+    var cgiUrl = foscamUrl+"/cgi-bin/ptzctrl.cgi";
+    var cmdUrl = "";
+    var usrUrl = "&usr=admin&pwd=admin";
+    var command = data.command;
+
+    var value = null;
+    if (data.value) value = data.value;
+    
+     // console.log ("komcom.sendCamera(command = "+ command +", value = "+value+")");
+     //console.log ("komcom.sendCamera()");
+     //console.log(data);
+    
+    switch (command) {
+
+        case "onCameraLeft":
+            cmdUrl = "?ptzcmd&left&" + panspeed + "&" + tiltspeed + "";
+            break;
+        case "onCameraRight":
+             cmdUrl = "?ptzcmd&rigth&" + panspeed + "&" + tiltspeed + "";
+            break;
+        case "onCameraUp":
+             cmdUrl = "?ptzcmd&up&" + panspeed + "&" + tiltspeed + "";
+            break;
+        case "onCameraDown":
+             cmdUrl = "?ptzcmd&down&" + panspeed + "&" + tiltspeed + "";
+            break;
+
+        case "onCameraStop":
+             cmdUrl = "?ptzcmd&ptzstop&" + panspeed + "&" + tiltspeed + "";
+            break;        
+        case "onCameraGoToDefaultPosition":
+             cmdUrl = "?ptzcmd&home&" + panspeed + "&" + tiltspeed + "";
+            break;
+
+        
+        // Speed = 0:very slow, 1:Slow, 2:Normal speed, 3:Fast , 4:Very Fast
+        // /cgi-bin/CGIProxy.fcgi?cmd=setPTZSpeed&speed=2&usr=admin&pwd=    
+        case "onCameraSetSpeed":
+            
+            panspeed = value;
+            tiltspeed = value;
+            break;
+
+
+        // ptzAddPresetPoint
+        // /cgi-bin/CGIProxy.fcgi?cmd=ptzAddPresetPoint&name=test&usr=admin&pwd
+
+        // ptzDeletePresetPoint
+        // /cgi-bin/CGIProxy.fcgi?cmd=ptzDeletePresetPoint&name=test&usr=admin&pwd=
+        //case "onCameraDeletePoint":
+            //cmd = "ptzDeletePresetPoint";
+            //valueUrl = "&name="+value;
+        //    break;
+        
+        // We have 4 point default:LeftMost\RightMost\TopMost\BottomMost
+        case "onCameraGoToPresetTopMost":
+            cmdUrl = "?ptzcmd&poscall&1";
+            break;
+        
+        case "onCameraGoToPresetBottomMost":
+            cmdUrl = "?ptzcmd&poscall&2";
+            break;
+
+        case "onCameraGoToPresetLeftMost":
+            cmdUrl = "?ptzcmd&poscall&3";
+            break;
+
+        case "onCameraGoToPresetRightMost":
+            cmdUrl = "?ptzcmd&poscall&4";
+            break;    
+
+
+        // zoomIn
+        // /cgi-bin/CGIProxy.fcgi?cmd=zoomIn
+        case "onCameraZoomIn":
+            cmdUrl = "?ptzcmd&zoomin&" + zoomspeed  + "";
+            break;  
+
+        // zoomOut
+        // /cgi-bin/CGIProxy.fcgi?cmd=zoomOut
+        case "onCameraZoomOut":
+            cmdUrl = "?ptzcmd&zoomout&" + zoomspeed + "";
+            break;  
+
+        // zoomStop
+        // /cgi-bin/CGIProxy.fcgi?cmd=zoomStop
+        case "onCameraZoomStop":
+            cmdUrl = "?ptzcmd&zoomstop&" + zoomspeed + "";
+            break;  
+
+        // setZoomSpeed
+        // Speed: 1 = Slow, 2= Normal, 3= Fast
+        // /cgi-bin/CGIProxy.fcgi?cmd=setZoomSpeed&usr=admin&pwd=&speed=1
+        case "onCameraSetZoomSpeed":
+            zoomspeed = value;
+            break;  
+
+
+        default:
+            console.log("Unknown command: "+cmd);
+            break;
+            
+    }
+    //  var url = "https://127.0.0.1:443/http://"+foscamUrl+"/cgi-bin/CGIProxy.fcgi?cmd="+cmd+"&usr=webvisite&pwd=230458DS";
+    return cgiUrl+cmdUrl+usrUrl; 
+}
+
+
+
+// ---------- Author F Mazieras & Thierry Bergeron
+exports.sendCamera = function (data){        
+    
+    
+    console.log ("komcom.sendCamera *********");
+    console.log (data);
+    
+    if ( isPanTiltCamera == false ) {
+        console.log ("isPanTiltCamera == false");
+        return
+    } else {
+        console.log ("isPanTiltCamera == true");
+    }
+
+
+
+    var proxyUrl = "https://127.0.0.1:443/http://";
+    var url;
+
+    if (isFoscam == true) {
+        url = proxyUrl + getFoscamCommand(data)
+    } else {
+        url = proxyUrl + getPtzOpticsCommand(data)
+    }
+    //console.log ("komcom.sendCamera("+ url +")");
+        
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url);
+    xhr.send();
+    xhr.closed;
+}
+
+
+
+
+
+
+
+
 
 
 

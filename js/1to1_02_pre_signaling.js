@@ -43,9 +43,14 @@ console.log("1to1_02_pre_signaling chargé")
 // 23/05/17: PROVISOIRE
 // Désativation provisoire des commandes caméras (pour expo valerian)
 // todo: A mettre en paramètrs admin
-isPanTiltCamera = false;
+isPanTiltCamera = true;
 
-
+// 25/07/17: Add modifs F Mazieras
+isFoscam = false;
+panspeed = 8; // 1 a 24
+tiltspeed = 8; // 1 a 20
+zoomspeed = 4; //0 a 7
+/**/
 
 
 

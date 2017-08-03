@@ -49,7 +49,7 @@
 
 	// Numéro de version
 	exports.appVersion = function(){
-	    return '2.0.2';
+	    return '2.0.3';
 	};
 
 	// Crédits

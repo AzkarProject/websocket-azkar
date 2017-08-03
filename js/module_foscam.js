@@ -37,12 +37,11 @@
 (function(exports){
 
 	// if (isPanTiltCamera == false) return
-	
 	console.log ("module_foscam chargé");
 
 	
 	// Mode de controle de la caméra au clavier
-	// Pas a pas ou continu. par défaut c'est pas a pas...
+	// Pas a pas ou continu. par défaut c'est pas à pas...
 	var modeKeyboard = "modeSbS"; // "modeContinue"
 
 	
@@ -54,6 +53,7 @@
 
 	// Switch du mode de controle
 	function switchCameraMode(mode) {
+		console.log("switchCameraMode("+mode+")")
 		modeKeyboard = mode;
 	}
 
@@ -122,96 +122,6 @@
 		/**/
 
 	}
-
-
-	/*// ---------- Add F Mazieras
-	// Note titi: obsolète. Remplacé par les touches directionnelles
-	// Et la fonction foscam.moveCamera(axe)
-	function prepareCameraCommandOLD(gamepad, axe1, axe2) {
-		
-		// haut 0,-1
-		// bas 0,1
-		// droite 1,0
-		// gauche -1,0
-		var camOrder = "??";
-		if (axe1 == 1) {
-			
-			if (!onCameraRight) {
-				//alert ("Faitchier");
-				camOrder = "onCameraRight";
-				prepareDriveCommand(gamepad, null, null,"","onCameraRight" );
-				onCameraRight=true;
-			}
-		
-		} else {
-			
-			
-			if (onCameraRight) {
-				camOrder = "onCameraStop";
-				prepareDriveCommand(gamepad, null, null,"","onCameraStop" );
-				onCameraRight=false;
-			}
-			
-		
-		}
-		
-		
-		if (axe1 == -1 ) {
-			if (!onCameraLeft) {
-				camOrder = "onCameraLeft";
-				prepareDriveCommand(gamepad, null, null,"","onCameraLeft" );
-				onCameraLeft=true;
-			}
-		} else {
-			if (onCameraLeft) {
-				camOrder = "onCameraStop";
-				prepareDriveCommand(gamepad, null, null,"","onCameraStop" );
-				onCameraLeft=false;
-			}
-		}
-		
-
-		if (axe2 == 1) {
-			if (!onCameraDown) {
-				camOrder = "onCameraDown";
-				prepareDriveCommand(gamepad, null, null,"","onCameraDown" );
-				onCameraDown=true;
-			}
-		} else {
-			if (onCameraDown) {
-				camOrder = "onCameraStop";
-				prepareDriveCommand(gamepad, null, null,"","onCameraStop" );
-				onCameraDown=false;
-			}
-		}
-
-
-		if (axe2 == -1) {
-			if (!onCameraUp) {
-				camOrder = "onCameraUp";
-				prepareDriveCommand(gamepad, null, null,"","onCameraUp" );
-				onCameraUp=true;
-			}
-		} else {
-			if (onCameraUp) {
-				camOrder = "onCameraStop";
-				prepareDriveCommand(gamepad, null, null,"","onCameraStop" );
-				onCameraUp=false;
-			}
-		}
-		
-
-		// console.log ("camOrder:" + camOrder);
-		
-	
-	}
-	/**/
-
-
-
-
-
-
 
 
 	// Méthode publique passerelle
