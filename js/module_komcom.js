@@ -1211,16 +1211,21 @@ function getPtzOpticsCommand(data) {
             cmdUrl = "?ptzcmd&right&" + panspeed + "&" + tiltspeed + "";
             break;
         case "onCameraUp":
+            console.log('case "onCameraUp"')
              cmdUrl = "?ptzcmd&up&" + panspeed + "&" + tiltspeed + "";
             break;
         case "onCameraDown":
+            console.log('case "onCameraDown"')
              cmdUrl = "?ptzcmd&down&" + panspeed + "&" + tiltspeed + "";
             break;
 
         case "onCameraStop":
-             cmdUrl = "?ptzcmd&ptzstop&" + panspeed + "&" + tiltspeed + "";
+            console.log('case "onCameraStop"')
+            cmdUrl = "?ptzcmd&ptzstop&" + panspeed + "&" + tiltspeed + "";
             break;        
+        
         case "onCameraGoToDefaultPosition":
+            console.log('case "onCameraGoToDefaultPosition"')
              cmdUrl = "?ptzcmd&home&" + panspeed + "&" + tiltspeed + "";
             break;
 

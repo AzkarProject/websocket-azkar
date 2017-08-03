@@ -343,7 +343,7 @@
 		buttonRT = gamepad.buttons[7]; 
 
 		buttonBack = gamepad.buttons[8]; // efface les notifications
-		buttonStart = gamepad.buttons[9]; // switche fullScreen
+		buttonStart = gamepad.buttons[9]; // switch fullScreen
 
 		buttonAxeLeft = gamepad.buttons[10]; // Homme/mort pour l'axe Droit (FulDrive)
 		buttonAxeRight = gamepad.buttons[11]; // non utilisé
@@ -355,8 +355,6 @@
 
 		
 		ihm.switchGamepadDisplayMode("default")
-
-
 
 		// contrôle de la caméra - Stop des mouvements
 		// si les boutons directionnels de caméra ne sont pas préssés...
