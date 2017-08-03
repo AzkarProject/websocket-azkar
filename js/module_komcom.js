@@ -1203,10 +1203,12 @@ function getPtzOpticsCommand(data) {
     switch (command) {
 
         case "onCameraLeft":
+            console.log('case "onCameraLeft"')
             cmdUrl = "?ptzcmd&left&" + panspeed + "&" + tiltspeed + "";
             break;
         case "onCameraRight":
-             cmdUrl = "?ptzcmd&rigth&" + panspeed + "&" + tiltspeed + "";
+            console.log('case "onCameraRight"')
+            cmdUrl = "?ptzcmd&right&" + panspeed + "&" + tiltspeed + "";
             break;
         case "onCameraUp":
              cmdUrl = "?ptzcmd&up&" + panspeed + "&" + tiltspeed + "";
