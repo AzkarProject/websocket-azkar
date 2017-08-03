@@ -38,14 +38,12 @@
 
 console.log("module_forms chargé");
 
-
-
 // IHM Pilote
 // Dévérouillage formulaires selection caméras Robot
 // Animation d'invite
 function activeManageDevices() {
 
-     console.log("@ activeManageDevices()");
+    console.log("@ activeManageDevices()");
 
     // On active les sélecteurs de listes
     remote_ButtonDevices.disabled = false;

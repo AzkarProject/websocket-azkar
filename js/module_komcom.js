@@ -1187,6 +1187,7 @@ function getFoscamCommand(data) {
 function getPtzOpticsCommand(data) {
 
     console.log("getPtzOpticsCommand("+data+")")
+    console.log(data)
     var cgiUrl = foscamUrl+"/cgi-bin/ptzctrl.cgi";
     var cmdUrl = "";
     var usrUrl = "&usr=admin&pwd=admin";
