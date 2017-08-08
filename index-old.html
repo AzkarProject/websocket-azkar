@@ -1,0 +1,90 @@
+<html>
+<head>
+
+	
+</head>
+
+    <head>
+        <meta charset="utf-8" />
+        <meta name='keywords' content='WebRTC, HTML5, JavaScript' />
+		<meta name='description' content='WebRTC benchmarks base for AZKAR project' />
+		<!-- viewport sert a controler la mise en page sur les appareils mobiles -->
+		<meta name='viewport' content='width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1'>
+		<link rel="stylesheet" href="/css/style.css" />
+        <title>1to1-Index</title>
+    </head>
+
+
+<body>
+
+    <strong><info id="zone_info_server"></info></strong>
+    <hr/>
+    <h2 id='instance_title'>1to1-Index</h2>
+    <!--
+    <p><a href="/robot/"> >>> Robot</a></p>
+    <p><a href="/pilote/"> >>> Pilote</a></p>
+    -->
+    <p><a href="/robotV1/"> >>> Robot V1</a></p>
+    <p><a href="/piloteV1/"> >>> Pilote V1</a></p>
+        ------------------------------------------
+    <p><a href="/robotV2/"> >>> Robot V2</a></p>
+    <p><a href="/piloteV2"> >>> Pilote V2</a></p>
+    
+
+    <section id='zone_content_index'></section>   
+
+      <section id="TopNotification">
+                       
+            <div id='infoMessage' class="info message">
+            </div>
+
+            <div id='errorMessage' class="error message">
+            </div>
+
+            <div id='warningMessage' class="warning message">
+            </div>
+
+            <div id='sucessMessage' class="success message">
+            </div>
+
+            <div id='standardMessage' class="standard message">
+            </div>
+
+    </section>
+
+    <script>
+    var type = null;
+    </script>
+
+    <script src='/js/lib/jquery-1.10.1.min.js'></script>
+    <script src="/js/common_app_settings.js"></script>
+<!--     <script src="/js/branch_settings/common_app_branch_settings.js"></script> -->
+	<script src="/js/common_tools.js"></script>
+
+
+	<script src="/socket.io/socket.io.js"></script>
+    <script src='/js/module_notifications.js'></script>
+    <script src='/js/module_ihm.js'></script>
+    
+    
+
+
+	<script>                    
+            
+        // Initialisation du canal de signalisation
+        // TODO: Si un canal de connexion existe déjà, ne pas initialiser...
+        
+        
+        var socket = io.connect();
+        //console.log(socket);
+        // var localPseudo = checkCookie();
+        
+        ihm.getHeaderPage();
+        // socket.emit('onConnectionUser', null); // Version objet
+        // socket.emit('onConnectionUser', {pseudo: localPseudo}); // Version objet
+
+    
+    </script>	
+
+</body>
+</html>

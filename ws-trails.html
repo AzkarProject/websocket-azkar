@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  
+        <meta charset="utf-8" />
+        <meta name='keywords' content='WebRTC, HTML5, JavaScript' />
+        <meta name='description' content='WebRTC benchmarks base for AZKAR project' />
+        <!-- viewport sert a controler la mise en page sur les appareils mobiles -->
+        <meta name='viewport' content='width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1'>
+        
+      
+        <title>Manage Museum Trails</title>
+
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+        <link rel="stylesheet" type="text/css" href="css/myStyle.css"/>
+        <!--Glyphicon bootstrap -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+        <link rel="stylesheet" href="/css/style.css" />
+
+</head>
+
+
+<body>
+     
+
+     <div class="modal fade" id="myModal" role="dialog">
+          <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                      <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title" id="modalTitle"></h4>
+                      </div>
+                      <div class="modal-body" id="modalBody">
+                      </div>
+                      <div class="modal-footer" id="modalFooter">
+                      </div>
+                </div>
+
+          </div>
+    </div>
+
+
+    <strong>
+        <div id="zone_info_server"></div>
+    </strong>
+   
+
+        <nav class="navbar navbar-default">
+              <div class="container-fluid">
+                  
+                  <!--
+                  <div class="navbar-header">
+                        <a class="navbar-brand" href="http://www.azkar.fr/">Azkar</a>
+                  </div>
+                  
+                  <div class="navbar-header">
+                        <a class="navbar-brand" href="https://corese.inria.fr/">Corese</a>
+                  </div>
+                  -->
+
+                  <ul class="nav navbar-nav">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/i3s">Robot Administration</a></li>
+                        <li><a href="ws-media.html">Museum Ressources</a></li>
+                        <li><a href="ws-scene.html">Museum Scenes</a></li>
+                        <li class="active"><a href="ws-trails.html">Museum Trails</a></li>
+                        <li><a href="ws-poi.html">Museum Map</a></li>
+                        <li><a href="ws-object.html">Museum Objects</a></li>
+                        <li><a href="/robotV2/">Robot interface</a></li>
+                        <li><a href="/piloteV2/">Pilot Interface</a></li>
+                  </ul>
+             
+              </div>
+        
+        </nav>
+
+        </br>
+        
+        <div layout:fragment="content">
+                
+                <div class="col-md-12">
+                        <div class="panel panel-primary">
+
+                            <div class="panel-heading"><h5><b>Museum Trails</b></h5>
+                            </div>
+                            
+                            <div id="xxxx"  class="panel-body"> 
+
+                                   <p>En construction !!</p>
+
+                            </div> 
+                        </div>
+              </div>
+        </div>
+
+
+        <!--
+        <div layout:fragment="content">
+                <div class="col-md-12">
+                        <div class="panel panel-primary">
+
+                            <div class="panel-heading"><h5><b>xxxxxx : </b></h5>
+                            </div>
+                            
+                            <div id="xxxx"  class="panel-body"> 
+
+                                   
+
+                            </div> 
+                        </div>
+              </div>
+        </div>
+        -->
+        
+
+
+
+
+        <section id="TopNotification">
+                         
+              <div id='infoMessage' class="info message">
+              </div>
+
+              <div id='errorMessage' class="error message">
+              </div>
+
+              <div id='warningMessage' class="warning message">
+              </div>
+
+              <div id='sucessMessage' class="success message">
+              </div>
+
+              <div id='standardMessage' class="standard message">
+              </div>
+
+        </section>
+
+        <script>
+        var type = null;
+        var refresh = true;
+        page = "museumTrails";
+        </script>
+
+        <script src="/socket.io/socket.io.js"></script>
+        <script src='/js/lib/jquery-1.10.1.min.js'></script>       
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="/js/lib/xml2json.js"></script>
+        <script src="/js/common_tools.js"></script>
+        <script src="/js/common_models.js"></script>
+        <script src="/js/common_app_settings.js"></script>
+        <script src='/js/module_notifications.js'></script>
+        <script src='/js/module_ihm.js'></script>
+        <script src="/js/module_admin_application.js"></script>
+        <script src="/js/module_admin_sparql.js"></script>
+       
+
+</body>
+</html>
