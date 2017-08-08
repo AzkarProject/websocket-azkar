@@ -125,6 +125,27 @@ var PORT = port;
 var HOST = ipaddress;
 app = express();
 
+
+
+/*// Add proxy --------------------------
+var hostProxy = process.env.PORT ? '0.0.0.0' : '127.0.0.1';
+var portProxy = process.env.PORT || 443;
+var cors_proxy = require('cors-anywhere');
+var serverProxy = cors_proxy.createServer({
+    httpsOptions : https_options,
+    originWhitelist: [], // Allow all origins
+    removeHeaders: ['cookie', 'cookie2']
+});
+
+var komcomProxy = require('./komcom-proxy.js')(serverProxy);
+
+komcomProxy.listen(portProxy, hostProxy, function() {
+    console.log('PROXY Running CORS Anywhere on ' + hostProxy + ':' + portProxy);
+});
+
+/**/// --------------------------------
+
+
 server = https.createServer(https_options, app).listen(PORT, HOST);
 console.log('HTTPS Server listening on %s:%s', HOST, PORT);
 
@@ -170,15 +191,24 @@ app.get('/piloteV2/', function(req, res) {
 
 
 
-
-
-
-
-
 // Add 16/09/16 - titi
 app.get('/i3s/', function(req, res) {
     res.sendFile(__dirname + '/admin.html');
 });
+
+
+// Add 07/08/2017 - Oussama
+// Routing des différentes IHM
+app.get('/', function(req, res) {
+    res.sendFile(__dirname + '/ws-media.html');
+});
+
+app.get('/', function(req, res) {
+    res.sendFile(__dirname + '/ws-scene.html');
+});
+
+
+
 // ------------------
 
 // On passe la variable hostName en ajax à l'IHM d'accueil
@@ -222,6 +252,10 @@ var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 var ontology = ""
 
 
+// Adds Web Sémantique (07/08/17) To Request SPARQL...
+var request = require('request');
+
+
 // Adds partie Admin >> Flags & variables de configuration -----------
 isFakeRobubox = true; // Mode simulateur activé par défaut.
 activeMap = 'map_unavailable.jpg'; // Image de la Map par défaut
@@ -236,6 +270,7 @@ io.on('connection', function(socket, pseudo) {
 
     // Ecouteur de connexion entrante
     onSocketConnected(socket);
+
 
     // Quand un User rentre un pseudo 
     // on le stocke en variable de session et on informe les autres Users
@@ -744,6 +779,25 @@ io.on('connection', function(socket, pseudo) {
             }
         }
     }
+
+
+    
+    // 07/08/2017 ------- Web sémantique
+    // Traitement d'une requete SPARQL
+    socket.on('executeSPARQL', function(data) {
+        
+        console.log( "@ socket.on('executeSPARQL',"+data.typeRequest+")" )
+        
+        request(data.url, function (error, response, body) {
+            console.log('error:', error); // Print the error if one occurred 
+            console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received 
+            data.result=body;
+            console.log( "> io.to(socket.id).emit('resultSPARQL',"+data.typeRequest+")" )
+            io.to(socket.id).emit('resultSPARQL', data);
+        
+        });
+
+    });
 
 
     // ----------------------- // Fin Ajouts Web Sémantique 

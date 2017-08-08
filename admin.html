@@ -1,845 +1,380 @@
-<html>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-
-	
-</head>
-
-    <head>
+  
         <meta charset="utf-8" />
         <meta name='keywords' content='WebRTC, HTML5, JavaScript' />
-		<meta name='description' content='WebRTC benchmarks base for AZKAR project' />
-		<!-- viewport sert a controler la mise en page sur les appareils mobiles -->
-		<meta name='viewport' content='width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1'>
-		<link rel="stylesheet" href="/css/style.css" />
-        <title>1to1-Admin</title>
-    </head>
+        <meta name='description' content='WebRTC benchmarks base for AZKAR project' />
+        <!-- viewport sert a controler la mise en page sur les appareils mobiles -->
+        <meta name='viewport' content='width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1'>
+        
+      
+        <title>Manage Museum Scene</title>
+
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+        <link rel="stylesheet" type="text/css" href="css/myStyle.css"/>
+        <!--Glyphicon bootstrap -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+        <link rel="stylesheet" href="/css/style.css" />
+
+</head>
 
 
 <body>
+     
 
-    <div id="manageClients">  
-	    <strong>
-	    	<div id="zone_info_server">
-			</div>
-		</strong>
-	    <hr/>
-	    <p>
-	        <a href="/">  <<< Retour Index</a>   |   <a href="/robot/"> IHM Robot</a>   |   <a href="/pilote/"> IHM Pilote</a>
-	        <span>  |  </span>
-	        <span id="changeLogin">
-	            <button class="shadowBlack" id="admin_changePseudo" onclick="changePseudo()">
-	              Modifier votre pseudo
-	            </button>
-	        </span>
-	    </p> 
-	    <hr/>
-	    <strong> Clients connectés: </strong><br/>
-	    <div id="zone_info_users"></div>
-	    <br/>
-	    <span id="reloadAllClients">
-	        <button class="shadowBlack" id="admin_ReloadClients" onclick="reloadClients()">
-	            Reload de tous les clients
-	        </button>
-	    </span>
-	    <span> | </span>
-	    <span id="ejectAllClients">
-	        <button class="shadowBlack" id="admin_RazConnexion" onclick="ejectClients()">
-	           Ejection de tous les clients
-	        </button>
-	    </span>
-	   <hr/> 
-	</div>
-   	
-   	<div id="manageFakeRobubox">  
-	   <strong>Mode de simulation "FakeRobubox": </strong>
-	    <input type="radio" name="FakeRobot" value="true" id="FakeTrue" onclick="setFakeRobubox(true)" disabled="true"> <label for="FakeTrue">Activé</label>
-	    <input type="radio" name="FakeRobot" value="false" id="FakeFalse" onclick="setFakeRobubox(false)" disabled="true" /> <label for="FakeFalse">Désactivé</label>
-	    <br/>
-	    <p>Fakerobubox: émulation logicielle d'un pseudo système embarqué pour la cartographie, la jauge de batterie et les commandes drive.<br/>
-	    Si activé, ne tient pas compte de la carte chargée. Simulation basée sur la carte du laboratoire I3S (Labo261.png) </br>
-	    La navigation automatique par POI et les commandes de relocalisations sont désactivées.</p>
-	    <hr>
-	</div>
-	
+     <div class="modal fade" id="myModal" role="dialog">
+          <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                      <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title" id="modalTitle"></h4>
+                      </div>
+                      <div class="modal-body" id="modalBody">
+                      </div>
+                      <div class="modal-footer" id="modalFooter">
+                      </div>
+                </div>
+
+          </div>
+    </div>
 
 
-	<div id="manageMap">
-		<strong>Carte chargée: </strong>	<span id="zone_info_maps"> ??? </span>		
-		<!--
-		<span id="getMaps">
-	        <button class="shadowBlack" id="admin_getMaps" onclick="getMaps()">Get Maps</button>
-	    </span>
-	    -->
-		  <br/><br/>
-		    <div class="select">
-		        <label for="Maps_list">Cartes disponibles:</label><br/>
-		        <select id="Maps_list">
-		        </select>
-		        <button id="admin_ButtonMapsSelect" onclick="selectMap()">Sélectionner</button>
-		        <button id="admin_ButtonMapsDelete" onclick="deleteMap()">Supprimer</button>
-		    </div>
-		  <br/>
-		 
-		    <form id="uploadForm"
-		          enctype="multipart/form-data"
-		          action='/i3s/'
-		          method="post">
-		      <input type="file" name="userPhoto" />
-		      <input type="submit" value="Upload Map" name="submit">
-		      <span id = "status"></span>
-		    </form>
+    <strong>
+        <div id="zone_info_server"></div>
+    </strong>
+   
 
-		  <hr/>
-	</div> 
+        <nav class="navbar navbar-default">
+              <div class="container-fluid">
+                  
+                  <!--
+                  <div class="navbar-header">
+                        <a class="navbar-brand" href="http://www.azkar.fr/">Azkar</a>
+                  </div>
+                  
+                  <div class="navbar-header">
+                        <a class="navbar-brand" href="https://corese.inria.fr/">Corese</a>
+                  </div>
+                  -->
 
-
-   <div id="manageGamepad">  
-	   <strong>Gamepad physique: </strong>
-	    <input type="radio" name="gamePadRobot" value="true" id="GamePadTrue" onclick="setGamepad(true)" disabled="true"> <label for="gamePadTrue">Activé</label>
-	    <input type="radio" name="gamePadRobot" value="false" id="GamePadFalse" onclick="setGamepad(false)" disabled="true" /> <label for="gamePadFalse">Désactivé</label>
-	    <br/>
-	 	<hr/>
- 	</div>
-
-
- 	<div id="manageCameras"> 
-	    <div id="zone_info_Select_Cameras">
-	        
-	        <div class="select">
-	            
-	            <!--
-                <strong>Caméra 1 (Conduite): </strong>    <span id="zone_info_cam1"> ??? </span>  
-	            <label for="Cams_list">Caméras disponibles:</label>
-	            <select id="Cams_list">
-	            </select>
-	            <button id="admin_ButtonCamSelect" onclick="selectCam1()">Changer</button>
-	            <br/>
-	        
-	            <strong>Caméra 2 (Sol): </strong>    <span id="zone_info_cam2"> ??? </span>  
-	            <label for="Cams_list">Caméras disponibles:</label>
-	            <select id="Cams_list">
-	            </select>
-	            <button id="admin_ButtonCamSelect" onclick="selectCam2()">Changer</button>
-	            <br/>
-	            
-	            <strong>Caméra 3 (Visite): </strong>    <span id="zone_info_cam3"> ??? </span>  
-	            <label for="Cams_list">Caméras disponibles:</label>
-	            <select id="Cams_list">
-	            </select>
-	            <button id="admin_ButtonCamSelect" onclick="selectCam3()">Changer</button>
-				<br/>
-                -->
-
-	            <div id="zone_info_Ip_Camera"></div>
-		    		Label: <input type='text' id='newLabel_Camera'> | Ip: <input type='text' id='newIP_Camera'>
-		    		<span ><button id="addRessource_Camera" onclick="addRessource('Camera')">Ajouter cette caméra</button></span><br/>
-
-	        	</div>
-	    
-	    </div>
-	    <hr/>
-	</div>
-
-
-
-
-
-
-
-	<div id="manageIpRobot"> 
-	 
-		    <div id="zone_info_Ip_Robot"></div>
-		    Label: <input type='text' id='newLabel_Robot'> | Ip: <input type='text' id='newIP_Robot'>
-		    <span ><button id="addRessource_Robot" onclick="addRessource('Robot')">Ajouter ce robot</button></span><br/>
-		    <br/>
-		    <!--
-            <div id="zone_info_Ip_Camera"></div>
-		    Label: <input type='text' id='newLabel_Camera'> | Ip: <input type='text' id='newIP_Camera'>
-		    <span ><button id="addRessource_Camera" onclick="addRessource('Camera')">Ajouter cette caméra</button></span><br/>
-            -->
-
-		 <hr/>
-	 </div>
-	  
-
-
-
-
-
-
-      <section id="TopNotification">
-                       
-            <div id='infoMessage' class="info message">
-            </div>
-
-            <div id='errorMessage' class="error message">
-            </div>
-
-            <div id='warningMessage' class="warning message">
-            </div>
-
-            <div id='sucessMessage' class="success message">
-            </div>
-
-            <div id='standardMessage' class="standard message">
-            </div>
-
-    </section>
-
-    <script>
-    var type = null;
-    var refresh = true;
-    </script>
-
-    <script src='/js/lib/jquery-1.10.1.min.js'></script>
-    <script src="/js/common_models.js"></script>
-    <script src="/js/common_app_settings.js"></script>
-<!--     <script src="/js/branch_settings/common_app_branch_settings.js"></script> -->
-	<script src="/js/common_tools.js"></script>
-
-
-	<script src="/socket.io/socket.io.js"></script>
-    <script src='/js/module_notifications.js'></script>
-    <script src='/js/module_ihm.js'></script>
-    <!--
-    <script src='/js/main_websocket.js'></script>
-    -->
-
-
-	<script>                    
-            
-
-		// Initialisation du canal de signalisation   
-        var socket = io.connect();
-
-        // Récupération du pseudo
-        var localPseudo = checkCookie();
-        ihm.getHeaderPage(localPseudo);
-        // On transmet le pseudo au serveur pour qu'il l'associe au socket.id
-        socket.emit('onConnectionUser', {pseudo: localPseudo}); 
-
-        // Récupération de la liste des cartes présentes dans le répertoire maps du serveur
-        // Récupération de la carte active
-        // Récupération du statut fakeRobubox
-        // Récupération de la liste des clients connectés aux IHM pilotes et Robot
-        getActiveMap();
-        getMaps();
-        getFakeRobubox();
-        getUsers();
-        getIpRessources();
-        getIsGamepad();
+                  <ul class="nav navbar-nav">
+                        <li><a href="/">Home</a></li>
+                        <li class="active"><a href="/i3s">Robot Administration</a></li>
+                        <li><a href="ws-media.html">Museum Ressources</a></li>
+                        <li><a href="ws-scene.html">Museum Scenes</a></li>
+                        <li><a href="ws-trails.html">Museum Trails</a></li>
+                        <li><a href="ws-poi.html">Museum Map</a></li>
+                        <li><a href="ws-object.html">Museum Objects</a></li>
+                        <li><a href="/robotV2/">Robot interface</a></li>
+                        <li><a href="/piloteV2/">Pilot Interface</a></li>
+                  </ul>
+             
+              </div>
         
-        // Gestion du pseudo ----------------
+        </nav>
 
-        function setCookie(cname, cvalue, exdays) {
-            var d = new Date();
-            d.setTime(d.getTime() + (exdays*24*60*60*1000));
-            var expires = "expires="+d.toUTCString();
-            document.cookie = cname + "=" + cvalue + "; " + expires;
-        }
+        </br>
+        
+		<!-- Connected users -->
+          <div layout:fragment="content">
+                <div class="col-md-12">
+                      <div class="panel panel-primary">
+                              <div class="panel-heading" id="divInfoNbrMedia"><h5><b>Connected users</b></h5>
+
+                              </div>
+                              <div class="panel-body">
+                                    
+                                        <div id="manageClients">  
+                                            <strong>
+                                                <div id="zone_info_server">
+                                                </div>
+                                            </strong>
+                                            
+                                            <p>
+                                                <span id="changeLogin">
+                                                    <button class="shadowBlack" id="admin_changePseudo" onclick="changePseudo()">
+                                                      Modifier votre pseudo
+                                                    </button>
+                                                </span>
+                                            </p> 
+                                            <hr/>
+                                            <strong> Clients connectés: </strong><br/>
+                                            <div id="zone_info_users"></div>
+                                            <br/>
+                                            <span id="reloadAllClients">
+                                                <button class="shadowBlack" id="admin_ReloadClients" onclick="reloadClients()">
+                                                    Reload de tous les clients
+                                                </button>
+                                            </span>
+                                            <span> | </span>
+                                            <span id="ejectAllClients">
+                                                <button class="shadowBlack" id="admin_RazConnexion" onclick="ejectClients()">
+                                                   Ejection de tous les clients
+                                                </button>
+                                            </span>
+                                        </div>
 
 
-        function getCookie(cname) {
-            var name = cname + "=";
-            var ca = document.cookie.split(';');
-            for(var i=0; i<ca.length; i++) {
-                var c = ca[i];
-                while (c.charAt(0)==' ') c = c.substring(1);
-                if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
-            }
-            return "";
-        }
 
 
 
-        function checkCookie(pseudo) {
-            
-            var nameCookie = "AzcarClientName"
-            var user = getCookie(nameCookie);
+                                    <!--
+                                    <div> 
+                                            <button type="button" class="btn btn-sm btn-success active" data-toggle='modal' data-target='#myModal' id="btnAddMedia" onclick="addNewScene()"><span class='glyphicon glyphicon-plus'></span> Add new scene</button>
+                                    </div>
+                                    </br>
+                                    <form >
+                                            <table id="myTable" class="table table-striped table-bordered table-condensed">
+                                                <thead></thead>
+                                                <tbody></tbody>
+                                            </table>
 
-            if (user != "") {
-                pseudo = user;
-            } else {
-                user = prompt('Votre pseudo? (par défaut ce sera "Administrateur")');
-                if (!user || user == '') {
-                   user = "Administrateur";
-                }       
-                if (user != "" && user != null) {
-                    setCookie(nameCookie, user, 365);
-                    pseudo = user;
-                }
-            }
-            return pseudo;
-            
-        }
+                                    </form>
+                                    -->
 
+                              </div>
+                      </div>
+              </div>
+        </div>
+
+
+		<!-- Simulation mode "FakeRobubox"-->
+         <div layout:fragment="content">
+                <div class="col-md-12">
+                      <div class="panel panel-primary">
+                              
+                              <div class="panel-heading"><h5><b>Simulation mode "FakeRobubox" : </b></h5>
+                              </div>
+                                    
+                              <div id="manageFakeRobubox" class="panel-body">  
+                                  
+                                  <form>
+                                      <input  type="radio" 
+                                              name="FakeRobot" 
+                                              value="true" 
+                                              id="FakeTrue" 
+                                              onclick="setFakeRobubox(true)" 
+                                              disabled="true"> 
+                                        <label for="FakeTrue">Enabled</label>
+                                      
+                                      <input  type="radio" 
+                                              name="FakeRobot" 
+                                              value="false" 
+                                              id="FakeFalse" 
+                                              onclick="setFakeRobubox(false)" 
+                                              disabled="true" /> 
+                                        <label for="FakeFalse">Disabled</label>
+                                  
+                                  </form>
+                                  
+                                  <p>Fakerobubox: émulation logicielle d'un pseudo système embarqué pour la cartographie, la jauge de batterie et les commandes drive.<br/>
+                                  Si activé, ne tient pas compte de la carte chargée. Simulation basée sur la carte du laboratoire I3S (Labo261.png) </br>
+                                  La navigation automatique par POI et les commandes de relocalisations sont désactivées.</p>
+                              
+                              </div>
+                      </div>
+              </div>
+        </div>
 
 
         
-        function changePseudo() {
-            var nameCookie = "AzcarClientName"
-            var oldPseudo = getCookie(nameCookie);
-            var newUser = prompt('Votre ancien Pseudo: '+ oldPseudo+"\n"+"Saisissez votre nouveau pseudo")
-            if (newUser == null || newUser == "") newUser = oldPseudo;
-            setCookie(nameCookie, newUser, 365);
-            ihm.getHeaderPage(newUser);
-            socket.emit('onConnectionUser', {pseudo: newUser});   
-        }
+		<!-- Map -->
+        <div layout:fragment="content">
+                <div class="col-md-12">
+                        <div class="panel panel-primary">
+
+                            <div class="panel-heading"><h5><b>Map setting</b><span id="zone_info_maps"> ??? </span> </h5>
+                            </div>
+                            
+                            <div id="manageMap"  class="panel-body"> 
+                                   <!--
+                                    <strong>Carte chargée: </strong>    <span id="zone_info_maps"> ??? </span> 
+                                    -->     
+                                 
+                                 <form>
+                                      
+                                        <div class="select">
+                                            <label for="Maps_list">Select a map:</label><br/>
+                                            <select id="Maps_list">
+                                            </select>
+                                            <button id="admin_ButtonMapsSelect" onclick="selectMap()">Select</button>
+                                            <button id="admin_ButtonMapsDelete" onclick="deleteMap()">Delete</button>
+                                        </div>
+                               
+                                      </form>
+                                 
+                                    <form id="uploadForm"
+                                          enctype="multipart/form-data"
+                                          action='/i3s/'
+                                          method="post">
+                                      <input type="file" name="userPhoto" />
+                                      <br/>
+                                      <input type="submit" value="Upload Map" name="submit">
+                                      <span id = "status"></span>
+                                    </form>
+                            </div> 
+                        </div>
+              </div>
+        </div>
+        
+
+        
+		<!-- Gamepad -->
+        <div layout:fragment="content">
+                <div class="col-md-12">
+                        <div class="panel panel-primary">
+
+                            <div class="panel-heading"><h5><b>Xbox 360 gamepad</b></h5>
+                            </div>
+                            
+                            <div id="manageGamepad"  class="panel-body"> 
+                                                                   
+                                <form> 
+                                    <input  type="radio" 
+                                            name="gamePadRobot" 
+                                            value="true" 
+                                            id="gamepadTrue" 
+                                            disabled="true" 
+                                            onclick="setGamepad(true)"> 
+                                        <label for="gamePadTrue">enabled</label>
+                                    
+                                    <input  type="radio" 
+                                            name="gamePadRobot2" 
+                                            value="false" 
+                                            id="gamepadFalse" 
+                                            disabled="true" 
+                                            onclick="setGamepad(false)" /> 
+                                        <label for="gamePadFalse">disabled</label>
+                                 </form>
+
+                            </div> 
+                        </div>
+              </div>
+        </div>
+        
 
 
-        // --------- Messages génériques 
-        //var data = {message: "File is uploaded !", typeMessage: 'sucess'}
-        //socket.broadcast.emit('messageToAdmin', data);
 
-        socket.on("messageToAdmin", function(data) { 
-            //notifications.writeMessage ('sucess','vastefaire','foutre',3500)
-            console.log("socket.on(messageToAdmin)");
-            console.log(data);
-            var typeMsg = "info";
-            var titleMsg = '';
-            var Msg = '';
-            if (data.typeMessage) typeMsg = data.typeMessage;
-            if (data.titleMessage) titleMsg = data.titleMessage;
-            if (data.message) Msg = data.message; 
-            //notifications.writeMessage (typeMsg,titleMsg,msg,3500)
-            notifications.writeMessage (typeMsg,titleMsg,Msg,3500)
-            /**/
+
+		<!-- cameras -->
+        <div layout:fragment="content">
+                <div class="col-md-12">
+                        <div class="panel panel-primary">
+
+                            <div class="panel-heading"><h5><b>Pan/Tilt camera setting</b></h5>
+                            </div>
+                            
+                            <div id="manageCameras" class="panel-body"> 
+                                                                  
+                                    <span id="zone_info_Ip_Camera"></span>
+
+                                    <div class="select">
+                                        
+
+                                        
+                                            Label: <input type='text' id='newLabel_Camera'> | Ip: <input type='text' id='newIP_Camera'>
+                                            <span ><button id="addRessource_Camera" onclick="addRessource('Camera')">Ajouter cette caméra</button></span><br/>
+
+                                        </div>
+                                
+                                </div>
+                                <hr/>
+                            </div>
+                        </div>
+              </div>
+        </div>
+
+
+        <!-- Robubox settings (IP Robot) -->
+        <div layout:fragment="content">
+                <div class="col-md-12">
+                        <div class="panel panel-primary">
+
+                            <div class="panel-heading"><h5><b>IP Robot setting</b></h5>
+                            </div>
+                            
+                            <div id="manageIpRobot" class="panel-body">  
+                             <div id="zone_info_Ip_Robot"></div>
+                                    
+                                    Label: <input type='text' id='newLabel_Robot'> | Ip: <input type='text' id='newIP_Robot'>
+                                    <span ><button id="addRessource_Robot" onclick="addRessource('Robot')">Ajouter ce robot</button></span><br/>
+                                    <br/>
+                                    <!--
+                                    <div id="zone_info_Ip_Camera"></div>
+                                    Label: <input type='text' id='newLabel_Camera'> | Ip: <input type='text' id='newIP_Camera'>
+                                    <span ><button id="addRessource_Camera" onclick="addRessource('Camera')">Ajouter cette caméra</button></span><br/>
+                                    -->
+
+                                 <hr/>
+                             </div>
+                        </div>
+              </div>
+        </div>
+
+
+        <!--
+        <div layout:fragment="content">
+                <div class="col-md-12">
+                        <div class="panel panel-primary">
+
+                            <div class="panel-heading"><h5><b>xxxxxx : </b></h5>
+                            </div>
+                            
+                            <div id="xxxx"  class="panel-body"> 
+
+                                   
+
+                            </div> 
+                        </div>
+              </div>
+        </div>
+        -->
+        
+
+
+
+
+        <section id="TopNotification">
+                         
+              <div id='infoMessage' class="info message">
+              </div>
+
+              <div id='errorMessage' class="error message">
+              </div>
+
+              <div id='warningMessage' class="warning message">
+              </div>
+
+              <div id='sucessMessage' class="success message">
+              </div>
+
+              <div id='standardMessage' class="standard message">
+              </div>
+
+        </section>
+
+        <script>
+        var type = null;
+        var refresh = true;
+        page = "adminRobot";
+        </script>
+
+        <script src="/socket.io/socket.io.js"></script>
+        <script src='/js/lib/jquery-1.10.1.min.js'></script>       
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="/js/lib/xml2json.js"></script>
+        <script src="/js/common_tools.js"></script>
+        <script src="/js/common_models.js"></script>
+        <script src="/js/common_app_settings.js"></script>
+        <script src='/js/module_notifications.js'></script>
+        <script src='/js/module_ihm.js'></script>
+        <script src="/js/module_admin_application.js"></script>
+        <script src="/js/module_admin_sparql.js"></script>
        
-        });
-
-
-
-
-        // ------------------ Cartographie
-
-        // >> Mode simulateur ( Cartographie et mouvements simulés )
-        // Drapeau mode simulation 
-        var isFakeRobubox = true;
-        console.log("isFakeRobubox = "+isFakeRobubox)
-        selectFakeTrue = document.querySelector('input#FakeTrue');
-		selectFakeFalse= document.querySelector('input#FakeFalse');
-		maps_list_select = document.querySelector('select#Maps_list');
-
-        // On demande au serveur si le mode simulateur est activé
-        function getFakeRobubox() {
-            socket.emit('getFakeRobubox',""); 
-        }
-
-
-        // A la réponse du serveur:
-        socket.on("getFakeRobubox", function(data) { 
-            // alert (data.isFakeRobubox)
-            isFakeRobubox = data.isFakeRobubox
-        	setSelectFakeRobot(isFakeRobubox)
-        });
-
-
-        // Traitement à chaque modification du formulaire
-		function setFakeRobubox(boolean) {
-			console.log("@ setFakeRobubox("+boolean+")")
-			// Si le bouton radio est déjà sélectionné...
-			if (isFakeRobubox == boolean) return
-
-			var message = "Attention ! \n \n"
-			message += "Vous êtes sur le point d'activer ou de désactiver le mode de simulation ! ";
-			message += "\n Cela entrainera le reload automatique des IHM Robot et Pilote.";
-			var txt;
-			
-			var response = confirm(message);
-			if (response == true) {
-			    isFakeRobubox = boolean;
-
-				if (isFakeRobubox == true) txt = "Mode simulation activé !";
-				if (isFakeRobubox == false) txt = "Mode simulation désactivé !";
-
-				var data = { isFakeRobubox: isFakeRobubox};	
-				socket.emit('setFakeRobubox',data); // Envoi au serveur
-		        notifications.writeMessage ("info",txt,"",7000)
-				reloadClients();
-
-			} else if (response == false) {
-			    setSelectFakeRobot(isFakeRobubox)
-			}		
-			console.log("isFakeRobubox = "+isFakeRobubox)			
-		}
-
-
-		// Gestion du formulaire
-		function setSelectFakeRobot(isFakeRobubox) {
-				
-				selectFakeTrue.disabled=false;
-				selectFakeFalse.disabled=false;
-
-				if (isFakeRobubox == true) {
-			        selectFakeTrue.checked = true;
-			        selectFakeFalse.checked = false;
-			    
-			    } else if (isFakeRobubox == false) {
-			        
-			        selectFakeTrue.checked = false;
-			        selectFakeFalse.checked = true;
-			    }
-		}
-
-
-		
-		function getActiveMap() {
-            socket.emit('getActiveMap',""); 
-        }
-
-        // A la réponse du serveur:
-        socket.on("getActiveMap", function(data) { 
-            activeMap = data.activeMap;
-            var html = '<span id="zone_info_maps">'+activeMap+'</span>';
-			$('#zone_info_maps').replaceWith(html);
-            
-
-        });
-
-
-
-        function selectMap() {
-			activeMap = maps_list_select.value;
-			var data = {activeMap: activeMap};
-			socket.emit('setActiveMap',data);
-            var txt = "Nouvelle Carte sélectionnée:  '"+activeMap+"'' !";
-            notifications.writeMessage ("info",txt,"",7000)
-            reloadClients();
-            socket.emit('getActiveMap',"");  
-			
-		}
-
-
-		function deleteMap() {
-            
-            var deleteMap = maps_list_select.value;
-            
-            if (deleteMap == activeMap) {
-                alert ("Cette carte est en cours d'utilisation !");
-                
-            } else {
-                
-
-                var message = "Attention ! \n \n"
-                message += "Vous êtes sur le point de supprimer une carte ! ";
-                message += "\n Cette action est irréverible.";
-                var response = confirm(message);
-                if (response == true) {
-                    var data = { deleteMap: deleteMap}
-                    socket.emit('deleteMap', data); 
-                    setTimeout(function(){
-                             getMaps();// Rafraichissemet de la liste des maps
-                        }
-                    , 3000);
-                }
-
-            }
-            
-        }
-
-
-        // Demande au serveur la liste des maps disponibles dans l'application
-        function getMaps() {
-            socket.emit('getMaps',""); 
-        }
-
-
-        // A la réponse du serveur:
-        socket.on("getMaps", function(data) { 
-            console.log('socket.on("getMaps")')
-            var listMaps = generateListMaps(data)
-            populateSelectMap(listMaps,activeMap)
-            // TODO >>> Affecter au formulaire
-            // TODO >>> Récupérer la carte active ET la préselectionner
-        });
-
-        
-        function generateListMaps(data) {
-
-        	var result = {};
-        	for (map in data.maps) {
-        		var nameMap = data.maps[map];
-        		var re = /\.\/maps\//g;
-				var nameMap = nameMap.replace(re, "");	
-				// console.log(nameMap);
-				result[map] = nameMap;
-        	}
-        	// console.log(result);
-        	return result;
-
-        }
-
-    
-    
-    function populateSelectMap(listMaps,activeMap ){
-
-       		
-        	
-	       	// On supprime tous les enfants du noeud précédent...
-	        while (maps_list_select.firstChild) {
-	            // La liste n'étant pas une copie, elle sera réindexée à chaque appel
-	            maps_list_select.removeChild(maps_list_select.firstChild);
-	        }
-
-            console.log(listMaps[map])
-            for (map in listMaps) {
-        		console.log(listMaps[map])
-        		var nameMap = listMaps[map];
-				var option = document.createElement('option');
-				option.id = nameMap;
-	    		option.value = nameMap;
-        		option.text = nameMap;
-                if (activeMap == nameMap) option.selected = "selected";
-        		maps_list_select.appendChild(option);
-        	}
-
-    }
-
-        // TODO: Interface graphique (affichage des cartes en vignette...);
-
-        // --------------------------
-
-
-        // Gestion des connectés (Pilote et Robot)
- 		activeUsers = {};
-
-        function getUsers() {
-			socket.emit('getUsers',""); 
-		}
-
-        // A la réponse du serveur:
-        socket.on("updateUsers", function(data) { 
-        	activeUsers = data.listUsers
-        	ihm.displayListUsers(activeUsers);
-			console.log("socket.on('updateUsers', data");
-        	console.log(activeUsers);
-        });
-
-
-        function ejectClients() {
-		  socket.emit('ejectClients',""); // Ordonne au serveur de virer tous les connectés
-            notifications.writeMessage ("warning","déconnexion des clients en cours !","",3500)
-            setTimeout(function(){
-            notifications.writeMessage ("success","Clients déconnectés !","",3000)
-            }, 3500); 
-		}
-
-        function reloadClients() {
-
-            var hasRobot = tools.searchInObjects(activeUsers,'typeClient','Robot','boolean');
-            var hasPilot = tools.searchInObjects(activeUsers,'typeClient','Pilote','boolean');
-            // console.log("hasRobot:"+hasRobot)	;
-            // console.log("hasPilot:"+hasPilot)	;
-
-            if (hasRobot == true) socket.emit('reloadRobot',""); // Ordre au robot de reloader son IHM
-            
-            if (hasPilot == true) {
-            		setTimeout(function(){
-                   		socket.emit('reloadPilot',""); // Ordre au pilote de reloader son IHM
-                    }
-                , 3000);
-            }
-            
-	
-        }
-          
-         
-
-        function ejectRobot() {
-          socket.emit('ejectRobot',""); // Ordonne au serveur de virer tous les connectés
-            notifications.writeMessage ("warning","déconnexion du Robot !","",3500)
-            setTimeout(function(){
-            notifications.writeMessage ("success","Robot déconnecté !","",3000)
-            }, 3500); 
-        //alert ("Clients réinitialisés !");
-        }
-
-        function ejectPilot() {
-          socket.emit('ejectPilot',""); // Ordonne au serveur de virer tous les connectés
-            notifications.writeMessage ("warning","déconnexion du pilote en cours !","",3500)
-            setTimeout(function(){
-            notifications.writeMessage ("success","pilote déconnecté !","",3000)
-            }, 3500); 
-        //alert ("Clients réinitialisés !");
-        }
-
-        function reloadRobot() {
-            socket.emit('reloadRobot',""); // Ordonne au serveur de reloader le robot connecté
-            notifications.writeMessage ("warning","Reload de l'IHM Robot en cours !","",3500)
-            setTimeout(function(){
-                notifications.writeMessage ("success","Reload Robot terminé !","",3000)
-            }
-            , 3500); 
-        }       
-
-        function reloadPilot() {
-            socket.emit('reloadPilot',""); // Ordonne au serveur de reloader le pilote connecté
-            notifications.writeMessage ("warning","Reload de l'IHM Pilote en cours !","",3500)
-            setTimeout(function(){
-                notifications.writeMessage ("success","Reload Pilote terminé !","",3000)
-            }
-            , 3500); 
-        }
-
-
-        
-
-
-        // -------------- Gestion du Gamepad Physique
-        
-        
-        // Drapeau d'activation de la détection du Gamepad
-        isGamepad = true;
-        console.log("isGamepad = "+isGamepad)
-        selectGamepadTrue = document.querySelector('input#GamepadTrue');
-        selectGamepadFalse= document.querySelector('input#GamepadFalse');
-
-
-        // On demande au serveur si la détection du Gamepad physique 
-        // est activée dans les paramètres
-        function getIsGamepad() {
-            socket.emit('getIsGamepad',""); 
-        }
-
-
-        // A la réponse du serveur:
-        socket.on("getIsGamepad", function(data) { 
-            //alert ("On getIsGamepad("+data.isGamepad+")")
-            console.log('socket.on("getIsGamepad"')
-            console.log(data)
-            isGamepad = data.isGamepad
-            setSelectGamepad(isGamepad)
-        });
-
-
-
-        function setGamepad(boolean) {
-            console.log("@ setGamepad("+boolean+")")
-            // Si le bouton radio est déjà sélectionné...
-            if (isGamepad == boolean) return
-
-            var hasPilot = tools.searchInObjects(activeUsers,'typeClient','Pilote','boolean');
-            var response = true;
-            if (hasPilot == true) {
-                var message = "Attention ! \n \n"
-                message += "Vous êtes sur le point d'activer ou de désactiver la détection du Gamepad physique ! ";
-                message += "\n Cela entrainera le reload automatique de l'IHM Pilote.";
-                var txt;
-                response = confirm(message);
-            } 
-
-            if (response == true) {
-                isGamepad = boolean;
-
-                if (isGamepad == true) txt = "Détection du Gamepad physique activée !";
-                if (isGamepad == false) txt = "Détection du Gamepad physique désactivée !";
-
-                var data = { isGamepad: isGamepad}; 
-                socket.emit('setGamepad',data); // Envoi au serveur
-                notifications.writeMessage ("info",txt,"",7000)
-                reloadClients();
-
-            } else if (response == false) {
-                setSelectGamepad(isGamepad)
-            }       
-            
-            console.log("isGamepad = "+isGamepad)           
-        }
-
-        // Contrôle formulaire du gamepad physique
-        function setSelectGamepad(isGamepad) {
-                
-                selectGamepadTrue.disabled=false;
-                selectGamepadFalse.disabled=false;
-
-                if (isGamepad == true) {
-                    selectGamepadTrue.checked = true;
-                    selectGamepadFalse.checked = false;
-                
-                } else if (isGamepad == false) {
-                    
-                    selectGamepadTrue.checked = false;
-                    selectGamepadFalse.checked = true;
-                }
-        }
-
-
-        // Gestion des IP du Robot et des caméras IP ----------------------------
-
-        ipFoscam = null;
-        ipRobot = null;
-        listUrlsRobot = {};
-        listUrlsFoscam = {}
-
-        // Récupération des infos serveur
-        function getIpRessources() {
-            console.log("@ getIpRessources()");
-            socket.emit('getIpRessources',""); 
-        }
-    
-        // Réponse du serveur au chargement de la page:
-        socket.on("getIpRessources", function(data) { 
-            
-            console.log("socket.on('getIpRessources', data");
-            console.log(data);
-
-            ipFoscam = data.ipFoscam;
-            ipRobot = data.ipRobot;
-            listUrlsRobot = data.listUrlsRobot;
-            listUrlsFoscam = data.listUrlsFoscam;
-
-
-            ihm.displayFormIp('Robot',listUrlsRobot,ipRobot);
-            ihm.displayFormIp('Camera',listUrlsFoscam,ipFoscam);
-
-        });
-       
-        
-        
-
-
-        // Réponse du serveur après select/add/delete d'une IP caméra ou Robot:
-        socket.on("setIpRessources", function(data) { 
-            
-            console.log("socket.on('setIpRessources', data");
-            console.log(data);
-
-            var hasRobot = tools.searchInObjects(activeUsers,'typeClient','Robot','boolean');
-            if (hasRobot == true) socket.emit('reloadRobot',""); // Ordre au robot de reloader son IHM
-            
-            ipFoscam = data.ipFoscam;
-            ipRobot = data.ipRobot;
-            listUrlsRobot = data.listUrlsRobot;
-            listUrlsFoscam = data.listUrlsFoscam;
-
-
-            ihm.displayFormIp('Robot',listUrlsRobot,ipRobot);
-            ihm.displayFormIp('Camera',listUrlsFoscam,ipFoscam);
-
-        });
-
-
-
-        // Selection de l'ip caméra
-        function setIp_Robot(parameter){
-            
-            console.log('setIp_Robot('+parameter+')');
-            
-            for (ip in listUrlsRobot) {
-                if (parameter == listUrlsRobot[ip].Label ) ipRobot = listUrlsRobot[ip];
-                var data = {
-                    cible: 'Robot',
-                    newData: ipRobot
-                }
-                socket.emit('updateIpRessources', data);
-            } 
-        }
-
-        
-        // Sélection de l'ip robot
-        function setIp_Camera(parameter){
-            
-            console.log('setIp_Camera('+parameter+')');
-            
-            for (ip in listUrlsFoscam) {
-                if (parameter == listUrlsFoscam[ip].Label ) ipFoscam = listUrlsFoscam[ip];
-                var data = {
-                    cible: 'Camera',
-                    newData: ipFoscam
-                }
-                socket.emit('updateIpRessources', data);
-            } 
-
-        }
-
-
-
-        // suppression d'une IP robot
-        function deleteIp_Robot(parameter){
-            console.log('deleteIp_Robot('+parameter+')');
-            
-            if (parameter == ipRobot.Label) {
-                alert ("IP Robot active! \n Suppression impossible.");
-                
-            } else {
-                delete listUrlsRobot[parameter];
-                var data = {
-                        cible: 'listUrlsRobot',
-                        newData: listUrlsRobot
-                    }
-                socket.emit('updateIpRessources', data);
-            }
-        }
-
-        // suppression d'une IP caméra
-        function deleteIp_Camera(parameter){
-            console.log('deleteIp_Camera('+parameter+')');
-            
-            if (parameter == ipFoscam.Label) {
-                alert ("IP Camera active! \n Suppression impossible.");
-                
-            } else {
-
-                delete listUrlsFoscam[parameter]; 
-                var data = {
-                    cible: 'listUrlsFoscam',
-                    newData: listUrlsFoscam
-                }
-                socket.emit('updateIpRessources', data);
-            }
-
-        }
-
-       
-       
-       // Ajouts d'IPs caméra et robot
-
-
-       newIpRobot = document.getElementById("newIP_Robot");
-       newLabelRobot = document.getElementById("newLabel_Robot");
-       
-       newIpCamera = document.getElementById("newIP_Camera");
-       newLabelCamera = document.getElementById("newLabel_Camera");
-
-       function addRessource(type) {
-            if (!type) return;
-            console.log("@ addressource("+type+")")
-            
-            var newListRessources = {}, newRessource = null, label = null, ip = null, cible = null;;
-
-            if (type == 'Robot') {
-                cible = 'listUrlsRobot';
-                label = newLabelRobot.value;
-                ip = newIpRobot.value
-                newRessource = new models.ressourceUrl(ip, label, "");
-                listUrlsRobot[label] = newRessource;
-                newListRessources = listUrlsRobot;
-
-            } else if (type == 'Camera') {
-                cible = 'listUrlsFoscam',
-                label = newLabelCamera.value;
-                ip = newIpCamera.value
-                newRessource = new models.ressourceUrl(ip, label, "");
-                listUrlsFoscam[label] = newRessource;
-                newListRessources = listUrlsFoscam;
-            }
-            if (label == "" || ip == "") return
-
-                var data = {
-                    cible: cible,
-                    newData: newListRessources
-                }
-                console.log(data);
-                socket.emit('updateIpRessources', data);
-
-            
-            console.log("Type: "+ type + " | Label: " + label + " | IP: "+ ip)
-
-            
-       }
-
-
-    </script>	
 
 </body>
 </html>

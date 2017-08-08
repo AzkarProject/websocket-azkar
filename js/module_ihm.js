@@ -585,7 +585,7 @@
 	// Admin et Accueil
 	// Bandeau supérieur
 	// Pour le logo
-    azkarLogo = '<div style="float:left; margin-right:20px"><a href="/">';
+    azkarLogo = '<div style="float:left; margin-right:20px;"><a href="/">';
 	azkarLogo += '<img src="/images/logo/AZKAR-v2.png" alt="AZKAR PROJECT" title="Projet Azkar"  width="150px;" height="54px"/>';
 	azkarLogo += '</a></div>';
 	exports.getHeaderPage = function(login) {
@@ -618,7 +618,7 @@
 		//var img = '<div style="float:left; margin-right:20px"><img src="/images/logo/AZKAR.png" alt="AZKAR PROJECT" title="Projet Azkar"  width="150px;" height="54px"/></div>';
 
         if (hostName != "???" ) {
-        	$('#zone_info_server').replaceWith('<div id="zone_info_server" style="min-width:1000px;min-height:54px">'+azkarLogo+'<p>'+infoServerTxt+'</p></div>');
+        	$('#zone_info_server').replaceWith('<div id="zone_info_server" style="min-width:1000px;min-height:54px">'+azkarLogo+'<p style="font-family: time new roman;">'+infoServerTxt+'</p></div>');
         }
       });
 
