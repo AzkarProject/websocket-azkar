@@ -1202,14 +1202,17 @@
 	  	RIGHT: 39,
   		DOWN: 40,
   		CTRL: 17,
-  
+		SHIFTLEFT: 37,  
+		SHIFTUP: 38,  
+		SHIFTRIGHT: 39,
+		SHIFTDOWN: 40,
   		isDown: function(keyCode) {
     		return this._pressed[keyCode];
   		},
   
   		onKeydown: function(event) {
     		this._pressed[event.keyCode] = true;
-    		//console.log("Key "+event.keyCode+" pressed")
+			//console.log("Key "+event.keyCode+" pressed")
     		//emulatePad()
   		},
   
@@ -1233,7 +1236,11 @@
     // Pente d'arrêt (décéllération) en cours (flag)
     // Pour éviter les accès concurrents le temps de finir l'arrêt.
     var decreaseDirectionnal = false; 
-    
+    var cameraOnUp = false;
+    var cameraOnLeft = false;
+    var cameraOnRight = false;
+    var cameraOnDown = false;
+	
 
     function keyboardControl() {
 	  	// console.log("keyboardControl()")
@@ -1278,6 +1285,40 @@
 
 		  	}
 		}
+		if (Key.isDown(Key.SHIFTUP)) {
+			if (cameraOnUp == false) {
+				foscam.moveCamera("Up");
+				cameraOnUp = true;
+				//console.log('top pressed');
+			}
+			
+		} else if (Key.isDown(Key.SHIFTDOWN) ) {
+			if (cameraOnDown == false) {
+				cameraOnDown = true;
+				foscam.moveCamera("Down")
+				//console.log('down pressed');
+			}
+		} else if (Key.isDown(Key.SHIFTLEFT) ) {
+			if (cameraOnLeft == false) {
+				cameraOnLeft = true;
+				foscam.moveCamera("Left")
+				//console.log('left pressed');
+			}
+		} else if (Key.isDown(Key.SHIFTRIGHT) ) {
+			if (cameraOnRight == false) {
+				cameraOnRight = true;
+				foscam.moveCamera("Right")
+				//console.log('right pressed');
+			}
+		} else {
+			cameraOnUp = false;
+			cameraOnDown = false;
+			cameraOnLeft = false;
+			cameraOnRight = false;
+			foscam.sendCameraOrder("onCameraStop");
+			//console.log('stop camera');
+		}
+
 	};
 
     //console.log(Pad)
