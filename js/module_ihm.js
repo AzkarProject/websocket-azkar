@@ -933,8 +933,8 @@
    		//style="position:absolute;top:0px; left:0px;float:left;width:1230px; height:375px;border:1px solid #ccc;border-radius: 10px;margin: 5px 5px 10px 5px">
    		divModule = '#remoteCam';
 		$(divModule).css('position', 'absolute');
-		//$(divModule).css('top', '0px');
-		//$(divModule).css('left', '0px');
+		$(divModule).css('top', '0px');
+		$(divModule).css('left', '0px');
 		$(divModule).css('width', '1230px');
 		$(divModule).css('height', '375px');
 		//$(divModule).css('border', '1px solid #ccc');
@@ -947,42 +947,37 @@
 		// style="position:absolute;top:200px; left:20px;float:left;z-index:100;height:100px;width:100px; border:1px solid #ccc;border-radius: 10px;margin: 0">
 		divModule = '#localCam';
 		$(divModule).css('position', 'absolute');
-//		$(divModule).css('top', '200px');
-
-		topdiv  = $('#div1').position().top + 200;
-
-		$(divModule).css('top',  topdiv + 'px');
-		//$(divModule).css('left', '20px');
+		$(divModule).css('top', '200px');
+		$(divModule).css('left', '20px');
 		$(divModule).css('float', 'left');
 		$(divModule).css('z-index', '100');
 		$(divModule).css('height', '100px');
 		$(divModule).css('width', '100px');
 		//$(divModule).css('border', '1 px solid #ccc');
 		//$(divModule).css('border-radius', '10 px');
-		$(divModule).css('margin', '0px 0px 0px 20px');
+		$(divModule).css('margin', '0');
 		$(divModule).css('background', 'rgba(221,221,221,0.1)');
 
 		//<div id="map" class='draggable' 
 		//style="position:absolute;top:390px; left:0px;color:white;float:left; width:495px;height:230px;border:1px solid #ccc; border-radius: 10px;margin:0 0 0 5px;padding:5px;overflow:hidden;background:rgba(221,221,221,0.1);">	
 		divModule = '#map';
-		//$(divModule).css('position', 'absolute');
-		//$(divModule).css('top', '390px');
-		//$(divModule).css('left', '5px');
+		$(divModule).css('position', 'absolute');
+		$(divModule).css('top', '390px');
+		$(divModule).css('left', '5px');
 		$(divModule).css('float', 'left');
 		$(divModule).css('color', 'white');
 		$(divModule).css('height', '230px');
 		$(divModule).css('width', '495px');
 		//$(divModule).css('border', '1 px solid #ccc');
 		//$(divModule).css('border-radius', '10 px');
-		$(divModule).css('margin', '10px 0 0 5px');
+		$(divModule).css('margin', '0 0 0');
 		$(divModule).css('background', 'rgba(221,221,221,0.1)');
 
+
 		divModule = '#drive';
-		//$(divModule).css('position', 'absolute');
-		//$(divModule).css('top', '390px');
-		//$(divModule).css('left', '510px');
-		//left  = $('#map').position().left + 510;
-		//$(divModule).css('left',  left + 'px');
+		$(divModule).css('position', 'absolute');
+		$(divModule).css('top', '390px');
+		$(divModule).css('left', '510px');
 		$(divModule).css('float', 'left');
 		$(divModule).css('color', 'white');
 		$(divModule).css('z-index', '100');
@@ -991,18 +986,16 @@
 		$(divModule).css('background-color', 'black');
 		//$(divModule).css('border', '1 px solid #ccc');
 		//$(divModule).css('border-radius', '10 px');
-		$(divModule).css('margin', '10px 0 0 5px');
+		$(divModule).css('margin', '0 0 0 5px');
 		$(divModule).css('padding', '5px');
 		$(divModule).css('overflow', 'hidden');
 		$(divModule).css('background', 'rgba(221,221,221,0.1)');
 		/**/
 
 		divModule = '#nav';
-		//$(divModule).css('position', 'absolute');
-		//$(divModule).css('top', '390px');
-		//$(divModule).css('left', '755px');
-		//left  = $('#drive').position().left + 245;
-		//$(divModule).css('left',  left + 'px');
+		$(divModule).css('position', 'absolute');
+		$(divModule).css('top', '390px');
+		$(divModule).css('left', '755px');
 		$(divModule).css('float', 'left');
 		$(divModule).css('width', '335px');
 		$(divModule).css('height', '230px');
@@ -1010,18 +1003,16 @@
 		$(divModule).css('color', 'white');
 		//$(divModule).css('border', '1 px solid #ccc');
 		//$(divModule).css('border-radius', '10 px');		
-		$(divModule).css('margin', '10px 0 0 5px');
+		$(divModule).css('margin', '0 0 0 5px');
 		$(divModule).css('padding', '5px');
 		$(divModule).css('overflow', 'hidden');
 		$(divModule).css('background', 'rgba(221,221,221,0.1)');
 
 
 		divModule = '#connexion';
-		//$(divModule).css('position', 'absolute');
-		//$(divModule).css('top', '390px');
-		//$(divModule).css('left', '1110px');
-		//left  = $('#nav').position().left + 350;
-		//$(divModule).css('left',  left + 'px');
+		$(divModule).css('position', 'absolute');
+		$(divModule).css('top', '390px');
+		$(divModule).css('left', '1110px');
 		$(divModule).css('float', 'left');
 		$(divModule).css('z-index', '125');
 		$(divModule).css('width', '110px');
@@ -1030,7 +1021,7 @@
 		$(divModule).css('color', 'white');
 		//$(divModule).css('border', '1 px solid #ccc');
 		//$(divModule).css('border-radius', '10 px');		
-		$(divModule).css('margin', '10px 0 0 5px');
+		$(divModule).css('margin', '0 0 0 5px');
 		$(divModule).css('padding', '5px');
 		$(divModule).css('overflow', 'hidden');
 		$(divModule).css('background', 'rgba(221,221,221,0.1)');
@@ -1038,16 +1029,13 @@
 
 		divModule = '#appSettings';
 		$(divModule).css('position', 'absolute');
-		topdiv  = $('#div1').position().top + 100;
-		console.log("top ========" + topdiv)
-		$(divModule).css('top',  topdiv + 'px');
-		//$(divModule).css('top', '100px');
-		//$(divModule).css('left', '10px');
+		$(divModule).css('top', '100px');
+		$(divModule).css('left', '10px');
 		$(divModule).css('float', 'left');
 		$(divModule).css('width', '100px');
 		//$(divModule).css('border', '1 px solid #ccc');
 		//$(divModule).css('border-radius', '10 px');		
-		$(divModule).css('margin', '10px 5px 5px 20px');
+		$(divModule).css('margin', '10px 5px 5px 5px');
 		$(divModule).css('padding', '5px');
 		$(divModule).css('overflow', 'hidden');
 		$(divModule).css('background', 'rgba(221,221,221,0.1)');
@@ -1068,14 +1056,12 @@
 		/**/
 		divModule = '#displaySettings';
 		$(divModule).css('position', 'absolute');
-		top  = $('#div1').position().top + 100;
-		$(divModule).css('top',  top + 'px');
-		//$(divModule).css('top', '100px');
+		$(divModule).css('top', '100px');
 		$(divModule).css('left', '130px');
 		$(divModule).css('float', 'left');
 		//$(divModule).css('border', '1 px solid #ccc');
 		//$(divModule).css('border-radius', '10 px');		
-		$(divModule).css('margin', '10px 5px 5px 20px');
+		$(divModule).css('margin', '10px 5px 5px 5px');
 		$(divModule).css('padding', '5px');
 		$(divModule).css('background', 'rgba(221,221,221,0.1)');
 		$(divModule).css('z-index', '999999');
@@ -1202,17 +1188,14 @@
 	  	RIGHT: 39,
   		DOWN: 40,
   		CTRL: 17,
-		SHIFTLEFT: 37,  
-		SHIFTUP: 38,  
-		SHIFTRIGHT: 39,
-		SHIFTDOWN: 40,
+  
   		isDown: function(keyCode) {
     		return this._pressed[keyCode];
   		},
   
   		onKeydown: function(event) {
     		this._pressed[event.keyCode] = true;
-			//console.log("Key "+event.keyCode+" pressed")
+    		//console.log("Key "+event.keyCode+" pressed")
     		//emulatePad()
   		},
   
@@ -1236,11 +1219,7 @@
     // Pente d'arrêt (décéllération) en cours (flag)
     // Pour éviter les accès concurrents le temps de finir l'arrêt.
     var decreaseDirectionnal = false; 
-    var cameraOnUp = false;
-    var cameraOnLeft = false;
-    var cameraOnRight = false;
-    var cameraOnDown = false;
-	
+    
 
     function keyboardControl() {
 	  	// console.log("keyboardControl()")
@@ -1285,40 +1264,6 @@
 
 		  	}
 		}
-		if (Key.isDown(Key.SHIFTUP)) {
-			if (cameraOnUp == false) {
-				foscam.moveCamera("Up");
-				cameraOnUp = true;
-				//console.log('top pressed');
-			}
-			
-		} else if (Key.isDown(Key.SHIFTDOWN) ) {
-			if (cameraOnDown == false) {
-				cameraOnDown = true;
-				foscam.moveCamera("Down")
-				//console.log('down pressed');
-			}
-		} else if (Key.isDown(Key.SHIFTLEFT) ) {
-			if (cameraOnLeft == false) {
-				cameraOnLeft = true;
-				foscam.moveCamera("Left")
-				//console.log('left pressed');
-			}
-		} else if (Key.isDown(Key.SHIFTRIGHT) ) {
-			if (cameraOnRight == false) {
-				cameraOnRight = true;
-				foscam.moveCamera("Right")
-				//console.log('right pressed');
-			}
-		} else {
-			cameraOnUp = false;
-			cameraOnDown = false;
-			cameraOnLeft = false;
-			cameraOnRight = false;
-			foscam.sendCameraOrder("onCameraStop");
-			//console.log('stop camera');
-		}
-
 	};
 
     //console.log(Pad)
