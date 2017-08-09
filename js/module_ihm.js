@@ -661,12 +661,15 @@
 		
 		console.log('@ ihm.displayFormIp()');
 
-		html = '<strong> IP '+typeIp+' active:</strong>: '
+		//message = '<span id="zone_info_'+typeIp+'>';
+		message = ' = IP '+typeIp+' : '
 		if (defaultIp) {
-			html += defaultIp.url+"  ( "+defaultIp.Label+" )</br>";
+			message += defaultIp.url+"  ( "+defaultIp.Label+" )";
 		} else { 
-			html += "Aucune <br/>";
+			message += "No "+typeIp;
 		}
+		message +='</span>';
+		html = "";
 
 		if (listIp) {
 			for (ip in listIp) {
@@ -697,8 +700,8 @@
 		} else {
 		}
 		//console.log(html)
-
-
+		message = '<span id="zone_info_'+typeIp+'">'+message+'</span>';
+		$('#zone_info_'+typeIp).replaceWith(message);
 		html = '<div id="zone_info_Ip_'+typeIp+'">'+html+'</div>';
 		$('#zone_info_Ip_'+typeIp).replaceWith(html);
 
@@ -1068,6 +1071,13 @@
 
 
 	}
+	/**/
+
+
+
+
+
+
 
 	// Au chargement de la paddingge on fait un resetDisplay
 	if (type == "pilote-appelant") resetDisplay()

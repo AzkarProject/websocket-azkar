@@ -24,6 +24,31 @@
 <body>
      
 
+            <!-- TODO : Factoriser le CSS -->
+    <style>
+
+            .panel-heading .accordion-toggle:after {
+                font-family: 'Glyphicons Halflings';  /* essential for enabling glyphicon */
+                content: "\e113";    /* adjust as needed, taken from bootstrap.css */
+                float: right;        /* adjust as needed */
+                color: white;         /* adjust as needed */
+            }
+
+
+            .panel-heading .accordion-toggle.collapsed:after {
+                content: "\e114";
+            }
+
+    </style>
+
+
+
+
+
+
+
+
+
      <div class="modal fade" id="myModal" role="dialog">
           <div class="modal-dialog">
 
@@ -47,19 +72,10 @@
         <div id="zone_info_server"></div>
     </strong>
    
-
+        <!--
         <nav class="navbar navbar-default">
               <div class="container-fluid">
                   
-                  <!--
-                  <div class="navbar-header">
-                        <a class="navbar-brand" href="http://www.azkar.fr/">Azkar</a>
-                  </div>
-                  
-                  <div class="navbar-header">
-                        <a class="navbar-brand" href="https://corese.inria.fr/">Corese</a>
-                  </div>
-                  -->
 
                   <ul class="nav navbar-nav">
                         <li><a href="/">Home</a></li>
@@ -72,205 +88,293 @@
                         <li><a href="/robotV2/">Robot interface</a></li>
                         <li><a href="/piloteV2/">Pilot Interface</a></li>
                   </ul>
+
+
              
               </div>
-        
+
+
+        </nav>
+        -->
+
+        <nav class="navbar navbar-default">
+              <div class="container-fluid">
+                      
+                      <ul class="nav navbar-nav">
+                            <li><a href="/">Home</a></li>
+                            <li><a href="#">|</a></li>
+                            <li><a href="/robotV2/">Robot interface</a></li>
+                            <li><a href="/piloteV2/">Pilot interface</a></li>
+                            <li><a href="#">|</a></li>
+                            <li class="active"><a href="/i3s">Robot Administration</a></li>
+                            <li><a href="#">|</a></li>
+                            <li><a href="ws-media.html">Museum Ressources</a></li>
+                            <li><a href="ws-scene.html">Museum Scenes</a></li>
+                            <li><a href="ws-trails.html">Museum Trails</a></li>
+                            <li><a href="ws-poi.html">Museum Map</a></li>
+                            <li><a href="ws-object.html">Museum Objects</a></li>
+                            
+                            
+
+                      </ul>
+                 
+              </div>
+            
         </nav>
 
         </br>
-        
-		<!-- Connected users -->
-          <div layout:fragment="content">
-                <div class="col-md-12">
-                      <div class="panel panel-primary">
-                              <div class="panel-heading" id="divInfoNbrMedia"><h5><b>Connected users</b></h5>
 
-                              </div>
-                              <div class="panel-body">
-                                    
-                                        <div id="manageClients">  
-                                            <strong>
-                                                <div id="zone_info_server">
-                                                </div>
-                                            </strong>
-                                            
-                                            <p>
-                                                <span id="changeLogin">
-                                                    <button class="shadowBlack" id="admin_changePseudo" onclick="changePseudo()">
-                                                      Modifier votre pseudo
-                                                    </button>
-                                                </span>
-                                            </p> 
-                                            <hr/>
-                                            <strong> Clients connectés: </strong><br/>
-                                            <div id="zone_info_users"></div>
-                                            <br/>
-                                            <span id="reloadAllClients">
-                                                <button class="shadowBlack" id="admin_ReloadClients" onclick="reloadClients()">
-                                                    Reload de tous les clients
-                                                </button>
-                                            </span>
-                                            <span> | </span>
-                                            <span id="ejectAllClients">
-                                                <button class="shadowBlack" id="admin_RazConnexion" onclick="ejectClients()">
-                                                   Ejection de tous les clients
-                                                </button>
-                                            </span>
-                                        </div>
-
-
-
-
-
-                                    <!--
-                                    <div> 
-                                            <button type="button" class="btn btn-sm btn-success active" data-toggle='modal' data-target='#myModal' id="btnAddMedia" onclick="addNewScene()"><span class='glyphicon glyphicon-plus'></span> Add new scene</button>
-                                    </div>
-                                    </br>
-                                    <form >
-                                            <table id="myTable" class="table table-striped table-bordered table-condensed">
-                                                <thead></thead>
-                                                <tbody></tbody>
-                                            </table>
-
-                                    </form>
-                                    -->
-
-                              </div>
-                      </div>
-              </div>
-        </div>
-
-
-		<!-- Simulation mode "FakeRobubox"-->
-         <div layout:fragment="content">
-                <div class="col-md-12">
-                      <div class="panel panel-primary">
-                              
-                              <div class="panel-heading"><h5><b>Simulation mode "FakeRobubox" : </b></h5>
-                              </div>
-                                    
-                              <div id="manageFakeRobubox" class="panel-body">  
-                                  
-                                  <form>
-                                      <input  type="radio" 
-                                              name="FakeRobot" 
-                                              value="true" 
-                                              id="FakeTrue" 
-                                              onclick="setFakeRobubox(true)" 
-                                              disabled="true"> 
-                                        <label for="FakeTrue">Enabled</label>
-                                      
-                                      <input  type="radio" 
-                                              name="FakeRobot" 
-                                              value="false" 
-                                              id="FakeFalse" 
-                                              onclick="setFakeRobubox(false)" 
-                                              disabled="true" /> 
-                                        <label for="FakeFalse">Disabled</label>
-                                  
-                                  </form>
-                                  
-                                  <p>Fakerobubox: émulation logicielle d'un pseudo système embarqué pour la cartographie, la jauge de batterie et les commandes drive.<br/>
-                                  Si activé, ne tient pas compte de la carte chargée. Simulation basée sur la carte du laboratoire I3S (Labo261.png) </br>
-                                  La navigation automatique par POI et les commandes de relocalisations sont désactivées.</p>
-                              
-                              </div>
-                      </div>
-              </div>
-        </div>
-
-
-        
-		<!-- Map -->
         <div layout:fragment="content">
-                <div class="col-md-12">
-                        <div class="panel panel-primary">
 
-                            <div class="panel-heading"><h5><b>Map setting</b><span id="zone_info_maps"> ??? </span> </h5>
+            <div class="col-md-12">      
+
+                <div class="panel-group" id="accordion">
+
+             
+            
+                    <!--
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                                  Auto Pilote
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseThree" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <p>Under construction</p> 
+                                <img src="/images/Construction.jpg" alt="UnderConstruction";>
                             </div>
-                            
-                            <div id="manageMap"  class="panel-body"> 
-                                   <!--
-                                    <strong>Carte chargée: </strong>    <span id="zone_info_maps"> ??? </span> 
-                                    -->     
-                                 
-                                 <form>
-                                      
-                                        <div class="select">
-                                            <label for="Maps_list">Select a map:</label><br/>
-                                            <select id="Maps_list">
-                                            </select>
-                                            <button id="admin_ButtonMapsSelect" onclick="selectMap()">Select</button>
-                                            <button id="admin_ButtonMapsDelete" onclick="deleteMap()">Delete</button>
+                        </div>
+                    </div>
+                    -->
+
+                  
+
+                  <!-- Connected users -->
+                  <div class="panel panel-primary">
+                      
+                      <div class="panel-heading">
+
+                          <h4 class="panel-title">
+                              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseConnectedUsers">
+                                Connected users
+                              </a>
+                          </h4>
+
+                      </div>
+
+
+                      <div id="collapseConnectedUsers" class="panel-collapse collapse">
+
+                          <div class="panel-body">
+                              
+
+                              <div id="manageClients">  
+                                    <strong>
+                                        <div id="zone_info_server">
                                         </div>
-                               
+                                    </strong>
+                                    
+                                    <p>
+                                        <span id="changeLogin">
+                                            <button class="shadowBlack" id="admin_changePseudo" onclick="changePseudo()">
+                                              Modifier votre pseudo
+                                            </button>
+                                        </span>
+                                    </p> 
+                                    <hr/>
+                                    <strong> Clients connectés: </strong><br/>
+                                    <div id="zone_info_users"></div>
+                                    <br/>
+                                    <span id="reloadAllClients">
+                                        <button class="shadowBlack" id="admin_ReloadClients" onclick="reloadClients()">
+                                            Reload de tous les clients
+                                        </button>
+                                    </span>
+                                    <span> | </span>
+                                    <span id="ejectAllClients">
+                                        <button class="shadowBlack" id="admin_RazConnexion" onclick="ejectClients()">
+                                           Ejection de tous les clients
+                                        </button>
+                                    </span>
+                            </div>
+
+                          
+
+
+                          </div>
+
+                      </div>
+
+                  </div>
+
+
+                  <!-- Simulation mode "FakeRobubox"-->
+                  <div class="panel panel-primary">
+                              
+                      <div class="panel-heading">
+
+                          <h4 class="panel-title">
+                              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseFakeRobubox">
+                                Simulation mode "FakeRobubox" 
+                              </a>
+                              <i><span id="zone_info_fakerobubox"> : ??? </span></i>
+                          </h4>
+
+                      </div>
+                                    
+                      <div id="collapseFakeRobubox" class="panel-collapse collapse">    
+
+                          <div id="manageFakeRobubox" class="panel-body">  
+                              
+                              <form>
+                                  <input  type="radio" 
+                                          name="FakeRobot" 
+                                          value="true" 
+                                          id="FakeTrue" 
+                                          onclick="setFakeRobubox(true)" 
+                                          disabled="true"> 
+                                    <label for="FakeTrue">Enabled</label>
+                                  
+                                  <input  type="radio" 
+                                          name="FakeRobot" 
+                                          value="false" 
+                                          id="FakeFalse" 
+                                          onclick="setFakeRobubox(false)" 
+                                          disabled="true" /> 
+                                    <label for="FakeFalse">Disabled</label>
+                              
+                              </form>
+                              <p>Fakerobubox: software emulation of an embedded robot system for mapping, battery gauge and drive controls.<br/>
+                              If enabled, ignores the loaded map. The simulation is based on the I3S laboratory map (Labo261.png).<br/>
+                              Automatic Points of interest navigation and relocation commands are disabled in this mode.<br/>
+                              You can use it to simulate a robot client in a tab an a pilot client in other tab</p>
+                              <hr/>
+                              <p>Fakerobubox: émulation logicielle d'un système embarqué pour la cartographie, la jauge de batterie et les commandes drive.<br/>
+                              Si activé, ne tient pas compte de la carte chargée. Simulation basée sur la carte du laboratoire I3S (Labo261.png) </br>
+                              La navigation automatique par POI et les commandes de relocalisations sont désactivées dans ce mode.<br/>
+                              Vous pouvez l'utiliser pour simuler un client robot dans un onglet et un client pilote dans un autre onglet</p>
+                          
+                          </div>
+
+                      </div>
+
+                  </div>
+
+
+                  <!-- Map -->
+                  <div class="panel panel-primary">
+
+                      <div class="panel-heading">
+                                    
+                            <h4 class="panel-title">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseMap">
+                                  Map setting 
+                                </a>
+                                <i><span id="zone_info_maps"> : ??? </span></i>
+                            </h4>              
+                      
+                      </div>
+
+                      <div id="collapseMap" class="panel-collapse collapse">
+                              
+                              <div id="manageMap"  class="panel-body"> 
+                                     <!--
+                                      <strong>Carte chargée: </strong>    <span id="zone_info_maps"> ??? </span> 
+                                      -->     
+                                   
+                                   <form>
+                                        
+                                          <div class="select">
+                                              <label for="Maps_list">Select a map:</label><br/>
+                                              <select id="Maps_list">
+                                              </select>
+                                              <button id="admin_ButtonMapsSelect" onclick="selectMap()">Select</button>
+                                              <button id="admin_ButtonMapsDelete" onclick="deleteMap()">Delete</button>
+                                          </div>
+                                 
+                                        </form>
+                                   
+                                      <form id="uploadForm"
+                                            enctype="multipart/form-data"
+                                            action='/i3s/'
+                                            method="post">
+                                        <input type="file" name="userPhoto" />
+                                        <br/>
+                                        <input type="submit" value="Upload Map" name="submit">
+                                        <span id = "status"></span>
                                       </form>
-                                 
-                                    <form id="uploadForm"
-                                          enctype="multipart/form-data"
-                                          action='/i3s/'
-                                          method="post">
-                                      <input type="file" name="userPhoto" />
-                                      <br/>
-                                      <input type="submit" value="Upload Map" name="submit">
-                                      <span id = "status"></span>
-                                    </form>
-                            </div> 
-                        </div>
-              </div>
-        </div>
-        
+                              </div> 
+                      </div>
 
-        
-		<!-- Gamepad -->
-        <div layout:fragment="content">
-                <div class="col-md-12">
-                        <div class="panel panel-primary">
+                  </div>
 
-                            <div class="panel-heading"><h5><b>Xbox 360 gamepad</b></h5>
+                  <!-- Gamepad -->
+                  <div class="panel panel-primary">
+
+                            <div class="panel-heading">
+                            
+                                <h4 class="panel-title">
+                                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseGamepad">
+                                      Xbox 360 gamepad
+                                    </a>
+                                    <i><span id="zone_info_gamepad"> : ??? </span></i>
+                            
+                                </h4>     
+
+                            </div>
+
+                            <div id="collapseGamepad" class="panel-collapse collapse">
+
+                                <div id="manageGamepad"  class="panel-body"> 
+                                                                       
+                                    <form> 
+                                        <input  type="radio" 
+                                                name="gamePadRobot" 
+                                                value="true" 
+                                                id="gamepadTrue" 
+                                                disabled="true" 
+                                                onclick="setGamepad(true)"> 
+                                            <label for="gamePadTrue">enabled</label>
+                                        
+                                        <input  type="radio" 
+                                                name="gamePadRobot" 
+                                                value="false" 
+                                                id="gamepadFalse" 
+                                                disabled="true" 
+                                                onclick="setGamepad(false)" /> 
+                                            <label for="gamePadFalse">disabled</label>
+                                     </form>
+
+                                </div> 
+
                             </div>
                             
-                            <div id="manageGamepad"  class="panel-body"> 
-                                                                   
-                                <form> 
-                                    <input  type="radio" 
-                                            name="gamePadRobot" 
-                                            value="true" 
-                                            id="gamepadTrue" 
-                                            disabled="true" 
-                                            onclick="setGamepad(true)"> 
-                                        <label for="gamePadTrue">enabled</label>
-                                    
-                                    <input  type="radio" 
-                                            name="gamePadRobot2" 
-                                            value="false" 
-                                            id="gamepadFalse" 
-                                            disabled="true" 
-                                            onclick="setGamepad(false)" /> 
-                                        <label for="gamePadFalse">disabled</label>
-                                 </form>
-
-                            </div> 
                         </div>
-              </div>
-        </div>
-        
 
-
-
-
-		<!-- cameras -->
-        <div layout:fragment="content">
-                <div class="col-md-12">
+                        <!-- cameras -->
                         <div class="panel panel-primary">
 
-                            <div class="panel-heading"><h5><b>Pan/Tilt camera setting</b></h5>
+                            <div class="panel-heading">
+                            
+                                <h4 class="panel-title">
+                                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseCamera">
+                                      Pan/Tilt camera setting
+                                    </a>
+                                    <i><span id="zone_info_Camera"> : ??? </span></i>
+                            
+                                </h4>  
+
+
                             </div>
                             
-                            <div id="manageCameras" class="panel-body"> 
+                            <div id="collapseCamera" class="panel-collapse collapse">    
+                                
+                                <div id="manageCameras" class="panel-body"> 
                                                                   
-                                    <span id="zone_info_Ip_Camera"></span>
+                                    <div id="zone_info_Ip_Camera"></div>
 
                                     <div class="select">
                                         
@@ -282,60 +386,51 @@
                                         </div>
                                 
                                 </div>
-                                <hr/>
+
                             </div>
+                                                            
+
                         </div>
-              </div>
-        </div>
 
 
-        <!-- Robubox settings (IP Robot) -->
-        <div layout:fragment="content">
-                <div class="col-md-12">
+
+                        <!-- Robubox settings (IP Robot) -->
+                        
                         <div class="panel panel-primary">
 
-                            <div class="panel-heading"><h5><b>IP Robot setting</b></h5>
-                            </div>
+                            <div class="panel-heading">
                             
-                            <div id="manageIpRobot" class="panel-body">  
-                             <div id="zone_info_Ip_Robot"></div>
+                                <h4 class="panel-title">
                                     
-                                    Label: <input type='text' id='newLabel_Robot'> | Ip: <input type='text' id='newIP_Robot'>
-                                    <span ><button id="addRessource_Robot" onclick="addRessource('Robot')">Ajouter ce robot</button></span><br/>
-                                    <br/>
-                                    <!--
-                                    <div id="zone_info_Ip_Camera"></div>
-                                    Label: <input type='text' id='newLabel_Camera'> | Ip: <input type='text' id='newIP_Camera'>
-                                    <span ><button id="addRessource_Camera" onclick="addRessource('Camera')">Ajouter cette caméra</button></span><br/>
-                                    -->
+                                      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseRobot">
+                                        IP Robot setting
+                                      </a>
+                                    
+                                    <i><span id="zone_info_Robot"> : ??? </span></i>
+                            
+                                </h4> 
 
-                                 <hr/>
-                             </div>
-                        </div>
-              </div>
-        </div>
-
-
-        <!--
-        <div layout:fragment="content">
-                <div class="col-md-12">
-                        <div class="panel panel-primary">
-
-                            <div class="panel-heading"><h5><b>xxxxxx : </b></h5>
                             </div>
                             
-                            <div id="xxxx"  class="panel-body"> 
+                                
+                            <div id="collapseRobot" class="panel-collapse collapse"> 
 
-                                   
+                                <div id="manageIpRobot" class="panel-body">  
+                                   <div id="zone_info_Ip_Robot"></div>
+                                          
+                                          Label: <input type='text' id='newLabel_Robot'> | Ip: <input type='text' id='newIP_Robot'>
+                                          <span ><button id="addRessource_Robot" onclick="addRessource('Robot')">Ajouter ce robot</button></span><br/>
+                                </div>
+                    
+                            </div>
 
-                            </div> 
                         </div>
-              </div>
+
+                </div>
+
+            </div>
+
         </div>
-        -->
-        
-
-
 
 
         <section id="TopNotification">

@@ -22,7 +22,24 @@
 
 
 <body>
-     
+    
+
+    <!-- TODO : Factoriser le CSS -->
+    <style>
+
+            .panel-heading .accordion-toggle:after {
+                font-family: 'Glyphicons Halflings';  /* essential for enabling glyphicon */
+                content: "\e113";    /* adjust as needed, taken from bootstrap.css */
+                float: right;        /* adjust as needed */
+                color: white;         /* adjust as needed */
+            }
+
+
+            .panel-heading .accordion-toggle.collapsed:after {
+                content: "\e114";
+            }
+
+    </style> 
 
      <div class="modal fade" id="myModal" role="dialog">
           <div class="modal-dialog">
@@ -48,87 +65,104 @@
     </strong>
    
 
-        <nav class="navbar navbar-default">
-              <div class="container-fluid">
+    <nav class="navbar navbar-default">
+          <div class="container-fluid">
                   
                   <ul class="nav navbar-nav">
-                        <li><a href="/">Home</a></li>
-                        <!--
-                        <li><a href="/i3s">Robot Administration</a></li>
-                        <li><a href="ws-media.html">Museum Ressources</a></li>
-                        <li><a href="ws-scene.html">Museum Scenes</a></li>
-                        <li"><a href="ws-trails.html">Museum Trails</a></li>
-                        <li><a href="ws-poi.html">Museum Map</a></li>
-                        <li><a href="ws-object.html">Museum Objects</a></li>
-                        -->
+                        <li class="active"><a href="/">Home</a></li>
+                        <li><a href="#">|</a></li>
                         <li><a href="/robotV2/">Robot interface</a></li>
                         <li><a href="/piloteV2/">Pilot interface</a></li>
+                        <li><a href="#">|</a></li>
+                        <li><a href="/i3s">Robot Administration</a></li>
+                        <li><a href="#">|</a></li>
+                        <li><a href="ws-media.html">Museum Ressources</a></li>
+                        <li><a href="ws-scene.html">Museum Scenes</a></li>
+                        <li><a href="ws-trails.html">Museum Trails</a></li>
+                        <li><a href="ws-poi.html">Museum Map</a></li>
+                        <li><a href="ws-object.html">Museum Objects</a></li>
+                        
+                        
+
                   </ul>
              
-              </div>
+          </div>
         
-        </nav>
+    </nav>
 
-        </br>
-        
-        <div layout:fragment="content">
-                
-                <div class="col-md-12">
-                        <div class="panel panel-primary">
+    </br>
 
-                            <div class="panel-heading"><h5><b>First connection</b></h5>
-                            </div>
-                            
-                            <div id="xxxx"  class="panel-body"> 
 
-                                   <p>Under construction !</p>
 
-                            </div> 
-                        </div>
-              </div>
-        </div>
 
 
         <div layout:fragment="content">
-                
-                <div class="col-md-12">
-                        <div class="panel panel-primary">
 
-                            <div class="panel-heading"><h5><b>Controls</b></h5>
-                            </div>
-                            
-                            <div id="xxxx"  class="panel-body"> 
+            <div class="col-md-12">      
 
-                                   <p>Under construction !</p>
+                <div class="panel-group" id="accordion">
 
-                            </div> 
+             
+                     <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" >
+                                  First connection 
+                                </a>
+                            </h4>
                         </div>
-              </div>
+                        <div id="collapseOne" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                  <p></p> 
+                                  <img src="/images/Construction.jpg" alt="UnderConstruction" style='width:100px; height:100px;'>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                                    Controls
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseTwo" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <p></p> 
+                                <img src="/images/Construction.jpg" alt="UnderConstruction" style='width:100px; height:100px;'>
+                            </div>
+                        </div>
+                    </div>
+              
+              
+                    <!--
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                                  Auto Pilote
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseThree" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <p>Under construction</p> 
+                                <img src="/images/Construction.jpg" alt="UnderConstruction";>
+                            </div>
+                        </div>
+                    </div>
+                    -->
+
+                </div>
+
+            </div>
+
         </div>
 
 
-
-
-        <!--
-        <div layout:fragment="content">
-                <div class="col-md-12">
-                        <div class="panel panel-primary">
-
-                            <div class="panel-heading"><h5><b>xxxxxx : </b></h5>
-                            </div>
-                            
-                            <div id="xxxx"  class="panel-body"> 
-
-                                   
-
-                            </div> 
-                        </div>
-              </div>
-        </div>
-        -->
-        
-
-
+        <!-- tiré de https://codepen.io/tofanelli/pen/waadRY?editors=1100 -->
 
 
         <section id="TopNotification">

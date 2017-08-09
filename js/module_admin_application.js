@@ -125,9 +125,10 @@ function getFakeRobubox() {
 
 // A la réponse du serveur:
 socket.on("getFakeRobubox", function(data) { 
-    // alert (data.isFakeRobubox)
+    //alert (data.isFakeRobubox)
     isFakeRobubox = data.isFakeRobubox
-    setSelectFakeRobot(isFakeRobubox)
+    setSelectFakeRobot(isFakeRobubox);
+    updateTitleFakeRoboubox (data.isFakeRobubox);
 });
 
 
@@ -145,7 +146,7 @@ function setFakeRobubox(boolean) {
     var response = confirm(message);
     if (response == true) {
         isFakeRobubox = boolean;
-
+        updateTitleFakeRoboubox (isFakeRobubox);
         if (isFakeRobubox == true) txt = "Mode simulation activé !";
         if (isFakeRobubox == false) txt = "Mode simulation désactivé !";
 
@@ -157,9 +158,21 @@ function setFakeRobubox(boolean) {
     } else if (response == false) {
         setSelectFakeRobot(isFakeRobubox)
     }       
+    
+    
+
     console.log("isFakeRobubox = "+isFakeRobubox)           
 }
 
+
+// Affichage du flag kafeRobubox
+function updateTitleFakeRoboubox (value) {
+    console.log("updateTitleFakeRoboubox ("+value+")")
+    var message = "disabled";
+    if (value === true) message = "enabled";
+    var html = '<span id="zone_info_fakerobubox"> = '+message+'</span>';
+    $('#zone_info_fakerobubox').replaceWith(html);
+}
 
 // Gestion du formulaire
 function setSelectFakeRobot(isFakeRobubox) {
@@ -186,7 +199,7 @@ function getActiveMap() {
 
 // A la réponse du serveur:
 socket.on("getActiveMap", function(data) { 
-    activeMap = data.activeMap;
+    activeMap = " = "+data.activeMap;
     var html = '<span id="zone_info_maps">'+activeMap+'</span>';
     $('#zone_info_maps').replaceWith(html);
     
@@ -409,6 +422,7 @@ socket.on("getIsGamepad", function(data) {
     console.log('socket.on("getIsGamepad"')
     console.log(data)
     isGamepad = data.isGamepad
+    updateTitleGamepad (isGamepad);
     setSelectGamepad(isGamepad)
 });
 
@@ -431,7 +445,7 @@ function setGamepad(boolean) {
 
     if (response == true) {
         isGamepad = boolean;
-
+        updateTitleGamepad (isGamepad);
         if (isGamepad == true) txt = "Gamepad activé !";
         if (isGamepad == false) txt = "Gamepad désactivé !";
 
@@ -446,6 +460,17 @@ function setGamepad(boolean) {
     }       
     
     console.log("isGamepad = "+isGamepad)           
+}
+
+
+
+// Affichage du flag Gamepad
+function updateTitleGamepad (value) {
+    console.log("updateTitleGamepad ("+value+")")
+    var message = "disabled";
+    if (value === true) message = "enabled";
+    var html = '<span id="zone_info_gamepad"> = '+message+'</span>';
+    $('#zone_info_gamepad').replaceWith(html);
 }
 
 // Contrôle formulaire du gamepad physique
@@ -542,7 +567,7 @@ function setIp_Robot(parameter){
 }
 
 
-// Sélection de l'ip robot
+// Sélection de l'ip caméra
 function setIp_Camera(parameter){
     
     console.log('setIp_Camera('+parameter+')');
