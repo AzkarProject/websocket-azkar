@@ -49,7 +49,7 @@
 
 	// Numéro de version
 	exports.appVersion = function(){
-	    return '2.0.3';
+	    return '2.0.4';
 	};
 
 	// Crédits
@@ -67,8 +67,8 @@
 	exports.appServerIp = function(){
 		//return "localhost";
 		//return "192.168.173.1" // réseau AdHoc 'Robulab_wifi'
-		return "134.59.130.143" // VM 1 Sparks
-		//return "134.59.130.142" // VM 2 Sparks
+		//return "134.59.130.143" // VM 1 Sparks
+		return "134.59.130.142" // VM 2 Sparks
 		//return "134.59.130.147" // VM 3 Sparks
 	}
 
@@ -114,7 +114,6 @@
     	var mapSource = '/images/defaultMaps/map_unavailable.jpg'; // Image de map absente
 		return mapSource
 	}
-	/**/
 
 
 	exports.getPathKey = function() {

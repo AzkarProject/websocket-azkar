@@ -13,23 +13,29 @@ utiliser, modifier et/ou redistribuer ce programme sous les conditions
 de la licence CeCILL-C telle que diffusée par le CEA, le CNRS et l'INRIA 
 sur le site "http://www.cecill.info".
 
-Revision 2.0.3
+
+Revision 2.0.4
 - Caméra Pan / Tilt
-    - Encours: Intégration module commande AnotherWorld dans application
+    - Encours: Commandes clavier
     - Todo: Detection ID caméra Pan / Tilt dans l'administration
     - Todo: Commandes Keyboard
 - Caméra au sol
     - Todo: Detection ID caméra sol
     - Todo: Switch auto caméra (mode conduite/précision)
 - Interface d'administration
-    - Encours: Gestion caméra pilotage (selection, persistance configuration, défaut)
-    - Encours: Gestion caméra sol (selection, persistance configuration, défaut)
+    - 
+    - Encours: Gestion caméra pilotage (selection, persistance configuration, caméra par défaut)
+    - Encours: Gestion caméra sol (selection, persistance configuration, caméra par défaut)
 - IHM
+    - Encours: centrage IHM
     - Todo: Système touch Screen
-    - Todo: centrage IHM
 - Cartographie
     - Todo: Clic & Go POI
 
+
+Revision 2.0.3
+- Caméra Pan / Tilt
+    - Intégration module commande caméra PTZ
 
 Revision 2.0.2
 - Interface d'administration

@@ -127,21 +127,25 @@ app = express();
 
 
 
-/*// Add proxy --------------------------
-var hostProxy = process.env.PORT ? '0.0.0.0' : '127.0.0.1';
-var portProxy = process.env.PORT || 443;
-var cors_proxy = require('cors-anywhere');
-var serverProxy = cors_proxy.createServer({
-    httpsOptions : https_options,
-    originWhitelist: [], // Allow all origins
-    removeHeaders: ['cookie', 'cookie2']
-});
+// Add proxy --------------------------
 
-var komcomProxy = require('./komcom-proxy.js')(serverProxy);
+if (HOST == '192.168.173.1') {
 
-komcomProxy.listen(portProxy, hostProxy, function() {
-    console.log('PROXY Running CORS Anywhere on ' + hostProxy + ':' + portProxy);
-});
+	var hostProxy = process.env.PORT ? '0.0.0.0' : '127.0.0.1';
+	var portProxy = process.env.PORT || 443;
+	var cors_proxy = require('cors-anywhere');
+	var serverProxy = cors_proxy.createServer({
+	    httpsOptions : https_options,
+	    originWhitelist: [], // Allow all origins
+	    removeHeaders: ['cookie', 'cookie2']
+	});
+
+	var komcomProxy = require('./komcom-proxy.js')(serverProxy);
+
+	komcomProxy.listen(portProxy, hostProxy, function() {
+	    console.log('PROXY Running CORS Anywhere on ' + hostProxy + ':' + portProxy);
+	});
+}
 
 /**/// --------------------------------
 
