@@ -20,12 +20,12 @@
 
 </head>
 
-
+<!--
 <body onload="getAllScenes();">
      <div class="modal fade" id="myModal" role="dialog">
           <div class="modal-dialog">
 
-                <!-- Modal content-->
+
                 <div class="modal-content">
                       <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -39,6 +39,37 @@
 
           </div>
     </div>
+    -->
+
+
+   
+<body onload="getAllMaps();">
+ <div class="modal fade" id="myModal" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title" id="modalTitle"></h4>
+      </div>
+      <div class="modal-body" id="modalBody">
+
+
+
+      </div>
+      <div class="modal-footer" id="modalFooter">
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+
+
+
 
 
     <strong>
@@ -46,55 +77,11 @@
     </strong>
    
 
-        <!--
-        <nav class="navbar navbar-default">
-              <div class="container-fluid">
-                  <div class="navbar-header">
-                        <a class="navbar-brand" href="http://www.azkar.fr/">Azkar</a>
-                  </div>
-                  
-                  <div class="navbar-header">
-                        <a class="navbar-brand" href="https://corese.inria.fr/">Corese</a>
-                  </div>
-
-                  <ul class="nav navbar-nav">
-                        <li><a href="/">  Accueil</a></li>
-                        <li><a href="/i3s">Admin Robot</a></li>
-                        <li><a href="ws-map.html">Map</a></li>
-                        <li class="active"><a href="ws-media.html">Medias</a></li>
-                        <li><a href="ws-scene.html">Scenes</a></li>
-                        <li><a href="ws-trails.html">Trails</a></li>
-                        <li><a href="ws-poi.html">Points of interest</a></li>
-                        <li><a href="ws-object.html">Object</a></li>
-                        <li><a href="/robotV2/">IHM Robo</a></li>
-                        <li><a href="/piloteV2/">IHM Pilote</a></li>
-                  </ul>
-             
-              </div>
-        
-        </nav>
-        -->
-
 
     <nav class="navbar navbar-default">
           <div class="container-fluid">
                   
-                  <ul class="nav navbar-nav">
-                        <li><a href="/">Home</a></li>
-                        <li><a href="#">|</a></li>
-                        <li><a href="/robotV2/">Robot interface</a></li>
-                        <li><a href="/piloteV2/">Pilot interface</a></li>
-                        <li><a href="#">|</a></li>
-                        <li><a href="/i3s">Robot Administration</a></li>
-                        <li><a href="#">|</a></li>
-                        <li class="active"><a href="ws-media.html">Museum Ressources</a></li>
-                        <li><a href="ws-scene.html">Museum Scenes</a></li>
-                        <li><a href="ws-trails.html">Museum Trails</a></li>
-                        <li><a href="ws-poi.html">Museum Map</a></li>
-                        <li><a href="ws-object.html">Museum Objects</a></li>
-                        
-                        
-
+                 <ul class="nav navbar-nav" id="AzkarNavbar">
                   </ul>
              
           </div>
@@ -103,6 +90,92 @@
 
         </br>
         
+        
+<div layout:fragment="content">
+  <div class="col-md-6">
+    <div class="panel panel-primary">
+      <div class="panel-heading"><h5><b>Consultation des MAP</b></h5></div>
+      <div class="panel-body">
+        <div>
+        <label><h4 align="left"> Liste des Map :</h4></label>
+        <select id='choixMap' onchange="getMapScenes()">
+
+        </select>
+        <button type="button" class="btn btn-primary active" onclick="getMapScenes()"><span class='glyphicon glyphicon-search'></span> Chercher</button>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+    <div class="col-md-6">
+      <div class="panel panel-primary">
+        <div class="panel-heading"><h5><b>Les scènes associées à la MAP</b></h5></div>
+        <div class="panel-body">
+          <div>
+          <label><h4 align="left"> Liste des scènes :</h4></label>
+          <select id='choixScene' onchange="searchScenes()">
+
+          </select>
+          <button type="button" class="btn btn-primary active" onclick="searchScenes()"><span class='glyphicon glyphicon-search'></span> Chercher</button>
+
+          <button type="button" class="btn btn-warning active" onclick="getUndefinedRessources()">
+            <span class='glyphicon glyphicon-flash'></span> No Classified Ressources</button>
+
+        </div>
+          </div>  
+        </div>
+      </div>
+    </div>
+
+  
+
+  <div layout:fragment="content">
+    <div class="col-md-12">
+      <div class="panel panel-primary">
+        <div class="panel-heading" id="divInfoNbrMedia"><h5><b>Les medias associé à la scène : </b></h5>
+
+        </div>
+        <div class="panel-body">
+          <div> <button type="button" class="btn btn-sm btn-success active" data-toggle='modal' data-target='#myModal' id="btnAddMedia" onclick="addNewMedia()"><span class='glyphicon glyphicon-plus'></span> AJOUTER UNE NOUVELLE RESSOURCE</button> 
+            <div align="right"> <label>Filtre:</label>
+             <select id='choixFiltre' onchange="getSceneValues()"><option value='all'>------------</option><option value='Video'>Videos</option><option value='Picture'>Image</option><option value='webPage'>Page Web</option><option value='wikipedia'>Wikipedia</option><option value='dbpedia'>DBpedia</option>
+        </select>
+      </div>
+          </div>
+        </br>
+        <form >
+          <table id="myTable" class="table table-striped table-bordered table-condensed">
+            <thead>
+
+            </thead>
+            <tbody>
+            </tbody>
+
+
+          </table>
+
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+        <!--
+
         <div layout:fragment="content">
               <div class="col-md-6">
                     <div class="panel panel-primary">
@@ -111,7 +184,6 @@
 
                                 <label><h4 align="left"> Scene list :</h4></label>
                                 <select id='choixScene' onchange="getSceneValues()">
-                                  <!--<option value='La_tranchee'>Tranchée</option><option value='Marne14'>Marne14</option>-->
                                 </select>
                                 <button type="button" class="btn btn-primary active" onclick="getSceneValues()">
                                     <span class='glyphicon glyphicon-search'></span> Search
@@ -142,7 +214,6 @@
                             </button>
                             <button type="button" class="btn btn-warning active" onclick="">
                                   <span class='glyphicon glyphicon-flash'></span> No Classified Media</button>
-                                  <!--<button type="button" class="btn btn-default active" onclick="getAllMedia()">All Media</button>-->
                             </div>  
                       </div>
                 </div>
@@ -172,6 +243,8 @@
               </div>
         </div>
 
+        -->
+
 
         <section id="TopNotification">
                          
@@ -195,7 +268,7 @@
         <script>
         var type = null;
         var refresh = true;
-        page = "museumMedia";
+        page = "ws-media";
         </script>
 
         <script src="/socket.io/socket.io.js"></script>
@@ -206,11 +279,12 @@
         <script src="/js/common_app_settings.js"></script>
         <script src='/js/module_notifications.js'></script>
         <script src='/js/module_ihm.js'></script>
-        <script src="/js/module_admin_sparql.js"></script>
+        <script src="/js/module_admin_media_sparql.js"></script>
         <script src="/js/lib/xml2json.js"></script>
 
         <script>
           ihm.getHeaderPage("Médiateur");
+          ihm.getNavBar();
         </script>
 
 

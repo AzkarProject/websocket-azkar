@@ -37,6 +37,7 @@
 
 
 console.log("module_forms chargé");
+closeMenuNav(); // Préventif...
 
 // IHM Pilote
 // Dévérouillage formulaires selection caméras Robot
@@ -349,18 +350,52 @@ function closeMenuNav() {
     ihm.setDisplay('nav-inside','close')
     ihm.setDisplay('nav-Relocalize','close')
     ihm.setDisplay('nav-GotoPoi','close')
+    ihm.setDisplay('nav-GotoTrail','close')
     ihm.setDisplay('nav-ListPoi','close')
     ihm.setDisplay('nav-RobotStatus','open')
+    
+
 }
 
 function openMenuNav (menu) {
     closeMenuNav(); // Préventif...
+    // alert(menu);
     ihm.setDisplay('nav-inside','open')
+    if (menu == 'nav-GotoTrail') {
+        ihm.setDisplay('list_POI','close')
+
+    } else {
+        ihm.setDisplay('list_POI','open')
+    }
     ihm.setDisplay(menu,'open')
     ihm.setDisplay('nav-ListPoi','open')
     ihm.setDisplay('nav-RobotStatus','close')
    
 }
+
+// Par défaut au chargement de la page
+ihm.setDisplay('trailControl','close')
+ihm.setDisplay('trailDetails','close')
+// Fonction passerelle
+function manageTrail(order) {
+    if (order == 'select' ) {
+
+        ihm.setDisplay('trailDetails','open')
+        ihm.setDisplay('trailsList','close')
+        ihm.setDisplay('trailControl','open')
+
+    } else if (order == 'change') {
+
+        ihm.setDisplay('trailDetails','close')
+        ihm.setDisplay('trailControl','close')
+        ihm.setDisplay('trailsList','open')
+
+    }
+
+    navigation.manageTrail(order)
+}
+
+
 
 /**/
 

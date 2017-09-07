@@ -68,22 +68,7 @@
     <nav class="navbar navbar-default">
           <div class="container-fluid">
                   
-                  <ul class="nav navbar-nav">
-                        <li class="active"><a href="/">Home</a></li>
-                        <li><a href="#">|</a></li>
-                        <li><a href="/robotV2/">Robot interface</a></li>
-                        <li><a href="/piloteV2/">Pilot interface</a></li>
-                        <li><a href="#">|</a></li>
-                        <li><a href="/i3s">Robot Administration</a></li>
-                        <li><a href="#">|</a></li>
-                        <li><a href="ws-media.html">Museum Ressources</a></li>
-                        <li><a href="ws-scene.html">Museum Scenes</a></li>
-                        <li><a href="ws-trails.html">Museum Trails</a></li>
-                        <li><a href="ws-poi.html">Museum Map</a></li>
-                        <li><a href="ws-object.html">Museum Objects</a></li>
-                        
-                        
-
+                  <ul class="nav navbar-nav" id="AzkarNavbar">
                   </ul>
              
           </div>
@@ -161,8 +146,8 @@
                                   When using an Xbox 360 Controller there are two ways to move the robot: </br>
                                   Hold A for normal speed or X for slow speed and: </br> 
                                   &emsp; -  Hold RT to move forward </br>
-                                  &emsp;- Hold LT to move backward </br>
-                                  &emsp;- Use the left joystick to turn </br>
+                                  &emsp; - Hold LT to move backward </br>
+                                  &emsp; - Use the left joystick to turn </br>
                                   OR </br>
                                   &emsp;- Press the left joystick and use to move the robot at normal speed </p>
 
@@ -264,6 +249,7 @@
         // var localPseudo = checkCookie();
         
         ihm.getHeaderPage();
+        ihm.getNavBar();
         // socket.emit('onConnectionUser', null); // Version objet
         // socket.emit('onConnectionUser', {pseudo: localPseudo}); // Version objet
         

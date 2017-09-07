@@ -379,8 +379,14 @@
             var PoseY = listPOI[poi].Pose.Y;
             var Theta = listPOI[poi].Pose.Theta;
 
+            var color = 'orange';
+            var txtColor = 'black';
+
             PoseX = -PoseX / dataMap.Resolution
             PoseY = -PoseY / dataMap.Resolution
+
+            var test = 
+
 
             // Inversion des axes d'orientation (Carte en horizontal)
             // et application du ratio de resize
@@ -401,14 +407,65 @@
                 PoseY = PoseY+startArrowY; // OK
             }
 
-            circleWithDirection(-PoseX, PoseY, Theta, "orange", 1, 1); // OK sur I3S/: Inversion XY chez Robosoft...
+            
+            if (poiName){
+                
+                var sceneName = null;
+                var textPoi = null
+                sceneName = getSceneName(poiName)
+                
+                if (sceneName != poiName) {
+                    textPoi = sceneName 
+                    var isTrailScene = isSceneInActiveTrail(sceneName);
+                    if ( isTrailScene == true ) {
+                        color = 'green';
+                        txtColor = 'white';
+                    } else {
+                        color = 'orange';
+                        txtColor = 'black';
+                    }
+
+
+                    
+                } else {
+                    textPoi = poiName 
+                    color = 'lightgrey'
+                }
+
+
+
+            }
+
+
+
+
+
+
+            circleWithDirection(-PoseX, PoseY, Theta, color, 1, 1); // OK sur I3S/: Inversion XY chez Robosoft...
 
             context.save();
     
+            // console.log(AllScenes)
+
+
             if (poiName){
                 
-                drawTextBG(context, poiName, '5px verdana',-PoseX+3,PoseY-4,'black','orange');
-
+                /*
+                var sceneName = null;
+                var textPoi = null
+                sceneName = getSceneName(poiName)
+                
+                if (sceneName != poiName) {
+                    textPoi = sceneName 
+                    color = 'orange'
+                } else {
+                    textPoi = poiName 
+                    color = 'lightgrey'
+                }
+                /**/
+                
+                drawTextBG(context, textPoi, '5px verdana',-PoseX+3,PoseY-4,txtColor,color);
+                color = 'orange';
             }
 
             context.restore();
@@ -420,6 +477,42 @@
 
 
     }
+
+
+    function isSceneInActiveTrail() {
+        return true
+    }
+
+    function getSceneName(poiName) {
+
+        // console.log("getSceneName(poiName)")
+        for (scene in AllScenes) {
+
+                
+            var nameScene = AllScenes[scene];
+            var test = poiName.indexOf(nameScene);
+            
+            //console.log( nameScene + " inside "+poiName+ " ?")
+            
+            if ( test != -1 ) {
+                //console.log('yes')
+                return nameScene;
+
+            } else {
+                //console.log('no')
+            }
+            /***/
+
+            
+        
+
+        }
+
+        return poiName;
+
+
+    }
+
 
 
     // Ecrit un texte avec un background

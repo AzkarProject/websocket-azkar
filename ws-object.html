@@ -9,7 +9,7 @@
         <meta name='viewport' content='width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1'>
         
       
-        <title>Manage Museum Map</title>
+        <title>Objects</title>
 
         <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
         <link rel="stylesheet" type="text/css" href="css/myStyle.css"/>
@@ -51,23 +51,7 @@
     <nav class="navbar navbar-default">
           <div class="container-fluid">
                   
-                  <ul class="nav navbar-nav">
-                        <li><a href="/">Home</a></li>
-                        <li><a href="#">|</a></li>
-                        <li><a href="/robotV2/">Robot interface</a></li>
-                        <li><a href="/piloteV2/">Pilot interface</a></li>
-                        <li><a href="#">|</a></li>
-                        <li><a href="/i3s">Robot Administration</a></li>
-                        <li><a href="#">|</a></li>
-                        <li><a href="ws-media.html">Museum Ressources</a></li>
-                        <li><a href="ws-scene.html">Museum Scenes</a></li>
-                        <li><a href="ws-trails.html">Museum Trails</a></li>
-                        <li><a href="ws-poi.html">Museum Map</a></li>
-                        <li class="active"><a href="ws-object.html">Museum Objects</a></li>
-                        
-                        
-
-                  </ul>
+                  <ul class="nav navbar-nav" id="AzkarNavbar"></ul>
              
           </div>
         
@@ -138,7 +122,7 @@
         <script>
         var type = null;
         var refresh = true;
-        page = "museumObject";
+        page = "ws-object";
         </script>
 
         <script src="/socket.io/socket.io.js"></script>
@@ -152,7 +136,11 @@
         <script src='/js/module_ihm.js'></script>
         <script src="/js/module_admin_application.js"></script>
         <script src="/js/module_admin_sparql.js"></script>
-       
+
+        <script>
+          ihm.getHeaderPage("Médiateur");
+          ihm.getNavBar();
+        </script>
 
 </body>
 </html>

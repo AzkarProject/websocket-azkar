@@ -114,7 +114,7 @@ exports.Poi = function Poi (data){
 
 
 
-// 2ème phase: Association N POIs <> 1 Scene
+/*// 2ème phase: Association N POIs <> 1 Scene
 //--  Objet Scene
 // Ontologie amo:SceneMusee >>> à traduire en MuseumScene
 exports.Scene = function Scene (data){
@@ -146,7 +146,7 @@ exports.Visite = function Visite (data){
   this.Sparql = data.Sparql;
   this.creationDate = Date.now(); // TimeStamp
 }
-
+/**/
 
 
 // pour détecter tout changements dans une carte

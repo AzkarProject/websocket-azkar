@@ -464,6 +464,11 @@ exports.sendDrive = function (data){
     var aSpeed = data.aSpeed;
     var lSpeed = data.lSpeed;
 
+
+    // Recentrage préventif de la caméra PTZ...
+    var order = {command: "onCameraGoToDefaultPosition"}    
+    getPtzOpticsCommand(order)
+
     if (data.source == "Homme-Mort") console.log ("Homme-Mort");
     
         //console.log ("komcom.sendDrive()");

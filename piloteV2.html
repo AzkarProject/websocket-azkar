@@ -154,581 +154,573 @@
 
 			
 			
-			<div id="displaySettings" class="draggable  IhmModule"
-				style="
-				position:absolute;
-				top:100px;
-				left:130px;
-				float:left;
-				margin:10px 5px 5px 5px;
-				padding:5px;
-				background:rgba(221,221,221,0.1);
-				z-index:999999">
+		<div id="displaySettings" class="draggable  IhmModule"
+			style="
+			position:absolute;
+			top:100px;
+			left:130px;
+			float:left;
+			margin:10px 5px 5px 5px;
+			padding:5px;
+			background:rgba(221,221,221,0.1);
+			z-index:999999">
 
 
-					<div id="batteryJauge" style="float:left; text-align:center;color:white;">
-		                
-		                <label for="displaySettings" style="margin-bottom:5px;">Display</label>
-						<br/>
-						<button class="shadowBlack" style="margin-top:5px; width:90px"  id="switchsettings" onclick="switchDisplay('settings','open')">
-							Setting App
-						</button>
-						<br/>
-						<button class="shadowBlack" style="margin-top:5px;width:90px"  id="switchmap" onclick="switchDisplay('map','close')">
-							Map
-						</button>
-						<br/>
-						<button class="shadowBlack" style="margin-top:5px;width:90px"  id="switchdrive" onclick="switchDisplay('drive','close')">
-							Drive
-						</button>
-						<br/>
-						<button class="shadowBlack" style="margin-top:5px;width:90px"  id="switchnav" onclick="switchDisplay('nav','close')">
-							AutoPilot
-						</button>
-						<br/>
-						<button class="shadowBlack" style="margin-top:5px;width:90px"  id="switchconnexion" onclick="switchDisplay('connexion','close')">
-							Video quality
-						</button>
-						<br/>
-						<button class="shadowBlack" style="margin-top:5px;width:90px"  id="switchtchat" onclick="switchDisplay('tchat','close')">
-							Tchat
-						</button>
-						<br/>
-				    	<button class="shadowBlack" style="margin-top:5px;width:90px"  id="resetIhm" onclick="switchDisplay(null,'reset')">
-							Reset
-						</button>
-						<br/>
+				<div id="batteryJauge" style="float:left; text-align:center;color:white;">
+	                
+	                <label for="displaySettings" style="margin-bottom:5px;">Display</label>
+					<br/>
+					<button class="shadowBlack" style="margin-top:5px; width:90px"  id="switchsettings" onclick="switchDisplay('settings','open')">
+						Setting App
+					</button>
+					<br/>
+					<button class="shadowBlack" style="margin-top:5px;width:90px"  id="switchmap" onclick="switchDisplay('map','close')">
+						Map
+					</button>
+					<br/>
+					<button class="shadowBlack" style="margin-top:5px;width:90px"  id="switchdrive" onclick="switchDisplay('drive','close')">
+						Drive
+					</button>
+					<br/>
+					<button class="shadowBlack" style="margin-top:5px;width:90px"  id="switchnav" onclick="switchDisplay('nav','close')">
+						AutoPilot
+					</button>
+					<br/>
+					<button class="shadowBlack" style="margin-top:5px;width:90px"  id="switchconnexion" onclick="switchDisplay('connexion','close')">
+						Video quality
+					</button>
+					<br/>
+					<button class="shadowBlack" style="margin-top:5px;width:90px"  id="switchtchat" onclick="switchDisplay('tchat','close')">
+						Tchat
+					</button>
+					<br/>
+			    	<button class="shadowBlack" style="margin-top:5px;width:90px"  id="resetIhm" onclick="switchDisplay(null,'reset')">
+						Reset
+					</button>
+					<br/>
 
-				</div>
 			</div>
+		</div>
 
 
 
 
-   			<div id="remoteCam" class='draggable resizable IhmModule' 
-   			style="position:absolute;top:0px; left:0px;float:left;width:1230px; height:375px;margin: 5px 5px 10px 5px">
-              		            		
+		<div id="remoteCam" class='draggable resizable IhmModule' 
+			style="position:absolute;top:0px; left:0px;float:left;width:1230px; height:375px;margin: 5px 5px 10px 5px">
+          		            		
 
-				<video id='1to1_remoteVideo' 
-					width="100%" height="100%" 
-					style="background-color:black; margin: 0 auto;" 
-					autoplay controls="controls">
+			<video id='1to1_remoteVideo' 
+				width="100%" height="100%" 
+				style="background-color:black; margin: 0 auto;" 
+				autoplay controls="controls">
 
-				</video>
-			</div>	
+			</video>
+		</div>	
 
 			
-			<div id="localCam" class='draggable IhmModule' 
-			style="position:absolute;top:200px; left:20px;float:left;z-index:100;height:100px;width:100px;margin: 0">
-		                						  	 	
+		<div id="localCam" class='draggable IhmModule' 
+		style="position:absolute;top:200px; left:20px;float:left;z-index:100;height:100px;width:100px;margin: 0">
+	                						  	 	
+		
+			<video id='1to1_localVideo'
+				width="100" height="100"
+				style="background-color:black; margin: 0 auto;" 
+				autoplay muted>
+		 	</video>
+		</div>	
+
+		<div id="map" class='draggable  IhmModule' 
+		style="position:absolute;top:390px; left:0px;color:white;float:left; width:495px;height:230px;margin:0 0 0 5px;padding:5px;overflow:hidden;background:rgba(221,221,221,0.1);">	
 			
-				<video id='1to1_localVideo'
-    				width="100" height="100"
-    				style="background-color:black; margin: 0 auto;" 
-    				autoplay muted>
-    		 	</video>
-			</div>	
-
-			<div id="map" class='draggable  IhmModule' 
-			style="position:absolute;top:390px; left:0px;color:white;float:left; width:495px;height:230px;margin:0 0 0 5px;padding:5px;overflow:hidden;background:rgba(221,221,221,0.1);">	
-
-				
-				
-
-
-				<!--
-				<div id="navLeft" style="text-align:center; float:left;background-color:blue">
-                    
-                    <button id="resetMap" class="groupCarto" onclick="resetMap()">Reset</button>
-					&nbsp;&nbsp; 
+            <div id="navButtons" class="noDraggable" style='float:left;text-align:center; width:145px'>
+             	
+             	<br/>
+				<div>
+					<button id="trackingMode" class="groupCarto" onclick="trakingMode()">Tracking</button>
+					<button id="resetMap" class="groupCarto" onclick="resetMap()">Reset</button>
+				</div>
+                <br/>
+				<div>
+                    <button id="translateUp" class="groupCarto" onclick="translationMap('Up')">Up</button>
+					</br>
+                    <button id="translateLeft" class="groupCarto" onclick="translationMap('Left')">Left</button>
+                    <button id="translateRight" class="groupCarto" onclick="translationMap('Right')">Right</button>
+                    </br>
+                    <button id="translateDown" class="groupCarto" onclick="translationMap('Down')">Down</button>
+				</div>
+				<br/>
+				<div>
                     <button id="zoomIn" class="groupCarto" onclick="zoomCarto('In')">Zoom +</button>
                     <button id="zoomOut" class="groupCarto" onclick="zoomCarto('Out')">Zoom -</button>
-					&nbsp;&nbsp;
-                    <button id="translateLeft" class="groupCarto" onclick="translationMap('Left')">Left</button>
-                    <button id="translateUp" class="groupCarto" onclick="translationMap('Up')">Up</button>
-                    <button id="translateDown" class="groupCarto" onclick="translationMap('Down')">Down</button>
-                    <button id="translateRight" class="groupCarto" onclick="translationMap('Right')">Right</button>
-					&nbsp;&nbsp;
-                    <button id="trackingMode" class="groupCarto" onclick="trakingMode()">Tracking</button>
-                 
-                 	<canvas class="noDraggable" id="myCanvas" width="495" height="228"></canvas>
-                 	
                 </div>
-                -->
-                
-                
-
-
 				
-                <div id="navButtons" class="noDraggable" style='float:left;text-align:center; width:145px'>
-                 	
-                 	<br/>
-					<div>
-						<button id="trackingMode" class="groupCarto" onclick="trakingMode()">Tracking</button>
-						<button id="resetMap" class="groupCarto" onclick="resetMap()">Reset</button>
-					</div>
-                    <br/>
-					<div>
-	                    <button id="translateUp" class="groupCarto" onclick="translationMap('Up')">Up</button>
-						</br>
-	                    <button id="translateLeft" class="groupCarto" onclick="translationMap('Left')">Left</button>
-	                    <button id="translateRight" class="groupCarto" onclick="translationMap('Right')">Right</button>
-	                    </br>
-	                    <button id="translateDown" class="groupCarto" onclick="translationMap('Down')">Down</button>
-					</div>
-					<br/>
-					<div>
-	                    <button id="zoomIn" class="groupCarto" onclick="zoomCarto('In')">Zoom +</button>
-	                    <button id="zoomOut" class="groupCarto" onclick="zoomCarto('Out')">Zoom -</button>
-                    </div>
-					
-                </div>
-                
+            </div>
+            
 
-                <div id="navCenter" class="noDraggable" style="text-align:center;width:345px;float:left;background-color:black">
- 
-                 	<canvas class="noDraggable" id="myCanvas" width="345" height="228"></canvas>
-                 	
-                </div>
-                
-			
+            <div id="navCenter" class="noDraggable" style="text-align:center;width:345px;float:left;background-color:black">
 
-			</div>
+             	<canvas class="noDraggable" id="myCanvas" width="345" height="228"></canvas>
+             	
+            </div>
+            
+		
+
+		</div>
 
 			
 
 
 
-			<div id="drive" class='draggable  IhmModule' 
-			style="position:absolute;top:390px; left:510px; color:white;float:left; z-index:100;width:230px;height:230px;background-color: black;margin:0 0 0 5px;padding:5px;overflow:hidden; background:rgba(221,221,221,0.1);">
+		<div id="drive" class='draggable  IhmModule' 
+		style="position:absolute;top:390px; left:510px; color:white;float:left; z-index:100;width:230px;height:230px;background-color: black;margin:0 0 0 5px;padding:5px;overflow:hidden; background:rgba(221,221,221,0.1);">
 
-				<div id="contentFloorCamera" class="noDraggable" style="width:228px;height:228px; margin: 0;">
-			 	
-				 	<!--
-				 	<video id='floor_localVideo' 
-						width="200" height="200"
-						style="background-color: black;background-image: url('images/floor200par150.jpg');background-repeat: no-repeat;background-position: center;margin:30px 0 0 14px;" 
-						autoplay muted ">
-				 	</video>
-				 	-->
-
-
-				 	<video id='floor_localVideo' 
-						width="200" height="200"
-						style="background-color: black;background-repeat: no-repeat;background-position: center;margin:30px 0 0 14px;" 
-						autoplay muted ">
-				 	</video>
-
-			 	</div>
-
-				<div id = "overlayCommands" style="float:left; margin: -230 0 0 0; position:relative">
-
-					<div id="robotButtons" class="" style="height:230px; ">
+			<div id="contentFloorCamera" class="noDraggable" style="width:228px;height:228px; margin: 0;">
+		 	
+			 	<!--
+			 	<video id='floor_localVideo' 
+					width="200" height="200"
+					style="background-color: black;background-image: url('images/floor200par150.jpg');background-repeat: no-repeat;background-position: center;margin:30px 0 0 14px;" 
+					autoplay muted ">
+			 	</video>
+			 	-->
 
 
-				        <div id="step-commands" class="noDraggable">                   
-				            
-				            <kom-remote class="kom-remote"></kom-remote>
+			 	<video id='floor_localVideo' 
+					width="200" height="200"
+					style="background-color: black;background-repeat: no-repeat;background-position: center;margin:30px 0 0 14px;" 
+					autoplay muted ">
+			 	</video>
 
-				        </div>
+		 	</div>
 
-				  
-						<div id="drive-commands" class="noDraggable" style="display:none; text-align:center;">    
-				    
-				            
+			<div id = "overlayCommands" style="float:left; margin: -230 0 0 0; position:relative">
 
-				            <div id = "gamepadDefault"> 		                           
-				                <div style="width:228px;height:228px;text-align:center">
-				                    <img src="/images/logo/gamepad360.png" style="display:none; width:50px;height:35px;" alt="" />
-				                </div> 
-				            </div> 
-
-				            <div id = "fullAxesInfos" style="width:228px; margin:0 auto">
-								
-								
-				                
-				                <div 
-				                
-				                style="	text-align:center;
-										overflow: hidden;
-										position: relative;
-										width: 200px;
-										height: 200px;
-										background: rgba(221,221,221,0.1);
-										margin:0 0 0 15px;
-										margin: auto;
-										border-radius: 50%;
-										">
-				                    
-				                   <canvas id="canvasGamepad" width="200"; height="200"; style=""></canvas>
-				                
-				                </div>
-
-								<span id="fullDriveButtonStatus"></span>
-
-							</div>
-						
-						
-						</div>
-
-				    
-				        <div id = "gamePadInfos" class="noDraggable" 
-				        style="display:none; text-align:center;margin: 35px 0 0 0;">
-				         
-				           
-
-							<div 
-				                
-				                style="	text-align:center;
-										overflow: hidden;
-										position: relative;
-										width: 200px;
-										height: 200px;
-										background: rgba(221,221,221,0.1);
-										/*margin: auto;*/
-										margin:0 0 0 15px;
-										border-radius: 50%;
-										/*background-color:red;*/
-										">
-				                    
-				                 <div id="classicDrive" style="margin-top:20px">
-					                <b>&#x21E6; | &#x21E8;</b><br/>
-						            <progress id="leftRight" value=1 max=2></progress><br><br/>
-						             <b>&#x21E7;</b>
-						             <progress  id="advanceValue" value=0 min=0 max=1></progress>
-						             <b>&#x21E7;</b>
-						             <br/><br/>
-						             <b>&#x21E9;</b>
-						             <progress id="reverseValue" value=0 min=0 max=1></progress>
-						             <b>&#x21E9;</b>
-					             </div>
-								<br/>
-					              <span id="buttonStatus"></span>
-				            
+				<div id="robotButtons" class="" style="height:230px; ">
 
 
-				            </div>  
+			        <div id="step-commands" class="noDraggable">                   
+			            
+			            <kom-remote class="kom-remote"></kom-remote>
 
-				        </div>
+			        </div>
 
-				        <div id = "cameraInfos" class="noDraggable" style="display:none; text-align:center;"> 
-
-
-				            <span id="buttonStatusDivCam"></span>
-				            			            
-				            <div style="text-align:center;
-										overflow: hidden;
-										position: relative;
-										width: 200px;
-										height: 200px;
-										background: rgba(221,221,221,0.1);
-										margin: auto;
-										border-radius: 50%;
-										margin:0 0 0 15px;
-										">
-				                <img src="/images/logo/webcam.png" style="width:200px;height:200px;margin:0" alt="" />
-				            </div> 
-				        </div> 
-
-
-					</div>
-
-				</div>           
-			</div>                   
-
-
-			<div id="nav" class='draggable IhmModule' 
-			style="position:absolute;top:390px; left:755px; float:left; width:335px;height:230px;background-color: black;margin:0 0 0 5px;padding:5px; background:rgba(221,221,221,0.1);">
-
-				
-
+			  
+					<div id="drive-commands" class="noDraggable" style="display:none; text-align:center;">    
 			    
-			    <div style="width:100%;text-align:center">
-			    	<span id="pointOfinterestTitle" style="color:white;"> Auto Pilot</span>
-			    </div>
-			    
-			   	<br/>
-				
-				
-				<div style="width:100%;text-align:center;margin: 0 0 15px 0" class='noDraggable'>
-			    	
-					<button id="stop_Trajectory" class="txtRed" style='height:30px; margin: 0 0 10px 0;' onclick="stopTrajectory()">STOP TRAJECTORY</button><br/>
-			    			    	
-					
-					<button class="shadowBlack" style='height:30px'  id="switchopenGotoDiv" onclick="openMenuNav('nav-GotoPoi')">
-						Navigation Menu
-					</button>
+			            
 
+			            <div id = "gamepadDefault"> 		                           
+			                <div style="width:228px;height:228px;text-align:center">
+			                    <img src="/images/logo/gamepad360.png" style="display:none; width:50px;height:35px;" alt="" />
+			                </div> 
+			            </div> 
 
-					<button class="shadowBlack" style='height:30px'  id="switchopenRelocalizeDiv" onclick="openMenuNav('nav-Relocalize')">
-						Localization Menu
-					</button>
-					
-
-			   </div>	
-
-
-				<div id="nav-inside" class='noDraggable ' 
-				style="height:90px;background-color: black;;margin:auto 0 0 auto ;padding:5px; background:rgba(221,221,221,0.1);">
-
-						
-					<div class="conrol-nav-inside">
-					
-						<div id="button-nav-inside" class='IhmModule' style="text-align:center; float:right ;margin: -15px 0 0 0">
-			        		<button class="shadowBlack" style=""  id="close-nav-insides" onclick="closeMenuNav('close')">
-								close
-							</button>
-						</div>
-
-					</div>	
-
-						<br/>
-
-						<div id="nav-GotoPoi" class='noDraggable' >
-
-							<div style="width:100%;text-align:center;margin: 0 0 5px 0">
-						    	<button id="goto_POI" style='height:30px' onclick="gotoPOI()">GO to POI Selected</button>
-						    </div>
-
-					    </div>
-
-
-						<div id="nav-Relocalize" class='noDraggable'>
-
-							<div style="width:100%;text-align:center;margin: 0 0 5px 0">
-						    	<button id="relocalize" class="" style='height:30px' onclick="relocalize()">Localize the robot on a selected POI</button>
-						    </div>
-						</div>
-
-						
-
-						<div id='nav-ListPoi' style="width:100%;text-align:center" class='noDraggable'>
-						        
-						        <div class="select">
-							        <select id="list_POI">
-						        </select>
-						            
-						    </div>
-						</div> 
-				
-				</div> 
-
-
-			   <div id="nav-RobotStatus" style="width:100%;height: 90px;text-align:center;color:white;overflow:hidden" class='noDraggable'>
-
-			    	<h5> Robot Status:</h4>
-			    	<h6>
-			    		<span id="robotStatusMessage"><span>
-			    	</h6>
-			    </div>
-			   
-			
-
-			</div>
-
-
-			<div id="connexion" class='draggable IhmModule' 
-			style="position:absolute ;top:390px; left:1110px; float:left; z-index:125; width:110px;height:230px;background-color: black;color:white;margin:0 0 0 5px;padding:5px; background:rgba(221,221,221,0.1);">
-
-				<div style="text-align:center">Video quality</div>
-
-					<br/>				
-						
-						
-						<div id="cnxButtons" style="background:rgba(221,221,221,0.1); text-align:center; float:left;margin: 0 auto ">
-			        
-
-							<button class="shadowBlack groupDefCam" style=""  id="144p" onclick="openDef('144p')">
-								Very low
-							</button>
-
-							<br/>
+			            <div id = "fullAxesInfos" style="width:228px; margin:0 auto">
 							
-							<button class="shadowBlack groupDefCam" style="" id="QVGA" onclick="openDef('QVGA')">
-			                   low
-			                </button>
+							
+			                
+			                <div 
+			                
+			                style="	text-align:center;
+									overflow: hidden;
+									position: relative;
+									width: 200px;
+									height: 200px;
+									background: rgba(221,221,221,0.1);
+									margin:0 0 0 15px;
+									margin: auto;
+									border-radius: 50%;
+									">
+			                    
+			                   <canvas id="canvasGamepad" width="200"; height="200"; style=""></canvas>
+			                
+			                </div>
 
-			                <br/>
+							<span id="fullDriveButtonStatus"></span>
 
-			                <button class="shadowBlack groupDefCam" style="" id="VGA" onclick="openDef('VGA')">
-			                    Medium
-			                </button>
+						</div>
+					
+					
+					</div>
 
-			                <br/>
+			    
+			        <div id = "gamePadInfos" class="noDraggable" 
+			        style="display:none; text-align:center;margin: 35px 0 0 0;">
+			         
+			           
 
-			                <button class="shadowBlack groupDefCam" style="" id="SVGA" onclick="openDef('SVGA')">
-			                    Hight
-			                </button>
+						<div 
+			                
+			                style="	text-align:center;
+									overflow: hidden;
+									position: relative;
+									width: 200px;
+									height: 200px;
+									background: rgba(221,221,221,0.1);
+									/*margin: auto;*/
+									margin:0 0 0 15px;
+									border-radius: 50%;
+									/*background-color:red;*/
+									">
+			                    
+			                 <div id="classicDrive" style="margin-top:20px">
+				                <b>&#x21E6; | &#x21E8;</b><br/>
+					            <progress id="leftRight" value=1 max=2></progress><br><br/>
+					             <b>&#x21E7;</b>
+					             <progress  id="advanceValue" value=0 min=0 max=1></progress>
+					             <b>&#x21E7;</b>
+					             <br/><br/>
+					             <b>&#x21E9;</b>
+					             <progress id="reverseValue" value=0 min=0 max=1></progress>
+					             <b>&#x21E9;</b>
+				             </div>
+							<br/>
+				              <span id="buttonStatus"></span>
+			            
 
-			                <br/>
 
-			                <button class="shadowBlack groupDefCam" style="" id="HD" onclick="openDef('HD')">
-			                    Very hight
-			                </button>
+			            </div>  
+
+			        </div>
+
+			        <div id = "cameraInfos" class="noDraggable" style="display:none; text-align:center;"> 
 
 
-			          		<span id="closeConnection"></span>	
+			            <span id="buttonStatusDivCam"></span>
+			            			            
+			            <div style="text-align:center;
+									overflow: hidden;
+									position: relative;
+									width: 200px;
+									height: 200px;
+									background: rgba(221,221,221,0.1);
+									margin: auto;
+									border-radius: 50%;
+									margin:0 0 0 15px;
+									">
+			                <img src="/images/logo/webcam.png" style="width:200px;height:200px;margin:0" alt="" />
+			            </div> 
+			        </div> 
 
-			          </div>
+
+				</div>
+
+			</div>           
+		</div>                   
+
+
+		<div id="nav" class='draggable IhmModule' 
+		style="position:absolute;top:390px; left:755px; float:left; width:335px;height:230px;background-color: black;margin:0 0 0 5px;padding:5px; background:rgba(221,221,221,0.1);">
+
+			
+
+		    
+		    <div style="width:100%;text-align:center">
+		    	<span id="pointOfinterestTitle" style="color:white;"> Auto Pilot</span>
+		    </div>
+		    
+		   	<br/>
+			
+			
+			<div style="width:100%;text-align:center;margin: 0 0 15px 0" class='noDraggable'>
+		    	
+				<button id="stop_Trajectory" class="txtRed" style='height:30px; margin: 0 0 10px 0;' onclick="stopTrajectory()">STOP TRAJECTORY</button><br/>
+		    			    	
+				
+				<button class="shadowBlack" style='height:30px'  id="switchopenGotoDiv" onclick="openMenuNav('nav-GotoPoi')">
+					Free Tour
+				</button>
+
+				<button class="shadowBlack" style='height:30px'  id="switchOpenTrail" onclick="openMenuNav('nav-GotoTrail')">
+					Recommended Tour
+				</button>
+
+
+				<button class="shadowBlack" style='height:30px'  id="switchopenRelocalizeDiv" onclick="openMenuNav('nav-Relocalize')">
+					Relocalise
+				</button>
+
 
 				
-				<!-- Non affichés mais conservés pour garder une rétrocompatibilité avec l'algo général et ne pas devoir tout réecrire -->
-				<!-- Todo: les afficher dans un overlay ou dans une popup... -->
-			</div>
+
+		   </div>	
 
 
-			<div id="settings"  class='draggable'
-			style="position:absolute;top:50px; left:300px;display:none;float:left; width:770px;border:1px solid #ccc; border-radius: 10px;margin:10px 5px 5px 5px;padding:5px; background:rgba(221,221,221,0.6);z-index:999998">
+			<div id="nav-inside" class='noDraggable ' 
+			style="height:90px;background-color: black;;margin:auto 0 0 auto ;padding:5px; background:rgba(221,221,221,0.1);">
 
-
-				<div class="conrolAdvancedSettingsDiv">
 					
-					<div id="settingsButtons" style="text-align:center; float:right ;margin: 0 auto ">
-		        		<button class="shadowBlack" style=""  id="closeSettings" onclick="switchDisplay('settings','close')">
+				<div class="conrol-nav-inside">
+				
+					<div id="button-nav-inside" class='IhmModule' style="text-align:center; float:right ;margin: -15px 0 0 0">
+		        		<button class="shadowBlack" style=""  id="close-nav-insides" onclick="closeMenuNav('close')">
 							close
 						</button>
 					</div>
 
-				</div>
+				</div>	
 
-				<hr/>
+					<br/>
 
-				<div id="camerasAdvancedSettings" style="float:left;width:370px">
-					
-					<div id="robotCameras"
-	                	class="devicef"
-						style="color:white;float:left; width:350px;background-color:red;border:1px solid #ccc; border-radius: 10px;margin:5px;padding:5px;overflow:hidden;">
-		                <strong>Robot Devices</strong>
-		                <hr/>
-		                <div class="select noDraggable">
-		                    <label for="remote_videoSource" style='width:150px;background-color:black' >Video: </label>
-		                    <select id="remote_videoSource" style='width:200px;'>
-		                    </select>
-		                </div>
-		                <div class="select noDraggable"">
-		                    <label for="remote_audioSource" style='width:150px;background-color:black' >Audio: </label>
-		                    <select id="remote_audioSource" style='width:200px;'></select>
-		                </div>
-		                <hr/>
-						<button id="remote_ButtonDevices" onclick="remoteManageDevices()">Sélectionner</button>
-					</div>
-					
-					<div id="pilotCameras"
-						class="devicef"
-						style="color:white;float:left; width:350px;background-color:red;border:1px solid #ccc; border-radius: 10px;margin:5px;padding:5px;overflow:hidden;">
-		                <strong> Pilote Devices</strong>
-						<hr/>
-		                <div class="select noDraggable">
-		                    <label for="local_videoSource" style='width:150px;background-color:black' >Video: </label>
-		                    <select id="local_videoSource"style='width:200px;'></select>
-		                </div>
-		                <div class="select noDraggable">
-		                    <label for="local_audioSource" enabled='true' style='width:150px;background-color:black' >Audio: </label>
-		                    <select id="local_audioSource"style='width:200px;'></select>
-		                </div>
-
-	                </div>
-                
-                </div>	
-
-
-
-				<div id="advancedSettings " 
-				style="color:white;float:left; width:350px;background-color:red;border:1px solid #ccc; border-radius: 10px;margin:5px;padding:5px;overflow:hidden;">
-
-					<div id="robotVideoSetting" class="appParameters noDraggable">
-		               	Robot:
-		                <label for="robot_camdef_select">Camera Resolution &nbsp;&nbsp; </label>
-		                <select id="robot_camdef_select"></select>
-						<hr/>
-						IHM Robot - Local view:
-		                <input type="radio" name="RlVidSetting" value="show" id="RlVshow" checked onclick="setRobotLocalView('show')"> <label for="RlVshow">Show</label>
-		                <input type="radio" name="RlVidSetting" value="hide" id="RlVhide" onclick="setRobotLocalView('hide')"/> <label for="RlVhide">Hide</label>
-		                <hr/> 
-		                IHM Robot - Remote view:
-		                <input type="radio" name="RRVidSetting" value="show" id="RRVshow" checked onclick="setRobotRemoteView('show')"> <label for="RRVshow">Show</label>
-		                <input type="radio" name="RRVidSetting" value="hide" id="RRVhide" onclick="setRobotRemoteView('hide')"/> <label for="RRVhide">Hide</label>
-
-		            </div>
-		          	
-		          	<hr/>
-		            
-		            <div id="piloteVideoSetting" class="appParameters">
-		                Pilote: 
-						<label for="pilot_camdef_select">Camera Resolution &nbsp;&nbsp; </label>
-		                <select id="pilot_camdef_select"></select>
-						<hr/>
-		                IHM Pilote - Local view: 
-		                <input type="radio" name="PlVidSetting" value="show" id="PlVshow" checked onclick="setPiloteLocalView('show')"> <label for="PlVshow">Show</label>
-		                <input type="radio" name="PlVidSetting" value="hide" id="PlVhide" onclick="setPiloteLocalView('hide')"/> <label for="PlVhide">Hide</label>
-		                <hr/>
-		                IHM Pilote - Remote view: 
-		                <input type="radio" name="PRVidSetting" value="high" id="PRVhigh" onclick="setPiloteRemoteView('show')" checked/> <label for="PRVhigh">Show</label>
-		                <input type="radio" name="PRVidSetting" value="hide" id="PRVhide" onclick="setPiloteRemoteView('hide')"/> <label for="PRVhide">Hide</label>
-		            </div>
-		        
-		        </div>
-		        
-				<!-- pour compatibilité avec l'ancienne version -->
-				<div id="robotDevices" style="display:none"></div>
-				<div id="pilotDevices" style="display:none"></div>
-
-
-				<div id="dataChannelSetting"
-					class='draggable' 
-					style="color:white;float:left; width:350px;background-color:red;border:1px solid #ccc; border-radius: 10px;margin:5px;padding:5px;overflow:hidden;">
-
-					Channel:
-	                <input type="radio" name="controlChannel" value="webSocket" id="webSocket" onclick="setNavChannel('webSocket')" checked /> <label for="webSocket">webSocket</label>
-	                <input type="radio" name="controlChannel" value="webRTC" id="webRTC" onclick="setNavChannel('webRTC')"/> <label for="webRTC">webRTC</label>
-	            </div>
-
-
-	            <div id="1to1_master_connection" class="device" style="display:none">
-	                
-	                <span id="openConnection">
-	                    <button class="shadowBlack" id="local_ButtonDevices" onclick="localManageDevices()">
-	                        Ouvrir la connexion
-	                    </button>
-	                </span>
-	            </div>    
-			</div>
-
-
-			<div id = 'tchat' class='draggable' 
-			style="position:absolute;top:50px; left:300px;display:none;float:left; width:770px;border:1px solid #ccc; border-radius: 10px;margin:10px 5px 5px 5px;padding:5px;background-color:grey; z-index:999997">
-
-			        <div id="websocketChat"  style="height:200px">
-	                    <strong> Websocket Messages & Chat</strong>
-	                    <hr/>
-	                    <form action="/" method="post" id="formulaire_chat_websoket">
-	                        <input type="text" name="message" id="message" placeholder="Votre message..." size="28" autofocus />
-	                        <button id="envoi_message" type="submit">Envoyer</button>
-	                    </form>
-	                    <hr class="hrForm">
-	                    <textarea class="input" id="zone_chat_websocket" readonly="readonly" placeholder="Once upon a time..." size="20" style="height:100px"></textarea>
-	                    <form id="text-options1">
-	                        <label><input type="text1" class="filename" id="text-filename1" placeholder="Pilote_WS_LOGS" />.txt</label>
-	                        <button id="saveLogs_webSocket" type="submit" value="Save" />Save</button>
-	                    </form>
-	                </div>
 				
 
-			        <div id="dataChannelArea">
-	                        <strong> WebRTC dataChannel Log </strong>
-	                        <hr/>
-	                        <div id="formulaire_chat_webRTC" class="pseudoForm">
-	                            <input type="text" name="message" id="input_chat_WebRTC" disabled placeholder="Waiting open channel..." size="28" autofocus />
-	                            <button id="env_msg_WebRTC" disabled onclick="sendMessage()">Envoyer</button>
-	                        </div>
-	                        <hr class="hrForm">
-	                        <textarea class="input" id="zone_chat_WebRTC" readonly="readonly" placeholder="Once upon a time..." size="20" style="height:100px"></textarea>
-	                        <form id="text-options2">
-	                            <label><input type="text" class="filename" id="text-filename2" placeholder="Pilote_WebRTC_LOGS" />.txt</label>
-	                            <button id="saveLogs_webRTC" type="submit" value="Save" />Save</button>
-	                        </form>
-	                </div>
+					<div id='nav-ListPoi' style="width:100%;text-align:center" class='noDraggable'>
+					        
+					        <div class="select">
+						        
+						        <select id="list_POI"></select>
+						        
+								<span id="nav-GotoPoi">
+						        	<button id="goto_POI" onclick="gotoPOI()">GO to Position</button>							
+					    		</span>
+
+					    		
+					    		<span id="nav-GotoTrail">
+						        	<div id ='trailsList'>
+						        		<select id="list_TRAILS"></select>
+										<button id="select_Trail" onclick="manageTrail('select')">Select Tour</button>
+									</div>
+									<div id ='trailDetails' style='font-size:10px;border:1px solid grey; margin:0px; margin-top: -15px; margin-bottom: -10px;height: 85px; padding:0;text-align:left; text-align:center'>
+										<span id='trailDetailsMessage'></span>
+									</div>
+									<div id ='trailControl'>
+										<button id="change_Trail" onclick="manageTrail('change')">Change Tour</button>
+										<button id="pause_Trail" onclick="manageTrail('next')">Go to next Position</button>
+									</div>					
+					    		</span>
+
+
+					    		<span id="nav-Relocalize">
+					    		<button id="relocalize" onclick="relocalize()">Localize on Position</button>
+					    		</span>
+					    	
+
+
+
+
+					    	</div>
+					            
+					    
+					</div> 
+			
+			</div> 
+
+
+		   <div id="nav-RobotStatus" style="width:100%;height: 90px;text-align:center;color:white;overflow:hidden" class='noDraggable'>
+
+		    	<h5> Robot Status:</h4>
+		    	<h6>
+		    		<span id="robotStatusMessage"><span>
+		    	</h6>
+		    </div>
+		   
+		
+
+		</div>
+
+
+		<div id="connexion" class='draggable IhmModule' 
+		style="position:absolute ;top:390px; left:1110px; float:left; z-index:125; width:110px;height:230px;background-color: black;color:white;margin:0 0 0 5px;padding:5px; background:rgba(221,221,221,0.1);">
+
+			<div style="text-align:center">Video quality</div>
+
+				<br/>				
+					
+					
+					<div id="cnxButtons" style="background:rgba(221,221,221,0.1); text-align:center; float:left;margin: 0 auto ">
+		        
+
+						<button class="shadowBlack groupDefCam" style=""  id="144p" onclick="openDef('144p')">
+							Very low
+						</button>
+
+						<br/>
+						
+						<button class="shadowBlack groupDefCam" style="" id="QVGA" onclick="openDef('QVGA')">
+		                   low
+		                </button>
+
+		                <br/>
+
+		                <button class="shadowBlack groupDefCam" style="" id="VGA" onclick="openDef('VGA')">
+		                    Medium
+		                </button>
+
+		                <br/>
+
+		                <button class="shadowBlack groupDefCam" style="" id="SVGA" onclick="openDef('SVGA')">
+		                    Hight
+		                </button>
+
+		                <br/>
+
+		                <button class="shadowBlack groupDefCam" style="" id="HD" onclick="openDef('HD')">
+		                    Very hight
+		                </button>
+
+
+		          		<span id="closeConnection"></span>	
+
+		          </div>
+
+			
+			<!-- Non affichés mais conservés pour garder une rétrocompatibilité avec l'algo général et ne pas devoir tout réecrire -->
+			<!-- Todo: les afficher dans un overlay ou dans une popup... -->
+		</div>
+
+
+		<div id="settings"  class='draggable'
+		style="position:absolute;top:50px; left:300px;display:none;float:left; width:770px;border:1px solid #ccc; border-radius: 10px;margin:10px 5px 5px 5px;padding:5px; background:rgba(221,221,221,0.6);z-index:999998">
+
+
+			<div class="conrolAdvancedSettingsDiv">
+				
+				<div id="settingsButtons" style="text-align:center; float:right ;margin: 0 auto ">
+	        		<button class="shadowBlack" style=""  id="closeSettings" onclick="switchDisplay('settings','close')">
+						close
+					</button>
+				</div>
+
 			</div>
+
+			<hr/>
+
+			<div id="camerasAdvancedSettings" style="float:left;width:370px">
+				
+				<div id="robotCameras"
+                	class="devicef"
+					style="color:white;float:left; width:350px;background-color:red;border:1px solid #ccc; border-radius: 10px;margin:5px;padding:5px;overflow:hidden;">
+	                <strong>Robot Devices</strong>
+	                <hr/>
+	                <div class="select noDraggable">
+	                    <label for="remote_videoSource" style='width:150px;background-color:black' >Video: </label>
+	                    <select id="remote_videoSource" style='width:200px;'>
+	                    </select>
+	                </div>
+	                <div class="select noDraggable"">
+	                    <label for="remote_audioSource" style='width:150px;background-color:black' >Audio: </label>
+	                    <select id="remote_audioSource" style='width:200px;'></select>
+	                </div>
+	                <hr/>
+					<button id="remote_ButtonDevices" onclick="remoteManageDevices()">Sélectionner</button>
+				</div>
+				
+				<div id="pilotCameras"
+					class="devicef"
+					style="color:white;float:left; width:350px;background-color:red;border:1px solid #ccc; border-radius: 10px;margin:5px;padding:5px;overflow:hidden;">
+	                <strong> Pilote Devices</strong>
+					<hr/>
+	                <div class="select noDraggable">
+	                    <label for="local_videoSource" style='width:150px;background-color:black' >Video: </label>
+	                    <select id="local_videoSource"style='width:200px;'></select>
+	                </div>
+	                <div class="select noDraggable">
+	                    <label for="local_audioSource" enabled='true' style='width:150px;background-color:black' >Audio: </label>
+	                    <select id="local_audioSource"style='width:200px;'></select>
+	                </div>
+
+                </div>
+            
+            </div>	
+
+
+
+			<div id="advancedSettings " 
+			style="color:white;float:left; width:350px;background-color:red;border:1px solid #ccc; border-radius: 10px;margin:5px;padding:5px;overflow:hidden;">
+
+				<div id="robotVideoSetting" class="appParameters noDraggable">
+	               	Robot:
+	                <label for="robot_camdef_select">Camera Resolution &nbsp;&nbsp; </label>
+	                <select id="robot_camdef_select"></select>
+					<hr/>
+					IHM Robot - Local view:
+	                <input type="radio" name="RlVidSetting" value="show" id="RlVshow" checked onclick="setRobotLocalView('show')"> <label for="RlVshow">Show</label>
+	                <input type="radio" name="RlVidSetting" value="hide" id="RlVhide" onclick="setRobotLocalView('hide')"/> <label for="RlVhide">Hide</label>
+	                <hr/> 
+	                IHM Robot - Remote view:
+	                <input type="radio" name="RRVidSetting" value="show" id="RRVshow" checked onclick="setRobotRemoteView('show')"> <label for="RRVshow">Show</label>
+	                <input type="radio" name="RRVidSetting" value="hide" id="RRVhide" onclick="setRobotRemoteView('hide')"/> <label for="RRVhide">Hide</label>
+
+	            </div>
+	          	
+	          	<hr/>
+	            
+	            <div id="piloteVideoSetting" class="appParameters">
+	                Pilote: 
+					<label for="pilot_camdef_select">Camera Resolution &nbsp;&nbsp; </label>
+	                <select id="pilot_camdef_select"></select>
+					<hr/>
+	                IHM Pilote - Local view: 
+	                <input type="radio" name="PlVidSetting" value="show" id="PlVshow" checked onclick="setPiloteLocalView('show')"> <label for="PlVshow">Show</label>
+	                <input type="radio" name="PlVidSetting" value="hide" id="PlVhide" onclick="setPiloteLocalView('hide')"/> <label for="PlVhide">Hide</label>
+	                <hr/>
+	                IHM Pilote - Remote view: 
+	                <input type="radio" name="PRVidSetting" value="high" id="PRVhigh" onclick="setPiloteRemoteView('show')" checked/> <label for="PRVhigh">Show</label>
+	                <input type="radio" name="PRVidSetting" value="hide" id="PRVhide" onclick="setPiloteRemoteView('hide')"/> <label for="PRVhide">Hide</label>
+	            </div>
+	        
+	        </div>
+	        
+			<!-- pour compatibilité avec l'ancienne version -->
+			<div id="robotDevices" style="display:none"></div>
+			<div id="pilotDevices" style="display:none"></div>
+
+
+			<div id="dataChannelSetting"
+				class='draggable' 
+				style="color:white;float:left; width:350px;background-color:red;border:1px solid #ccc; border-radius: 10px;margin:5px;padding:5px;overflow:hidden;">
+
+				Channel:
+                <input type="radio" name="controlChannel" value="webSocket" id="webSocket" onclick="setNavChannel('webSocket')" checked /> <label for="webSocket">webSocket</label>
+                <input type="radio" name="controlChannel" value="webRTC" id="webRTC" onclick="setNavChannel('webRTC')"/> <label for="webRTC">webRTC</label>
+            </div>
+
+
+            <div id="1to1_master_connection" class="device" style="display:none">
+                
+                <span id="openConnection">
+                    <button class="shadowBlack" id="local_ButtonDevices" onclick="localManageDevices()">
+                        Ouvrir la connexion
+                    </button>
+                </span>
+            </div>    
+		</div>
+
+
+		<div id = 'tchat' class='draggable' 
+		style="position:absolute;top:50px; left:300px;display:none;float:left; width:770px;border:1px solid #ccc; border-radius: 10px;margin:10px 5px 5px 5px;padding:5px;background-color:grey; z-index:999997">
+
+		        <div id="websocketChat"  style="height:200px">
+                    <strong> Websocket Messages & Chat</strong>
+                    <hr/>
+                    <form action="/" method="post" id="formulaire_chat_websoket">
+                        <input type="text" name="message" id="message" placeholder="Votre message..." size="28" autofocus />
+                        <button id="envoi_message" type="submit">Envoyer</button>
+                    </form>
+                    <hr class="hrForm">
+                    <textarea class="input" id="zone_chat_websocket" readonly="readonly" placeholder="Once upon a time..." size="20" style="height:100px"></textarea>
+                    <form id="text-options1">
+                        <label><input type="text1" class="filename" id="text-filename1" placeholder="Pilote_WS_LOGS" />.txt</label>
+                        <button id="saveLogs_webSocket" type="submit" value="Save" />Save</button>
+                    </form>
+                </div>
+			
+
+		        <div id="dataChannelArea">
+                        <strong> WebRTC dataChannel Log </strong>
+                        <hr/>
+                        <div id="formulaire_chat_webRTC" class="pseudoForm">
+                            <input type="text" name="message" id="input_chat_WebRTC" disabled placeholder="Waiting open channel..." size="28" autofocus />
+                            <button id="env_msg_WebRTC" disabled onclick="sendMessage()">Envoyer</button>
+                        </div>
+                        <hr class="hrForm">
+                        <textarea class="input" id="zone_chat_WebRTC" readonly="readonly" placeholder="Once upon a time..." size="20" style="height:100px"></textarea>
+                        <form id="text-options2">
+                            <label><input type="text" class="filename" id="text-filename2" placeholder="Pilote_WebRTC_LOGS" />.txt</label>
+                            <button id="saveLogs_webRTC" type="submit" value="Save" />Save</button>
+                        </form>
+                </div>
+		</div>
 
 
 		<!--</div>-->
@@ -782,6 +774,7 @@
     <script src='/js/lib/adapter.js'></script>
     <script src="/js/lib/FileSaver.js"></script>
     <script src="/js/lib/autobahn.min.jgz"></script>
+    <script src="/js/lib/xml2json.js"></script>
     
     <script src="/js/common_tools.js"></script>
     <script src="/js/common_models.js"></script>

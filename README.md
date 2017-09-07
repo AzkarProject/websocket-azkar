@@ -3,7 +3,7 @@
 # AZKAR PROJECT 
 
 Copyright © CNRS (Laboratoire I3S) / université de Nice
-Contributeurs: Thierry Bergeron & Michel Buffa, 2015-2016
+Contributeurs: Thierry Bergeron & Michel Buffa, 2015-2017
 
 Prototype de Contrôle/Commande à distance d'un Robot par internet.
 
@@ -14,46 +14,65 @@ de la licence CeCILL-C telle que diffusée par le CEA, le CNRS et l'INRIA
 sur le site "http://www.cecill.info".
 
 
-Revision 2.0.4
+
+Revision 2.0.5
 - Caméra Pan / Tilt
-    - Encours: Commandes clavier
-    - Todo: Detection ID caméra Pan / Tilt dans l'administration
-    - Todo: Commandes Keyboard
+    - Recentrage automatique en mode Drive
 - Caméra au sol
-    - Todo: Detection ID caméra sol
     - Todo: Switch auto caméra (mode conduite/précision)
 - Interface d'administration
-    - 
-    - Encours: Gestion caméra pilotage (selection, persistance configuration, caméra par défaut)
-    - Encours: Gestion caméra sol (selection, persistance configuration, caméra par défaut)
-- IHM
-    - Encours: centrage IHM
+    - Refonte charte graphique interface d'administration
+    - Intégration pages d'administration web sémantique
+- IHMs
+    - Refonte page d'accueil
+    - IHM pilote > Centrage IHM
+    - Todo: IHM robot > module navigation
+    - Todo: IHM robot > module tchatt
+    - Todo: IHM robot > contrôle d'accès (si mode fakeRobubox désactivé)
     - Todo: Système touch Screen
 - Cartographie
     - Todo: Clic & Go POI
+    - Todo: Mecanisme de superposition map originale/retravaillée
+    - Todo: Upload automatique de la map
+- Web sémantique
+    - C.R.U.D des scenes
+    - C.R.U.D des medias externes
+    - C.R.U.D des parcours de visite
+        - Todo: Filtres (level, language, theme, keywords, scenes, poi, duration)
+    - Encours: C.R.U.D des maps et des POI 
+    - Todo: C.R.U.D des objets exposés
+    - Todo: Mecanisme suggestion ressources via mots clefs
+        - Daylimotion
+        - Youtube
+        - DiscoveryHub
+        - dbPedia
+        - Quackis
+- Navigation
+    - Implémentation mécanisme 
+    - Encours: Implémentation mode parcours automatique (museumTrails)
+     
+
+Revision 2.0.4
+- Refonte charte graphique interface d'administration
+- Refonte page d'accueil
 
 
 Revision 2.0.3
-- Caméra Pan / Tilt
-    - Intégration module commande caméra PTZ
+- Caméra Pan / Tilt: Intégration module commande caméra PTZ
+
 
 Revision 2.0.2
-- Interface d'administration
-    - Changement carte par défaut du mode FakeRobubox
-    - Réorganisation modules grestion IP robot et IP caméra
-- IHM :
-    - Epuration CSS coté pilote
-    - Reprise ergonomique module cartographie
+- Interface d'administration: Changement carte par défaut du mode FakeRobubox
+- Interface d'administration: Réorganisation modules grestion IP robot et IP caméra
+- IHMs: Epuration CSS coté pilote
+- IHMs: Reprise ergonomique module cartographie
 
 
 Revision 2.0.1
-- Caméra Pan / Tilt
-    - Abandon système FOSCAM
-- IHM Pilote
-    - Réorganisation modules
-    - Fonction reset Display
-- Commandes Drive
-    - Ajout commandes directionnelles clavier
+- Caméra Pan / Tilt: Abandon système FOSCAM
+- IHM Pilote: Réorganisation modules
+- IHM Pilote: Fonction reset Display
+- Commandes Drive : Ajout commandes directionnelles clavier
 
 
 Revision 2.0.0
@@ -78,15 +97,16 @@ Revision 2.0.0
 
 Révision 1.6.2
 - Caméra Foscam
-    - Simplification du code source coté Gamepad
-    - Implémentation commandes de Zoom
-    - Implémentation commandes de reset caméra
-    - Factorisation du code dans une classe dédiée
-    - Modification mapping Gamepad des commandes caméra
-    - Implémentation d'une interface Web avec comandes en mode "pas a pas" et "continu"
-    - Ajouts d'icones et corrections de Bugs dans le bloc de commandes
-    - Todo: Implémentation de commandes au clavier
-    - Todo: Activation/Désactivation des commandes de la caméra coté admin
+- Simplification du code source coté Gamepad
+- Implémentation commandes de Zoom
+- Implémentation commandes de reset caméra
+- Factorisation du code dans une classe dédiée
+- Modification mapping Gamepad des commandes caméra
+- Implémentation d'une interface Web avec comandes en mode "pas a pas" et "continu"
+- Ajouts d'icones et corrections de Bugs dans le bloc de commandes
+- Todo: Implémentation de commandes au clavier
+- Todo: Activation/Désactivation des commandes de la caméra coté admin
+
 
 Révision 1.6.1
 - Cartographie
@@ -113,11 +133,13 @@ Révision 1.6.0
 - Modification du Header des IHMs
 - Modification légère de l'IHM Robot
 
+
 Révision 1.5.2:
 - Abandon rétrocompatibilité systême embarqué "Robubox"
 - Remplacement par le système embarqué "KomNav/Mobiserv" 
 - Visualisation des "Poins d'intérêts" sur la cartographie
 - Implémentation de la navigation par "Points d'intérêts" 
+
 
 Révision 1.5.1:
 - Modification de l'architecture des fichiers de configuration
@@ -128,6 +150,7 @@ Révision 1.5.1:
 - Fix d'un bug aléatoire (liste des caméras distantes vide)
 - Modification de la gestion des résolutions de caméras.  
 - Optimisation générale de l'ergonomie de l'IHM de commande
+
 
 Révision 1.5.0: 
 - Implémentation d'un mode conférencier (Commandes au Gamepad + Plein ecran)

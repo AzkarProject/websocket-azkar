@@ -21,27 +21,28 @@
 </head>
 
 
-<body>
-     
+<body onload="getAllMaps();">
+ <div class="modal fade" id="myModal" role="dialog">
+  <div class="modal-dialog">
 
-     <div class="modal fade" id="myModal" role="dialog">
-          <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title" id="modalTitle"></h4>
+      </div>
+      <div class="modal-body" id="modalBody">
 
-                <!-- Modal content-->
-                <div class="modal-content">
-                      <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title" id="modalTitle"></h4>
-                      </div>
-                      <div class="modal-body" id="modalBody">
-                      </div>
-                      <div class="modal-footer" id="modalFooter">
-                      </div>
-                </div>
 
-          </div>
+
+      </div>
+      <div class="modal-footer" id="modalFooter">
+
+      </div>
     </div>
 
+  </div>
+</div>
 
     <strong>
         <div id="zone_info_server"></div>
@@ -52,22 +53,7 @@
     <nav class="navbar navbar-default">
           <div class="container-fluid">
                   
-                  <ul class="nav navbar-nav">
-                        <li><a href="/">Home</a></li>
-                        <li><a href="#">|</a></li>
-                        <li><a href="/robotV2/">Robot interface</a></li>
-                        <li><a href="/piloteV2/">Pilot interface</a></li>
-                        <li><a href="#">|</a></li>
-                        <li><a href="/i3s">Robot Administration</a></li>
-                        <li><a href="#">|</a></li>
-                        <li><a href="ws-media.html">Museum Ressources</a></li>
-                        <li class="active"><a href="ws-scene.html">Museum Scenes</a></li>
-                        <li><a href="ws-trails.html">Museum Trails</a></li>
-                        <li><a href="ws-poi.html">Museum Map</a></li>
-                        <li><a href="ws-object.html">Museum Objects</a></li>
-                        
-                        
-
+                  <ul class="nav navbar-nav" id="AzkarNavbar">
                   </ul>
              
           </div>
@@ -77,29 +63,54 @@
         </br>
         
 
-          <div layout:fragment="content">
-                <div class="col-md-12">
-                      <div class="panel panel-primary">
-                              <div class="panel-heading" id="divInfoNbrMedia"><h5><b>Museum scenes list : </b></h5>
+<div layout:fragment="content">
+  <div class="col-md-12">
+    <div class="panel panel-primary">
+      <div class="panel-heading"><h5><b>Consultation des MAP</b></h5></div>
+      <div class="panel-body">
+        <div>
+        <label><h4 align="left"> Liste des Map :</h4></label>
+        <select id='choixMap' onchange="getMapScenes()">
 
-                              </div>
-                              <div class="panel-body">
-                                    <div> 
-                                            <button type="button" class="btn btn-sm btn-success active" data-toggle='modal' data-target='#myModal' id="btnAddMedia" onclick="addNewScene()"><span class='glyphicon glyphicon-plus'></span> Add new scene</button>
-                                    </div>
-                                    </br>
-                                    <form >
-                                            <table id="myTable" class="table table-striped table-bordered table-condensed">
-                                                <thead></thead>
-                                                <tbody></tbody>
-                                            </table>
-
-                                    </form>
-
-                              </div>
-                      </div>
-              </div>
+        </select>
+        <button type="button" class="btn btn-primary active" onclick="getMapScenes()"><span class='glyphicon glyphicon-search'></span> Chercher</button>
         </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+ 
+
+
+  <div layout:fragment="content">
+    <div class="col-md-12">
+      <div class="panel panel-primary">
+        <div class="panel-heading" id="divInfoNbrMedia"><h5><b>Détail des scènes associées à la MAP : </b></h5>
+
+        </div>
+        <div class="panel-body">
+          <div> <button type="button" class="btn btn-sm btn-success active" data-toggle='modal' data-target='#myModal' id="btnAddMedia" onclick="addNewScene()"><span class='glyphicon glyphicon-plus'></span> AJOUTER UNE NOUVELLE SCENE</button> 
+           
+          </div>
+        </br>
+        <form >
+          <table id="myTable" class="table table-striped table-bordered table-condensed">
+            <thead>
+
+            </thead>
+            <tbody>
+            </tbody>
+
+
+          </table>
+
+        </form>
+
+      </div>
+    </div>
+  </div>
 
 
         <section id="TopNotification">
@@ -124,7 +135,7 @@
         <script>
         var type = null;
         var refresh = true;
-        page = "museumScene";
+        page = "ws-scene";
         </script>
 
         <script src="/socket.io/socket.io.js"></script>
@@ -135,11 +146,12 @@
         <script src="/js/common_app_settings.js"></script>
         <script src='/js/module_notifications.js'></script>
         <script src='/js/module_ihm.js'></script>
-        <script src="/js/module_admin_sparql.js"></script>
+        <script src="/js/module_admin_scene_sparql.js"></script>
         <script src="/js/lib/xml2json.js"></script>
 
         <script>
           ihm.getHeaderPage("Médiateur");
+          ihm.getNavBar();
         </script>
 
 

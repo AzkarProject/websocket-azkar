@@ -590,7 +590,7 @@
 	azkarLogo += '</a></div>';
 	exports.getHeaderPage = function(login) {
 
-
+		//alert("getHeaderPage("+page+")");
       // On récupère depuis nodejs le nom de la machine serveur
       // en passant par de l'AJAX plutôt que par websocket....
       $.get( "/getvar", function( data ) {
@@ -615,8 +615,6 @@
         }
 
         var img = '<div style="float:left; margin-right:20px"><a href="/"><img src="/images/logo/AZKAR.png" alt="AZKAR PROJECT" title="Projet Azkar"  width="150px;" height="54px"/></a></div>';
-		//var img = '<div style="float:left; margin-right:20px"><img src="/images/logo/AZKAR.png" alt="AZKAR PROJECT" title="Projet Azkar"  width="150px;" height="54px"/></div>';
-
         if (hostName != "???" ) {
         	$('#zone_info_server').replaceWith('<div id="zone_info_server" style="min-width:1000px;min-height:54px">'+azkarLogo+'<p style="font-family: time new roman;">'+infoServerTxt+'</p></div>');
         }
@@ -1189,7 +1187,7 @@
 
 
    // Ecouteurs Keyup, Keydown 
-   /*// source : http://nokarma.org/2011/02/27/javascript-game-development-keyboard-input/
+   // source : http://nokarma.org/2011/02/27/javascript-game-development-keyboard-input/
    var Key = {
 	  	_pressed: {},
 
@@ -1273,145 +1271,57 @@
 				lastDirectionnal = "relase";
 
 		  	}
-		}
+		
+		// si touche MAJ appuyée
+		} 
 	};
 
     /**///console.log(Pad)
 
 
 
-    // Version du 8-08-2017 modifiée par F.Mazieras
-    // Add commandes clavier our caméra...
-   // Ecouteurs Keyup, Keydown 
-   // source : http://nokarma.org/2011/02/27/javascript-game-development-keyboard-input/
-   var Key = {
-	  	_pressed: {},
-
-	  	LEFT: 37,
-	  	UP: 38,
-	  	RIGHT: 39,
-  		DOWN: 40,
-  		CTRL: 17,
-		SHIFTLEFT: 37,  
-		SHIFTUP: 38,  
-		SHIFTRIGHT: 39,
-		SHIFTDOWN: 40,
-  		isDown: function(keyCode) {
-    		return this._pressed[keyCode];
-  		},
-  
-  		onKeydown: function(event) {
-    		this._pressed[event.keyCode] = true;
-			//console.log("Key "+event.keyCode+" pressed")
-    		//emulatePad()
-  		},
-  
-  		onKeyup: function(event) {
-    		delete this._pressed[event.keyCode];
-    		//console.log("Key "+event.keyCode+" released")
-    		//Pad.trigger();
-  		}
-	};	
+	exports.getNavBar = function() {
 
 
-   	window.addEventListener('keyup', function(event) { 
-   			Key.onKeyup(event);  keyboardControl();
-   	}, false);
-   
-    window.addEventListener('keydown', function(event) { 
-    		Key.onKeydown(event);  keyboardControl();
-    }, false);		
+      	// alert("getNavBar("+page+")");
 
-    var lastDirectionnal = "relase";
-    // Pente d'arrêt (décéllération) en cours (flag)
-    // Pour éviter les accès concurrents le temps de finir l'arrêt.
-    var decreaseDirectionnal = false; 
-    var cameraOnUp = false;
-    var cameraOnLeft = false;
-    var cameraOnRight = false;
-    var cameraOnDown = false;
-	
+      	
+      	var activeClass = '';;
+      	//var html= '<ul class="nav navbar-nav" id="AzkarNavbar">';
+      			if (page == 'home') activeClass = ' class="active"';
+      			var html  = '<li'+activeClass+'><a href="/">Home</a></li>'; activeClass = '';
+     			
+     			html  += '<li'+activeClass+'><a href="#">|</a></li>'
+     		 	
+     		 	html  += '<li '+activeClass+'><a href="/robotV2/">Robot interface</a></li>'
+      			html  += '<li '+activeClass+'><a href="/piloteV2/">Pilot interface</a></li>'
+                
+                html  += '<li '+activeClass+'><a href="#">|</a></li>'
 
-    function keyboardControl() {
-	  	// console.log("keyboardControl()")
-	  	// return
-	  	var stepLinearSpeed = 0.05;
-	  	var stepAngularSpeed = 0.2;
-	  	// Si touche up appuyée et aucune décéllération en cours... 
-	  	
-	  	// Touche CTRL appuyée...
-	  	if (Key.isDown(Key.CTRL) ) {
+                if (page == 'adminRobot') activeClass = ' class="active"';
+                html  += '<li '+activeClass+'><a href="/i3s">Robot Settings</a></li>';activeClass = '';
+                
+                html  += '<li><a href="#">|</a></li>'
+                
+                if (page == 'ws-poi') activeClass = ' class="active"';
+                html  += '<li '+activeClass+'><a href="ws-poi.html">Map</a></li>';activeClass = '';
+                
+                if (page == 'ws-scene') activeClass = ' class="active"';
+                html  += '<li '+activeClass+'><a href="ws-scene.html">Scenes</a></li>';activeClass = '';
+                
+				if (page == 'ws-media') activeClass = ' class="active"';
+                html  += '<li '+activeClass+'><a href="ws-media.html">Medias</a></li>';activeClass = '';
+                
+                if (page == 'ws-trails') activeClass = ' class="active"';
+                html  += '<li '+activeClass+'><a href="ws-trails.html">Trails</a></li>';activeClass = '';
+                
+                if (page == 'ws-object') activeClass = ' class="active"';
+                html  += '<li '+activeClass+'><a href="ws-object.html">Objects</a></li>';activeClass = '';
+                //html  += '</ul>'
 
-		  	if (Key.isDown(Key.UP) && decreaseDirectionnal == false) {
-		  		lastDirectionnal = "top";
-			    keyboardASpeed = angularSpeed
-				keyboardLSpeed = -stepLinearSpeed - linearSpeed / 1.5
-		  		sendArrowsToRobot (keyboardASpeed,keyboardLSpeed )
-		  		//console.log('top');
-		  	} else if (Key.isDown(Key.DOWN)  && decreaseDirectionnal == false) {
-		  		lastDirectionnal = "bottom";
-		  		keyboardASpeed = angularSpeed
-				keyboardLSpeed = stepLinearSpeed - linearSpeed / 1.5
-		  		sendArrowsToRobot (keyboardASpeed,keyboardLSpeed )
-		  		//console.log('bottom'); 
+        $('#AzkarNavbar').replaceWith('<ul class="nav navbar-nav" id="AzkarNavbar">'+html+'</ul>');    
+       
 
-		  	} else if (Key.isDown(Key.LEFT) && decreaseDirectionnal == false) {
-		  		lastDirectionnal = "left";
-		  		keyboardASpeed =  -stepAngularSpeed - angularSpeed /2
-				keyboardLSpeed = linearSpeed;	
-		  		sendArrowsToRobot (keyboardASpeed,keyboardLSpeed )
-		  		//console.log('left'); 
-		  
-		  	} else if (Key.isDown(Key.RIGHT)  && decreaseDirectionnal == false) {
-		  		lastDirectionnal = "right";
-		  		keyboardASpeed = stepAngularSpeed - angularSpeed /2
-				keyboardLSpeed = linearSpeed;	
-		  		sendArrowsToRobot (keyboardASpeed,keyboardLSpeed )
-		  		//console.log('right');
-		  	}  else if (decreaseDirectionnal == false){
-		  		decreaseDirectionnal = true; // On déclenche la pente d'arrêt...
-				decreaseDirectionnal = false;
-				lastDirectionnal = "relase";
-
-		  	}
-		}
-		if (Key.isDown(Key.SHIFTUP)) {
-			if (cameraOnUp == false) {
-				foscam.moveCamera("Up");
-				cameraOnUp = true;
-				//console.log('top pressed');
-			}
-			
-		} else if (Key.isDown(Key.SHIFTDOWN) ) {
-			if (cameraOnDown == false) {
-				cameraOnDown = true;
-				foscam.moveCamera("Down")
-				//console.log('down pressed');
-			}
-		} else if (Key.isDown(Key.SHIFTLEFT) ) {
-			if (cameraOnLeft == false) {
-				cameraOnLeft = true;
-				foscam.moveCamera("Left")
-				//console.log('left pressed');
-			}
-		} else if (Key.isDown(Key.SHIFTRIGHT) ) {
-			if (cameraOnRight == false) {
-				cameraOnRight = true;
-				foscam.moveCamera("Right")
-				//console.log('right pressed');
-			}
-		} else {
-			cameraOnUp = false;
-			cameraOnDown = false;
-			cameraOnLeft = false;
-			cameraOnRight = false;
-			foscam.sendCameraOrder("onCameraStop");
-			//console.log('stop camera');
-		}
-
-	};
-    
-
- 
+	}
 
 })(typeof exports === 'undefined'? this['ihm']={}: exports);

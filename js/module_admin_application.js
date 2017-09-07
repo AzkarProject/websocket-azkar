@@ -1,8 +1,15 @@
 var socket = io.connect();
 
 // Récupération du pseudo
-var localPseudo = checkCookie();
+/*var localPseudo = checkCookie();
 ihm.getHeaderPage(localPseudo);
+/**/
+
+localPseudo = null;
+pseudo = checkCookie(localPseudo);
+ihm.getHeaderPage(pseudo);
+
+
 
 
 
@@ -46,7 +53,6 @@ function getCookie(cname) {
     }
     return "";
 }
-
 
 
 function checkCookie(pseudo) {

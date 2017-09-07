@@ -402,7 +402,7 @@ function getAllAudioVideoDevices(successCallback, failureCallback) {
 // Affectation et traitement des résultats générées par getAllAudioVideoDevices()
 function populateListDevices(result,sourceDevices) {
     console.log("@ populateListDevices()");
-    console.log(sourceDevices);
+    //console.log(sourceDevices);
     //console.log(result);
 
     // Si sources locales (pilote)
@@ -494,11 +494,13 @@ function populateListDevices(result,sourceDevices) {
 // Génération des listes de devices pour les formulaires
 function populateFormDevices(device,sourceDevices) {
 
+    /*
     console.log("@ populateFormDevices()");
     console.log(" ---- sourceDevices >>>>>");
     console.log(sourceDevices);
     console.log(" ---- device >>>>>");
     console.log(device);
+    /**/
 
     var option = document.createElement('option');
     option.id = device.id;
@@ -772,7 +774,7 @@ socket.on("readyForSignaling", function(data) {
 // Coté serveur >> socket.broadcast.emit('selectedRemoteDevices', {objUser:data.objUser, listeDevices:data.listeDevices});
 socket.on('selectedRemoteDevices', function(data) {
     console.log(">> socket.on('selectedRemoteDevices',...");
-    console.log(data);
+    //console.log(data);
 
     if (type == "robot-appelé") {
         // On rebalance au formulaire les caméras/micros choisies par le pilote

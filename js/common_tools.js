@@ -242,17 +242,6 @@ exports.test = function(){
  }
 
 
-
-
-
-
-
-
-
-
-
-
-
 // convertit un tableau en objet
 // source: http://stackoverflow.com/questions/20807804/convert-array-to-object-javascript
 exports.convertToArrayOfObjects = function  (data) {

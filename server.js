@@ -793,9 +793,21 @@ io.on('connection', function(socket, pseudo) {
         console.log( "@ socket.on('executeSPARQL',"+data.typeRequest+")" )
         
         request(data.url, function (error, response, body) {
+
             console.log('error:', error); // Print the error if one occurred 
             console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received 
+            data.error = error;
+            data.response=response;
             data.result=body;
+            if (data.typeRequest == "getMapTrails") {
+                console.log("XXXXXXXXXXX DEBUG XXXXXXXXXXXX");
+                console.log("getMapTrails error" + data.error);
+                console.log("getMapTrails response" + data.response);
+                console.log("getMapTrails result >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                console.log("getMapTrails response" + data.result);
+                console.log("<<<<<<<<<<<<<<<<<<<<<<<<< getMapTrails result >>>>>");
+
+            }
             console.log( "> io.to(socket.id).emit('resultSPARQL',"+data.typeRequest+")" )
             io.to(socket.id).emit('resultSPARQL', data);
         
@@ -1172,14 +1184,8 @@ function onSocketConnected(socket) {
 var urlRobotI3S = new models.ressourceUrl("127.0.0.1:7007", "IP Mobiserv I3S", "");
 urlsRobot[urlRobotI3S.Label] = urlRobotI3S;
 
-var urlRobotCSI = new models.ressourceUrl("10.0.15.74:7007", "IP Mobiserv CSI","");
-urlsRobot[urlRobotCSI.Label] = urlRobotCSI;
-
 var urlFoscamI3S = new models.ressourceUrl("192.168.1.50:88", "IP Foscam I3S", "");
 urlsFoscam[urlFoscamI3S.Label] = urlFoscamI3S;
-
-var urlFoscamCSI = new models.ressourceUrl("10.0.15.50:88", "IP Foscam CSI", "");
-urlsFoscam[urlFoscamCSI.Label] = urlFoscamCSI;
 
 defaultIpRobot = urlRobotI3S;
 defaultIpFoscam = urlFoscamI3S;
