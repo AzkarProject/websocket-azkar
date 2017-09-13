@@ -736,7 +736,7 @@ function getLocalConstraint() {
 
 
   // debug: désactivation des constraints
-  localConstraints = { audio: true, video: true }
+  //localConstraints = { audio: true, video: true }
 
     return localConstraints;
 } 
