@@ -1376,7 +1376,7 @@
         // http://134.59.130.147/tutorial/azkar?query=select ?z where { <http://azkar.musee_Ontology.fr/schema%23Valerian3> <http://azkar.musee_Ontology.fr/amo%23linkedToScene> ?z}
          // Virer le .png ou autre du namefile de la map
         activeMap = getNameWithoutExtension(activeMapNameFile) 
-        
+        console.log ("ACTIVE MAP = " + activeMap)
 
         if ( doGetAllMapScenes == false ) {
 
