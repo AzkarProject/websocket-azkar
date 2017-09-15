@@ -58,20 +58,14 @@
 	};
 
 	// Adresse Ip ou nom de domaine du serveur de l'application
-	// Eviter le 0.0.0.0 standard
 	// localhost pour un test en local (avec le mode Fakerobubox uniquement)
 	// 192.168.173.1 pour un test en réseau wifi local (Adhoc)
-	// 134.59.130.143:80 VM1 Azkar
-	// 134.59.130.14 ?? VM2 Azkar
 
 	// Sinon le nom de domaine du serveur distant (de préférence) ou son adresse IP 
 	exports.appServerIp = function(){
 		//return "localhost";
 		return "0.0.0.0"
 		//return "192.168.173.1" // réseau AdHoc local
-		//return "134.59.130.143" // VM 1 Sparks
-		//return "134.59.130.142" // VM 2 Sparks
-		//return "134.59.130.147" // VM 3 Sparks
 	}
 
 	// N° de port: Idéalement 443 pour du https.

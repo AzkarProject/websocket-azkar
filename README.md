@@ -14,42 +14,36 @@ de la licence CeCILL-C telle que diffusée par le CEA, le CNRS et l'INRIA
 sur le site "http://www.cecill.info".
 
 
-
-Revision 2.0.5
-- Caméra Pan / Tilt
-    - Recentrage automatique en mode Drive
-- Caméra au sol
-    - Todo: Switch auto caméra (mode conduite/précision)
-- Interface d'administration
-    - Refonte charte graphique interface d'administration
-    - Intégration pages d'administration web sémantique
-- IHMs
-    - Refonte page d'accueil
-    - IHM pilote > Centrage IHM
-    - Todo: IHM robot > module navigation
-    - Todo: IHM robot > module tchatt
-    - Todo: IHM robot > contrôle d'accès (si mode fakeRobubox désactivé)
-    - Todo: Système touch Screen
-- Cartographie
-    - Todo: Clic & Go POI
-    - Todo: Mecanisme de superposition map originale/retravaillée
-    - Todo: Upload automatique de la map
-- Web sémantique
-    - C.R.U.D des scenes
-    - C.R.U.D des medias externes
-    - C.R.U.D des parcours de visite
-        - Todo: Filtres (level, language, theme, keywords, scenes, poi, duration)
-    - Encours: C.R.U.D des maps et des POI 
-    - Todo: C.R.U.D des objets exposés
-    - Todo: Mecanisme suggestion ressources via mots clefs
+Todo:
+- Caméra au sol: Switch auto caméra (mode conduite/précision)
+- Caméra Pan/Tilt: Recentrage automatique en mode Drive
+- IHM robot: module navigation
+- IHM robot: module tchatt
+- IHM robot: contrôle d'accès (si mode fakeRobubox désactivé)
+- IHM pilote: Centrage IHM
+- IHMs: Système touch Screen
+- Cartographie: Clic & Go POI
+- Cartographie: Mecanisme de superposition map originale/retravaillée
+- Cartographie: Upload automatique de la map
+- Web sémantique: Filtres (level, language, theme, keywords, scenes, poi, duration)
+- Web sémantique: C.R.U.D des objets exposés
+- Web sémantique: Mecanisme suggestion ressources via mots clefs
         - Daylimotion
         - Youtube
         - DiscoveryHub
         - dbPedia
         - Quackis
-- Navigation
-    - Implémentation mécanisme 
-    - Encours: Implémentation mode parcours automatique (museumTrails)
+- Navigation: Implémentation mode parcours automatique (Tour)
+
+
+Revision 2.0.5
+- Interface d'administration: Refonte charte graphique
+- Interface d'administration: Gestion web sémantique
+- IHMs: Refonte page d'accueil
+- Web sémantique: C.R.U.D des scenes
+- Web sémantique: C.R.U.D des medias externes
+- Web sémantique: C.R.U.D des parcours de visite
+- Web sémantique: C.R.U.D des maps et des POI 
      
 
 Revision 2.0.4
@@ -93,7 +87,6 @@ Revision 2.0.0
 - Caméra au sol
     - intégration ds module Drive IHM
     
-
 
 Révision 1.6.2
 - Caméra Foscam
